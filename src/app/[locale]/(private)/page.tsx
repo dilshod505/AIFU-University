@@ -19,7 +19,7 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale });
 
   return {
-    title: "AR BOOKS",
+    title: "AIFU University",
     description: t(
       `AR BOOKS is a platform for seeing augmented reality on books`,
     ),
@@ -27,13 +27,11 @@ export const generateMetadata = async ({
 };
 
 const Page = async () => {
-
   return (
     <div className={"cont"}>
       <h1 className={"text-2xl font-semibold py-5 text-start"}>
-        <SimpleTranslation title={"products"} />
+        <SimpleTranslation title={""} />
       </h1>
-
     </div>
   );
 };

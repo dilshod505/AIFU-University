@@ -1,6 +1,7 @@
 import React from "react";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
+import Dashboard from "@/components/pages/admin/dashboard";
 
 export const generateMetadata = async ({
   params,
@@ -17,7 +18,11 @@ export const generateMetadata = async ({
 };
 
 const Page = () => {
-  return <div></div>;
+  return (
+    <div>
+      <Dashboard />
+    </div>
+  );
 };
 
 export default Page;

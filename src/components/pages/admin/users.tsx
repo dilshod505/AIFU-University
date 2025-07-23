@@ -15,7 +15,7 @@ const Users = () => {
         width: 50,
       },
     ],
-    [t],
+    [],
   );
 
   return (
