@@ -21,5 +21,12 @@
   "logout": "Logout",
   "Admin Dashboard": "Admin Dashboard",
   "AIFU - Admin Dashboard": "AIFU - Admin Dashboard",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "System Users": "System Users",
+  "AIFU - System Users": "AIFU - System Users",
+  "users": "Users",
+  "no data": "No data",
+  "Column Visibility": "Column Visibility",
+  "search": "Search",
+  "ustunlarni boshqarish": "Manage Columns"
 }

@@ -16,10 +16,17 @@
   "regular book": "Oddiy kitob",
   "book copies": "Kitob nusxalari",
   "categories": "Kategoriyalar",
-  "e-book category": "e-kitoblar toifasi",
+  "e-book category": "E-Kitoblar toifasi",
   "regular book category": "Oddiy kitob kategoriyasi",
   "logout": "Chiqish",
   "Admin Dashboard": "Admin Boshqaruv Paneli",
   "AIFU - Admin Dashboard": "AIFU - Admin Boshqaruv Paneli",
-  "Dashboard": "Boshqaruv paneli"
+  "Dashboard": "Boshqaruv paneli",
+  "System Users": "Tizim Foydalanuvchilari",
+  "AIFU - System Users": "AIFU - Tizim foydalanuvchilari",
+  "users": "Foydalanuvchilar",
+  "no data": "Ma'lumot yo'q",
+  "Column Visibility": "Ustun Koʻrinishi",
+  "search": "Qidirish",
+  "ustunlarni boshqarish": "Ustunlarni boshqarish"
 }

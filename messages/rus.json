@@ -21,5 +21,12 @@
   "logout": "Выйти",
   "Admin Dashboard": "Панель администратора",
   "AIFU - Admin Dashboard": "AIFU - Панель управления администратора",
-  "Dashboard": "Панель управления"
+  "Dashboard": "Панель управления",
+  "System Users": "Системные пользователи",
+  "AIFU - System Users": "AIFU - Системные пользователи",
+  "users": "Пользователи",
+  "no data": "Нет данных",
+  "Column Visibility": "Видимость столбцов",
+  "search": "Поиск",
+  "ustunlarni boshqarish": "Управление столбцами"
 }

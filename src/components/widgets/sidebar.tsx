@@ -271,12 +271,12 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
   };
 
   // Render menu item with children
-  const renderMenuItem = (item: MenuItem, level = 0) => {
+  const renderMenuItem = (item: MenuItem, level = 0, index: number) => {
     const hasActiveChild =
       item.children && item.children.some((child) => isActive(child));
 
     return (
-      <div key={item.href} className={cn(level > 0 && "ml-4")}>
+      <div key={index} className={cn(level > 0 && "ml-4")}>
         <Link
           href={item.href}
           onClick={handleLinkClick}
@@ -317,7 +317,9 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
         {/* Render children if parent is active */}
         {item.children && (hasActiveChild || isActive(item)) && (
           <div className="mt-1 space-y-1 border-l-2 border-primary/20 ml-6 pl-2">
-            {item.children.map((child) => renderMenuItem(child, level + 1))}
+            {item.children.map((child, index: number) =>
+              renderMenuItem(child, level + 1, index),
+            )}
           </div>
         )}
       </div>
@@ -401,7 +403,9 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
             // Show filtered results when searching
             <div className="space-y-1">
               {filteredItems.length > 0 ? (
-                filteredItems.map((item) => renderMenuItem(item))
+                filteredItems.map((item: MenuItem, i: number) =>
+                  renderMenuItem(item, undefined, i),
+                )
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -419,7 +423,9 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
                       {t(groupName)}
                     </p>
                   )}
-                  {items.map((item) => renderMenuItem(item))}
+                  {items.map((item, i: number) =>
+                    renderMenuItem(item, undefined, i),
+                  )}
                 </div>
               ))}
             </div>

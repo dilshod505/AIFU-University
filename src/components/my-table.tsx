@@ -604,8 +604,8 @@ const MyTable = ({
                           </TooltipTrigger>
                           <TooltipContent>
                             {isFullscreen
-                              ? t("Exit fullscreen")
-                              : t("Enter fullscreen")}
+                              ? t("Exit Fullscreen")
+                              : t("Enter Fullscreen")}
                           </TooltipContent>
                         </Tooltip>
                       )}
