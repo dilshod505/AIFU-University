@@ -1,31 +1,52 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import logo from "../../../public/logo.png";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { api } from "@/components/models/axios";
+import useLayoutStore from "@/store/layout-store";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Login() {
   const t = useTranslations();
+  const router = useRouter();
+  const { setCredentials } = useLayoutStore();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const res = await api.post("/auth/login", { email, password });
+      if (res.status === 200 && res.data?.data) {
+        setCredentials(email, res?.data.data || "");
+        Cookies.set("aifu-token", res?.data.data || "");
+        toast.success(t("Login successfull"));
+        router.replace("/");
+      }
+    } catch (e) {
+      toast.error(t("Invalid credentials"));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl border-0 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center space-y-4 pb-6">
           <div className="mx-auto w-32 bg-stone-300 flex items-center justify-center">
-            <Image src={logo} alt={"logo"} />
+            <Image src={logo} alt={"logo"} priority />
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
           {/* Email and Password Form */}
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label
                 htmlFor="email"
@@ -35,7 +56,8 @@ export default function Login() {
               </Label>
               <Input
                 id="email"
-                type="email"
+                name={"email"}
+                type="text"
                 placeholder="Enter your email address"
                 className="h-11 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                 required
@@ -51,6 +73,7 @@ export default function Login() {
               </Label>
               <Input
                 id="password"
+                name={"password"}
                 type="password"
                 placeholder="Create a password"
                 className="h-11 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
@@ -60,49 +83,12 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full h-11 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+              className="w-full h-11 bg-[#FF0258] hover:bg-[#FF0258]/90 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
             >
               {t("Login")}
             </Button>
           </form>
-
-          {/* Additional Links */}
-          <div className="flex justify-center space-x-4 text-xs">
-            <a
-              href="#"
-              className="text-gray-500 hover:text-purple-600 transition-colors"
-            >
-              Terms
-            </a>
-            <span className="text-gray-300">•</span>
-            <a
-              href="#"
-              className="text-gray-500 hover:text-purple-600 transition-colors"
-            >
-              Privacy
-            </a>
-            <span className="text-gray-300">•</span>
-            <a
-              href="#"
-              className="text-gray-500 hover:text-purple-600 transition-colors"
-            >
-              Help
-            </a>
-          </div>
         </CardContent>
-
-        <CardFooter className="pt-0">
-          {/* Trust Indicators */}
-          <div className="w-full text-center space-y-2">
-            <div className="flex items-center justify-center space-x-2 text-xs text-gray-500">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>We respect your privacy</span>
-            </div>
-            <p className="text-xs text-gray-400">
-              No spam, unsubscribe at any time
-            </p>
-          </div>
-        </CardFooter>
       </Card>
     </div>
   );

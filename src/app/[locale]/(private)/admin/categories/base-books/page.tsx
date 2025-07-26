@@ -24,9 +24,9 @@ const getCategories = async () => {
 };
 
 const Page = async () => {
-  const categories = await getCategories();
+  // const categories = await getCategories();
 
-  console.log(categories);
+  // console.log(categories);
 
   return <BaseBooks />;
 };

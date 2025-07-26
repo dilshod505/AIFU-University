@@ -9,18 +9,19 @@ export const api = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
+    // "Access-Control-Allow-Origin": "*",
   },
 });
-//
+
 api.interceptors.request.use((config) => {
   const token = Cookies.get("aifu-token");
   if (token) {
-    config.headers["aifu-token"] = `${token}`;
+    config.headers["Authorization"] =
+      `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MzUyNDUzOSwiZXhwIjoxNzU2MTE2NTM5fQ.UgF5OaMSAp9PZFH3OIJrDkdJ0MffWy6XGrqFVlUTzbk`;
   }
   return config;
 });
-//
+
 // api.interceptors.response.use(
 //   (response) => response,
 //   (error) => {

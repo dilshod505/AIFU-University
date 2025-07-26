@@ -3,10 +3,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface LayoutState {
-  phoneNumber: string | null;
+  email: string | null;
   token: string | null;
   user: Record<string, any> | null;
-  setCredentials: (phoneNumber: string, token: string) => void;
+  setCredentials: (email: string, token: string) => void;
   clearCredentials: () => void;
   setUser: (user: Record<string, any>) => void;
   logout: () => void;
@@ -15,23 +15,23 @@ interface LayoutState {
 const useLayoutStore = create<LayoutState>()(
   persist(
     (set) => ({
-      phoneNumber: null,
+      email: null,
       token: null,
       user: null,
-      setCredentials: (phoneNumber, token) =>
+      setCredentials: (email, token) =>
         set(() => ({
-          phoneNumber,
+          email,
           token,
         })),
       clearCredentials: () =>
         set(() => ({
-          phoneNumber: null,
+          email: null,
           token: null,
         })),
       setUser: (user: Record<string, any>) => set(() => ({ user })),
       logout: () => {
         set(() => ({
-          phoneNumber: null,
+          email: null,
           token: null,
           user: null,
         }));
@@ -41,7 +41,7 @@ const useLayoutStore = create<LayoutState>()(
     {
       name: "aifu-token",
       partialize: (state) => ({
-        phoneNumber: state.phoneNumber,
+        email: state.email,
         token: state.token,
         user: state.user,
       }),
