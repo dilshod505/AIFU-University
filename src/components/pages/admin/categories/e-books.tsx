@@ -1,9 +1,10 @@
 "use client";
 
-import MyTable, { IColumn } from "@/components/my-table";
 import { useTranslations } from "next-intl";
-import TooltipBtn from "@/components/tooltip-btn";
+import React, { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
+
 import {
   Sheet,
   SheetContent,
@@ -11,24 +12,19 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { AutoForm, FormField } from "@/components/form/auto-form";
-import { useForm } from "react-hook-form";
-import React, { useMemo, useState } from "react";
+import TooltipBtn from "@/components/tooltip-btn";
+import MyTable, { IColumn } from "@/components/my-table";
 import {
-  useCreateEBooks,
-  useEBooks,
-  useUpdateEBooks,
-} from "@/components/models/queries/e-books";
+  useCategories,
+  useCreateCategory,
+} from "@/components/models/queries/e-books-categories";
 
-const EBooks = () => {
+const CategoriesPage = () => {
   const t = useTranslations();
-  const { data: eBook } = useEBooks();
-  const createBook = useCreateEBooks();
-  const updateBook = useUpdateEBooks();
-  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
-  );
+  const { data: categories } = useCategories();
+  const createCategory = useCreateCategory();
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const form = useForm();
 
   const fields = useMemo<FormField[]>(
@@ -49,75 +45,58 @@ const EBooks = () => {
         key: "index",
         dataIndex: "index",
         title: "#",
-        width: 50,
-        render: (_: any, record: any, index: number) => index + 1,
+        render: (_: any, __: any, index: number) => index + 1,
       },
       {
-        key: "totalPages",
-        dataIndex: "totalPages",
-        title: t("Total Pages"),
+        key: "name",
+        dataIndex: "name",
+        title: t("Name"),
       },
     ],
     [t],
   );
 
   const onSubmit = async (data: any) => {
-    if (editingBook) {
-      await updateBook(editingBook.id, data);
-    } else {
-      await createBook(data);
-    }
+    await createCategory.mutateAsync(data);
     setOpen(false);
   };
 
   return (
-    <div className={"cont"}>
-      <h1 className={"text-2xl font-semibold py-5"}>
+    <div className="cont">
+      <h1 className="text-2xl font-semibold py-5">
         {t("Categories of E-Books")}
       </h1>
+
       <MyTable
         columns={columns}
-        dataSource={eBook}
-        columnVisibility
-        fullscreen
+        dataSource={categories}
         searchable
         header={
           <TooltipBtn
-            title={t("Add book")}
+            title={t("Add Category")}
             onClick={() => {
-              setEditingBook(null);
-              form.reset({
-                title: "",
-                description: "",
-                totalPages: 0,
-                totalLanguages: 0,
-                categoryId: "",
-                attachmentId: "",
-              });
+              form.reset({ name: "" });
               setOpen(true);
             }}
           >
             <Plus />
-            {t("Add book")}
+            {t("Add Category")}
           </TooltipBtn>
         }
       />
+
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>
-              <h1 className={"text-lg font-semibold"}>
-                {editingBook ? t("Edit book") : t("Add book")}
-              </h1>
-            </SheetTitle>
+            <SheetTitle>{t("Add Category")}</SheetTitle>
           </SheetHeader>
-          <div className="p-3 overflow-y-auto">
+          <div className="p-3">
             <AutoForm
-              submitText={editingBook ? t("Edit book") : t("Add book")}
-              showResetButton={false}
+              submitText={t("Add Category")}
               onSubmit={onSubmit}
               form={form}
               fields={fields}
+              showResetButton={false}
             />
           </div>
         </SheetContent>
@@ -126,4 +105,4 @@ const EBooks = () => {
   );
 };
 
-export default EBooks;
+export default CategoriesPage;
