@@ -20,12 +20,13 @@ export const generateMetadata = async ({
 
 const getCategories = async () => {
   const res = await api.get("/admin/base-book/categories");
-
-  return [];
+  return res.data;
 };
 
-const Page = () => {
-  const categories = [];
+const Page = async () => {
+  const categories = await getCategories();
+
+  console.log(categories);
 
   return <BaseBooks />;
 };
