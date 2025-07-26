@@ -818,6 +818,10 @@ const TranslationEditor = ({
         <MyTable
           dataSource={filteredData}
           columns={columns as any}
+          pagination={false}
+          columnVisibility
+          bordered
+          striped
           rowKey="key"
         />
       </div>

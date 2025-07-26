@@ -47,7 +47,7 @@ export default function Login() {
                 htmlFor="password"
                 className="text-sm font-medium text-gray-700"
               >
-                Password
+                {t("Password")}
               </Label>
               <Input
                 id="password"
