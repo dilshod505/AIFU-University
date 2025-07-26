@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logo from "../../../public/logo.png";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 export default function Login() {
@@ -16,10 +18,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl border-0 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center space-y-4 pb-6">
-          {/* Brand Name */}
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-900">AIFU</h1>
-            <div className="w-12 h-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 mx-auto rounded-full"></div>
+          <div className="mx-auto w-32 bg-stone-300 flex items-center justify-center">
+            <Image src={logo} alt={"logo"} />
           </div>
         </CardHeader>
 
