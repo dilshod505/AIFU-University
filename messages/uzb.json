@@ -38,11 +38,15 @@
   "Invalid credentials": "Noto'g'ri ma'lumotlar",
   "Login successfull": "Kirish muvaffaqiyatli",
   "Add Regular book category": "Oddiy kitob turkumini qo'shish",
-  "Category name": "Kategoriya nomi",
-  "Add category": "Kategoriya qo'shish",
-  "Actions": "Amallar",
-  "Edit": "Tahrirlash",
-  "Edit Regular book category": "Regular kitob turkumini tahrirlash",
-  "Category updated": "Kategoriya yangilandi",
-  "Delete": "O'chirish"
+  "Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi": "Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi",
+  "Edit category": "Kategoriyani tahrirlash",
+  "Delete category": "Kategoriyani o'chirish",
+  "Given At": "Berilgan vaqti",
+  "\t Due Date": "Muddat",
+  "Due Date": "Topshirish muddati",
+  "Author": "Muallif",
+  "Title": "Sarlavha",
+  "E-Books category": "Elektron kitoblar toifasi",
+  "E-Books": "Elektron kitoblar",
+  "Books": "Kitoblar"
 }

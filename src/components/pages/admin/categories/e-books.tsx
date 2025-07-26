@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
-import { Ban, Pencil, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -68,6 +68,7 @@ const CategoriesPage = () => {
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
+              size={"sm"}
               title={t("Edit category")}
               onClick={() => {
                 setEditingCategory(record);
@@ -75,9 +76,12 @@ const CategoriesPage = () => {
                 setOpen(true);
               }}
             >
-              <Pencil />
+              {t("Edit")}
             </TooltipBtn>
             <TooltipBtn
+              variant={"destructive"}
+              size={"sm"}
+              color={"red"}
               title={t("Delete category")}
               onClick={() => {
                 deleteCategory.mutate(record.id, {
@@ -87,7 +91,7 @@ const CategoriesPage = () => {
                 });
               }}
             >
-              <Ban />
+              {t("Delete")}
             </TooltipBtn>
           </div>
         ),
@@ -128,7 +132,7 @@ const CategoriesPage = () => {
   return (
     <div className="cont">
       <h1 className="text-2xl font-semibold py-5">
-        {t("Categories of E-Books")}
+        {t("Categories of E-BaseBooks")}
       </h1>
 
       <MyTable

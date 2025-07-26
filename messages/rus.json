@@ -38,11 +38,15 @@
   "Invalid credentials": "Неверные учетные данные",
   "Login successfull": "Успешный вход",
   "Add Regular book category": "Добавить обычную категорию книг",
-  "Category name": "Название категории",
-  "Add category": "Добавить категорию",
-  "Actions": "Действия",
-  "Edit": "Редактировать",
-  "Edit Regular book category": "Редактировать обычную категорию книг",
-  "Category updated": "Категория обновлена",
-  "Delete": "Удалить"
+  "Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi": "Библиотечный отдел университета точных и социальных наук",
+  "Edit category": "Редактировать категорию",
+  "Delete category": "Удалить категорию",
+  "Given At": "Выдано в",
+  "\t Due Date": "Срок выполнения",
+  "Due Date": "Срок сдачи",
+  "Author": "Автор",
+  "Title": "Заголовок",
+  "E-Books category": "Категория электронных книг",
+  "E-Books": "Электронные книги",
+  "Books": "Книги"
 }

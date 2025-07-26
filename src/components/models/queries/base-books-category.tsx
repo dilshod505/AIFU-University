@@ -3,7 +3,7 @@ import { api } from "@/components/models/axios";
 
 export const useBaseBooksCategory = () => {
   return useQuery({
-    queryKey: ["base-books-category"],
+    queryKey: ["base-base-base-books.tsx-category"],
     queryFn: async () => {
       const res = await api("/admin/base-book/categories");
       return res.data;
@@ -21,7 +21,9 @@ export const useUpdateBaseBooksCategory = () => {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["base-books-category"] });
+      queryClient.invalidateQueries({
+        queryKey: ["base-base-base-books.tsx-category"],
+      });
     },
   });
 };
@@ -34,7 +36,9 @@ export const useCreateBaseBooksCategory = () => {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["base-books-category"] });
+      queryClient.invalidateQueries({
+        queryKey: ["base-base-base-books.tsx-category"],
+      });
     },
   });
 };
@@ -47,7 +51,9 @@ export const useDeleteBaseBooksCategory = () => {
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["base-books-category"] });
+      queryClient.invalidateQueries({
+        queryKey: ["base-base-base-books.tsx-category"],
+      });
     },
   });
 };

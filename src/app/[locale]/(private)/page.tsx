@@ -1,7 +1,5 @@
 import { api } from "@/components/models/axios";
 import SimpleTranslation from "@/components/simple-translation";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
@@ -21,7 +19,7 @@ export const generateMetadata = async ({
   return {
     title: "AIFU University",
     description: t(
-      `AR BOOKS is a platform for seeing augmented reality on books`,
+      `Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi`,
     ),
   };
 };

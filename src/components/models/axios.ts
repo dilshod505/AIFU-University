@@ -26,7 +26,7 @@ api.interceptors.request.use((config) => {
 //   (error) => {
 //     if (error.response.status === 401) {
 //       Cookies.remove("aifu-token");
-//       localStorage.removeItem("ar-books");
+//       localStorage.removeItem("ar-base-base-books.tsx");
 //
 //       window.location.href = "/login";
 //     }

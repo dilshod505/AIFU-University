@@ -133,7 +133,7 @@ const BaseBooks = () => {
   return (
     <div className={"cont"}>
       <h1 className={"text-2xl font-semibold py-5"}>
-        {t("Categories of Base Books")}
+        {t("Categories of Base BaseBooks")}
       </h1>
 
       <MyTable
