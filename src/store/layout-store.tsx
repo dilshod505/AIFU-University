@@ -35,11 +35,11 @@ const useLayoutStore = create<LayoutState>()(
           token: null,
           user: null,
         }));
-        Cookies.remove("ar-book-token");
+        Cookies.remove("aifu-token");
       },
     }),
     {
-      name: "ar-books",
+      name: "aifu-token",
       partialize: (state) => ({
         phoneNumber: state.phoneNumber,
         token: state.token,
