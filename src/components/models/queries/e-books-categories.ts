@@ -5,7 +5,7 @@ export const useCategories = () =>
   useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await api.get("/api/categories");
+      const res = await api.get("/categories");
       return res.data;
     },
   });
@@ -14,7 +14,7 @@ export const useCreateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: { name: string }) => {
-      const res = await api.post("/api/categories", data);
+      const res = await api.post("/categories", data);
       return res.data;
     },
     onSuccess: () => {

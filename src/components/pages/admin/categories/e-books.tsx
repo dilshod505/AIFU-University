@@ -21,7 +21,7 @@ import {
 
 const CategoriesPage = () => {
   const t = useTranslations();
-  const { data: categories } = useCategories();
+  const { data: categories, isLoading } = useCategories();
   const createCategory = useCreateCategory();
 
   const [open, setOpen] = useState(false);
@@ -69,7 +69,8 @@ const CategoriesPage = () => {
 
       <MyTable
         columns={columns}
-        dataSource={categories}
+        isLoading={isLoading}
+        dataSource={categories?.data || []}
         searchable
         header={
           <TooltipBtn
