@@ -157,14 +157,14 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
       {
         title: t("e-book category"),
         icon: <FolderOpen className="w-5 h-5" />,
-        href: "/admin/categories",
+        href: "/admin/categories/e-books",
         activePatterns: ["/admin/category/*"],
         group: "categories",
       },
       {
         title: t("regular book category"),
         icon: <FolderOpen className="w-5 h-5" />,
-        href: "/admin/categories",
+        href: "/admin/categories/base-books",
         activePatterns: ["/admin/category/*"],
         group: "categories",
       },
