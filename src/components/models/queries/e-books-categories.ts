@@ -23,12 +23,28 @@ export const useCreateCategory = () => {
   });
 };
 
-export const useUpdateEBooksCategory = () => {
-  return useQuery({
-    queryKey: ["books"],
-    queryFn: async (id: string | any) => {
-      const response = await api.put(`/categories/${id}`);
-      return response.data;
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { id: string | number; name: string }) => {
+      const res = await api.put(`/categories/${data.id}`, { name: data.name });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string | any) => {
+      const res = await api.delete(`/categories/${id}`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });
 };

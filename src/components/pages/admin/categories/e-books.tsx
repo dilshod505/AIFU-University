@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Ban, Pencil, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -17,13 +17,22 @@ import MyTable, { IColumn } from "@/components/my-table";
 import {
   useCategories,
   useCreateCategory,
+  useDeleteCategory,
+  useUpdateCategory,
 } from "@/components/models/queries/e-books-categories";
+import { toast } from "sonner";
 
 const CategoriesPage = () => {
   const t = useTranslations();
   const { data: categories, isLoading } = useCategories();
   const createCategory = useCreateCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
 
+  const [editingCategory, setEditingCategory] = useState<Record<
+    string,
+    any
+  > | null>(null);
   const [open, setOpen] = useState(false);
   const form = useForm();
 
@@ -52,13 +61,68 @@ const CategoriesPage = () => {
         dataIndex: "name",
         title: t("Name"),
       },
+      {
+        key: "actions",
+        dataIndex: "actions",
+        title: t("Actions"),
+        render: (_: any, record: any) => (
+          <div className="flex gap-2">
+            <TooltipBtn
+              title={t("Edit category")}
+              onClick={() => {
+                setEditingCategory(record);
+                form.reset({ name: record.name });
+                setOpen(true);
+              }}
+            >
+              <Pencil />
+            </TooltipBtn>
+            <TooltipBtn
+              title={t("Delete category")}
+              onClick={() => {
+                deleteCategory.mutate(record.id, {
+                  onSuccess: () =>
+                    toast.success(t("Category deleted successfully")),
+                  onError: () => toast.error(t("Error deleting category")),
+                });
+              }}
+            >
+              <Ban />
+            </TooltipBtn>
+          </div>
+        ),
+      },
     ],
-    [t],
+    [deleteCategory, form, t],
   );
 
   const onSubmit = async (data: any) => {
-    await createCategory.mutateAsync(data);
-    setOpen(false);
+    if (editingCategory) {
+      updateCategory.mutate(
+        {
+          id: editingCategory.id,
+          name: data.name,
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("Category updated successfully"));
+            setOpen(false);
+          },
+        },
+      );
+    } else {
+      createCategory.mutate(
+        {
+          name: data.name,
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("Category created successfully"));
+            setOpen(false);
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -76,6 +140,7 @@ const CategoriesPage = () => {
           <TooltipBtn
             title={t("Add Category")}
             onClick={() => {
+              setEditingCategory(null);
               form.reset({ name: "" });
               setOpen(true);
             }}
@@ -89,11 +154,15 @@ const CategoriesPage = () => {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>{t("Add Category")}</SheetTitle>
+            <SheetTitle>
+              {editingCategory ? t("Edit Category") : t("Add Category")}
+            </SheetTitle>
           </SheetHeader>
           <div className="p-3">
             <AutoForm
-              submitText={t("Add Category")}
+              submitText={
+                editingCategory ? t("Edit Category") : t("Add Category")
+              }
               onSubmit={onSubmit}
               form={form}
               fields={fields}
