@@ -37,8 +37,5 @@
   "Password": "Пароль",
   "Invalid credentials": "Неверные учетные данные",
   "Login successfull": "Успешный вход",
-  "Categories of E-Books": "Категории электронных книг",
-  "Name": "Имя",
-  "Edit book": "Редактировать книгу",
-  "Add book": "Добавить книгу"
+  "Add Regular book category": "Добавить обычную категорию книг"
 }

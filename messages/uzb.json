@@ -37,8 +37,5 @@
   "Password": "Parol",
   "Invalid credentials": "Noto'g'ri ma'lumotlar",
   "Login successfull": "Kirish muvaffaqiyatli",
-  "Categories of E-Books": "E-kitoblar toifalari",
-  "Name": "Ism",
-  "Edit book": "Kitobni tahrirlash",
-  "Add book": "Kitob qo'shish"
+  "Add Regular book category": "Oddiy kitob turkumini qo'shish"
 }

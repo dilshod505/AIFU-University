@@ -2,7 +2,6 @@ import React from "react";
 import BaseBooks from "@/components/pages/admin/categories/base-books";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { api } from "@/components/models/axios";
 
 export const generateMetadata = async ({
   params,
@@ -18,16 +17,7 @@ export const generateMetadata = async ({
   };
 };
 
-const getCategories = async () => {
-  const res = await api.get("/admin/base-book/categories");
-  return res.data;
-};
-
 const Page = async () => {
-  // const categories = await getCategories();
-
-  // console.log(categories);
-
   return <BaseBooks />;
 };
 

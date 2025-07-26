@@ -37,8 +37,5 @@
   "Password": "Password",
   "Invalid credentials": "Invalid credentials",
   "Login successfull": "Login successful",
-  "Categories of E-Books": "E-Book Categories",
-  "Name": "Name",
-  "Edit book": "Edit book",
-  "Add book": "Add book"
+  "Add Regular book category": "Add Regular Book Category"
 }

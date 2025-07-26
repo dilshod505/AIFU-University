@@ -7,7 +7,6 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { api, baseBackendUrl } from "../models/axios";
-import { updateInitialEnv } from "@next/env";
 
 interface FancyFileInputProps {
   label?: string;
