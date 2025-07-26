@@ -16,8 +16,7 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = Cookies.get("aifu-token");
   if (token) {
-    config.headers["Authorization"] =
-      `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc1MzUyNDUzOSwiZXhwIjoxNzU2MTE2NTM5fQ.UgF5OaMSAp9PZFH3OIJrDkdJ0MffWy6XGrqFVlUTzbk`;
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
   return config;
 });

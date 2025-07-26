@@ -241,7 +241,7 @@ export const AutoForm: FC<AutoFormProps> = ({
   className,
   submitText = "Submit",
   resetText = "Reset",
-  showResetButton = true,
+  showResetButton = false,
   showSaveButton = true,
   persistFormState = false,
   formId = "auto-form",

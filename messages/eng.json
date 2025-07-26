@@ -37,5 +37,12 @@
   "Password": "Password",
   "Invalid credentials": "Invalid credentials",
   "Login successfull": "Login successful",
-  "Add Regular book category": "Add Regular Book Category"
+  "Add Regular book category": "Add Regular Book Category",
+  "Category name": "Category name",
+  "Add category": "Add category",
+  "Actions": "Actions",
+  "Edit": "Edit",
+  "Edit Regular book category": "Edit Regular Book Category",
+  "Category updated": "Category updated",
+  "Delete": "Delete"
 }

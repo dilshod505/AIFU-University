@@ -37,5 +37,12 @@
   "Password": "Пароль",
   "Invalid credentials": "Неверные учетные данные",
   "Login successfull": "Успешный вход",
-  "Add Regular book category": "Добавить обычную категорию книг"
+  "Add Regular book category": "Добавить обычную категорию книг",
+  "Category name": "Название категории",
+  "Add category": "Добавить категорию",
+  "Actions": "Действия",
+  "Edit": "Редактировать",
+  "Edit Regular book category": "Редактировать обычную категорию книг",
+  "Category updated": "Категория обновлена",
+  "Delete": "Удалить"
 }
