@@ -62,7 +62,7 @@ export default function Login() {
               type="submit"
               className="w-full h-11 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
             >
-              Create Account
+              {t("Login")}
             </Button>
           </form>
 
