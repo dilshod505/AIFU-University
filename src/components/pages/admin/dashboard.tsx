@@ -8,6 +8,12 @@ const Dashboard = () => {
   return (
     <div className={"cont"}>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Dashboard")}</h1>
+      <div className="grid grid-cols-4">
+        <div className={"h-24 flex justify-center items-center bg-card"}>1</div>
+        <div className={"h-24 flex justify-center items-center bg-card"}>2</div>
+        <div className={"h-24 flex justify-center items-center bg-card"}>3</div>
+        <div className={"h-24 flex justify-center items-center bg-card"}>4</div>
+      </div>
     </div>
   );
 };

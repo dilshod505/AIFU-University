@@ -8,7 +8,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     // <AuthProvider>
     <div className={"flex flex-col h-dvh"}>
-      <header className={"border-b w-full sticky top-0 z-50 bg-background"}>
+      <header
+        className={
+          "border-b w-full sticky top-0 z-50 bg-[#EFF6FF]/50 dark:bg-background"
+        }
+      >
         <div className="cont flex justify-between items-center">
           <div className="flex justify-center items-center gap-3">
             <Sidebar />

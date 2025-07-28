@@ -70,7 +70,7 @@ const useActiveState = (pathname: string) => {
       if (item.exactMatch) {
         return pathname === item.href;
       }
-
+ 
       // Check main href
       if (pathname.includes(item.href)) {
         return true;
@@ -247,14 +247,14 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
       case "child":
         return cn(
           baseClasses,
-          "bg-accent text-accent-foreground border border-accent-foreground/20",
-          "hover:bg-accent/80",
+          "bg-green-600 text-white border border-green-500/20",
+          "hover:bg-green-600/90 hover:text-white",
         );
       default:
         return cn(
           baseClasses,
           inactiveClassName ||
-            "text-muted-foreground hover:text-foreground hover:bg-accent",
+            "text-muted-foreground hover:text-foreground hover:bg-green-500/50",
         );
     }
   };
