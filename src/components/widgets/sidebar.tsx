@@ -70,7 +70,7 @@ const useActiveState = (pathname: string) => {
       if (item.exactMatch) {
         return pathname === item.href;
       }
- 
+
       // Check main href
       if (pathname.includes(item.href)) {
         return true;
@@ -157,7 +157,7 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
       {
         title: t("E-BaseBooks category"),
         icon: <FolderOpen className="w-5 h-5" />,
-        href: "/admin/categories/base-books",
+        href: "/admin/categories/e-books",
         activePatterns: ["/admin/category/*"],
         group: "categories",
       },

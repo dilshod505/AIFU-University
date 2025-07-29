@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export const baseBackendUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://10.10.1.137:8080";
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://13.51.158.5:8080";
 
 export const api = axios.create({
   baseURL: baseBackendUrl + "/api",
