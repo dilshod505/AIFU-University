@@ -185,7 +185,7 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
       {
         title: t("book copies"),
         icon: <ShoppingBasket className="w-5 h-5" />,
-        href: "/admin/order",
+        href: "/admin/copies-books",
         badge: notifications > 0 ? notifications : undefined,
         activePatterns: ["/admin/orders/*", "/admin/order/*"],
         group: "base-base-books",
