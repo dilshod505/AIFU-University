@@ -167,6 +167,7 @@ const BaseBooks = () => {
         dataSource={baseBooks?.data?.data || []}
         searchable
         isLoading={isLoading}
+        pagination={false}
         header={
           <TooltipBtn
             title={t("Add Category")}

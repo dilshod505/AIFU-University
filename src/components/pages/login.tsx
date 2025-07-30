@@ -12,11 +12,13 @@ import { api } from "@/components/models/axios";
 import useLayoutStore from "@/store/layout-store";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import Link from "next/link"; // 🔴 Yangi import
 
 export default function Login() {
   const t = useTranslations();
   const router = useRouter();
   const { setCredentials } = useLayoutStore();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -88,6 +90,17 @@ export default function Login() {
               {t("Login")}
             </Button>
           </form>
+
+          {/* 🔽 SIGN UP LINK SHU YERDA */}
+          <div className="text-center text-sm text-gray-600 pt-4">
+            {t("Don't have an account?")}{" "}
+            <Link
+              href="/sign-up"
+              className="text-[#FF0258] hover:underline font-medium"
+            >
+              {t("Sign up")}
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
