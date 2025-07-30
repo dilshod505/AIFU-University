@@ -22,7 +22,7 @@ const SignUp = () => {
 
     try {
       const res = await api.post(
-        "/auth/sign-up",
+        "/auth/sing-up",
         {
           name,
           surname,
