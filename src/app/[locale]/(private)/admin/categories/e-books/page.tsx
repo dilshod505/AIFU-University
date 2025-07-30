@@ -1,8 +1,8 @@
 import React from "react";
-import EBooks from "@/components/pages/admin/categories/e-books";
+import EBookCategories from "@/components/pages/admin/categories/e-books";
 
 const Page = async () => {
-  return <EBooks />;
+  return <EBookCategories />;
 };
 
 export default Page;

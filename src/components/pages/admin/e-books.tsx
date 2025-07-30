@@ -4,11 +4,13 @@ import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import { useBooking } from "@/components/models/queries/booking";
+import TooltipBtn from "@/components/tooltip-btn";
+import { Plus } from "lucide-react";
 
-const EBooks = () => {
+const EBaseBooks = () => {
   const t = useTranslations();
   const { data: booking, isLoading } = useBooking();
 
@@ -87,6 +89,17 @@ const EBooks = () => {
         isLoading={isLoading}
         dataSource={booking?.data?.data || []}
         searchable
+        // header={
+        //   <TooltipBtn
+        //     title={t("Add Category")}
+        //     onClick={() => {
+        //       setOpen(true);
+        //     }}
+        //   >
+        //     <Plus />
+        //     {t("Add Category")}
+        //   </TooltipBtn>
+        // }
       />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
@@ -104,4 +117,4 @@ const EBooks = () => {
   );
 };
 
-export default EBooks;
+export default EBaseBooks;

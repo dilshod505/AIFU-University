@@ -160,9 +160,9 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
         group: "categories",
       },
       {
-        title: t("E-BaseBooks"),
+        title: t("E-Base-Books"),
         icon: <FolderOpen className="w-5 h-5" />,
-        href: "/admin/e-base-books",
+        href: "/admin/e-books",
         activePatterns: ["/admin/category/*"],
         group: "base-base-books",
       },
@@ -321,7 +321,8 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
     <div className="w-80 p-0 flex flex-col border-r">
       <div className="p-6 pb-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">{t("menu")}</h1>
+          {/*<h1 className="text-xl font-bold">{t("menu")}</h1>*/}
+          <img src="/logo-full.png" alt="" width={250} />
         </div>
       </div>
 
@@ -357,13 +358,13 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
       {showSearch && (
         <div className="px-6 pb-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={t("Search menu") + "..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+            {/*<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />*/}
+            {/*<Input*/}
+            {/*  placeholder={t("Search menu") + "..."}*/}
+            {/*  value={searchQuery}*/}
+            {/*  onChange={(e) => setSearchQuery(e.target.value)}*/}
+            {/*  className="pl-10"*/}
+            {/*/>*/}
           </div>
         </div>
       )}

@@ -48,5 +48,10 @@
   "Title": "Title",
   "E-Books category": "E-Book Category",
   "E-Books": "E-Books",
-  "Books": "Books"
+  "Books": "Books",
+  "Copies books": "Copies of books",
+  "E-Base-Books": "E-Books Database",
+  "Base books": "Base books",
+  "Isbn": "ISBN",
+  "Total copies": "Total copies"
 }

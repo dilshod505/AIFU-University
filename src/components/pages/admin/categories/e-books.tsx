@@ -22,7 +22,7 @@ import {
 } from "@/components/models/queries/e-books-categories";
 import { toast } from "sonner";
 
-const CategoriesPage = () => {
+const EBookCategories = () => {
   const t = useTranslations();
   const { data: categories, isLoading } = useCategories();
   const createCategory = useCreateCategory();
@@ -179,4 +179,4 @@ const CategoriesPage = () => {
   );
 };
 
-export default CategoriesPage;
+export default EBookCategories;
