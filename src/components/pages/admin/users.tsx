@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import MyTable, { IColumn } from "@/components/my-table";
 import { useTranslations } from "next-intl";
 import { useStudents } from "@/components/models/queries/students";
+import { Badge } from "@/components/ui/badge";
 
 const Users = () => {
   const t = useTranslations();
@@ -19,8 +20,33 @@ const Users = () => {
         dataIndex: "index",
         width: 50,
       },
+      {
+        key: "name",
+        title: t("Name"),
+        dataIndex: "name",
+      },
+      {
+        key: "surname",
+        title: t("Surname"),
+        dataIndex: "surname",
+      },
+      {
+        key: "cardNumber",
+        title: t("Card Number"),
+        dataIndex: "cardNumber",
+      },
+      {
+        key: "status",
+        title: t("Status"),
+        dataIndex: "status",
+        render: (value: boolean) => (
+          <Badge color={value ? "green" : "red"}>
+            {value ? t("Active") : t("Inactive")}
+          </Badge>
+        ),
+      },
     ],
-    [],
+    [t],
   );
 
   return (
