@@ -15,7 +15,6 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -164,14 +163,14 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
         icon: <FolderOpen className="w-5 h-5" />,
         href: "/admin/e-books",
         activePatterns: ["/admin/category/*"],
-        group: "base-base-books",
+        group: "E-Base-Books",
       },
       {
         title: t("regular book"),
         icon: <LibraryBig className="w-5 h-5" />,
         href: "/admin/base-books",
         activePatterns: ["/admin/book/*", "/admin/library/*"],
-        group: "base-books",
+        group: "E-Base-Books",
       },
       {
         title: t("book copies"),
@@ -179,7 +178,7 @@ const OptimizedSidebar: React.FC<SidebarProps> = ({
         href: "/admin/copies-books",
         badge: notifications > 0 ? notifications : undefined,
         activePatterns: ["/admin/orders/*", "/admin/order/*"],
-        group: "base-base-books",
+        group: "E-Base-Books",
       },
     ],
     [t, notifications],

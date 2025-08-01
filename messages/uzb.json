@@ -53,5 +53,18 @@
   "E-Base-Books": "Elektron Kitoblar Bazasi",
   "Base books": "Asosiy kitoblar",
   "Isbn": "ISBN",
-  "Total copies": "Jami nusxalar"
+  "Total copies": "Jami nusxalar",
+  "edit": "Tahrirlash",
+  "delete": "O'chirish",
+  "actions": "Harakatlar",
+  "name": "Nomi",
+  "Add Category": "Kategoriya qo'shish",
+  "Category deleted successfully": "Kategoriya muvaffaqiyatli o'chirildi",
+  "Category created successfully": "Kategoriya muvaffaqiyatli yaratildi",
+  "Category updated successfully": "Kategoriya muvaffaqiyatli yangilandi",
+  "Edit Category": "Kategoriyani tahrirlash",
+  "Categories of E-Base Books": "E-Base kitoblarining toifalari",
+  "Inventory Number": "Inventar raqami",
+  "Shelf Location": "Javon joylashuvi",
+  "Notes": "Eslatmalar"
 }

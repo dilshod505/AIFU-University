@@ -39,7 +39,7 @@ const EBookCategories = () => {
   const fields = useMemo<FormField[]>(
     () => [
       {
-        label: t("Name"),
+        label: t("name"),
         name: "name",
         type: "text",
         required: true,
@@ -59,12 +59,12 @@ const EBookCategories = () => {
       {
         key: "name",
         dataIndex: "name",
-        title: t("Name"),
+        title: t("name"),
       },
       {
         key: "actions",
         dataIndex: "actions",
-        title: t("Actions"),
+        title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
@@ -76,7 +76,7 @@ const EBookCategories = () => {
                 setOpen(true);
               }}
             >
-              {t("Edit")}
+              {t("edit")}
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
@@ -91,7 +91,7 @@ const EBookCategories = () => {
                 });
               }}
             >
-              {t("Delete")}
+              {t("delete")}
             </TooltipBtn>
           </div>
         ),
@@ -132,7 +132,7 @@ const EBookCategories = () => {
   return (
     <div className="cont">
       <h1 className="text-2xl font-semibold py-5">
-        {t("Categories of E-BaseBooks")}
+        {t("Categories of E-Base Books")}
       </h1>
 
       <MyTable

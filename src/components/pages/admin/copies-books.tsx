@@ -103,7 +103,7 @@ export const CopiesBooks = () => {
       {
         key: "actions",
         dataIndex: "actions",
-        title: t("Actions"),
+        title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
@@ -120,7 +120,7 @@ export const CopiesBooks = () => {
                 setOpen(true);
               }}
             >
-              {t("Edit")}
+              {t("edit")}
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
@@ -135,7 +135,7 @@ export const CopiesBooks = () => {
                 });
               }}
             >
-              {t("Delete")}
+              {t("delete")}
             </TooltipBtn>
           </div>
         ),

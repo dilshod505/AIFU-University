@@ -53,5 +53,18 @@
   "E-Base-Books": "E-Books Database",
   "Base books": "Base books",
   "Isbn": "ISBN",
-  "Total copies": "Total copies"
+  "Total copies": "Total copies",
+  "edit": "Редактировать",
+  "delete": "Delete",
+  "actions": "Actions",
+  "name": "Name",
+  "Add Category": "Add Category",
+  "Category deleted successfully": "Category deleted successfully",
+  "Category created successfully": "Category created successfully",
+  "Category updated successfully": "Category updated successfully",
+  "Edit Category": "Edit Category",
+  "Categories of E-Base Books": "Categories of E-Base Books",
+  "Inventory Number": "Inventory Number",
+  "Shelf Location": "Shelf Location",
+  "Notes": "Notes"
 }

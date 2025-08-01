@@ -49,12 +49,12 @@ const BaseBooks = () => {
       {
         key: "name",
         dataIndex: "name",
-        title: t("Name"),
+        title: t("name"),
       },
       {
         key: "actions",
         dataIndex: "actions",
-        title: t("Actions"),
+        title: t("actions"),
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <TooltipBtn
@@ -64,7 +64,7 @@ const BaseBooks = () => {
                 setIsOpen(true);
               }}
             >
-              {t("Edit")}
+              {t("edit")}
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
@@ -74,7 +74,7 @@ const BaseBooks = () => {
                 deleteCategory.mutate(record.id);
               }}
             >
-              {t("Delete")}
+              {t("delete")}
             </TooltipBtn>
           </div>
         ),
@@ -86,7 +86,7 @@ const BaseBooks = () => {
   const fields = useMemo<FormField[]>(
     () => [
       {
-        label: t("Category name"),
+        label: t("name"),
         name: "name",
         type: "text",
         required: true,
@@ -103,13 +103,13 @@ const BaseBooks = () => {
           name: values.name,
         });
         if (updateCategory.isSuccess) {
-          toast.success(t("Category updated"));
+          toast.success(t("Category updated successfully"));
           setIsOpen(false);
         }
       } else {
         createCategory.mutate(values);
         if (createCategory.isSuccess) {
-          toast.success(t("Category created"));
+          toast.success(t("Category created successfully"));
           setIsOpen(false);
         }
       }
@@ -165,7 +165,7 @@ const BaseBooks = () => {
               form={form}
               fields={fields}
               onSubmit={handleSubmit}
-              submitText={t("Add category")}
+              submitText={t("Add Category")}
             />
           </div>
         </SheetContent>

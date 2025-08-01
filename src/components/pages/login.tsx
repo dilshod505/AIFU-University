@@ -61,7 +61,7 @@ export default function Login() {
                 name={"email"}
                 type="text"
                 placeholder="Enter your email address"
-                className="h-11 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                className="h-11 border-gray-200 text-background"
                 required
               />
             </div>
@@ -78,7 +78,7 @@ export default function Login() {
                 name={"password"}
                 type="password"
                 placeholder="Create a password"
-                className="h-11 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                className="h-11 border-gray-200 text-background"
                 required
               />
             </div>

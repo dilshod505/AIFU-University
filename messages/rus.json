@@ -53,5 +53,18 @@
   "E-Base-Books": "Электронная база книг",
   "Base books": "Базовые книги",
   "Isbn": "ISBN",
-  "Total copies": "Общее количество копий"
+  "Total copies": "Общее количество копий",
+  "edit": "Редактировать",
+  "delete": "Удалить",
+  "actions": "Действия",
+  "name": "Название",
+  "Add Category": "Добавить категорию",
+  "Category deleted successfully": "Категория успешно удалена",
+  "Category created successfully": "Категория успешно создана",
+  "Category updated successfully": "Категория успешно обновлена",
+  "Edit Category": "Редактировать категорию",
+  "Categories of E-Base Books": "Категории книг E-Base",
+  "Inventory Number": "Инвентарный номер",
+  "Shelf Location": "Местоположение полки",
+  "Notes": "Заметки"
 }

@@ -28,7 +28,7 @@ const Page = async () => {
   return (
     <div className={"cont"}>
       <h1 className={"text-2xl font-semibold py-5 text-start"}>
-        <SimpleTranslation title={""} />
+        <SimpleTranslation title={""} hasLocale />
       </h1>
     </div>
   );
