@@ -40,7 +40,7 @@ const Users = () => {
         title: t("Status"),
         dataIndex: "status",
         render: (value: boolean) => (
-          <Badge color={value ? "green" : "red"}>
+          <Badge variant={value ? "default" : "destructive"}>
             {value ? t("Active") : t("Inactive")}
           </Badge>
         ),

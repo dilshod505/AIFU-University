@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
-import { Plus } from "lucide-react";
+import { PenSquareIcon, Plus, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
@@ -107,8 +107,9 @@ export const CopiesBooks = () => {
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
+              variant={"secondary"}
               size={"sm"}
-              title={t("Edit category")}
+              title={t("Edit")}
               onClick={() => {
                 setEditingCategory(record);
                 form.reset({
@@ -120,13 +121,13 @@ export const CopiesBooks = () => {
                 setOpen(true);
               }}
             >
-              {t("edit")}
+              <PenSquareIcon />
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
               size={"sm"}
               color={"red"}
-              title={t("Delete category")}
+              title={t("Delete")}
               onClick={() => {
                 deleteCategory.mutate(record.id, {
                   onSuccess: () =>
@@ -135,7 +136,7 @@ export const CopiesBooks = () => {
                 });
               }}
             >
-              {t("delete")}
+              <Trash />
             </TooltipBtn>
           </div>
         ),
@@ -183,6 +184,9 @@ export const CopiesBooks = () => {
     <div className={"cont"}>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
       <MyTable
+        fullscreen
+        searchable
+        columnVisibility
         isLoading={isLoading}
         columns={columns}
         dataSource={copiesBooks?.data?.list || []}

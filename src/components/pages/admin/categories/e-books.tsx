@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Eye, PenSquareIcon, Plus, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -68,6 +68,7 @@ const EBookCategories = () => {
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
+              variant={"secondary"}
               size={"sm"}
               title={t("Edit category")}
               onClick={() => {
@@ -76,7 +77,7 @@ const EBookCategories = () => {
                 setOpen(true);
               }}
             >
-              {t("edit")}
+              <PenSquareIcon />
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
@@ -91,7 +92,7 @@ const EBookCategories = () => {
                 });
               }}
             >
-              {t("delete")}
+              <Trash />
             </TooltipBtn>
           </div>
         ),
@@ -142,6 +143,7 @@ const EBookCategories = () => {
         searchable
         header={
           <TooltipBtn
+            variant={"default"}
             title={t("Add Category")}
             onClick={() => {
               setEditingCategory(null);

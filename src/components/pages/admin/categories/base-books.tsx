@@ -11,7 +11,7 @@ import {
 import MyTable, { IColumn } from "@/components/my-table";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import TooltipBtn from "@/components/tooltip-btn";
-import { Plus } from "lucide-react";
+import { PenSquareIcon, Plus, Search, Trash } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -58,23 +58,26 @@ const BaseBooks = () => {
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <TooltipBtn
+              variant={"secondary"}
+              title={t("Edit")}
               size={"sm"}
               onClick={() => {
                 setEditingCategory(record);
                 setIsOpen(true);
               }}
             >
-              {t("edit")}
+              <PenSquareIcon />
             </TooltipBtn>
             <TooltipBtn
               variant={"destructive"}
+              title={t("Delete")}
               size={"sm"}
               color={"red"}
               onClick={() => {
                 deleteCategory.mutate(record.id);
               }}
             >
-              {t("delete")}
+              <Trash />
             </TooltipBtn>
           </div>
         ),
