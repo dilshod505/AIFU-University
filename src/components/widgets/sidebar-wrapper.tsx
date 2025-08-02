@@ -7,32 +7,25 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import Sidebar from "@/components/widgets/sidebar";
 import FullScreen from "@/components/widgets/full-screen";
 import ThemeSwitcher from "@/components/widgets/theme-switcher";
 import ChangeLanguage from "@/components/widgets/change-language";
+import OptimizedSidebar from "@/components/widgets/sidebar";
 
 interface SidebarWrapperProps {
   children: React.ReactNode;
-  user?: {
-    name: string;
-    email: string;
-    avatar?: string;
-    role?: string;
-  };
   notifications?: number;
   onLogout?: () => void;
 }
 
 export default function SidebarWrapper({
   children,
-  user,
   notifications,
   onLogout,
 }: SidebarWrapperProps) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <Sidebar user={user} notifications={notifications} onLogout={onLogout} />
+      <OptimizedSidebar notifications={notifications} onLogout={onLogout} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
           <div className="flex justify-center items-center gap-3">

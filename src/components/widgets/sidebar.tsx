@@ -1,38 +1,35 @@
 "use client";
 
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
+  Bell,
+  Calendar,
+  ChevronDown,
   FolderOpen,
   LayoutDashboard,
   LibraryBig,
   LogOut,
-  Search,
-  ShoppingBasket,
   Users,
+  X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import {
-  Sidebar as SidebarPrimitive,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
@@ -40,38 +37,27 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"; // Enhanced Types
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button"; // Enhanced Types
 
 // Enhanced Types
 interface MenuItem {
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   href: string;
   badge?: number | string;
   isNew?: boolean;
   exactMatch?: boolean;
   children?: MenuItem[];
   activePatterns?: string[];
-  group?: string;
 }
 
-interface UserInfo {
-  name: string;
-  email: string;
-  avatar?: string;
-  role?: string;
-}
-
-interface SidebarProps {
-  children?: React.ReactNode;
-  user?: UserInfo;
+interface OptimizedSidebarProps {
   notifications?: number;
   onLogout?: () => void;
   customMenuItems?: MenuItem[];
-  showSearch?: boolean;
   className?: string;
-  activeClassName?: string;
-  inactiveClassName?: string;
+  children?: React.ReactNode;
 }
 
 // Enhanced Active Logic Hook
@@ -81,10 +67,7 @@ const useActiveState = (pathname: string) => {
       if (item.exactMatch) {
         return pathname === item.href;
       }
-      if (pathname.includes(item.href)) {
-        return true;
-      }
-      if (pathname.startsWith(item.href + "/")) {
+      if (pathname === item.href) {
         return true;
       }
       if (item.activePatterns) {
@@ -122,177 +105,276 @@ const useActiveState = (pathname: string) => {
   return { isActive, isParentActive, getActiveLevel };
 };
 
-const Sidebar: React.FC<SidebarProps> = ({
-  children,
-  user,
+const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
   notifications = 0,
   onLogout,
   customMenuItems = [],
-  showSearch = true,
   className,
-  activeClassName,
-  inactiveClassName,
+  children,
 }) => {
   const t = useTranslations();
   const pathname = usePathname();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const { isActive, getActiveLevel } = useActiveState(pathname);
+  const isCollapsed = state === "collapsed";
 
-  // Enhanced default menu items
+  // Enhanced default menu items with nested structure
   const defaultItems = useMemo<MenuItem[]>(
     () => [
       {
         title: t("Dashboard"),
-        icon: <LayoutDashboard className="w-4 h-4" />,
+        icon: <LayoutDashboard className="w-5 h-5" />,
         href: "/admin/dashboard",
-        group: "main",
+      },
+      {
+        title: t("categories"),
+        icon: <FolderOpen className="w-5 h-5" />,
+        href: "/admin/categories",
+        children: [
+          {
+            title: t("E-Books category"),
+            href: "/admin/categories/e-books",
+            activePatterns: [
+              "/admin/categories/e-books",
+              "/admin/category/e-books/*",
+            ],
+          },
+          {
+            title: t("regular book category"),
+            href: "/admin/categories/base-books",
+            activePatterns: [
+              "/admin/categories/base-books",
+              "/admin/category/base-books/*",
+            ],
+          },
+        ],
+      },
+      {
+        title: t("Books"),
+        icon: <LibraryBig className="w-5 h-5" />,
+        href: "/admin/books",
+        children: [
+          {
+            title: t("E-Books"),
+            href: "/admin/e-books",
+            activePatterns: ["/admin/e-books", "/admin/e-books/*"],
+          },
+          {
+            title: t("regular book"),
+            href: "/admin/base-books",
+            activePatterns: ["/admin/base-books", "/admin/base-books/*"],
+          },
+          {
+            title: t("Copies books"),
+            href: "/admin/copies-books",
+            badge: notifications > 0 ? notifications : undefined,
+            activePatterns: [
+              "/admin/copies-books",
+              "/admin/orders/*",
+              "/admin/order/*",
+            ],
+          },
+        ],
       },
       {
         title: t("Users"),
-        icon: <Users className="w-4 h-4" />,
+        icon: <Users className="w-5 h-5" />,
         href: "/admin/users",
-        activePatterns: ["/admin/users/*"],
-        group: "main",
+        activePatterns: ["/admin/users", "/admin/users/*"],
       },
       {
-        title: t("e-book category"),
-        icon: <FolderOpen className="w-4 h-4" />,
-        href: "/admin/categories/e-books",
-        activePatterns: ["/admin/category/*"],
-        group: "categories",
+        title: t("Bookings"),
+        icon: <Calendar className="w-5 h-5" />,
+        href: "/admin/bookings",
+        activePatterns: ["/admin/bookings", "/admin/bookings/*"],
       },
       {
-        title: t("regular book category"),
-        icon: <FolderOpen className="w-4 h-4" />,
-        href: "/admin/categories/base-books",
-        activePatterns: ["/admin/category/*"],
-        group: "categories",
-      },
-      {
-        title: t("E-Base-Books"),
-        icon: <FolderOpen className="w-4 h-4" />,
-        href: "/admin/e-books",
-        activePatterns: ["/admin/category/*"],
-        group: "books",
-      },
-      {
-        title: t("regular book"),
-        icon: <LibraryBig className="w-4 h-4" />,
-        href: "/admin/base-books",
-        activePatterns: ["/admin/book/*", "/admin/library/*"],
-        group: "books",
-      },
-      {
-        title: t("book copies"),
-        icon: <ShoppingBasket className="w-4 h-4" />,
-        href: "/admin/copies-books",
-        badge: notifications > 0 ? notifications : undefined,
-        activePatterns: ["/admin/orders/*", "/admin/order/*"],
-        group: "books",
+        title: t("Notifications"),
+        icon: <Bell className="w-5 h-5" />,
+        href: "/admin/notifications",
+        activePatterns: ["/admin/notifications", "/admin/notifications/*"],
       },
     ],
     [t, notifications],
   );
 
-  // Combine and group menu items
+  // Combine all menu items
   const allItems = useMemo(
     () => [...defaultItems, ...customMenuItems],
     [defaultItems, customMenuItems],
   );
 
-  // Group items by group property
-  const groupedItems = useMemo(() => {
-    const groups: Record<string, MenuItem[]> = {};
-    allItems.forEach((item) => {
-      const group = item.group || "default";
-      if (!groups[group]) groups[group] = [];
-      groups[group].push(item);
-    });
-    return groups;
-  }, [allItems]);
-
-  // Filter items based on search query
-  const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return allItems;
-    return allItems.filter((item) => {
-      const matchesTitle = item.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const matchesChildren = item.children?.some((child) =>
-        child.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-      return matchesTitle || matchesChildren;
-    });
-  }, [allItems, searchQuery]);
-
-  // Get active state for menu button
-  const getMenuButtonProps = (item: MenuItem) => {
-    const activeLevel = getActiveLevel(item);
-    return {
-      isActive: activeLevel === "exact" || activeLevel === "child",
-      className: cn(
-        activeLevel === "parent" && "bg-primary/10 text-primary",
-        activeLevel === "child" &&
-          "bg-green-600 text-white hover:bg-green-600/90",
-      ),
-    };
-  };
-
-  // Render menu item
+  // Render menu item with children
   const renderMenuItem = (item: MenuItem) => {
-    const { isActive: itemIsActive, className: itemClassName } =
-      getMenuButtonProps(item);
+    const itemIsActive = isActive(item);
+    const hasChildren = item.children && item.children.length > 0;
+    const isParentActive =
+      getActiveLevel(item) === "parent" || getActiveLevel(item) === "exact";
+    const activeLevel = getActiveLevel(item);
 
-    // For collapsed state, show tooltip
-    const menuButton = (
-      <SidebarMenuButton
-        asChild
-        isActive={itemIsActive}
-        className={itemClassName}
-      >
-        <Link href={item.href}>
-          {item.icon}
-          <span>{item.title}</span>
-          {item.badge && (
-            <Badge
-              variant={itemIsActive ? "secondary" : "default"}
-              className="ml-auto h-5 px-1.5 text-xs"
-            >
-              {item.badge}
-            </Badge>
+    // Common classes for menu items
+    const getMenuItemClasses = (isActive: boolean, isParent = false) => {
+      return cn(
+        "flex items-center gap-2 h-10 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative",
+        // Collapsed state - center icons and adjust padding
+        isCollapsed ? "justify-center px-3" : "px-4",
+        // Default inactive state
+        "text-muted-foreground hover:bg-green-600/95 hover:text-white",
+        // Active states
+        isActive && "bg-green-600 text-white hover:bg-green-700",
+        // Parent active state (subtle background when child is active)
+        isParent &&
+          !isActive &&
+          "bg-green-600/10 text-green-700 hover:bg-green-600/20 hover:text-green-600",
+      );
+    };
+
+    const menuContent = (
+      <>
+        {item.icon && (
+          <span className={cn("flex-shrink-0", isCollapsed && "mx-auto")}>
+            {item.icon}
+          </span>
+        )}
+        {!isCollapsed && (
+          <>
+            <span className="flex-1 truncate text-start">{item.title}</span>
+            {item.badge && (
+              <Badge
+                variant={itemIsActive ? "secondary" : "default"}
+                className={cn(
+                  "ml-auto h-5 px-1.5 text-xs",
+                  itemIsActive && "bg-white text-green-600",
+                )}
+              >
+                {item.badge}
+              </Badge>
+            )}
+            {hasChildren && (
+              <ChevronDown
+                className={cn(
+                  "ml-auto h-4 w-4 transition-transform",
+                  isParentActive && "rotate-180",
+                )}
+              />
+            )}
+          </>
+        )}
+      </>
+    );
+
+    // For collapsed state, wrap everything in tooltip
+    if (isCollapsed) {
+      const content = hasChildren ? (
+        <button
+          className={getMenuItemClasses(
+            activeLevel === "exact" || activeLevel === "child",
+            activeLevel === "parent",
           )}
+          onClick={() => {
+            // In collapsed state, clicking parent items could expand sidebar or navigate
+            if (!hasChildren) {
+              window.location.href = item.href;
+            }
+          }}
+        >
+          {menuContent}
+        </button>
+      ) : (
+        <Link href={item.href} className={getMenuItemClasses(itemIsActive)}>
+          {menuContent}
         </Link>
-      </SidebarMenuButton>
+      );
+
+      return (
+        <div key={item.href} className="relative group/menu-item">
+          <Tooltip>
+            <TooltipTrigger asChild>{content}</TooltipTrigger>
+            <TooltipContent side="right" className="font-medium">
+              <div>
+                <p className="font-semibold">{item.title}</p>
+                {hasChildren && item.children && (
+                  <div className="mt-1 space-y-1">
+                    {item.children.map((child) => (
+                      <p key={child.href} className="text-xs opacity-75">
+                        • {child.title}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      );
+    }
+
+    // Expanded state logic
+    const mainLinkOrTrigger = hasChildren ? (
+      <CollapsibleTrigger
+        className={cn(
+          "w-full",
+          getMenuItemClasses(
+            activeLevel === "exact" || activeLevel === "child",
+            activeLevel === "parent",
+          ),
+        )}
+      >
+        {menuContent}
+      </CollapsibleTrigger>
+    ) : (
+      <Link
+        href={item.href}
+        className={cn("w-full", getMenuItemClasses(itemIsActive))}
+      >
+        {menuContent}
+      </Link>
     );
 
     return (
-      <SidebarMenuItem key={item.href}>
-        {state === "collapsed" ? (
-          <Tooltip>
-            <TooltipTrigger asChild>{menuButton}</TooltipTrigger>
-            <TooltipContent side="right">
-              <p>{item.title}</p>
-            </TooltipContent>
-          </Tooltip>
+      <div key={item.href} className="relative group/menu-item">
+        {hasChildren ? (
+          <Collapsible
+            defaultOpen={isParentActive}
+            className="group/collapsible w-full"
+          >
+            {mainLinkOrTrigger}
+            <CollapsibleContent>
+              <div className="flex flex-col gap-1 mt-1 ml-6 pl-2 border-l border-gray-200">
+                {item.children?.map((child) => (
+                  <div key={child.href} className="relative">
+                    <Link
+                      href={child.href}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative",
+                        "text-muted-foreground hover:bg-green-600/50 hover:text-white",
+                        isActive(child) &&
+                          "bg-green-600 text-white hover:bg-green-700",
+                      )}
+                    >
+                      <span className="w-1.5 h-1.5 bg-current rounded-full flex-shrink-0" />
+                      <span className="flex-1">{child.title}</span>
+                      {child.badge && (
+                        <Badge
+                          variant={isActive(child) ? "secondary" : "default"}
+                          className={cn(
+                            "ml-auto h-5 px-1.5 text-xs",
+                            isActive(child) && "bg-white text-green-600",
+                          )}
+                        >
+                          {child.badge}
+                        </Badge>
+                      )}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         ) : (
-          menuButton
+          mainLinkOrTrigger
         )}
-        {item.children && (
-          <SidebarMenuSub>
-            {item.children.map((child) => (
-              <SidebarMenuSubItem key={child.href}>
-                <SidebarMenuSubButton asChild isActive={isActive(child)}>
-                  <Link href={child.href}>
-                    {child.icon}
-                    <span>{child.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-          </SidebarMenuSub>
-        )}
-      </SidebarMenuItem>
+      </div>
     );
   };
 
@@ -303,169 +385,101 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <TooltipProvider>
-      <SidebarPrimitive className={className} collapsible="icon">
+      <Sidebar
+        className={cn(
+          "border-r bg-white transition-all duration-300",
+          isCollapsed ? "w-20" : "w-64",
+          className,
+        )}
+        collapsible="icon"
+      >
         <SidebarHeader>
-          <div className="flex items-center justify-center p-2">
-            {state === "expanded" ? (
-              <img src="/logo-full.png" alt="Logo" className="h-8 w-auto" />
-            ) : (
-              <img src="/logo-icon.png" alt="Logo" className="h-8 w-8" />
+          <div
+            className={cn(
+              "flex items-center w-full py-4 transition-all duration-300",
+              isCollapsed ? "justify-center px-3" : "justify-between px-4",
+            )}
+          >
+            <div
+              className={cn(
+                "flex items-center gap-2 transition-all duration-300",
+                isCollapsed && "justify-center",
+              )}
+            >
+              <LibraryBig className="w-6 h-6 text-primary flex-shrink-0" />
+              {!isCollapsed && (
+                <h1 className="text-xl font-bold">AIFU Library</h1>
+              )}
+            </div>
+            {!isCollapsed && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={toggleSidebar}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close Sidebar</span>
+              </Button>
             )}
           </div>
-
-          {/* User Profile Section */}
-          {user && state === "expanded" && (
-            <div className="px-2 pb-2">
-              <div className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={user.avatar || "/placeholder.svg"}
-                    alt={user.name}
-                  />
-                  <AvatarFallback>
-                    {user.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{user.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user.email}
-                  </p>
-                  {user.role && (
-                    <Badge variant="secondary" className="text-xs mt-1">
-                      {user.role}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* User Profile for Collapsed State */}
-          {user && state === "collapsed" && (
-            <div className="px-2 pb-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center justify-center">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={user.avatar || "/placeholder.svg"}
-                        alt={user.name}
-                      />
-                      <AvatarFallback>
-                        {user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <div>
-                    <p className="font-medium">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {user.email}
-                    </p>
-                    {user.role && (
-                      <p className="text-xs text-muted-foreground">
-                        {user.role}
-                      </p>
-                    )}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          )}
-
-          {/* Search */}
-          {showSearch && state === "expanded" && (
-            <div className="px-2 pb-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={t("Search menu") + "..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-8"
-                />
-              </div>
-            </div>
-          )}
         </SidebarHeader>
 
         <SidebarContent>
-          {searchQuery && state === "expanded" ? (
-            // Show filtered results when searching
+          <SidebarGroup>
+            <SidebarGroupContent className="flex flex-col gap-1">
+              {allItems.map((item) => renderMenuItem(item))}
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Custom Children Content - hide in collapsed state */}
+          {children && !isCollapsed && (
             <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {filteredItems.length > 0 ? (
-                    filteredItems.map((item) => renderMenuItem(item))
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">{t("No items found")}</p>
-                    </div>
-                  )}
-                </SidebarMenu>
+              <SidebarGroupContent className="flex flex-col gap-1">
+                {children}
               </SidebarGroupContent>
             </SidebarGroup>
-          ) : (
-            // Show grouped navigation
-            <>
-              {Object.entries(groupedItems).map(([groupName, items]) => (
-                <SidebarGroup key={groupName}>
-                  {groupName !== "default" && state === "expanded" && (
-                    <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {t(groupName)}
-                    </SidebarGroupLabel>
-                  )}
-                  <SidebarGroupContent>
-                    <SidebarMenu>
-                      {items.map((item) => renderMenuItem(item))}
-                    </SidebarMenu>
-                  </SidebarGroupContent>
-                </SidebarGroup>
-              ))}
-            </>
-          )}
-
-          {/* Custom Children Content */}
-          {children && (
-            <>
-              <SidebarSeparator />
-              <SidebarGroup>
-                <SidebarGroupContent>{children}</SidebarGroupContent>
-              </SidebarGroup>
-            </>
           )}
         </SidebarContent>
 
         {/* Logout Section */}
         <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              {state === "collapsed" ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <SidebarMenuButton onClick={handleLogout}>
-                      <LogOut className="w-4 h-4" />
-                    </SidebarMenuButton>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p>{t("logout")}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ) : (
-                <SidebarMenuButton onClick={handleLogout}>
-                  <LogOut className="w-4 h-4" />
-                  <span>{t("logout")}</span>
-                </SidebarMenuButton>
-              )}
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <div
+            className={cn(
+              "mb-3 transition-all duration-300",
+              isCollapsed && "px-3 py-4",
+            )}
+          >
+            {isCollapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    className="w-full h-10 px-3 py-2.5 rounded-lg justify-center text-muted-foreground hover:text-white hover:bg-green-600/95"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>{t("logout")}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="w-full justify-start gap-2 h-10 px-4 py-2.5 rounded-lg text-muted-foreground hover:text-white hover:bg-green-600/95"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>{t("logout")}</span>
+              </Button>
+            )}
+          </div>
         </SidebarFooter>
-      </SidebarPrimitive>
+      </Sidebar>
     </TooltipProvider>
   );
 };
 
-export default Sidebar;
+export default OptimizedSidebar;
