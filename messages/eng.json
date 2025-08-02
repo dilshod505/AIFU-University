@@ -71,5 +71,10 @@
   "Notes": "Notes",
   "See": "See",
   "Edit": "Edit",
-  "Delete": "Delete"
+  "Delete": "Delete",
+  "Inactive": "Inactive",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "Card number": "Card number",
+  "status": "Status"
 }

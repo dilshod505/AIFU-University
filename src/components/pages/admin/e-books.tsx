@@ -4,11 +4,9 @@ import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import { useBooking } from "@/components/models/queries/booking";
-import TooltipBtn from "@/components/tooltip-btn";
-import { Plus } from "lucide-react";
 
 const EBaseBooks = () => {
   const t = useTranslations();
@@ -60,7 +58,7 @@ const EBaseBooks = () => {
       {
         key: "status",
         dataIndex: "status",
-        title: t("Status"),
+        title: t("status"),
         render: (status: string) => (
           <span
             className={`px-2 py-1 rounded text-xs ${
@@ -83,7 +81,7 @@ const EBaseBooks = () => {
 
   return (
     <div className={"cont"}>
-      <h1 className={"text-2xl font-semibold py-5"}>{t("E-BaseBooks")}</h1>
+      <h1 className={"text-2xl font-semibold py-5"}>{t("E-Base-Books")}</h1>
       <MyTable
         columns={columns}
         isLoading={isLoading}

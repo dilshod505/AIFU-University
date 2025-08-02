@@ -71,5 +71,10 @@
   "Notes": "Eslatmalar",
   "See": "Ko'rish",
   "Edit": "Tahrirlash",
-  "Delete": "O'chirish"
+  "Delete": "O'chirish",
+  "Inactive": "Nofaol",
+  "firstName": "Ism",
+  "lastName": "Familiyasi",
+  "Card number": "Karta raqami",
+  "status": "Holat"
 }

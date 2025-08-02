@@ -22,22 +22,22 @@ const Users = () => {
       },
       {
         key: "name",
-        title: t("Name"),
+        title: t("firstName"),
         dataIndex: "name",
       },
       {
         key: "surname",
-        title: t("Surname"),
+        title: t("lastName"),
         dataIndex: "surname",
       },
       {
         key: "cardNumber",
-        title: t("Card Number"),
+        title: t("Card number"),
         dataIndex: "cardNumber",
       },
       {
         key: "status",
-        title: t("Status"),
+        title: t("status"),
         dataIndex: "status",
         render: (value: boolean) => (
           <Badge variant={value ? "default" : "destructive"}>

@@ -6,7 +6,6 @@ import { ThemeProvider } from "next-themes";
 import { Mulish } from "next/font/google";
 import "./globals.css";
 import React from "react";
-import SidebarWrapper from "@/components/widgets/sidebar-wrapper";
 
 const mulish = Mulish({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
@@ -36,9 +35,7 @@ export default async function RootLayout({
               enableSystem
               themes={["light", "dark"]}
             >
-              <AntdProvider>
-                <SidebarWrapper>{children}</SidebarWrapper>
-              </AntdProvider>
+              <AntdProvider>{children}</AntdProvider>
             </ThemeProvider>
           </ReactQueryProvider>
           {/*</HydrationLoader>*/}
