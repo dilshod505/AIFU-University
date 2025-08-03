@@ -7,6 +7,8 @@ import MyTable, { IColumn } from "@/components/my-table";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import { useBooking } from "@/components/models/queries/booking";
+import { Eye } from "lucide-react";
+import TooltipBtn from "@/components/tooltip-btn";
 
 const EBaseBooks = () => {
   const t = useTranslations();
@@ -60,17 +62,29 @@ const EBaseBooks = () => {
         dataIndex: "status",
         title: t("status"),
         render: (status: string) => (
-          <span
-            className={`px-2 py-1 rounded text-xs ${
-              status === "OVERDUE"
-                ? "bg-red-100 text-red-600"
-                : status === "APPROVED"
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {status}
-          </span>
+          <div>
+            <TooltipBtn
+              variant={"ampersand"}
+              size={"sm"}
+              title={t("See")}
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              <Eye />
+            </TooltipBtn>
+            <span
+              className={`px-2 py-1 rounded text-xs ${
+                status === "OVERDUE"
+                  ? "bg-red-100 text-red-600"
+                  : status === "APPROVED"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {status}
+            </span>
+          </div>
         ),
       },
     ],

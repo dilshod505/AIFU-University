@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
-import { PenSquareIcon, Plus, Trash } from "lucide-react";
+import { Eye, PenSquareIcon, Plus, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
@@ -106,6 +106,17 @@ export const CopiesBooks = () => {
         title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
+            <TooltipBtn
+              variant={"ampersand"}
+              size={"sm"}
+              title={t("See")}
+              onClick={() => {
+                setEditingCategory(record);
+                setOpen(true);
+              }}
+            >
+              <Eye />
+            </TooltipBtn>
             <TooltipBtn
               variant={"secondary"}
               size={"sm"}
