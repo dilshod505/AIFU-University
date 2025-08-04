@@ -12,14 +12,18 @@ import { api } from "@/components/models/axios";
 import useLayoutStore from "@/store/layout-store";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import Link from "next/link"; // 🔴 Yangi import
+import Link from "next/link";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 export default function Login() {
   const t = useTranslations();
   const router = useRouter();
-  const { setCredentials } = useLayoutStore();
+  const { setCredentials, user } = useLayoutStore();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     event.preventDefault();
     try {
       const formData = new FormData(event.currentTarget);
@@ -30,10 +34,14 @@ export default function Login() {
         setCredentials(email, res?.data.data || "");
         Cookies.set("aifu-token", res?.data.data || "");
         toast.success(t("Login successfull"));
-        router.replace("/");
+        router.replace(`/admin/dashboard`);
+        setIsLoading(false);
       }
     } catch (e) {
       toast.error(t("Invalid credentials"));
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,8 +93,10 @@ export default function Login() {
 
             <Button
               type="submit"
+              disabled={isLoading}
               className="w-full h-11 bg-[#FF0258] hover:bg-[#FF0258]/90 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
             >
+              {isLoading && <LoaderCircle className={"animate-spin"} />}
               {t("Login")}
             </Button>
           </form>

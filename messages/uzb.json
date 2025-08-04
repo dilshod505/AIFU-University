@@ -76,5 +76,6 @@
   "firstName": "Ism",
   "lastName": "Familiyasi",
   "Card number": "Karta raqami",
-  "status": "Holat"
+  "status": "Holat",
+  "loading": "Yuklanmoqda"
 }

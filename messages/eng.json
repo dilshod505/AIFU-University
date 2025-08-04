@@ -76,5 +76,6 @@
   "firstName": "First Name",
   "lastName": "Last Name",
   "Card number": "Card number",
-  "status": "Status"
+  "status": "Status",
+  "loading": "Loading"
 }

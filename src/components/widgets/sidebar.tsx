@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -38,24 +38,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button"; // Enhanced Types
-
-// Enhanced Types
-interface MenuItem {
-  title: string;
-  icon?: React.ReactNode;
-  href: string;
-  badge?: number | string;
-  isNew?: boolean;
-  exactMatch?: boolean;
-  children?: MenuItem[];
-  activePatterns?: string[];
-}
+import { Button } from "@/components/ui/button";
+import useLayoutStore from "@/store/layout-store"; // Enhanced Types
 
 interface OptimizedSidebarProps {
   notifications?: number;
   onLogout?: () => void;
-  customMenuItems?: MenuItem[];
+  customMenuItems?: Record<string, any>[];
   className?: string;
   children?: React.ReactNode;
 }
@@ -63,7 +52,7 @@ interface OptimizedSidebarProps {
 // Enhanced Active Logic Hook
 const useActiveState = (pathname: string) => {
   const isActive = useMemo(() => {
-    return (item: MenuItem): boolean => {
+    return (item: Record<string, any>): boolean => {
       if (item.exactMatch) {
         return pathname === item.href;
       }
@@ -71,7 +60,7 @@ const useActiveState = (pathname: string) => {
         return true;
       }
       if (item.activePatterns) {
-        return item.activePatterns.some((pattern) => {
+        return item.activePatterns.some((pattern: string) => {
           if (pattern.includes("*")) {
             const regex = new RegExp(pattern.replace(/\*/g, ".*"));
             return regex.test(pathname);
@@ -80,21 +69,27 @@ const useActiveState = (pathname: string) => {
         });
       }
       if (item.children) {
-        return item.children.some((child) => isActive(child));
+        return item.children.some((child: Record<string, any>) =>
+          isActive(child),
+        );
       }
       return false;
     };
   }, [pathname]);
 
   const isParentActive = useMemo(() => {
-    return (item: MenuItem): boolean => {
+    return (item: Record<string, any>): boolean => {
       if (!item.children) return false;
-      return item.children.some((child) => isActive(child));
+      return item.children.some((child: Record<string, any>) =>
+        isActive(child),
+      );
     };
   }, [isActive]);
 
   const getActiveLevel = useMemo(() => {
-    return (item: MenuItem): "exact" | "parent" | "child" | "none" => {
+    return (
+      item: Record<string, any>,
+    ): "exact" | "parent" | "child" | "none" => {
       if (pathname === item.href) return "exact";
       if (isParentActive(item)) return "parent";
       if (isActive(item)) return "child";
@@ -107,7 +102,6 @@ const useActiveState = (pathname: string) => {
 
 const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
   notifications = 0,
-  onLogout,
   customMenuItems = [],
   className,
   children,
@@ -117,19 +111,22 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
   const { state, toggleSidebar } = useSidebar();
   const { isActive, getActiveLevel } = useActiveState(pathname);
   const isCollapsed = state === "collapsed";
+  const { user, logout } = useLayoutStore();
+  const router = useRouter();
 
-  // Enhanced default menu items with nested structure
-  const defaultItems = useMemo<MenuItem[]>(
+  const defaultItems = useMemo<Record<string, any>[]>(
     () => [
       {
         title: t("Dashboard"),
         icon: <LayoutDashboard className="w-5 h-5" />,
         href: "/admin/dashboard",
+        role: "SUPER_ADMIN",
       },
       {
         title: t("categories"),
         icon: <FolderOpen className="w-5 h-5" />,
         href: "/admin/categories",
+        role: "SUPER_ADMIN",
         children: [
           {
             title: t("E-Books category"),
@@ -153,6 +150,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         title: t("Books"),
         icon: <LibraryBig className="w-5 h-5" />,
         href: "/admin/books",
+        role: "SUPER_ADMIN",
         children: [
           {
             title: t("E-Books"),
@@ -181,18 +179,21 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         icon: <Users className="w-5 h-5" />,
         href: "/admin/users",
         activePatterns: ["/admin/users", "/admin/users/*"],
+        role: "SUPER_ADMIN",
       },
       {
         title: t("Bookings"),
         icon: <Calendar className="w-5 h-5" />,
         href: "/admin/bookings",
         activePatterns: ["/admin/bookings", "/admin/bookings/*"],
+        role: "SUPER_ADMIN",
       },
       {
         title: t("Notifications"),
         icon: <Bell className="w-5 h-5" />,
         href: "/admin/notifications",
         activePatterns: ["/admin/notifications", "/admin/notifications/*"],
+        role: "SUPER_ADMIN",
       },
     ],
     [t, notifications],
@@ -205,7 +206,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
   );
 
   // Render menu item with children
-  const renderMenuItem = (item: MenuItem) => {
+  const renderMenuItem = (item: Record<string, any>) => {
     const itemIsActive = isActive(item);
     const hasChildren = item.children && item.children.length > 0;
     const isParentActive =
@@ -278,11 +279,11 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             }
           }}
         >
-          {menuContent}
+          {item.role === user?.role && menuContent}
         </button>
       ) : (
         <Link href={item.href} className={getMenuItemClasses(itemIsActive)}>
-          {menuContent}
+          {item.role === user?.role && menuContent}
         </Link>
       );
 
@@ -295,7 +296,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
                 <p className="font-semibold">{item.title}</p>
                 {hasChildren && item.children && (
                   <div className="mt-1 space-y-1">
-                    {item.children.map((child) => (
+                    {item.children.map((child: Record<string, any>) => (
                       <p key={child.href} className="text-xs opacity-75">
                         • {child.title}
                       </p>
@@ -341,7 +342,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             {mainLinkOrTrigger}
             <CollapsibleContent>
               <div className="flex flex-col gap-1 mt-1 ml-6 pl-2 border-l border-gray-200">
-                {item.children?.map((child) => (
+                {item.children?.map((child: Record<string, any>) => (
                   <div key={child.href} className="relative">
                     <Link
                       href={child.href}
@@ -380,7 +381,8 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
 
   // Handle logout
   const handleLogout = () => {
-    onLogout?.();
+    logout();
+    router.push("/login");
   };
 
   return (

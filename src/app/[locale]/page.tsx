@@ -1,12 +1,6 @@
-import { api } from "@/components/models/axios";
-import SimpleTranslation from "@/components/simple-translation";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-
-const getBooks = async () => {
-  const response = await api.get(`/book`);
-  return response.data;
-};
+import PdfBooks from "@/components/pages/user/pdf-books";
 
 export const generateMetadata = async ({
   params,
@@ -25,13 +19,7 @@ export const generateMetadata = async ({
 };
 
 const Page = async () => {
-  return (
-    <div className={"cont"}>
-      <h1 className={"text-2xl font-semibold py-5 text-start"}>
-        <SimpleTranslation title={""} hasLocale />
-      </h1>
-    </div>
-  );
+  return <PdfBooks />;
 };
 
 export default Page;

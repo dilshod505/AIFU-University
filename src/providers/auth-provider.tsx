@@ -19,8 +19,9 @@ const AuthProvider = ({
     const check = async () => {
       try {
         const res = await api.post("/auth/me");
+        console.log(res);
         if (res.status === 200 || res.status === 201) {
-          setUser(res.data);
+          setUser(res.data.data);
         } else {
           router.push("/login");
         }

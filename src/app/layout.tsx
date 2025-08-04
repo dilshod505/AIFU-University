@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { Mulish } from "next/font/google";
 import "./globals.css";
 import React from "react";
+import HydrationLoader from "@/app/loader";
 
 const mulish = Mulish({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
@@ -27,18 +28,18 @@ export default async function RootLayout({
         className={`${mulish.className} antialiased`}
       >
         <NextIntlClientProvider locale={locale}>
-          {/*<HydrationLoader>*/}
-          <ReactQueryProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              themes={["light", "dark"]}
-            >
-              <AntdProvider>{children}</AntdProvider>
-            </ThemeProvider>
-          </ReactQueryProvider>
-          {/*</HydrationLoader>*/}
+          <HydrationLoader>
+            <ReactQueryProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                themes={["light", "dark"]}
+              >
+                <AntdProvider>{children}</AntdProvider>
+              </ThemeProvider>
+            </ReactQueryProvider>
+          </HydrationLoader>
         </NextIntlClientProvider>
       </body>
     </html>
