@@ -1,122 +1,110 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 
-export const useAverageUsage = () => {
+export const useAverageUsage = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["averageUsage"],
     queryFn: async () => {
       const res = await api.get("/statistics/average/usage");
       return res.data;
     },
   });
-};
 
-export const useBookCopiesCount = () => {
+export const useBookCopiesCount = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookCopiesCount"],
     queryFn: async () => {
       const res = await api.get("/statistics/book/copies/count");
       return res.data;
     },
   });
-};
 
-export const useBookingsCount = () => {
+export const useBookingsCount = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsCount"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/count");
       return res.data;
     },
   });
-};
 
-export const useBookingsDiagram = () => {
+export const useBookingsDiagram = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsDiagram"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/diagram");
       return res.data;
     },
   });
-};
 
-export const useBookingsPerDay = () => {
+export const useBookingsPerDay = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsPerDay"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/perDay");
       return res.data;
     },
   });
-};
 
-export const useBookingsPerMonth = () => {
+export const useBookingsPerMonth = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsPerMonth"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/perMonth");
       return res.data;
     },
   });
-};
 
-export const useBookingsToday = () => {
+export const useBookingsToday = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsToday"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/today");
       return res.data;
     },
   });
-};
 
-export const useBookingsTodayOverdue = () => {
+export const useBookingsTodayOverdue = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["bookingsTodayOverdue"],
     queryFn: async () => {
       const res = await api.get("/statistics/bookings/today/overdue");
       return res.data;
     },
   });
-};
 
-export const useBooksCount = () => {
+export const useBooksCount = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["booksCount"],
     queryFn: async () => {
       const res = await api.get("/statistics/books/count");
       return res.data;
     },
   });
-};
 
-export const useBooksTop = () => {
+export const useBooksTop = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["booksTop"],
     queryFn: async () => {
       const res = await api.get("/statistics/books/top");
       return res.data;
     },
   });
-};
 
-export const useStudentsCount = () => {
+export const useStudentsCount = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["studentsCount"],
     queryFn: async () => {
       const res = await api.get("/statistics/students/count");
       return res.data;
     },
   });
-};
 
-export const useStudentsTop = () => {
+export const useStudentsTop = () =>
   useQuery({
-    queryKey: ["statics"],
+    queryKey: ["studentsTop"],
     queryFn: async () => {
       const res = await api.get("/statistics/students/top");
       return res.data;
     },
   });
-};
