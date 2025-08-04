@@ -18,7 +18,7 @@ const AuthProvider = ({
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await api.post("/auth/me");
+        const res = await api.post("/admin/auth/me");
         console.log(res);
         if (res.status === 200 || res.status === 201) {
           setUser(res.data.data);
