@@ -5,7 +5,7 @@ export const useAverageUsage = () =>
   useQuery({
     queryKey: ["averageUsage"],
     queryFn: async () => {
-      const res = await api.get("/statistics/average/usage");
+      const res = await api.get("/admin/statistics/average/usage");
       return res.data;
     },
   });
@@ -14,7 +14,7 @@ export const useBookCopiesCount = () =>
   useQuery({
     queryKey: ["bookCopiesCount"],
     queryFn: async () => {
-      const res = await api.get("/statistics/book/copies/count");
+      const res = await api.get("/admin/statistics/book/copies/count");
       return res.data;
     },
   });
@@ -23,7 +23,7 @@ export const useBookingsCount = () =>
   useQuery({
     queryKey: ["bookingsCount"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/count");
+      const res = await api.get("/admin/statistics/bookings/count");
       return res.data;
     },
   });
@@ -32,7 +32,7 @@ export const useBookingsDiagram = () =>
   useQuery({
     queryKey: ["bookingsDiagram"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/diagram");
+      const res = await api.get("/admin/statistics/bookings/diagram");
       return res.data;
     },
   });
