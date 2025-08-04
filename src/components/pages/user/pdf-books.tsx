@@ -8,6 +8,7 @@ import logo from "../../../../public/img-bg.png";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const PdfBooks = () => {
   const queryParams = new URLSearchParams(useSearchParams());
@@ -31,7 +32,11 @@ const PdfBooks = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {Array.from({ length: pageSize }).map((_, i: number) => (
-          <div key={i} className="rounded-lg shadow-md p-4">
+          <Link
+            href={`/${books?.data?.data?.[i].id}`}
+            key={i}
+            className="rounded-lg shadow-md p-4"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Image
@@ -79,7 +84,7 @@ const PdfBooks = () => {
                 {books?.data?.data?.[i]?.description}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

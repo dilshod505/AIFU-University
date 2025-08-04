@@ -18,3 +18,13 @@ export const usePdfBooksList = ({
     },
   });
 };
+
+export const usePdfBookId = ({ id }: { id: string | number }) => {
+  return useQuery({
+    queryKey: ["pdf-book"],
+    queryFn: async () => {
+      const res = await api.get(`/client/pdf-book/${id}`);
+      return res.data;
+    },
+  });
+};

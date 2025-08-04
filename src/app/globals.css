@@ -120,6 +120,6 @@
     }
 
     .cont {
-        @apply mx-auto px-5;
+        @apply max-w-7xl mx-auto px-5;
     }
 }
