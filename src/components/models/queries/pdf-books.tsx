@@ -12,7 +12,7 @@ export const usePdfBooksList = ({
     queryKey: ["pdf-books"],
     queryFn: async () => {
       const res = await api.get(
-        `/pdf-books/list?pageNum=${pageNum}&pageSize=${pageSize}`,
+        `/client/pdf-books?pageNum=${pageNum}&pageSize=${pageSize}`,
       );
       return res.data;
     },
