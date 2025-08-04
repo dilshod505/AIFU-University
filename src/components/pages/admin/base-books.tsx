@@ -65,13 +65,13 @@ const BaseBooks = () => {
         required: false,
       },
       {
-        label: t("Title Details"),
+        label: t("Title details"),
         name: "titleDetails",
         type: "text",
         required: false,
       },
       {
-        label: t("Publication Year"),
+        label: t("Publication year"),
         name: "publicationYear",
         type: "number",
         required: true,

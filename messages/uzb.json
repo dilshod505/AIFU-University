@@ -77,5 +77,12 @@
   "lastName": "Familiyasi",
   "Card number": "Karta raqami",
   "status": "Holat",
-  "loading": "Yuklanmoqda"
+  "loading": "Yuklanmoqda",
+  "Title details": "Sarlavha tafsilotlari",
+  "Publication year": "Nashr yili",
+  "Publisher": "Nashriyotchi",
+  "Publication City": "Nashr shahri",
+  "Page Count": "Sahifalar soni",
+  "Language": "Til",
+  "Base Book": "Asosiy kitob"
 }
