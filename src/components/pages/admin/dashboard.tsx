@@ -141,7 +141,6 @@ const Dashboard = () => {
             </div>
           ) : (
             <Chart
-              options={chartOptions}
               series={chartSeries}
               type="line"
               height="100%"

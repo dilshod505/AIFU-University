@@ -41,7 +41,7 @@ export const useBookingsPerDay = () =>
   useQuery({
     queryKey: ["bookingsPerDay"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/perDay");
+      const res = await api.get("/admin/statistics/bookings/perDay");
       return res.data;
     },
   });
@@ -50,7 +50,7 @@ export const useBookingsPerMonth = () =>
   useQuery({
     queryKey: ["bookingsPerMonth"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/perMonth");
+      const res = await api.get("/admin/statistics/bookings/perMonth");
       return res.data;
     },
   });
@@ -59,7 +59,7 @@ export const useBookingsToday = () =>
   useQuery({
     queryKey: ["bookingsToday"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/today");
+      const res = await api.get("/admin/statistics/bookings/today");
       return res.data;
     },
   });
@@ -68,7 +68,7 @@ export const useBookingsTodayOverdue = () =>
   useQuery({
     queryKey: ["bookingsTodayOverdue"],
     queryFn: async () => {
-      const res = await api.get("/statistics/bookings/today/overdue");
+      const res = await api.get("/admin/statistics/bookings/today/overdue");
       return res.data;
     },
   });
@@ -77,7 +77,7 @@ export const useBooksCount = () =>
   useQuery({
     queryKey: ["booksCount"],
     queryFn: async () => {
-      const res = await api.get("/statistics/books/count");
+      const res = await api.get("/admin/statistics/books/count");
       return res.data;
     },
   });
@@ -86,7 +86,7 @@ export const useBooksTop = () =>
   useQuery({
     queryKey: ["booksTop"],
     queryFn: async () => {
-      const res = await api.get("/statistics/books/top");
+      const res = await api.get("/admin/statistics/books/top");
       return res.data;
     },
   });
@@ -95,7 +95,7 @@ export const useStudentsCount = () =>
   useQuery({
     queryKey: ["studentsCount"],
     queryFn: async () => {
-      const res = await api.get("/statistics/students/count");
+      const res = await api.get("/admin/statistics/students/count");
       return res.data;
     },
   });
@@ -104,7 +104,7 @@ export const useStudentsTop = () =>
   useQuery({
     queryKey: ["studentsTop"],
     queryFn: async () => {
-      const res = await api.get("/statistics/students/top");
+      const res = await api.get("/admin/statistics/students/top");
       return res.data;
     },
   });
