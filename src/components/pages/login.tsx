@@ -29,7 +29,7 @@ export default function Login() {
       const formData = new FormData(event.currentTarget);
       const email = formData.get("email") as string;
       const password = formData.get("password") as string;
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/admin/auth/login", { email, password });
       if (res.status === 200 && res.data?.data) {
         setCredentials(email, res?.data.data || "");
         Cookies.set("aifu-token", res?.data.data || "");
