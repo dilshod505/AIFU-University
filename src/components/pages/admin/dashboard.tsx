@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Chart from "react-apexcharts";
 import {
   useAverageUsage,
   useBookCopiesCount,
@@ -15,13 +16,8 @@ import {
   useStudentsCount,
   useStudentsTop,
 } from "@/components/models/queries/dashboard";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -39,6 +35,34 @@ const Dashboard = () => {
   const studentsCount = useStudentsCount();
   const studentsTop = useStudentsTop();
 
+  const chartData = Array.isArray(bookingDiagram.data)
+    ? bookingDiagram.data
+    : [];
+
+  const categories = chartData.map((item) => item.month);
+  const bookingsSeries = chartData.map((item) => item.bookings);
+  const returnsSeries = chartData.map((item) => item.returns);
+
+  const chartOptions = {
+    chart: {
+      type: "line",
+      toolbar: { show: false },
+    },
+    stroke: { curve: "smooth" },
+    xaxis: { categories },
+    markers: { size: 4 },
+    tooltip: { shared: true },
+  };
+
+  const chartSeries = [
+    { name: "Bookings", data: bookingsSeries },
+    { name: "Returns", data: returnsSeries },
+  ];
+
+  useEffect(() => {
+    console.log(booksCount);
+  }, [booksCount]);
+
   return (
     <div className="p-6 bg-muted min-h-screen">
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
@@ -46,25 +70,25 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Users"
-          value={studentsCount.data?.total || 0}
+          value={studentsCount.data?.data || 0}
           subtitle="Registered library members"
           icon="👤"
         />
         <StatCard
           title="Total Books"
-          value={booksCount.data?.total || 0}
+          value={booksCount.data?.data || 0}
           subtitle="Books in collection"
           icon="📚"
         />
         <StatCard
           title="Book Copies"
-          value={bookCopiesCount.data?.total || 0}
+          value={bookCopiesCount.data?.data || 0}
           subtitle="Physical book copies"
           icon="📖"
         />
         <StatCard
           title="Total Bookings"
-          value={bookingCount.data?.total || 0}
+          value={bookingCount.data?.data || 0}
           subtitle="All time bookings"
           icon="🗓️"
         />
@@ -106,9 +130,24 @@ const Dashboard = () => {
       </div>
 
       <Panel title="Annual Statistics">
-        <div className="h-64 flex items-center justify-center text-muted-foreground">
-          {/* Diagram uchun bookingDiagram.data ishlating */}
-          <p>Bookings and returns throughout the year (chart goes here)</p>
+        <div className="h-72">
+          {bookingDiagram.isLoading ? (
+            <div className="flex justify-center items-center h-full text-muted-foreground">
+              Loading chart...
+            </div>
+          ) : bookingDiagram.error ? (
+            <div className="flex justify-center items-center h-full text-red-500">
+              Failed to load chart data
+            </div>
+          ) : (
+            <Chart
+              options={chartOptions}
+              series={chartSeries}
+              type="line"
+              height="100%"
+              width="100%"
+            />
+          )}
         </div>
       </Panel>
     </div>
