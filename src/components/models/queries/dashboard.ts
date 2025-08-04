@@ -41,7 +41,9 @@ export const useBookingsPerDay = () =>
   useQuery({
     queryKey: ["bookingsPerDay"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/bookings/perDay");
+      const res = await api.get(
+        "/admin/statistics/bookings/perDay?month=8&year=2025",
+      );
       return res.data;
     },
   });
@@ -50,7 +52,9 @@ export const useBookingsPerMonth = () =>
   useQuery({
     queryKey: ["bookingsPerMonth"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/bookings/perMonth");
+      const res = await api.get(
+        "/admin/statistics/bookings/perMonth?year=2025",
+      );
       return res.data;
     },
   });

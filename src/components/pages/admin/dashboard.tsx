@@ -18,6 +18,7 @@ import {
 } from "@/components/models/queries/dashboard";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useEffect } from "react";
+import { SquareCheckBig } from "lucide-react";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -108,22 +109,26 @@ const Dashboard = () => {
 
         <Panel title="Today's Bookings">
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
-            <span className="text-3xl">✅</span>
+            <span className="text-3xl">
+              <SquareCheckBig className="w-10 h-10" />
+            </span>
             <p className="mt-2">
               {bookingToday.data?.total === 0
                 ? "No bookings today"
-                : `${bookingToday.data?.total} bookings today`}
+                : `${bookingToday.data?.data} Today's booking list`}
             </p>
           </div>
         </Panel>
 
         <Panel title="Overdue Bookings">
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
-            <span className="text-3xl">✅</span>
+            <span className="text-3xl">
+              <SquareCheckBig className="w-10 h-10" />
+            </span>
             <p className="mt-2">
-              {bookingsTodayOverdue.data?.total === 0
+              {bookingsTodayOverdue?.data?.data === 0
                 ? "No overdue books!"
-                : `${bookingsTodayOverdue.data?.total} overdue books!`}
+                : `${bookingsTodayOverdue.data?.data} Today's booking list`}
             </p>
           </div>
         </Panel>
@@ -141,6 +146,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <Chart
+              options={chartOptions}
               series={chartSeries}
               type="line"
               height="100%"
