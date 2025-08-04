@@ -17,7 +17,7 @@ import {
   useStudentsTop,
 } from "@/components/models/queries/dashboard";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useEffect } from "react";
+import type { ApexOptions } from "apexcharts";
 import { SquareCheckBig } from "lucide-react";
 
 const Dashboard = () => {
@@ -44,25 +44,33 @@ const Dashboard = () => {
   const bookingsSeries = chartData.map((item) => item.bookings);
   const returnsSeries = chartData.map((item) => item.returns);
 
-  const chartOptions = {
+  const chartOptions: ApexOptions = {
     chart: {
-      type: "line",
-      toolbar: { show: false },
+      type: "line", // ✅ TypeScript buni "line" deb aniq taniydi
+      toolbar: {
+        show: true,
+      },
     },
-    stroke: { curve: "smooth" },
-    xaxis: { categories },
-    markers: { size: 4 },
-    tooltip: { shared: true },
+    stroke: {
+      curve: "smooth",
+    },
+    xaxis: {
+      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+    markers: {
+      size: 5,
+    },
+    tooltip: {
+      shared: true,
+    },
   };
 
   const chartSeries = [
-    { name: "Bookings", data: bookingsSeries },
-    { name: "Returns", data: returnsSeries },
+    {
+      name: "Bookings",
+      data: [10, 41, 35, 51, 49, 62, 69],
+    },
   ];
-
-  useEffect(() => {
-    console.log(booksCount);
-  }, [booksCount]);
 
   return (
     <div className="p-6 bg-muted min-h-screen">
