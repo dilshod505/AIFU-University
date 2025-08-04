@@ -3,7 +3,7 @@ import { api } from "@/components/models/axios";
 
 export const useBooking = () =>
   useQuery({
-    queryKey: ["booking"],
+    queryKey: ["bookings"],
     queryFn: async () => {
       const res = await api.get("/admin/booking?pageSize=100000");
       return res.data;
@@ -12,7 +12,7 @@ export const useBooking = () =>
 
 export const useBookingId = () =>
   useQuery({
-    queryKey: ["booking-id"],
+    queryKey: ["bookings-id"],
     queryFn: async (id: string | any) => {
       const res = await api.get(`/admin/booking/${id}`);
       return res.data;
@@ -21,7 +21,7 @@ export const useBookingId = () =>
 
 export const useBookingStudentId = () =>
   useQuery({
-    queryKey: ["booking-student-id"],
+    queryKey: ["bookings-student-id"],
     queryFn: async (id: string | any) => {
       const res = await api.get(`/admin/booking/student/${id}`);
       return res.data;
@@ -30,7 +30,7 @@ export const useBookingStudentId = () =>
 
 export const useBookingFilter = () =>
   useQuery({
-    queryKey: ["booking-filter"],
+    queryKey: ["bookings-filter"],
     queryFn: async (id: string | any) => {
       const res = await api.get(`/admin/booking/filter`);
       return res.data;

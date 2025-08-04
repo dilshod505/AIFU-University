@@ -84,5 +84,10 @@
   "Publication City": "Город публикации",
   "Page Count": "Page Count",
   "Language": "Language",
-  "Base Book": "Base Book"
+  "Base Book": "Base Book",
+  "isTaken": "Taken",
+  "Active": "Active",
+  "NoActive": "Inactive",
+  "No Active": "No Active",
+  "Book Copy Detail": "Book Copy Detail"
 }

@@ -8,6 +8,7 @@ import { Eye, PenSquareIcon, Plus, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
+  useCopiesBooksId,
   useCreateCopiesBooks,
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
@@ -21,6 +22,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useBaseBook } from "@/components/models/queries/base-book";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 export const CopiesBooks = () => {
   const t = useTranslations();
@@ -28,6 +30,11 @@ export const CopiesBooks = () => {
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
+
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
+    id: selectedId,
+  });
 
   const { data: baseBooks } = useBaseBook();
 
@@ -101,6 +108,16 @@ export const CopiesBooks = () => {
         title: t("Base Book"),
       },
       {
+        key: "isTaken",
+        dataIndex: "isTaken",
+        title: t("isTaken"),
+        render: (value: boolean) => (
+          <Badge variant={value ? "default" : "destructive"}>
+            {value ? t("Active") : t("Inactive")}
+          </Badge>
+        ),
+      },
+      {
         key: "actions",
         dataIndex: "actions",
         title: t("actions"),
@@ -111,7 +128,8 @@ export const CopiesBooks = () => {
               size={"sm"}
               title={t("See")}
               onClick={() => {
-                setEditingCategory(record);
+                setSelectedId(record.id); // bu joyda faqat ID ni yuboramiz
+                setEditingCategory(null); // edit form ochilmasligi uchun null qilamiz
                 setOpen(true);
               }}
             >
@@ -153,7 +171,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, form, baseBooks],
+    [t, deleteCategory, form],
   );
 
   const onSubmit = async (data: any) => {
@@ -215,21 +233,64 @@ export const CopiesBooks = () => {
           </TooltipBtn>
         }
       />
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v);
+          if (!v) {
+            setEditingCategory(null);
+            setSelectedId(null);
+          }
+        }}
+      >
         <SheetContent>
           <SheetHeader>
             <SheetTitle>
-              {editingBook ? t("Edit Category") : t("Add Category")}
+              {editingBook
+                ? t("Edit Category")
+                : selectedId
+                  ? t("Book Copy Detail")
+                  : t("Add Category")}
             </SheetTitle>
           </SheetHeader>
+
           <div className="p-3">
-            <AutoForm
-              submitText={editingBook ? t("Edit Category") : t("Add Category")}
-              onSubmit={onSubmit}
-              form={form}
-              fields={fields}
-              showResetButton={false}
-            />
+            {editingBook || !selectedId ? (
+              <AutoForm
+                submitText={
+                  editingBook ? t("Edit Category") : t("Add Category")
+                }
+                onSubmit={onSubmit}
+                form={form}
+                fields={fields}
+                showResetButton={false}
+              />
+            ) : isDetailLoading ? (
+              <p className="text-center py-10">{t("Loading...")}</p>
+            ) : (
+              <div className="space-y-4">
+                <p>
+                  <strong>{t("Inventory Number")}:</strong>{" "}
+                  {bookDetail?.data?.inventoryNumber}
+                </p>
+                <p>
+                  <strong>{t("Shelf Location")}:</strong>{" "}
+                  {bookDetail?.data?.shelfLocation}
+                </p>
+                <p>
+                  <strong>{t("Notes")}:</strong>{" "}
+                  {bookDetail?.data?.notes || "-"}
+                </p>
+                <p>
+                  <strong>{t("Base Book")}:</strong>{" "}
+                  {bookDetail?.data?.baseBook?.title}
+                </p>
+                <p>
+                  <strong>{t("Is Taken")}:</strong>{" "}
+                  {bookDetail?.data?.isTaken ? t("Active") : t("No Active")}
+                </p>
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>

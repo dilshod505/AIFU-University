@@ -104,7 +104,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <Panel title="Booking Status">
+        <Panel title="Bookings Status">
           <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
             <span className="text-3xl">📅</span>
             <p className="text-center mt-2">

@@ -10,11 +10,17 @@ export const useCopiesBooks = () =>
     },
   });
 
-export const useCopiesBooksId = () =>
+export const useCopiesBooksId = ({
+  id,
+}: {
+  id: string | number | undefined | null;
+}) =>
   useQuery({
-    queryKey: ["copies-book-id"],
-    queryFn: async (id: string | any) => {
+    queryKey: ["copies-book-id", id],
+    enabled: !!id, // faqat id bo‘lsa query ishlaydi
+    queryFn: async () => {
       const res = await api.get(`/admin/book-copies/${id}`);
+      return res.data;
     },
   });
 

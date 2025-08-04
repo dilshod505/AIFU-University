@@ -84,5 +84,10 @@
   "Publication City": "Nashr shahri",
   "Page Count": "Sahifalar soni",
   "Language": "Til",
-  "Base Book": "Asosiy kitob"
+  "Base Book": "Asosiy kitob",
+  "isTaken": "Olingan",
+  "Active": "Faol",
+  "NoActive": "Faol emas",
+  "No Active": "Faol emas",
+  "Book Copy Detail": "Kitob nusxasi tafsiloti"
 }
