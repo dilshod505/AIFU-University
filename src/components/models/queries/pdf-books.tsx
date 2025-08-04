@@ -9,10 +9,10 @@ export const usePdfBooksList = ({
   pageSize: number;
 }) => {
   return useQuery({
-    queryKey: ["pdf-books"],
+    queryKey: ["pdf-books", pageNum, pageSize],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?pageNum=${pageNum}&pageSize=${pageSize}`,
+        `/client/pdf-books?pageNumber=${pageNum}&pageSize=${pageSize}`,
       );
       return res.data;
     },

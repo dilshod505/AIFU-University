@@ -9,20 +9,21 @@ import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import ReactPaginate from "react-paginate";
+import { Button } from "@/components/ui/button";
 
 const PdfBooks = () => {
-  const queryParams = new URLSearchParams(useSearchParams());
+  const searchParams = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams);
   const [pageNum, setPageNum] = useState<number>(
-    Number(queryParams.get("pageNum")) || 1,
+    Number(searchParams.get("pageNum")) || 1,
   );
   const [pageSize, setPageSize] = useState<number>(
-    Number(queryParams.get("pageSize")) || 10,
+    Number(searchParams.get("pageSize")) || 9,
   );
   console.log(queryParams);
 
   const { data: books, isLoading } = usePdfBooksList({ pageNum, pageSize });
-
-  console.log(books?.data);
 
   return (
     <div className={"cont"}>
@@ -30,10 +31,10 @@ const PdfBooks = () => {
         <SimpleTranslation title={""} hasLocale />
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-        {Array.from({ length: pageSize }).map((_, i: number) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {books?.data?.data.map((book: Record<string, any>, i: number) => (
           <Link
-            href={`/${books?.data?.data?.[i].id}`}
+            href={`/${book?.id}`}
             key={i}
             className="rounded-lg shadow-md p-4"
           >
@@ -41,7 +42,7 @@ const PdfBooks = () => {
               <div className="flex items-center">
                 <Image
                   src={logo}
-                  alt={books?.data?.data?.[i].title}
+                  alt={book?.title}
                   width={150}
                   height={150}
                   priority
@@ -57,36 +58,46 @@ const PdfBooks = () => {
                     <Skeleton className="h-6 w-24 mb-1" />
                   ) : (
                     <Badge className={"mb-1"}>
-                      {books?.data?.data?.[i].categoryPreviewDTO?.name}
+                      {book?.categoryPreviewDTO?.name}
                     </Badge>
                   )}
                   {isLoading ? (
                     <Skeleton className="h-6 w-32 mb-1" />
                   ) : (
-                    <p className="text-lg font-semibold mb-1">
-                      {books?.data?.data?.[i].title}
-                    </p>
+                    <p className="text-lg font-semibold mb-1">{book?.title}</p>
                   )}
                   {isLoading ? (
                     <Skeleton className="h-6 w-28" />
                   ) : (
                     <p className="text-sm text-gray-500">
-                      {books?.data?.data?.[i]?.author}
+                      {book?.author}
                       <span className="mx-2">|</span>
                       <span className="text-gray-600">
-                        {books?.data?.data?.[i]?.categoryPreviewDTO.name}
+                        {book?.categoryPreviewDTO.name}
                       </span>
                     </p>
                   )}
                 </div>
               </div>
-              <p className="text-sm text-gray-500">
-                {books?.data?.data?.[i]?.description}
-              </p>
+              <p className="text-sm text-gray-500">{book?.description}</p>
             </div>
           </Link>
         ))}
       </div>
+      <ReactPaginate
+        breakLabel="..."
+        onPageChange={(e) => {
+          setPageNum(e.selected + 1);
+          queryParams.set("pageNum", String(e.selected + 1));
+        }}
+        pageRangeDisplayed={pageSize}
+        pageCount={books?.data?.totalElements / pageSize || 0}
+        previousLabel={<Button>Previous</Button>}
+        nextLabel={<Button>Next</Button>}
+        className={"flex justify-center gap-3 items-center"}
+        renderOnZeroPageCount={null}
+        forcePage={pageNum - 1}
+      />
     </div>
   );
 };
