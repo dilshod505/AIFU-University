@@ -22,7 +22,6 @@ const PdfBooks = () => {
   const [pageSize, setPageSize] = useState<number>(
     Number(searchParams.get("pageSize")) || 9,
   );
-  console.log(queryParams);
 
   const { data: books, isLoading } = usePdfBooksList({ pageNum, pageSize });
 

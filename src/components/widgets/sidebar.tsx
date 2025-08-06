@@ -192,18 +192,18 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         children: [
           {
             title: t("Active"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/active`,
             activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/active/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/active`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/active/*`,
             ],
           },
           {
             title: t("Archived"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/archived`,
             activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/archived/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/archived`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/archived/*`,
             ],
           },
         ],
@@ -285,14 +285,12 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         "text-muted-foreground hover:bg-green-600/95 hover:text-white",
         // Active states
         isActive && "bg-green-600 text-white hover:bg-green-700",
-        // Parent active state (subtle background when child is active)
+        // Parent archived state (subtle background when child is archived)
         isParent &&
           !isActive &&
           "bg-green-600/10 text-green-700 hover:bg-green-600/20 hover:text-green-600",
       );
     };
-
-    console.log(user);
 
     const menuContent = (
       <>

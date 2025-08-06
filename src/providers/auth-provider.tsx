@@ -19,14 +19,12 @@ const AuthProvider = ({
     const check = async () => {
       try {
         const res = await api.post("/admin/auth/me");
-        console.log(res);
         if (res.status === 200 || res.status === 201) {
           setUser(res.data.data);
         } else {
           router.push("/login");
         }
       } catch (e: any) {
-        console.log(e);
         if (e.response.status !== 200 || e.response.status !== 201) {
           router.push("/login");
         }

@@ -9,8 +9,6 @@ import { Badge } from "@/components/ui/badge";
 const Users = () => {
   const t = useTranslations();
   const { data: students, isLoading } = useStudents();
-  console.log(students);
-  console.log();
 
   const columns = useMemo<IColumn[]>(
     () => [

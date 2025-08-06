@@ -25,8 +25,6 @@ const PdfBookDetail = () => {
   const { id } = useParams();
   const { data: book } = usePdfBookId({ id: id?.toString() || "" });
 
-  console.log(book);
-
   return book ? (
     <div className="min-h-screen ">
       <div className="cont mx-auto px-4 py-8">

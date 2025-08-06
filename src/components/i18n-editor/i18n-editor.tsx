@@ -91,7 +91,7 @@ const TranslationEditor = ({
     setUnsavedChanges(hasChanges);
   }, [values, initialTranslations]);
 
-  // Add to history when values change
+  // Add to archived when values change
   const addToHistory = (newValues: TranslationData) => {
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push({ values: newValues, timestamp: Date.now() });
