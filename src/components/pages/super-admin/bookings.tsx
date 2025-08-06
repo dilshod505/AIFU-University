@@ -43,9 +43,14 @@ export default function Bookings() {
 
   const stats = {
     total: bookings.length,
-    borrowed: bookings.filter((b) => b.status === "borrowed").length,
-    overdue: bookings.filter((b) => b.status === "overdue").length,
-    returned: bookings.filter((b) => b.status === "returned").length,
+    borrowed: bookings.filter(
+      (b: Record<string, any>) => b.status === "borrowed",
+    ).length,
+    overdue: bookings.filter((b: Record<string, any>) => b.status === "overdue")
+      .length,
+    returned: bookings.filter(
+      (b: Record<string, any>) => b.status === "returned",
+    ).length,
   };
 
   if (error) {

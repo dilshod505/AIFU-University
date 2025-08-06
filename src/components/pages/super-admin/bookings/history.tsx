@@ -130,8 +130,8 @@ export default function HistoryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {currentHistory?.map((record) => (
-            <HistoryCard key={record.id} record={record} />
+          {currentHistory?.map((record: Record<string, any>) => (
+            <HistoryCard key={record.id} record={record as any} />
           ))}
         </div>
       )}

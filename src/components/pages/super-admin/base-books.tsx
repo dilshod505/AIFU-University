@@ -22,7 +22,10 @@ import { useBaseBooksCategory } from "@/components/models/queries/base-books-cat
 
 const BaseBooks = () => {
   const t = useTranslations();
-  const { data: baseBooks, isLoading } = useBaseBook();
+  const { data: baseBooks, isLoading } = useBaseBook({
+    pageNum: 1,
+    pageSize: 100,
+  });
   const createBaseBook = useCreateBaseBook();
   const { data: categories } = useBaseBooksCategory();
 
