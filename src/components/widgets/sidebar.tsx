@@ -192,18 +192,18 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         children: [
           {
             title: t("active"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
             activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/active/*`,
             ],
           },
           {
             title: t("archived"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
             activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/archived/*`,
             ],
           },
         ],
@@ -227,6 +227,24 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           `/${user?.role?.toLowerCase().replace("_", "-")}/users/*`,
         ],
         role: ["SUPER_ADMIN"],
+        children: [
+          {
+            title: t("Users"),
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users/*`,
+            ],
+          },
+          {
+            title: t("Administrators"),
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/administrators`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/administrators`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/administrators/*`,
+            ],
+          },
+        ],
       },
       {
         title: t("Notifications"),

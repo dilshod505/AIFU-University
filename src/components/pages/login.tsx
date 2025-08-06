@@ -38,7 +38,7 @@ export default function Login() {
         setCredentials(email, res?.data.data?.token || "");
         Cookies.set("aifu-token", res?.data.data?.token || "");
         toast.success(t("Login successfull"));
-        router.replace(`/admin/dashboard`);
+        router.replace(`/super-admin/dashboard`);
         setIsLoading(false);
       }
     } catch (e) {
@@ -73,7 +73,7 @@ export default function Login() {
                 name={"email"}
                 type="text"
                 placeholder="Enter your email address"
-                className="h-11 border-gray-200"
+                className="h-11 border-gray-200 text-black bg-white"
                 required
               />
             </div>
@@ -90,7 +90,7 @@ export default function Login() {
                 name={"password"}
                 type="password"
                 placeholder="Create a password"
-                className="h-11 border-gray-200"
+                className="h-11 border-gray-200 text-black bg-white"
                 required
               />
             </div>
