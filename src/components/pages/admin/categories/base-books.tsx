@@ -55,6 +55,7 @@ const BaseBooks = () => {
         key: "actions",
         dataIndex: "actions",
         title: t("actions"),
+        width: 200,
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <TooltipBtn

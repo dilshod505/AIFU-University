@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
@@ -62,7 +62,7 @@ export const CopiesBooks = () => {
       {
         label: t("Notes"),
         name: "notes",
-        type: "textarea", // agar matn ko‘p bo‘lishi mumkin bo‘lsa
+        type: "textarea",
         required: false,
       },
       {
@@ -142,16 +142,17 @@ export const CopiesBooks = () => {
               onClick={() => {
                 setEditingCategory(record);
                 form.reset({
-                  inventoryNumber: record.inventoryNumber,
-                  shelfLocation: record.shelfLocation,
-                  notes: record.notes,
-                  baseBookId: record.baseBookId,
+                  inventoryNumber: record.inventoryNumber || "",
+                  shelfLocation: record.shelfLocation || "",
+                  notes: record.notes || "",
+                  baseBookId: record.baseBookId || "",
                 });
                 setOpen(true);
               }}
             >
               <PenSquareIcon />
             </TooltipBtn>
+
             <TooltipBtn
               variant={"destructive"}
               size={"sm"}
@@ -173,6 +174,17 @@ export const CopiesBooks = () => {
     ],
     [t, deleteCategory, form],
   );
+
+  useEffect(() => {
+    if (!editingBook && !selectedId && open) {
+      form.reset({
+        inventoryNumber: "",
+        shelfLocation: "",
+        notes: "",
+        baseBookId: "",
+      });
+    }
+  }, [editingBook, selectedId, open, form]);
 
   const onSubmit = async (data: any) => {
     if (editingBook) {
@@ -210,7 +222,7 @@ export const CopiesBooks = () => {
   };
 
   return (
-    <div className={"cont"}>
+    <div className={""}>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
       <MyTable
         fullscreen

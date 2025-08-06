@@ -64,6 +64,7 @@ const EBookCategories = () => {
       {
         key: "actions",
         dataIndex: "actions",
+        width: 200,
         title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
