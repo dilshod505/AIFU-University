@@ -16,7 +16,7 @@ import {
   useStudentsCount,
   useStudentsTop,
 } from "@/components/models/queries/dashboard";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ApexOptions } from "apexcharts";
 import { SquareCheckBig } from "lucide-react";
 
@@ -73,7 +73,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="p-6 bg-muted min-h-screen">
+    <div className="p-6 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

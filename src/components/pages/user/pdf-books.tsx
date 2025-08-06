@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
+import { Divider } from "antd";
 
 const PdfBooks = () => {
   const searchParams = useSearchParams();
@@ -84,6 +85,7 @@ const PdfBooks = () => {
           </Link>
         ))}
       </div>
+      <Divider />
       <ReactPaginate
         breakLabel="..."
         onPageChange={(e) => {

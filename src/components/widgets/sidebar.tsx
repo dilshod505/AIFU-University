@@ -175,17 +175,29 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         ],
       },
       {
-        title: t("Users"),
-        icon: <Users className="w-5 h-5" />,
-        href: "/admin/users",
-        activePatterns: ["/admin/users", "/admin/users/*"],
-        role: "SUPER_ADMIN",
-      },
-      {
         title: t("Bookings"),
         icon: <Calendar className="w-5 h-5" />,
         href: "/admin/bookings",
         activePatterns: ["/admin/bookings", "/admin/bookings/*"],
+        role: "SUPER_ADMIN",
+        children: [
+          {
+            title: t("active"),
+            href: "/admin/e-books",
+            activePatterns: ["/admin/e-books", "/admin/e-books/*"],
+          },
+          {
+            title: t("archived"),
+            href: "/admin/base-books",
+            activePatterns: ["/admin/base-books", "/admin/base-books/*"],
+          },
+        ],
+      },
+      {
+        title: t("Users"),
+        icon: <Users className="w-5 h-5" />,
+        href: "/admin/users",
+        activePatterns: ["/admin/users", "/admin/users/*"],
         role: "SUPER_ADMIN",
       },
       {

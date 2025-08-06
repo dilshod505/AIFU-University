@@ -38,7 +38,7 @@ export default function SidebarWrapper({
             <ChangeLanguage />
           </div>
         </header>
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto px-5">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
