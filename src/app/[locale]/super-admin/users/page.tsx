@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import Users from "@/components/pages/admin/users";
+import Users from "@/components/pages/super-admin/users";
 
 export const generateMetadata = async ({
   params,

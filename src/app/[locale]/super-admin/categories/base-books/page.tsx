@@ -1,7 +1,7 @@
 import React from "react";
-import { getTranslations } from "next-intl/server";
+import BaseBooks from "@/components/pages/super-admin/categories/base-books";
 import { Metadata } from "next";
-import Dashboard from "@/components/pages/admin/dashboard";
+import { getTranslations } from "next-intl/server";
 
 export const generateMetadata = async ({
   params,
@@ -12,17 +12,13 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale });
 
   return {
-    title: t("Admin Dashboard"),
-    description: t("AIFU - Admin Dashboard"),
+    title: t("Categories of Base BaseBooks"),
+    description: t("AIFU - Categories of Base BaseBooks"),
   };
 };
 
-const Page = () => {
-  return (
-    <div>
-      <Dashboard />
-    </div>
-  );
+const Page = async () => {
+  return <BaseBooks />;
 };
 
 export default Page;

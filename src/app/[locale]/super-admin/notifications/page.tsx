@@ -1,10 +1,10 @@
 import React from "react";
-import { CopiesBooks } from "@/components/pages/admin/copies-books";
+import Notifications from "@/components/pages/super-admin/notifications";
 
 const Page = () => {
   return (
     <div>
-      <CopiesBooks />
+      <Notifications />
     </div>
   );
 };

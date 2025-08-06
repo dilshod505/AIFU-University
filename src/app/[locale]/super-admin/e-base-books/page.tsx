@@ -1,4 +1,4 @@
-import { EBaseBooks } from "@/components/pages/admin/e-base-books";
+import { EBaseBooks } from "@/components/pages/super-admin/e-base-books";
 
 const Page = () => {
   return (

@@ -119,29 +119,29 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
       {
         title: t("Dashboard"),
         icon: <LayoutDashboard className="w-5 h-5" />,
-        href: "/admin/dashboard",
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/dashboard`,
+        role: ["ADMIN", "SUPER_ADMIN"],
       },
       {
         title: t("categories"),
         icon: <FolderOpen className="w-5 h-5" />,
-        href: "/admin/categories",
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/categories`,
+        role: ["ADMIN", "SUPER_ADMIN"],
         children: [
           {
             title: t("E-Books category"),
-            href: "/admin/categories/e-books",
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/categories/e-books`,
             activePatterns: [
-              "/admin/categories/e-books",
-              "/admin/category/e-books/*",
+              `/${user?.role?.toLowerCase().replace("_", "-")}/categories/e-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/category/e-books/*`,
             ],
           },
           {
             title: t("regular book category"),
-            href: "/admin/categories/base-books",
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/categories/base-books`,
             activePatterns: [
-              "/admin/categories/base-books",
-              "/admin/category/base-books/*",
+              `/${user?.role?.toLowerCase().replace("_", "-")}/categories/base-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/category/base-books/*`,
             ],
           },
         ],
@@ -149,27 +149,33 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
       {
         title: t("Books"),
         icon: <LibraryBig className="w-5 h-5" />,
-        href: "/admin/books",
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/books`,
+        role: ["ADMIN", "SUPER_ADMIN"],
         children: [
           {
             title: t("E-Books"),
-            href: "/admin/e-books",
-            activePatterns: ["/admin/e-books", "/admin/e-books/*"],
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books/*`,
+            ],
           },
           {
             title: t("regular book"),
-            href: "/admin/base-books",
-            activePatterns: ["/admin/base-books", "/admin/base-books/*"],
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books/*`,
+            ],
           },
           {
             title: t("Copies books"),
-            href: "/admin/copies-books",
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/copies-books`,
             badge: notifications > 0 ? notifications : undefined,
             activePatterns: [
-              "/admin/copies-books",
-              "/admin/orders/*",
-              "/admin/order/*",
+              `/${user?.role?.toLowerCase().replace("_", "-")}/copies-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/orders/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/order/*`,
             ],
           },
         ],
@@ -177,35 +183,60 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
       {
         title: t("Bookings"),
         icon: <Calendar className="w-5 h-5" />,
-        href: "/admin/bookings",
-        activePatterns: ["/admin/bookings", "/admin/bookings/*"],
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/bookings`,
+        activePatterns: [
+          `/${user?.role?.toLowerCase().replace("_", "-")}/bookings`,
+          `/${user?.role?.toLowerCase().replace("_", "-")}/bookings/*`,
+        ],
+        role: ["ADMIN", "SUPER_ADMIN"],
         children: [
           {
             title: t("active"),
-            href: "/admin/e-books",
-            activePatterns: ["/admin/e-books", "/admin/e-books/*"],
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/e-books/*`,
+            ],
           },
           {
             title: t("archived"),
-            href: "/admin/base-books",
-            activePatterns: ["/admin/base-books", "/admin/base-books/*"],
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/base-books/*`,
+            ],
           },
         ],
       },
       {
         title: t("Users"),
         icon: <Users className="w-5 h-5" />,
-        href: "/admin/users",
-        activePatterns: ["/admin/users", "/admin/users/*"],
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+        activePatterns: [
+          `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+          `/${user?.role?.toLowerCase().replace("_", "-")}/users/*`,
+        ],
+        role: ["ADMIN"],
+      },
+      {
+        title: t("Users"),
+        icon: <Users className="w-5 h-5" />,
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+        activePatterns: [
+          `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+          `/${user?.role?.toLowerCase().replace("_", "-")}/users/*`,
+        ],
+        role: ["SUPER_ADMIN"],
       },
       {
         title: t("Notifications"),
         icon: <Bell className="w-5 h-5" />,
-        href: "/admin/notifications",
-        activePatterns: ["/admin/notifications", "/admin/notifications/*"],
-        role: "SUPER_ADMIN",
+        href: `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
+        activePatterns: [
+          `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
+          `/${user?.role?.toLowerCase().replace("_", "-")}/notifications/*`,
+        ],
+        role: ["ADMIN", "SUPER_ADMIN"],
       },
     ],
     [t, notifications],
@@ -219,6 +250,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
 
   // Render menu item with children
   const renderMenuItem = (item: Record<string, any>) => {
+    if (!item.role.includes(user?.role)) return null;
     const itemIsActive = isActive(item);
     const hasChildren = item.children && item.children.length > 0;
     const isParentActive =
@@ -241,6 +273,8 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           "bg-green-600/10 text-green-700 hover:bg-green-600/20 hover:text-green-600",
       );
     };
+
+    console.log(user);
 
     const menuContent = (
       <>
@@ -291,11 +325,11 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             }
           }}
         >
-          {item.role === user?.role && menuContent}
+          {menuContent}
         </button>
       ) : (
         <Link href={item.href} className={getMenuItemClasses(itemIsActive)}>
-          {item.role === user?.role && menuContent}
+          {menuContent}
         </Link>
       );
 

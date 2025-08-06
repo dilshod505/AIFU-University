@@ -18,7 +18,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Plus } from "lucide-react";
-import BaseBookCategory from "@/components/pages/admin/categories/base-books";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
 
 const BaseBooks = () => {

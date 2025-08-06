@@ -1,7 +1,7 @@
 import React from "react";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-import EBaseBooks from "@/components/pages/admin/e-books";
+import Dashboard from "@/components/pages/super-admin/dashboard";
 
 export const generateMetadata = async ({
   params,
@@ -20,7 +20,7 @@ export const generateMetadata = async ({
 const Page = () => {
   return (
     <div>
-      <EBaseBooks />
+      <Dashboard />
     </div>
   );
 };

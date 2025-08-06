@@ -1,10 +1,10 @@
 import React from "react";
-import BaseBooks from "@/components/pages/admin/base-books";
+import { CopiesBooks } from "@/components/pages/super-admin/copies-books";
 
 const Page = () => {
   return (
     <div>
-      <BaseBooks />
+      <CopiesBooks />
     </div>
   );
 };
