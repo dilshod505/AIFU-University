@@ -18,7 +18,13 @@ import {
 } from "@/components/models/queries/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ApexOptions } from "apexcharts";
-import { SquareCheckBig } from "lucide-react";
+import {
+  BookCopy,
+  BookOpen,
+  CalendarDays,
+  SquareCheckBig,
+  Users,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
@@ -87,7 +93,7 @@ const Dashboard = () => {
             )
           }
           subtitle={t("Registered library members")}
-          icon="👤"
+          icon={<Users />}
         />
         <StatCard
           title={t("Total Books")}
@@ -99,7 +105,7 @@ const Dashboard = () => {
             )
           }
           subtitle={t("Books in collection")}
-          icon="📚"
+          icon={<BookCopy />}
         />
         <StatCard
           title={t("Book Copies")}
@@ -111,7 +117,7 @@ const Dashboard = () => {
             )
           }
           subtitle={t("Physical book copies")}
-          icon="📖"
+          icon={<BookOpen />}
         />
         <StatCard
           title={t("Total Bookings")}
@@ -123,7 +129,7 @@ const Dashboard = () => {
             )
           }
           subtitle={t("All time bookings")}
-          icon="🗓️"
+          icon={<CalendarDays />}
         />
       </div>
 
@@ -206,7 +212,7 @@ const StatCard = ({
   title: string;
   value: number;
   subtitle: string;
-  icon: string;
+  icon: any;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

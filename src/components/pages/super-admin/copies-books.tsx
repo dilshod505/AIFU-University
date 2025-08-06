@@ -126,18 +126,18 @@ export const CopiesBooks = () => {
         title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
-            <TooltipBtn
-              variant={"ampersand"}
-              size={"sm"}
-              title={t("See")}
-              onClick={() => {
-                setSelectedId(record.id);
-                setEditingCategory(null);
-                setOpen(true);
-              }}
-            >
-              <Eye />
-            </TooltipBtn>
+            {/*<TooltipBtn*/}
+            {/*  variant={"ampersand"}*/}
+            {/*  size={"sm"}*/}
+            {/*  title={t("See")}*/}
+            {/*  onClick={() => {*/}
+            {/*    setSelectedId(record.id);*/}
+            {/*    setEditingCategory(null);*/}
+            {/*    setOpen(true);*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  <Eye />*/}
+            {/*</TooltipBtn>*/}
             <TooltipBtn
               variant={"secondary"}
               size={"sm"}
@@ -146,10 +146,7 @@ export const CopiesBooks = () => {
                 setSelectedId(null);
                 setEditingCategory(record);
                 form.reset({
-                  inventoryNumber: record.inventoryNumber || "",
-                  shelfLocation: record.shelfLocation || "",
-                  notes: record.notes || "",
-                  baseBookId: record.baseBookId || "",
+                  ...record,
                 });
                 setOpen(true);
               }}
@@ -238,8 +235,8 @@ export const CopiesBooks = () => {
           <TooltipBtn
             title={t("Add Category")}
             onClick={() => {
-              // setEditingCategory(null);
-              // form.reset({ name: "" });
+              setEditingCategory(null);
+              form.reset({ name: "" });
               setOpen(true);
             }}
           >
@@ -270,7 +267,7 @@ export const CopiesBooks = () => {
           </SheetHeader>
 
           <div className="p-3">
-            {editingBook && (
+            {(editingBook || !selectedId) && (
               <AutoForm
                 submitText={
                   editingBook ? t("Edit Category") : t("Add Category")
@@ -281,6 +278,7 @@ export const CopiesBooks = () => {
                 showResetButton={false}
               />
             )}
+
             {selectedId && (
               <div className="space-y-4">
                 <p className={"flex justify-between items-center"}>
