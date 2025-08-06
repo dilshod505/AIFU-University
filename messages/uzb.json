@@ -91,5 +91,21 @@
   "No Active": "Faol emas",
   "Book Copy Detail": "Kitob nusxasi tafsiloti",
   "Administrators": "Administratorlar",
-  "Archived": "Arxivlangan"
+  "Archived": "Arxivlangan",
+  "Book Copy Detail": "Kitob nusxasi tafsiloti",
+  "Total Users": "Jami foydalanuvchilar",
+  "Total Books": "Jami kitoblar",
+  "Book Copies": "Kitob nusxalari",
+  "Total Bookings": "Jami bronlar",
+  "Bookings Status": "Bron qilish holati",
+  "Today's Bookings": "Bugungi bandlar",
+  "Overdue Bookings": "Kechiktirilgan bandlar",
+  "Annual Statistics": "Yillik statistika",
+  "Registered library members": "Ro'yxatdan o'tgan kutubxona a'zolari",
+  "Books in collection": "To‘plamdagi kitoblar",
+  "Physical book copies": "Jismoniy kitob nusxalari",
+  "All time bookings": "Barcha vaqt bandlari",
+  "No booking data available Check back later for updates": "Hech qanday bron ma'lumotlari mavjud emas. Yangilanishlar uchun keyinroq tekshiring.",
+  "Statistics": "Statistika",
+  "Today's booking list": "Bugungi band qilish ro'yxati"
 }

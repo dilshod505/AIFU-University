@@ -78,7 +78,7 @@ const Dashboard = () => {
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Users"
+          title={t("Total Users")}
           value={
             studentsCount.isLoading ? (
               <Skeleton className={"w-5 h-7"} />
@@ -86,11 +86,11 @@ const Dashboard = () => {
               studentsCount.data?.data
             )
           }
-          subtitle="Registered library members"
+          subtitle={t("Registered library members")}
           icon="👤"
         />
         <StatCard
-          title="Total Books"
+          title={t("Total Books")}
           value={
             booksCount.isLoading ? (
               <Skeleton className={"w-5 h-7"} />
@@ -98,11 +98,11 @@ const Dashboard = () => {
               booksCount.data?.data
             )
           }
-          subtitle="Books in collection"
+          subtitle={t("Books in collection")}
           icon="📚"
         />
         <StatCard
-          title="Book Copies"
+          title={t("Book Copies")}
           value={
             bookCopiesCount.isLoading ? (
               <Skeleton className={"w-5 h-7"} />
@@ -110,11 +110,11 @@ const Dashboard = () => {
               bookCopiesCount.data?.data
             )
           }
-          subtitle="Physical book copies"
+          subtitle={t("Physical book copies")}
           icon="📖"
         />
         <StatCard
-          title="Total Bookings"
+          title={t("Total Bookings")}
           value={
             bookingCount.isLoading ? (
               <Skeleton className={"w-5 h-7"} />
@@ -122,55 +122,57 @@ const Dashboard = () => {
               bookingCount.data?.data
             )
           }
-          subtitle="All time bookings"
+          subtitle={t("All time bookings")}
           icon="🗓️"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <Panel title="Bookings Status">
+        <Panel title={t("Bookings Status")}>
           <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
             <span className="text-3xl">📅</span>
             <p className="text-center mt-2">
-              No booking data available
-              <br />
-              Check back later for updates
+              {t("No booking data available Check back later for updates")}
             </p>
           </div>
         </Panel>
 
-        <Panel title="Today's Bookings">
+        <Panel title={t("Today's Bookings")}>
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
             <p className="mt-2">
               {bookingToday.isLoading ? (
-                <Skeleton className={"w-36 h-12"} />
+                <Skeleton className={"w-56 h-7"} />
               ) : bookingToday.data.total === 0 ? (
                 "No bookings today"
               ) : (
-                `${bookingToday.data?.data} Today's booking list`
+                `${bookingToday.data?.data} ${t("Today's booking list")}`
               )}
             </p>
           </div>
         </Panel>
 
-        <Panel title="Overdue Bookings">
+        <Panel title={t("Overdue Bookings")}>
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
             <p className="mt-2">
-              {bookingsTodayOverdue?.data?.data === 0
-                ? "No overdue books!"
-                : `${bookingsTodayOverdue.data?.data} Today's booking list`}
+              {bookingsTodayOverdue?.isLoading ? (
+                <Skeleton className={"w-56 h-7"} />
+              ) : bookingsTodayOverdue.data.total === 0 ? (
+                "No overdue books!"
+              ) : (
+                `${bookingsTodayOverdue.data?.data} ${t("Today's booking list")}`
+              )}
             </p>
           </div>
         </Panel>
       </div>
 
-      <Panel title="Annual Statistics">
+      <Panel title={t("Statistics")}>
         <div className="h-72">
           {bookingDiagram.isLoading ? (
             <div className="flex justify-center items-center h-full text-muted-foreground">

@@ -89,7 +89,19 @@
   "Active": "Active",
   "NoActive": "Inactive",
   "No Active": "No Active",
-  "Book Copy Detail": "Book Copy Detail",
-  "Administrators": "Administrators",
-  "Archived": "Archived"
+  "Total Users": "Total Users",
+  "Total Books": "Total Books",
+  "Book Copies": "Book Copies",
+  "Total Bookings": "Total Bookings",
+  "Bookings Status": "Bookings Status",
+  "Today's Bookings": "Today's Bookings",
+  "Overdue Bookings": "Overdue Bookings",
+  "Annual Statistics": "Annual Statistics",
+  "Registered library members": "Registered library members",
+  "Books in collection": "Books in collection",
+  "Physical book copies": "Physical book copies",
+  "All time bookings": "All Bookings",
+  "No booking data available Check back later for updates": "No booking data available. Check back later for updates.",
+  "Statistics": "Statistics",
+  "Today's booking list": "Today's booking list"
 }
