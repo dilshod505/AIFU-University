@@ -19,6 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ApexOptions } from "apexcharts";
 import { SquareCheckBig } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -79,7 +80,13 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Users"
-          value={studentsCount.data?.data || 0}
+          value={
+            studentsCount.isLoading ? (
+              <Skeleton className={"w-5 h-7"} />
+            ) : (
+              studentsCount.data?.data
+            )
+          }
           subtitle="Registered library members"
           icon="👤"
         />
