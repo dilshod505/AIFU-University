@@ -76,7 +76,6 @@ const Dashboard = () => {
   return (
     <div className="p-6 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Users"
@@ -92,19 +91,37 @@ const Dashboard = () => {
         />
         <StatCard
           title="Total Books"
-          value={booksCount.data?.data || 0}
+          value={
+            booksCount.isLoading ? (
+              <Skeleton className={"w-5 h-7"} />
+            ) : (
+              booksCount.data?.data
+            )
+          }
           subtitle="Books in collection"
           icon="📚"
         />
         <StatCard
           title="Book Copies"
-          value={bookCopiesCount.data?.data || 0}
+          value={
+            bookCopiesCount.isLoading ? (
+              <Skeleton className={"w-5 h-7"} />
+            ) : (
+              bookCopiesCount.data?.data
+            )
+          }
           subtitle="Physical book copies"
           icon="📖"
         />
         <StatCard
           title="Total Bookings"
-          value={bookingCount.data?.data || 0}
+          value={
+            bookingCount.isLoading ? (
+              <Skeleton className={"w-5 h-7"} />
+            ) : (
+              bookingCount.data?.data
+            )
+          }
           subtitle="All time bookings"
           icon="🗓️"
         />
@@ -128,9 +145,13 @@ const Dashboard = () => {
               <SquareCheckBig className="w-10 h-10" />
             </span>
             <p className="mt-2">
-              {bookingToday.data?.total === 0
-                ? "No bookings today"
-                : `${bookingToday.data?.data} Today's booking list`}
+              {bookingToday.isLoading ? (
+                <Skeleton className={"w-36 h-12"} />
+              ) : bookingToday.data.total === 0 ? (
+                "No bookings today"
+              ) : (
+                `${bookingToday.data?.data} Today's booking list`
+              )}
             </p>
           </div>
         </Panel>
