@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
@@ -31,18 +30,16 @@ export const CopiesBooks = () => {
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
-
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
     id: selectedId,
   });
-
   const { data: baseBooks } = useBaseBook();
 
-  const [editingBook, setEditingCategory] = useState<Record<
-    string,
-    any
-  > | null>(null);
+  // O'zgaruvchi nomini to'g'riladik
+  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
+    null,
+  );
   const [open, setOpen] = useState(false);
   const form = useForm();
 
@@ -94,11 +91,13 @@ export const CopiesBooks = () => {
         key: "inventoryNumber",
         dataIndex: "inventoryNumber",
         title: t("Inventory Number"),
+        sorter: true,
       },
       {
         key: "shelfLocation",
         dataIndex: "shelfLocation",
         title: t("Shelf Location"),
+        sorter: true,
       },
       {
         key: "notes",
@@ -126,34 +125,25 @@ export const CopiesBooks = () => {
         title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">
-            {/*<TooltipBtn*/}
-            {/*  variant={"ampersand"}*/}
-            {/*  size={"sm"}*/}
-            {/*  title={t("See")}*/}
-            {/*  onClick={() => {*/}
-            {/*    setSelectedId(record.id);*/}
-            {/*    setEditingCategory(null);*/}
-            {/*    setOpen(true);*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  <Eye />*/}
-            {/*</TooltipBtn>*/}
             <TooltipBtn
               variant={"secondary"}
               size={"sm"}
               title={t("Edit")}
               onClick={() => {
                 setSelectedId(null);
-                setEditingCategory(record);
+                setEditingBook(record); // Bu yerda to'g'riladik
+                // Form ma'lumotlarini to'g'ri o'rnatamiz
                 form.reset({
-                  ...record,
+                  inventoryNumber: record.inventoryNumber,
+                  shelfLocation: record.shelfLocation,
+                  notes: record.notes,
+                  baseBookId: record.baseBookId, // Bu muhim!
                 });
                 setOpen(true);
               }}
             >
               <PenSquareIcon />
             </TooltipBtn>
-
             <TooltipBtn
               variant={"destructive"}
               size={"sm"}
@@ -195,12 +185,16 @@ export const CopiesBooks = () => {
           inventoryNumber: data.inventoryNumber,
           shelfLocation: data.shelfLocation,
           notes: data.notes,
-          baseBookId: data.id,
+          baseBookId: data.baseBookId, // Bu yerda to'g'riladik (data.id emas!)
         },
         {
           onSuccess: () => {
             toast.success(t("Category updated successfully"));
             setOpen(false);
+            setEditingBook(null); // State ni tozalaymiz
+          },
+          onError: () => {
+            toast.error(t("Error updating category"));
           },
         },
       );
@@ -216,6 +210,9 @@ export const CopiesBooks = () => {
           onSuccess: () => {
             toast.success(t("Category created successfully"));
             setOpen(false);
+          },
+          onError: () => {
+            toast.error(t("Error creating category"));
           },
         },
       );
@@ -235,8 +232,14 @@ export const CopiesBooks = () => {
           <TooltipBtn
             title={t("Add Category")}
             onClick={() => {
-              setEditingCategory(null);
-              form.reset({ name: "" });
+              setEditingBook(null); // Bu yerda ham to'g'riladik
+              setSelectedId(null);
+              form.reset({
+                inventoryNumber: "",
+                shelfLocation: "",
+                notes: "",
+                baseBookId: "",
+              });
               setOpen(true);
             }}
           >
@@ -250,7 +253,7 @@ export const CopiesBooks = () => {
         onOpenChange={(v) => {
           setOpen(v);
           if (!v) {
-            setEditingCategory(null);
+            setEditingBook(null); // Bu yerda ham to'g'riladik
             setSelectedId(null);
           }
         }}
@@ -265,7 +268,6 @@ export const CopiesBooks = () => {
                   : t("Add Category")}
             </SheetTitle>
           </SheetHeader>
-
           <div className="p-3">
             {(editingBook || !selectedId) && (
               <AutoForm
@@ -278,7 +280,6 @@ export const CopiesBooks = () => {
                 showResetButton={false}
               />
             )}
-
             {selectedId && (
               <div className="space-y-4">
                 <p className={"flex justify-between items-center"}>
@@ -289,7 +290,6 @@ export const CopiesBooks = () => {
                     <Skeleton className="w-1/2 h-5" />
                   )}
                 </p>
-
                 <p className={"flex justify-between items-center"}>
                   <strong>{t("Shelf Location")}:</strong>{" "}
                   {!isDetailLoading ? (

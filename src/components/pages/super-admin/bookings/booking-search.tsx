@@ -30,10 +30,16 @@ export function BookingSearch({
   }, [query]);
 
   const { data: bookingResults, isLoading: isLoadingBookings } =
-    useSearchBookings(searchType === "bookings" ? debouncedQuery : "");
+    useSearchBookings(
+      searchType === "bookings" ? debouncedQuery : "",
+      "inventoryNumber", // bu backend kutayotgan field nomi
+    );
 
   const { data: historyResults, isLoading: isLoadingHistory } =
-    useSearchHistory(searchType === "history" ? debouncedQuery : "");
+    useSearchHistory(
+      searchType === "history" ? debouncedQuery : "",
+      searchType === "history" ? "userID" : "", // yoki "cardNumber"
+    );
 
   const isLoading = isLoadingBookings || isLoadingHistory;
   const searchResults =

@@ -51,10 +51,10 @@ export function useBooking(id: string) {
 }
 
 // Search bookings
-export function useSearchBookings(query: string) {
+export function useSearchBookings(query: string, field: string) {
   return useQuery({
-    queryKey: bookingKeys.search(query),
-    queryFn: () => searchBookings(query),
+    queryKey: bookingKeys.search(`${field}-${query}`),
+    queryFn: () => searchBookings(query, field),
     enabled: !!query.trim(),
   });
 }
@@ -149,10 +149,13 @@ export function useHistoryRecord(id: string) {
   });
 }
 
-export function useSearchHistory(query: string) {
+export function useSearchHistory(query: string, field: string) {
+  const isQueryValid = !!query.trim();
+  const isUserIDValid = field === "userID" ? /^\d+$/.test(query) : true;
+
   return useQuery({
-    queryKey: historyKeys.search(query),
-    queryFn: () => searchHistory(query),
-    enabled: !!query.trim(),
+    queryKey: ["search-history", query, field],
+    queryFn: () => searchHistory(query, field),
+    enabled: isQueryValid && isUserIDValid,
   });
 }

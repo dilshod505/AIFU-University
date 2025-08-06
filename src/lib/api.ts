@@ -12,9 +12,12 @@ export async function getBookingById(id: string): Promise<any> {
   return response.data;
 }
 
-export async function searchBookings(query: string): Promise<any> {
+export async function searchBookings(
+  query: string,
+  field: string,
+): Promise<any> {
   const response = await api.get(
-    `/admin/booking/search?q=${encodeURIComponent(query)}`,
+    `/admin/booking/search?query=${encodeURIComponent(query)}&field=${field}`,
   );
   return response.data;
 }
@@ -45,9 +48,16 @@ export async function getHistoryById(id: string): Promise<any> {
   return response.data;
 }
 
-export async function searchHistory(query: string): Promise<any> {
-  const response = await api.get(
-    `/admin/history/search?q=${encodeURIComponent(query)}`,
-  );
-  return response.data;
+export async function searchHistory(query: string, field: string) {
+  const res = await api.get("/api/admin/history/search", {
+    params: {
+      query,
+      field,
+      pageNumber: 1,
+      pageSize: 10,
+      sortDirection: "asc",
+    },
+  });
+
+  return res.data.data;
 }

@@ -18,18 +18,14 @@ export default function ActiveBookingsPage() {
   const queryClient = useQueryClient();
   const { data: bookings = [], isLoading, error, refetch } = useBookings();
 
-  // Filter only active bookings (borrowed and overdue)
   const activeBookings = bookings.filter(
     (booking: Record<string, any>) =>
       booking.status === "borrowed" || booking.status === "overdue",
   );
 
-  // Use original bookings when not searching
   const currentBookings = isSearching ? displayedBookings : activeBookings;
 
-  // Memoize callback functions to prevent infinite re-renders
   const handleSearchResults = useCallback((results: Booking[]) => {
-    // Filter search results to show only active bookings
     const activeResults = results.filter(
       (booking) =>
         booking.status === "borrowed" || booking.status === "overdue",
