@@ -1,11 +1,19 @@
 import { api } from "@/components/models/axios";
 import { useQuery } from "@tanstack/react-query";
 
-export const useBaseBook = () =>
+export const useBaseBook = ({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) =>
   useQuery({
     queryKey: ["base-book"],
     queryFn: async () => {
-      const res = await api.get("/admin/base-books?pageSize=100000");
+      const res = await api.get(
+        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}`,
+      );
       return res.data;
     },
   });

@@ -1,11 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 
-export const useCopiesBooks = () =>
+export const useCopiesBooks = ({
+  pageSize,
+  pageNumber,
+}: {
+  pageSize: number;
+  pageNumber: number;
+}) =>
   useQuery({
-    queryKey: ["copies-book"],
+    queryKey: ["copies-book", pageNumber, pageSize],
     queryFn: async () => {
-      const res = await api.get("/admin/book-copies?pageSize=100000");
+      const res = await api.get(
+        `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}`,
+      );
       return res.data;
     },
   });

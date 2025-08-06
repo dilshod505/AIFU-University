@@ -24,10 +24,13 @@ import { useBaseBook } from "@/components/models/queries/base-book";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Divider } from "antd";
+import { Button } from "@/components/ui/button";
+import ReactPaginate from "react-paginate";
+import { useSearchParams } from "next/navigation";
 
 export const CopiesBooks = () => {
   const t = useTranslations();
-  const { data: copiesBooks, isLoading } = useCopiesBooks();
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
@@ -37,11 +40,24 @@ export const CopiesBooks = () => {
     any
   > | null>(null);
 
+  const searchParams = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams);
+  const [pageSize, setPageSize] = useState<number>(
+    Number(searchParams.get("pageSize")) || 10,
+  );
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchParams.get("pageNumber")) || 1,
+  );
+
+  const { data: copiesBooks, isLoading } = useCopiesBooks({
+    pageSize,
+    pageNumber: pageNum,
+  });
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
     id: editingBook?.id,
   });
 
-  const { data: baseBooks } = useBaseBook();
+  const { data: baseBooks } = useBaseBook({ pageNum, pageSize });
 
   const [open, setOpen] = useState<boolean>(false);
   const [open2, setOpen2] = useState<boolean>(false);
@@ -238,6 +254,7 @@ export const CopiesBooks = () => {
       <MyTable
         searchable
         columnVisibility
+        pagination={false}
         isLoading={isLoading}
         columns={columns}
         dataSource={copiesBooks?.data?.list || []}
@@ -255,6 +272,21 @@ export const CopiesBooks = () => {
           </TooltipBtn>
         }
       />
+      <Divider />
+      <ReactPaginate
+        breakLabel="..."
+        onPageChange={(e) => {
+          setPageNum(e.selected + 1);
+          queryParams.set("pageNumber", String(e.selected + 1));
+        }}
+        pageRangeDisplayed={pageSize}
+        pageCount={copiesBooks?.data?.totalElements / pageSize || 0}
+        previousLabel={<Button>Previous</Button>}
+        nextLabel={<Button>Next</Button>}
+        className={"flex justify-center gap-3 items-center"}
+        renderOnZeroPageCount={null}
+        forcePage={pageNum - 1}
+      />
       {(actionType === "add" || actionType === "edit") && (
         <Sheet
           open={open}
@@ -270,13 +302,11 @@ export const CopiesBooks = () => {
           <SheetContent>
             <SheetHeader>
               <SheetTitle>
-                {actionType === "view"
-                  ? t("Book Copy Detail")
-                  : actionType === "add"
-                    ? t("Add Category")
-                    : actionType === "edit"
-                      ? t("Edit Category")
-                      : ""}
+                {actionType === "add"
+                  ? t("Add Category")
+                  : actionType === "edit"
+                    ? t("Edit Category")
+                    : ""}
               </SheetTitle>
             </SheetHeader>
 
