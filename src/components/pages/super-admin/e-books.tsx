@@ -94,7 +94,7 @@ const EBaseBooks = () => {
   const onSubmit = async (data: any) => {};
 
   return (
-    <div className={"cont"}>
+    <div>
       <h1 className={"text-2xl font-semibold py-5"}>{t("E-Base-Books")}</h1>
       <MyTable
         columns={columns}

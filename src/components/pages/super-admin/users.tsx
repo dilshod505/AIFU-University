@@ -50,7 +50,7 @@ const Users = () => {
   );
 
   return (
-    <div className={"cont"}>
+    <div>
       <h3 className={"text-2xl font-semibold py-5"}>{t("users")}</h3>
       <MyTable
         columns={columns}

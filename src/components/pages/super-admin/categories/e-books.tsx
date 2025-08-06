@@ -132,7 +132,7 @@ const EBookCategories = () => {
   };
 
   return (
-    <div className="cont">
+    <div>
       <h1 className="text-2xl font-semibold py-5">
         {t("Categories of E-Base Books")}
       </h1>

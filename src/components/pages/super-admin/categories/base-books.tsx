@@ -132,10 +132,10 @@ const BaseBooks = () => {
     if (editingCategory) {
       form.setValue("name", editingCategory.name);
     }
-  }, [editingCategory]);
+  }, [editingCategory, form]);
 
   return (
-    <div className={"cont"}>
+    <div>
       <h1 className={"text-2xl font-semibold py-5"}>
         {t("Categories of Base BaseBooks")}
       </h1>

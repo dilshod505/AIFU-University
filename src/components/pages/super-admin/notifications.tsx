@@ -5,7 +5,7 @@ const Notifications = () => {
   const t = useTranslations();
 
   return (
-    <div className={"cont"}>
+    <div>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Notifications")}</h1>
     </div>
   );

@@ -226,7 +226,7 @@ export const CopiesBooks = () => {
   };
 
   return (
-    <div className={""}>
+    <div>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
       <MyTable
         searchable

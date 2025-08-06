@@ -159,7 +159,7 @@ const BaseBooks = () => {
   };
 
   return (
-    <div className={"cont"}>
+    <div>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Base books")}</h1>
       <MyTable
         columns={columns}
