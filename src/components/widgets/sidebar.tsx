@@ -191,7 +191,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         role: ["ADMIN", "SUPER_ADMIN"],
         children: [
           {
-            title: t("active"),
+            title: t("Active"),
             href: `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
             activePatterns: [
               `/${user?.role?.toLowerCase().replace("_", "-")}/active`,
@@ -199,7 +199,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             ],
           },
           {
-            title: t("archived"),
+            title: t("Archived"),
             href: `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
             activePatterns: [
               `/${user?.role?.toLowerCase().replace("_", "-")}/archived`,
