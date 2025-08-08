@@ -291,15 +291,15 @@ export const CopiesBooks = () => {
         previousLabel={
           <Button className={"bg-white text-black"}>
             <ChevronLeft />
-            Previous
+            {t("Return")}
           </Button>
         }
         nextLabel={
           <Button className={"bg-white text-black"}>
-            <ChevronRight /> Next
+            {t("Next")} <ChevronRight />
           </Button>
         }
-        className={"flex justify-center gap-3 items-center"}
+        className={"flex justify-center gap-2 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}
         pageClassName="px-3 py-1 rounded-full border" // oddiy sahifalar
