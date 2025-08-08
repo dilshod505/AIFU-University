@@ -133,7 +133,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             href: `/${user?.role?.toLowerCase().replace("_", "-")}/categories/e-books`,
             activePatterns: [
               `/${user?.role?.toLowerCase().replace("_", "-")}/categories/e-books`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/category/e-books/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/categories/e-books/*`,
             ],
           },
           {
@@ -141,7 +141,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             href: `/${user?.role?.toLowerCase().replace("_", "-")}/categories/base-books`,
             activePatterns: [
               `/${user?.role?.toLowerCase().replace("_", "-")}/categories/base-books`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/category/base-books/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/categories/base-books/*`,
             ],
           },
         ],

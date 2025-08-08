@@ -38,7 +38,9 @@ export default function Login() {
         setCredentials(email, res?.data.data?.token || "");
         Cookies.set("aifu-token", res?.data.data?.token || "");
         toast.success(t("Login successfull"));
-        router.replace(`/super-admin/dashboard`);
+        router.replace(
+          `/${res?.data.data?.user?.role.toString().toLowerCase()}/dashboard`,
+        );
         setIsLoading(false);
       }
     } catch (e) {
