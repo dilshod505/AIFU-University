@@ -111,5 +111,13 @@
   "Return": "Qaytish",
   "Next": "Keyingi",
   "Is Taken": "Olingan",
-  "Search": "Qidiruv"
+  "Search": "Qidiruv",
+  "Recover password": "Parolni tiklash",
+  "AIFU - Recover password": "AIFU - Parolni tiklash",
+  "Verification code sent to your email": "Elektron pochtangizga tasdiqlash kodi yuborildi",
+  "Invalid verification code or failed to reset password": "Noto'g'ri tekshirish kodi yoki parolni tiklashda xatolik yuz berdi",
+  "Send Verification Code": "Tasdiqlash kodini yuborish",
+  "Back to Login": "Login sahifasiga qaytish",
+  "Back to Email": "Elektron pochtaga qaytish",
+  "Forgot Password?": ""
 }

@@ -111,5 +111,13 @@
   "Return": "Возврат",
   "Next": "Далее",
   "Is Taken": "Занято",
-  "Search": "Поиск"
+  "Search": "Поиск",
+  "Recover password": "Восстановить пароль",
+  "AIFU - Recover password": "AIFU - Восстановить пароль",
+  "Verification code sent to your email": "На вашу электронную почту отправлен код подтверждения",
+  "Invalid verification code or failed to reset password": "Неверный код подтверждения или не удалось сбросить пароль",
+  "Send Verification Code": "Отправить код подтверждения",
+  "Back to Login": "Вернуться к входу",
+  "Back to Email": "Назад к электронной почте",
+  "Forgot Password?": ""
 }

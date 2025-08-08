@@ -108,5 +108,13 @@
   "Return": "Return",
   "Next": "Next",
   "Is Taken": "Is Taken",
-  "Search": "Search"
+  "Search": "Search",
+  "Recover password": "Recover password",
+  "AIFU - Recover password": "AIFU - Recover password",
+  "Verification code sent to your email": "Verification code sent to your email",
+  "Invalid verification code or failed to reset password": "Invalid verification code or failed to reset password",
+  "Send Verification Code": "Send Verification Code",
+  "Back to Login": "Back to Login",
+  "Back to Email": "Back to Email",
+  "Forgot Password?": ""
 }

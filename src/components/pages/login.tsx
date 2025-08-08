@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function Login() {
   const t = useTranslations();
@@ -95,7 +96,14 @@ export default function Login() {
                 required
               />
             </div>
-
+            <div className="text-right">
+              <Link
+                href="/login/forget"
+                className="text-sm text-[#FF0258] hover:underline"
+              >
+                {t("Forgot Password?")}
+              </Link>
+            </div>
             <Button
               type="submit"
               disabled={isLoading}
