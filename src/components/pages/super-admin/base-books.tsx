@@ -115,7 +115,7 @@ const BaseBooks = () => {
         required: false,
       },
     ],
-    [t],
+    [categories?.data, t],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -147,7 +147,7 @@ const BaseBooks = () => {
         title: t("Total copies"),
       },
     ],
-    [],
+    [t],
   );
 
   const onSubmit = async (data: any) => {

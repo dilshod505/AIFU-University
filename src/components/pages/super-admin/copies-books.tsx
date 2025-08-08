@@ -4,7 +4,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
-import { Eye, PenSquareIcon, Plus, Trash } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  PenSquareIcon,
+  Plus,
+  Trash,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
@@ -157,7 +164,7 @@ export const CopiesBooks = () => {
               <Eye />
             </TooltipBtn>
             <TooltipBtn
-              variant={"secondary"}
+              variant={"view"}
               size={"sm"}
               title={t("Edit")}
               onClick={() => {
@@ -281,12 +288,24 @@ export const CopiesBooks = () => {
         }}
         pageRangeDisplayed={pageSize}
         pageCount={copiesBooks?.data?.totalElements / pageSize || 0}
-        previousLabel={<Button>Previous</Button>}
-        nextLabel={<Button>Next</Button>}
+        previousLabel={
+          <Button className={"bg-white text-black"}>
+            <ChevronLeft />
+            Previous
+          </Button>
+        }
+        nextLabel={
+          <Button className={"bg-white text-black"}>
+            <ChevronRight /> Next
+          </Button>
+        }
         className={"flex justify-center gap-3 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}
+        pageClassName="px-3 py-1 rounded-full border" // oddiy sahifalar
+        activeClassName="bg-green-600 text-white rounded-full" // aktiv sahifa
       />
+
       {(actionType === "add" || actionType === "edit") && (
         <Sheet
           open={open}
