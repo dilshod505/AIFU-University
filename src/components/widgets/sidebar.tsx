@@ -231,17 +231,13 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           {
             title: t("Users"),
             href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
-            activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/users/*`,
-            ],
           },
           {
             title: t("Administrators"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/administrators`,
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/users/administrators`,
             activePatterns: [
-              `/${user?.role?.toLowerCase().replace("_", "-")}/administrators`,
-              `/${user?.role?.toLowerCase().replace("_", "-")}/administrators/*`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users/administrators`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users/administrators/*`,
             ],
           },
         ],

@@ -5,23 +5,18 @@ import SimpleTranslation from "@/components/simple-translation";
 import { usePdfBooksList } from "@/components/models/queries/pdf-books";
 import Image from "next/image";
 import logo from "../../../../public/img-bg.png";
-import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
 import { Divider } from "antd";
+import { useTranslations } from "next-intl";
 
 const PdfBooks = () => {
-  const searchParams = useSearchParams();
-  const queryParams = new URLSearchParams(searchParams);
-  const [pageNum, setPageNum] = useState<number>(
-    Number(searchParams.get("pageNum")) || 1,
-  );
-  const [pageSize, setPageSize] = useState<number>(
-    Number(searchParams.get("pageSize")) || 9,
-  );
+  const t = useTranslations();
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(9);
 
   const { data: books, isLoading } = usePdfBooksList({ pageNum, pageSize });
 
@@ -87,14 +82,11 @@ const PdfBooks = () => {
       <Divider />
       <ReactPaginate
         breakLabel="..."
-        onPageChange={(e) => {
-          setPageNum(e.selected + 1);
-          queryParams.set("pageNum", String(e.selected + 1));
-        }}
+        onPageChange={(e) => setPageNum(e.selected + 1)}
         pageRangeDisplayed={pageSize}
         pageCount={books?.data?.totalElements / pageSize || 0}
-        previousLabel={<Button>Previous</Button>}
-        nextLabel={<Button>Next</Button>}
+        previousLabel={<Button>{t("Previous")}</Button>}
+        nextLabel={<Button>{t("Next")}</Button>}
         className={"flex justify-center gap-3 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}

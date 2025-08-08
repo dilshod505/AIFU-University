@@ -105,7 +105,17 @@
   "Statistics": "Statistics",
   "Today's booking list": "Today's booking list",
   "Book count": "Book count",
-  "Return": "Return",
+  "System Administrators": "System Administrators",
+  "Administrators": "Administrators",
+  "Archived": "Archived",
+  "Book Copy Detail": "Book Copy Detail",
+  "AIFU - System Administrators": "AIFU - System Administrators",
+  "All": "All",
+  "Previous": "Previous",
   "Next": "Next",
+  "select data size": "Select data size",
+  "Ban": "Ban",
+  "Unban": "Unban",
+  "Return": "Return",
   "Is Taken": "Is Taken"
 }

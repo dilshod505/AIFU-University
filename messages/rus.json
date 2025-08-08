@@ -108,7 +108,14 @@
   "Administrators": "Администраторы",
   "Archived": "Архивировано",
   "Book count": "Количество книг",
-  "Return": "Возврат",
+  "System Administrators": "Системные администраторы",
+  "AIFU - System Administrators": "AIFU - Системные администраторы",
+  "All": "Все",
+  "Previous": "Предыдущий",
   "Next": "Далее",
+  "select data size": "Выберите размер данных",
+  "Ban": "Заблокировать",
+  "Unban": "Разблокировать",
+  "Return": "Возврат",
   "Is Taken": "Занято"
 }

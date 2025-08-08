@@ -3,9 +3,8 @@
 import React, { useMemo, useState } from "react";
 import MyTable, { IColumn } from "@/components/my-table";
 import { useTranslations } from "next-intl";
-import { useStudents } from "@/components/models/queries/students";
+import { useAdministrators } from "@/components/models/queries/students";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
 import ReactPaginate from "react-paginate";
@@ -25,14 +24,12 @@ import {
 
 export type FilterType = "all" | "active" | "inactive";
 
-const Users = () => {
+const Administrators = () => {
   const t = useTranslations();
-  const [filter, setFilter] = useState<FilterType>("all");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const { data: students, isLoading } = useStudents({
-    filter,
+  const { data: admins, isLoading } = useAdministrators({
     pageNumber,
     size,
     sortDirection,
@@ -58,30 +55,38 @@ const Users = () => {
         dataIndex: "surname",
       },
       {
-        key: "cardNumber",
-        title: t("Card number"),
-        dataIndex: "cardNumber",
-      },
-      {
         key: "status",
         title: t("status"),
         dataIndex: "status",
-        render: (value: boolean) => (
-          <Badge variant={value ? "default" : "destructive"}>
-            {value ? t("Active") : t("Inactive")}
+        render: (_: boolean, r: Record<string, any>) => (
+          <Badge variant={r.active ? "default" : "destructive"}>
+            {r.active ? t("Active") : t("Inactive")}
           </Badge>
         ),
       },
+      // {
+      //   key: "actions",
+      //   title: t("actions"),
+      //   dataIndex: "actions",
+      //   render: (_: any, r: Record<string, any>) => (
+      //     <TooltipBtn
+      //       title={r.active ? t("Ban") : t("Unban")}
+      //       variant={r.active ? "destructive" : "default"}
+      //     >
+      //       {r.active ? <Ban /> : <Check />}
+      //     </TooltipBtn>
+      //   ),
+      // },
     ],
     [t],
   );
 
   return (
     <div>
-      <h3 className={"text-2xl font-semibold py-5"}>{t("users")}</h3>
+      <h3 className={"text-2xl font-semibold py-5"}>{t("Administrators")}</h3>
       <MyTable
         columns={columns}
-        dataSource={students?.data || []}
+        dataSource={admins?.data || []}
         columnVisibility
         isLoading={isLoading}
         pagination={false}
@@ -119,16 +124,6 @@ const Users = () => {
                 <ArrowDownWideNarrow />
               </Button>
             )}
-            <Tabs
-              value={filter}
-              onValueChange={(a: string) => setFilter(a as any)}
-            >
-              <TabsList>
-                <TabsTrigger value={"all"}>{t("All")}</TabsTrigger>
-                <TabsTrigger value={"active"}>{t("Active")}</TabsTrigger>
-                <TabsTrigger value={"inactive"}>{t("Inactive")}</TabsTrigger>
-              </TabsList>
-            </Tabs>
           </div>
         }
       />
@@ -139,7 +134,7 @@ const Users = () => {
           setPageNumber(e.selected + 1);
         }}
         pageRangeDisplayed={size}
-        pageCount={Math.ceil(students?.totalElements / size) || 0}
+        pageCount={Math.ceil(admins?.totalElements / size) || 0}
         previousLabel={<Button>{t("Previous")}</Button>}
         nextLabel={<Button>{t("Next")}</Button>}
         className={"flex justify-center gap-3 items-center"}
@@ -150,4 +145,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Administrators;
