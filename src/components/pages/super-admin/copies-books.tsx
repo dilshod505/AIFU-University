@@ -4,6 +4,8 @@ import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -17,7 +19,6 @@ import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
   useCopiesBooksId,
-  useCopiesBooksSearch,
   useCreateCopiesBooks,
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
@@ -43,6 +44,7 @@ export const CopiesBooks = () => {
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingCategory] = useState<Record<
     string,
@@ -70,20 +72,11 @@ export const CopiesBooks = () => {
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
+    query: debouncedSearchQuery,
   });
-
-  const { data: searchResults, isLoading: isSearchLoading } =
-    useCopiesBooksSearch({
-      query: debouncedSearchQuery,
-      field: "inventoryNumber",
-      pageSize,
-      pageNumber: pageNum,
-    });
 
   // Determine which data to use
   const isSearching = debouncedSearchQuery.trim().length > 0;
-  const currentData = isSearching ? searchResults : copiesBooks;
-  const currentLoading = isSearching ? isSearchLoading : isLoading;
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
     id: editingBook?.id,
@@ -296,32 +289,15 @@ export const CopiesBooks = () => {
   return (
     <div className={""}>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
-
-      {/* Search Input */}
-
-      {/* Search Results Info */}
-      {isSearching && (
-        <div className="mb-4 text-sm text-gray-600">
-          {currentLoading ? (
-            <span>{t("Searching...")}</span>
-          ) : (
-            <span>
-              {t("Found")} {currentData?.data?.totalElements || 0}{" "}
-              {t("results for")} "{debouncedSearchQuery}"
-            </span>
-          )}
-        </div>
-      )}
-
       <MyTable
         columnVisibility
         pagination={false}
-        isLoading={currentLoading}
+        isLoading={isLoading}
         columns={columns}
-        dataSource={currentData?.data?.list || []}
+        dataSource={copiesBooks?.data?.list || []}
         header={
-          <div className={"flex justify-between items-center gap-2"}>
-            <div className="relative w-[250px]">
+          <div className={"flex justify-between items-center gap-2 flex-wrap"}>
+            <div className="relative max-w-[250px]">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="text-gray-400" size={16} />
               </div>
@@ -340,8 +316,18 @@ export const CopiesBooks = () => {
                 </button>
               )}
             </div>
+            {sortDirection === "asc" ? (
+              <Button size={"sm"} onClick={() => setSortDirection("desc")}>
+                <ArrowUpWideNarrow />
+              </Button>
+            ) : (
+              <Button size={"sm"} onClick={() => setSortDirection("asc")}>
+                <ArrowDownWideNarrow />
+              </Button>
+            )}
             <div>
               <TooltipBtn
+                size={"sm"}
                 title={t("Add Category")}
                 onClick={() => {
                   setOpen(true);
@@ -366,7 +352,7 @@ export const CopiesBooks = () => {
         }}
         pageRangeDisplayed={pageSize}
         pageCount={Math.ceil(
-          (currentData?.data?.totalElements || 0) / pageSize,
+          (copiesBooks?.data?.totalElements || 0) / pageSize,
         )}
         previousLabel={
           <Button className={"bg-white text-black"}>

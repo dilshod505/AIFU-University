@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   useBaseBook,
@@ -17,14 +17,37 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import TooltipBtn from "@/components/tooltip-btn";
-import { Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
+import { Button } from "@/components/ui/button";
+import ReactPaginate from "react-paginate";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
+import { Divider } from "antd";
 
 const BaseBooks = () => {
   const t = useTranslations();
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState<string>(searchQuery);
   const { data: baseBooks, isLoading } = useBaseBook({
-    pageNum: 1,
-    pageSize: 100,
+    pageNum,
+    pageSize: pageSize,
+    searchQuery:
+      debouncedSearchQuery.length > 0 ? debouncedSearchQuery : undefined,
   });
   const createBaseBook = useCreateBaseBook();
   const { data: categories } = useBaseBooksCategory();
@@ -36,6 +59,17 @@ const BaseBooks = () => {
   const [open, setOpen] = useState(false);
   const form = useForm();
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      if (searchQuery !== debouncedSearchQuery) {
+        setPageNum(1);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, debouncedSearchQuery]);
+
   const fields = useMemo<FormField[]>(
     () => [
       {
@@ -45,7 +79,7 @@ const BaseBooks = () => {
         required: true,
       },
       {
-        label: t("Category ID"),
+        label: t("category"),
         name: "categoryId",
         type: "select",
         required: true,
@@ -91,7 +125,7 @@ const BaseBooks = () => {
         required: false,
       },
       {
-        label: t("ISBN"),
+        label: t("Isbn"),
         name: "isbn",
         type: "text",
         required: false,
@@ -167,22 +201,75 @@ const BaseBooks = () => {
       <MyTable
         columns={columns}
         dataSource={baseBooks?.data?.data || []}
-        searchable
         isLoading={isLoading}
         pagination={false}
         header={
-          <TooltipBtn
-            title={t("Add Category")}
-            onClick={() => {
-              setEditingCategory(null);
-              form.reset({ name: "" });
-              setOpen(true);
-            }}
-          >
-            <Plus />
-            {t("Add Category")}
-          </TooltipBtn>
+          <div className={"flex justify-start items-center gap-2"}>
+            <Input
+              placeholder={t("search")}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(a: string) => setPageSize(Number(a) as any)}
+            >
+              <SelectTrigger suppressHydrationWarning>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <SelectValue placeholder={pageSize} />
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={5}>
+                    {t("select data size")}
+                  </TooltipContent>
+                </Tooltip>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"10"}>10</SelectItem>
+                <SelectItem value={"25"}>25</SelectItem>
+                <SelectItem value={"50"}>50</SelectItem>
+                <SelectItem value={"100"}>100</SelectItem>
+              </SelectContent>
+            </Select>
+            <TooltipBtn
+              size={"sm"}
+              title={t("Add Category")}
+              onClick={() => {
+                setEditingCategory(null);
+                form.reset({ name: "" });
+                setOpen(true);
+              }}
+            >
+              <Plus />
+              {t("Add Category")}
+            </TooltipBtn>
+          </div>
         }
+      />
+      <Divider />
+      <ReactPaginate
+        breakLabel="..."
+        onPageChange={(e) => {
+          const newPageNum = e.selected + 1;
+          setPageNum(newPageNum);
+        }}
+        pageRangeDisplayed={pageSize}
+        pageCount={Math.ceil((baseBooks?.data?.totalElements || 0) / pageSize)}
+        previousLabel={
+          <Button className={"bg-white text-black"}>
+            <ChevronLeft />
+            {t("Previous")}
+          </Button>
+        }
+        nextLabel={
+          <Button className={"bg-white text-black"}>
+            {t("Next")} <ChevronRight />
+          </Button>
+        }
+        className={"flex justify-center gap-2 items-center"}
+        renderOnZeroPageCount={null}
+        forcePage={pageNum - 1}
+        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+        activeClassName="bg-green-600 text-white rounded-full"
       />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>

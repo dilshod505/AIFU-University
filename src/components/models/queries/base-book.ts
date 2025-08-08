@@ -1,18 +1,20 @@
 import { api } from "@/components/models/axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useBaseBook = ({
   pageNum,
   pageSize,
+  searchQuery,
 }: {
   pageNum: number;
   pageSize: number;
+  searchQuery?: string;
 }) =>
   useQuery({
-    queryKey: ["base-book"],
+    queryKey: ["base-book", pageNum, pageSize, searchQuery],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}`,
+        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
       );
       return res.data;
     },
@@ -26,8 +28,6 @@ export const useBaseBookId = () =>
       return res.data;
     },
   });
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateBaseBook = () => {
   const queryClient = useQueryClient();

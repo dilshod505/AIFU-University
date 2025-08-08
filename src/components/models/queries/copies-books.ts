@@ -4,15 +4,17 @@ import { api } from "@/components/models/axios";
 export const useCopiesBooks = ({
   pageSize,
   pageNumber,
+  query,
 }: {
   pageSize: number;
   pageNumber: number;
+  query?: string;
 }) =>
   useQuery({
-    queryKey: ["copies-book", pageNumber, pageSize],
+    queryKey: ["copies-book", pageNumber, pageSize, query],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}`,
+        `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}${query ? `&query=${query}&field=inventoryNumber` : ""}`,
       );
       return res.data;
     },
