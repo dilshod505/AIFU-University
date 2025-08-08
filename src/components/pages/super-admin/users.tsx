@@ -7,7 +7,12 @@ import { useStudents } from "@/components/models/queries/students";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import ReactPaginate from "react-paginate";
 import { Divider } from "antd";
 import {
@@ -140,9 +145,20 @@ const Users = () => {
         }}
         pageRangeDisplayed={size}
         pageCount={Math.ceil(students?.totalElements / size) || 0}
-        previousLabel={<Button>{t("Previous")}</Button>}
-        nextLabel={<Button>{t("Next")}</Button>}
+        previousLabel={
+          <Button className={"bg-white text-black"}>
+            <ChevronLeft />
+            {t("Return")}
+          </Button>
+        }
+        nextLabel={
+          <Button className={"bg-white text-black"}>
+            {t("Next")} <ChevronRight />
+          </Button>
+        }
         className={"flex justify-center gap-3 items-center"}
+        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+        activeClassName="bg-green-600 text-white rounded-full"
         renderOnZeroPageCount={null}
         forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
       />

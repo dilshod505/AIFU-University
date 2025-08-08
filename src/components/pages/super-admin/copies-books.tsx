@@ -60,18 +60,15 @@ export const CopiesBooks = () => {
     Number(searchParams.get("pageNumber")) || 1,
   );
 
-  // Search state
   const [searchQuery, setSearchQuery] = useState<string>(
     searchParams.get("search") || "",
   );
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
 
-  // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      // Reset to first page when searching
       if (searchQuery !== debouncedSearchQuery) {
         setPageNum(1);
       }
@@ -80,16 +77,15 @@ export const CopiesBooks = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, debouncedSearchQuery]);
 
-  // Regular data fetching
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
   });
 
-  // Search data fetching
   const { data: searchResults, isLoading: isSearchLoading } =
     useCopiesBooksSearch({
       query: debouncedSearchQuery,
+      field: "book",
       pageSize,
       pageNumber: pageNum,
     });
@@ -187,6 +183,7 @@ export const CopiesBooks = () => {
       {
         key: "actions",
         dataIndex: "actions",
+        width: 200,
         title: t("actions"),
         render: (_: any, record: any) => (
           <div className="flex gap-2">

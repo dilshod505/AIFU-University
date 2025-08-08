@@ -34,21 +34,24 @@ export const useCopiesBooksId = ({
 
 export const useCopiesBooksSearch = ({
   query,
+  field,
   pageSize,
   pageNumber,
 }: {
   query: string;
+  field: string;
   pageSize: number;
   pageNumber: number;
 }) =>
   useQuery({
-    queryKey: ["copies-book-search", query, pageSize, pageNumber],
+    queryKey: ["copies-book-search", query, field, pageSize, pageNumber],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/book-copies/search?query=${query}&pageSize=${pageSize}&pageNumber=${pageNumber}`,
+        `/admin/book-copies/search?query=${query}&field=${field}&pageSize=${pageSize}&pageNumber=${pageNumber}`,
       );
       return res.data;
     },
+    enabled: !!query.trim(),
   });
 
 export const useCreateCopiesBooks = () => {
