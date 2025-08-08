@@ -36,7 +36,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Divider } from "antd";
 import { Button } from "@/components/ui/button";
 import ReactPaginate from "react-paginate";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 
 export const CopiesBooks = () => {
@@ -50,19 +49,10 @@ export const CopiesBooks = () => {
     any
   > | null>(null);
 
-  const searchParams = useSearchParams();
-  const queryParams = new URLSearchParams(searchParams);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageNum, setPageNum] = useState<number>(1);
 
-  const [pageSize, setPageSize] = useState<number>(
-    Number(searchParams.get("pageSize")) || 10,
-  );
-  const [pageNum, setPageNum] = useState<number>(
-    Number(searchParams.get("pageNumber")) || 1,
-  );
-
-  const [searchQuery, setSearchQuery] = useState<string>(
-    searchParams.get("search") || "",
-  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
 
@@ -85,7 +75,7 @@ export const CopiesBooks = () => {
   const { data: searchResults, isLoading: isSearchLoading } =
     useCopiesBooksSearch({
       query: debouncedSearchQuery,
-      field: "book",
+      field: "inventoryNumber",
       pageSize,
       pageNumber: pageNum,
     });
@@ -255,22 +245,13 @@ export const CopiesBooks = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-
-    if (value.trim()) {
-      queryParams.set("search", value);
-    } else {
-      queryParams.delete("search");
-    }
-    window.history.replaceState(null, "", `?${queryParams.toString()}`);
   };
 
   // Clear search
   const clearSearch = () => {
     setSearchQuery("");
     setDebouncedSearchQuery("");
-    queryParams.delete("search");
     setPageNum(1);
-    window.history.replaceState(null, "", `?${queryParams.toString()}`);
   };
 
   const onSubmit = async (data: any) => {
@@ -339,7 +320,7 @@ export const CopiesBooks = () => {
         columns={columns}
         dataSource={currentData?.data?.list || []}
         header={
-          <div className={"flex justify-between items-center gap-10"}>
+          <div className={"flex justify-between items-center gap-2"}>
             <div className="relative w-[250px]">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="text-gray-400" size={16} />
@@ -382,8 +363,6 @@ export const CopiesBooks = () => {
         onPageChange={(e) => {
           const newPageNum = e.selected + 1;
           setPageNum(newPageNum);
-          queryParams.set("pageNumber", String(newPageNum));
-          window.history.replaceState(null, "", `?${queryParams.toString()}`);
         }}
         pageRangeDisplayed={pageSize}
         pageCount={Math.ceil(
