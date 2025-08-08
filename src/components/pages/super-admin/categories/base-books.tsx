@@ -52,6 +52,11 @@ const BaseBooks = () => {
         title: t("name"),
       },
       {
+        key: "bookCount",
+        dataIndex: "bookCount",
+        title: t("Book count"),
+      },
+      {
         key: "actions",
         dataIndex: "actions",
         title: t("actions"),
@@ -59,7 +64,7 @@ const BaseBooks = () => {
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <TooltipBtn
-              variant={"secondary"}
+              variant={"view"}
               title={t("Edit")}
               size={"sm"}
               onClick={() => {

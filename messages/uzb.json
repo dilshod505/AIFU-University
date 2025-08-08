@@ -92,7 +92,6 @@
   "Book Copy Detail": "Kitob nusxasi tafsiloti",
   "Administrators": "Administratorlar",
   "Archived": "Arxivlangan",
-  "Book Copy Detail": "Kitob nusxasi tafsiloti",
   "Total Users": "Jami foydalanuvchilar",
   "Total Books": "Jami kitoblar",
   "Book Copies": "Kitob nusxalari",
@@ -107,5 +106,6 @@
   "All time bookings": "Barcha vaqt bandlari",
   "No booking data available Check back later for updates": "Hech qanday bron ma'lumotlari mavjud emas. Yangilanishlar uchun keyinroq tekshiring.",
   "Statistics": "Statistika",
-  "Today's booking list": "Bugungi band qilish ro'yxati"
+  "Today's booking list": "Bugungi band qilish ro'yxati",
+  "Book count": "Kitoblar soni"
 }

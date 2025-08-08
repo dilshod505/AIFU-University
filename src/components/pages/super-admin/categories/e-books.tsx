@@ -62,6 +62,11 @@ const EBookCategories = () => {
         title: t("name"),
       },
       {
+        key: "bookCount",
+        dataIndex: "bookCount",
+        title: t("Book count"),
+      },
+      {
         key: "actions",
         dataIndex: "actions",
         width: 200,
@@ -69,7 +74,7 @@ const EBookCategories = () => {
         render: (_: any, record: any) => (
           <div className="flex gap-2">
             <TooltipBtn
-              variant={"secondary"}
+              variant={"view"}
               size={"sm"}
               title={t("Edit category")}
               onClick={() => {
