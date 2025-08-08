@@ -25,9 +25,28 @@ export const useCopiesBooksId = ({
 }) =>
   useQuery({
     queryKey: ["copies-book-id", id],
-    enabled: !!id, // faqat id bo‘lsa query ishlaydi
+    enabled: !!id,
     queryFn: async () => {
       const res = await api.get(`/admin/book-copies/${id}`);
+      return res.data;
+    },
+  });
+
+export const useCopiesBooksSearch = ({
+  query,
+  pageSize,
+  pageNumber,
+}: {
+  query: string;
+  pageSize: number;
+  pageNumber: number;
+}) =>
+  useQuery({
+    queryKey: ["copies-book-search", query, pageSize, pageNumber],
+    queryFn: async () => {
+      const res = await api.get(
+        `/admin/book-copies/search?query=${query}&pageSize=${pageSize}&pageNumber=${pageNumber}`,
+      );
       return res.data;
     },
   });

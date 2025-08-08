@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
@@ -10,12 +9,15 @@ import {
   Eye,
   PenSquareIcon,
   Plus,
+  Search,
   Trash,
+  X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useCopiesBooks,
   useCopiesBooksId,
+  useCopiesBooksSearch,
   useCreateCopiesBooks,
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
@@ -35,6 +37,7 @@ import { Divider } from "antd";
 import { Button } from "@/components/ui/button";
 import ReactPaginate from "react-paginate";
 import { useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 export const CopiesBooks = () => {
   const t = useTranslations();
@@ -49,6 +52,7 @@ export const CopiesBooks = () => {
 
   const searchParams = useSearchParams();
   const queryParams = new URLSearchParams(searchParams);
+
   const [pageSize, setPageSize] = useState<number>(
     Number(searchParams.get("pageSize")) || 10,
   );
@@ -56,10 +60,45 @@ export const CopiesBooks = () => {
     Number(searchParams.get("pageNumber")) || 1,
   );
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState<string>(
+    searchParams.get("search") || "",
+  );
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState<string>(searchQuery);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      // Reset to first page when searching
+      if (searchQuery !== debouncedSearchQuery) {
+        setPageNum(1);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, debouncedSearchQuery]);
+
+  // Regular data fetching
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
   });
+
+  // Search data fetching
+  const { data: searchResults, isLoading: isSearchLoading } =
+    useCopiesBooksSearch({
+      query: debouncedSearchQuery,
+      pageSize,
+      pageNumber: pageNum,
+    });
+
+  // Determine which data to use
+  const isSearching = debouncedSearchQuery.trim().length > 0;
+  const currentData = isSearching ? searchResults : copiesBooks;
+  const currentLoading = isSearching ? isSearchLoading : isLoading;
+
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
     id: editingBook?.id,
   });
@@ -112,7 +151,8 @@ export const CopiesBooks = () => {
         key: "index",
         dataIndex: "index",
         title: "#",
-        render: (_: any, __: any, index: number) => index + 1,
+        render: (_: any, __: any, index: number) =>
+          (pageNum - 1) * pageSize + index + 1,
       },
       {
         key: "inventoryNumber",
@@ -182,7 +222,6 @@ export const CopiesBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-
             <TooltipBtn
               variant={"destructive"}
               size={"sm"}
@@ -202,7 +241,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, form],
+    [t, deleteCategory, form, pageNum, pageSize],
   );
 
   useEffect(() => {
@@ -216,6 +255,27 @@ export const CopiesBooks = () => {
     }
   }, [editingBook, open, form, actionType]);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    if (value.trim()) {
+      queryParams.set("search", value);
+    } else {
+      queryParams.delete("search");
+    }
+    window.history.replaceState(null, "", `?${queryParams.toString()}`);
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchQuery("");
+    setDebouncedSearchQuery("");
+    queryParams.delete("search");
+    setPageNum(1);
+    window.history.replaceState(null, "", `?${queryParams.toString()}`);
+  };
+
   const onSubmit = async (data: any) => {
     if (editingBook) {
       updateBook.mutate(
@@ -224,7 +284,7 @@ export const CopiesBooks = () => {
           inventoryNumber: data.inventoryNumber,
           shelfLocation: data.shelfLocation,
           notes: data.notes,
-          baseBookId: data.id,
+          baseBookId: data.baseBookId,
         },
         {
           onSuccess: () => {
@@ -258,36 +318,80 @@ export const CopiesBooks = () => {
   return (
     <div className={""}>
       <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
+
+      {/* Search Input */}
+
+      {/* Search Results Info */}
+      {isSearching && (
+        <div className="mb-4 text-sm text-gray-600">
+          {currentLoading ? (
+            <span>{t("Searching...")}</span>
+          ) : (
+            <span>
+              {t("Found")} {currentData?.data?.totalElements || 0}{" "}
+              {t("results for")} "{debouncedSearchQuery}"
+            </span>
+          )}
+        </div>
+      )}
+
       <MyTable
-        searchable
         columnVisibility
         pagination={false}
-        isLoading={isLoading}
+        isLoading={currentLoading}
         columns={columns}
-        dataSource={copiesBooks?.data?.list || []}
+        dataSource={currentData?.data?.list || []}
         header={
-          <TooltipBtn
-            title={t("Add Category")}
-            onClick={() => {
-              // setEditingCategory(null);
-              // form.reset({ name: "" });
-              setOpen(true);
-            }}
-          >
-            <Plus />
-            {t("Add Category")}
-          </TooltipBtn>
+          <div className={"flex justify-between items-center gap-10"}>
+            <div className="relative w-[250px]">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="text-gray-400" size={16} />
+              </div>
+              <Input
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+                placeholder={t("Search")}
+              />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                </button>
+              )}
+            </div>
+            <div>
+              <TooltipBtn
+                title={t("Add Category")}
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <Plus />
+                {t("Add Category")}
+              </TooltipBtn>
+            </div>
+          </div>
         }
       />
+
       <Divider />
+
+      {/* Pagination */}
       <ReactPaginate
         breakLabel="..."
         onPageChange={(e) => {
-          setPageNum(e.selected + 1);
-          queryParams.set("pageNumber", String(e.selected + 1));
+          const newPageNum = e.selected + 1;
+          setPageNum(newPageNum);
+          queryParams.set("pageNumber", String(newPageNum));
+          window.history.replaceState(null, "", `?${queryParams.toString()}`);
         }}
         pageRangeDisplayed={pageSize}
-        pageCount={copiesBooks?.data?.totalElements / pageSize || 0}
+        pageCount={Math.ceil(
+          (currentData?.data?.totalElements || 0) / pageSize,
+        )}
         previousLabel={
           <Button className={"bg-white text-black"}>
             <ChevronLeft />
@@ -302,10 +406,11 @@ export const CopiesBooks = () => {
         className={"flex justify-center gap-2 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer" // oddiy sahifalar
-        activeClassName="bg-green-600 text-white rounded-full" // aktiv sahifa
+        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+        activeClassName="bg-green-600 text-white rounded-full"
       />
 
+      {/* Add/Edit Sheet */}
       {(actionType === "add" || actionType === "edit") && (
         <Sheet
           open={open}
@@ -328,7 +433,6 @@ export const CopiesBooks = () => {
                     : ""}
               </SheetTitle>
             </SheetHeader>
-
             <div className="p-3">
               <AutoForm
                 submitText={
@@ -343,6 +447,8 @@ export const CopiesBooks = () => {
           </SheetContent>
         </Sheet>
       )}
+
+      {/* View Sheet */}
       {actionType === "view" && (
         <Sheet
           open={open2}
@@ -362,7 +468,6 @@ export const CopiesBooks = () => {
             >
               <SheetTitle>{t("Book Copy Detail")}</SheetTitle>
             </SheetHeader>
-
             <div className="p-3">
               <div className="space-y-4">
                 <p className={"flex justify-between items-center"}>
@@ -373,7 +478,6 @@ export const CopiesBooks = () => {
                     <Skeleton className="w-1/2 h-5" />
                   )}
                 </p>
-
                 <p className={"flex justify-between items-center"}>
                   <strong>{t("Shelf Location")}:</strong>{" "}
                   {!isDetailLoading ? (
@@ -401,11 +505,11 @@ export const CopiesBooks = () => {
                 <p className="flex justify-between items-center">
                   <strong>{t("Is Taken")}:</strong>{" "}
                   {isDetailLoading ? (
-                    <Skeleton className="w-1/2 h-5" /> // yuklanayotganda skeleton
+                    <Skeleton className="w-1/2 h-5" />
                   ) : bookDetail?.data?.isTaken ? (
-                    t("Active") // true bo'lsa
+                    t("Active")
                   ) : (
-                    t("No Active") // false bo'lsa
+                    t("No Active")
                   )}
                 </p>
               </div>

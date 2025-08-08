@@ -108,14 +108,8 @@
   "Statistics": "Statistika",
   "Today's booking list": "Bugungi band qilish ro'yxati",
   "Book count": "Kitoblar soni",
-  "System Administrators": "Tizim Administratorlari",
-  "AIFU - System Administrators": "AIFU - Tizim Administratorlari",
-  "All": "Hammasi",
-  "Previous": "Avvalgi",
-  "Next": "Keyingi",
-  "select data size": "Ma'lumot hajmini tanlang",
-  "Ban": "Bloklash",
-  "Unban": "Blokdan chiqarish",
   "Return": "Qaytish",
-  "Is Taken": "Olingan"
+  "Next": "Keyingi",
+  "Is Taken": "Olingan",
+  "Search": "Qidiruv"
 }
