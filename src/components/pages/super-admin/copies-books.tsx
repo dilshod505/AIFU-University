@@ -302,7 +302,7 @@ export const CopiesBooks = () => {
         className={"flex justify-center gap-2 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}
-        pageClassName="px-3 py-1 rounded-full border" // oddiy sahifalar
+        pageClassName="px-3 py-1 rounded-full border cursor-pointer" // oddiy sahifalar
         activeClassName="bg-green-600 text-white rounded-full" // aktiv sahifa
       />
 
@@ -357,7 +357,9 @@ export const CopiesBooks = () => {
           }}
         >
           <SheetContent>
-            <SheetHeader>
+            <SheetHeader
+              className={"flex justify-center items-center text-[20px]"}
+            >
               <SheetTitle>{t("Book Copy Detail")}</SheetTitle>
             </SheetHeader>
 
@@ -391,14 +393,20 @@ export const CopiesBooks = () => {
                 <p className={"flex justify-between items-center"}>
                   <strong>{t("Base Book")}:</strong>{" "}
                   {!isDetailLoading ? (
-                    bookDetail.data?.baseBook?.title
+                    bookDetail.data?.baseBookId
                   ) : (
                     <Skeleton className="w-1/2 h-5" />
                   )}
                 </p>
-                <p className={"flex justify-between items-center"}>
+                <p className="flex justify-between items-center">
                   <strong>{t("Is Taken")}:</strong>{" "}
-                  {bookDetail?.data?.isTaken ? t("Active") : t("No Active")}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" /> // yuklanayotganda skeleton
+                  ) : bookDetail?.data?.isTaken ? (
+                    t("Active") // true bo'lsa
+                  ) : (
+                    t("No Active") // false bo'lsa
+                  )}
                 </p>
               </div>
             </div>
