@@ -119,5 +119,8 @@
   "Send Verification Code": "Tasdiqlash kodini yuborish",
   "Back to Login": "Login sahifasiga qaytish",
   "Back to Email": "Elektron pochtaga qaytish",
-  "Forgot Password?": ""
+  "Forgot Password?": "",
+  "Add admin": "Admin qo'shish",
+  "Add Administrator": "Administrator qo'shish",
+  "Administrator created successfully": "Administrator muvaffaqiyatli yaratildi"
 }

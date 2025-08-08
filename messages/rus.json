@@ -119,5 +119,8 @@
   "Send Verification Code": "Отправить код подтверждения",
   "Back to Login": "Вернуться к входу",
   "Back to Email": "Назад к электронной почте",
-  "Forgot Password?": ""
+  "Forgot Password?": "",
+  "Add admin": "Добавить админа",
+  "Add Administrator": "Добавить администратора",
+  "Administrator created successfully": "Администратор успешно создан"
 }

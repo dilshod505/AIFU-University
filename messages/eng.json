@@ -116,5 +116,8 @@
   "Send Verification Code": "Send Verification Code",
   "Back to Login": "Back to Login",
   "Back to Email": "Back to Email",
-  "Forgot Password?": ""
+  "Forgot Password?": "",
+  "Add admin": "Add admin",
+  "Add Administrator": "Add Administrator",
+  "Administrator created successfully": "Administrator created successfully"
 }

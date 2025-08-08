@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { FilterType } from "@/components/pages/super-admin/users";
 
@@ -43,3 +43,12 @@ export const useAdministrators = ({
     },
     select: (data: Record<string, any>) => data?.data,
   });
+
+export const useCreateAdministrator = () => {
+  return useMutation({
+    mutationFn: async (data: Record<string, any>) => {
+      const res = await api.post("/super-admin/admins", data);
+      return res.data;
+    },
+  });
+};
