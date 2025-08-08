@@ -87,7 +87,7 @@ const Dashboard = () => {
           title={t("Total Users")}
           value={
             studentsCount.isLoading ? (
-              <Skeleton className={"w-5 h-7"} />
+              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
             ) : (
               studentsCount.data?.data
             )
@@ -99,7 +99,7 @@ const Dashboard = () => {
           title={t("Total Books")}
           value={
             booksCount.isLoading ? (
-              <Skeleton className={"w-5 h-7"} />
+              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
             ) : (
               booksCount.data?.data
             )
@@ -111,7 +111,7 @@ const Dashboard = () => {
           title={t("Book Copies")}
           value={
             bookCopiesCount.isLoading ? (
-              <Skeleton className={"w-5 h-7"} />
+              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
             ) : (
               bookCopiesCount.data?.data
             )
@@ -123,7 +123,7 @@ const Dashboard = () => {
           title={t("Total Bookings")}
           value={
             bookingCount.isLoading ? (
-              <Skeleton className={"w-5 h-7"} />
+              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
             ) : (
               bookingCount.data?.data
             )
@@ -148,15 +148,17 @@ const Dashboard = () => {
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
-            <p className="mt-2">
-              {bookingToday.isLoading ? (
-                <Skeleton className={"w-56 h-7"} />
-              ) : bookingToday.data.total === 0 ? (
-                "No bookings today"
-              ) : (
-                `${bookingToday.data?.data} ${t("Today's booking list")}`
-              )}
-            </p>
+            {bookingToday.isLoading ? (
+              <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
+            ) : bookingToday.data.total === 0 ? (
+              <p className="mt-2" suppressHydrationWarning>
+                No bookings today
+              </p>
+            ) : (
+              <p className="mt-2" suppressHydrationWarning>
+                {bookingToday.data?.data} {t("Today's booking list")}
+              </p>
+            )}
           </div>
         </Panel>
 
@@ -165,15 +167,17 @@ const Dashboard = () => {
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
-            <p className="mt-2">
-              {bookingsTodayOverdue?.isLoading ? (
-                <Skeleton className={"w-56 h-7"} />
-              ) : bookingsTodayOverdue.data.total === 0 ? (
-                "No overdue books!"
-              ) : (
-                `${bookingsTodayOverdue.data?.data} ${t("Today's booking list")}`
-              )}
-            </p>
+            {bookingsTodayOverdue?.isLoading ? (
+              <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
+            ) : bookingsTodayOverdue.data.total === 0 ? (
+              <p className="mt-2" suppressHydrationWarning>
+                No overdue books!
+              </p>
+            ) : (
+              <p className="mt-2" suppressHydrationWarning>
+                {bookingsTodayOverdue.data?.data} {t("Today's booking list")}
+              </p>
+            )}
           </div>
         </Panel>
       </div>
@@ -220,7 +224,9 @@ const StatCard = ({
       <span className="text-2xl">{icon}</span>
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
+      <div suppressHydrationWarning className="text-2xl font-bold">
+        {value}
+      </div>
       <p className="text-xs text-muted-foreground">{subtitle}</p>
     </CardContent>
   </Card>

@@ -12,7 +12,6 @@ import { baseBackendUrl } from "@/components/models/axios";
 import useLayoutStore from "@/store/layout-store";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
@@ -39,7 +38,7 @@ export default function Login() {
         Cookies.set("aifu-token", res?.data.data?.token || "");
         toast.success(t("Login successfull"));
         router.replace(
-          `/${res?.data.data?.user?.role.toString().toLowerCase()}/dashboard`,
+          `/${res?.data.data?.user?.role.toString().toLowerCase().replace("_", "-")}/dashboard`,
         );
         setIsLoading(false);
       }
@@ -106,17 +105,6 @@ export default function Login() {
               {t("Login")}
             </Button>
           </form>
-
-          {/* 🔽 SIGN UP LINK SHU YERDA */}
-          <div className="text-center text-sm text-gray-600 pt-4">
-            {t("Don't have an account?")}{" "}
-            <Link
-              href="/sign-up"
-              className="text-[#FF0258] hover:underline font-medium"
-            >
-              {t("Sign up")}
-            </Link>
-          </div>
         </CardContent>
       </Card>
     </div>

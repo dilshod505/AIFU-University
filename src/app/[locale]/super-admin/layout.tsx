@@ -4,7 +4,7 @@ import SidebarWrapper from "@/components/widgets/sidebar-wrapper";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <AuthProvider>
+    <AuthProvider role={"SUPER_ADMIN"}>
       <SidebarWrapper>{children}</SidebarWrapper>
     </AuthProvider>
   );
