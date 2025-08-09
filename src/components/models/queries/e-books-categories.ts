@@ -27,7 +27,9 @@ export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: { id: string | number; name: string }) => {
-      const res = await api.put(`/categories/${data.id}`, { name: data.name });
+      const res = await api.put(`/admin/categories/${data.id}`, {
+        name: data.name,
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -40,7 +42,7 @@ export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | any) => {
-      const res = await api.delete(`/categories/${id}`);
+      const res = await api.delete(`/admin/categories/${id}`);
       return res.data;
     },
     onSuccess: () => {

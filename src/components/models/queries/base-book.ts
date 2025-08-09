@@ -55,3 +55,42 @@ export const useCreateBaseBook = () => {
     },
   });
 };
+
+export const useUpdateBaseBook = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      id: string | number;
+      categoryId: number;
+      author: string;
+      title: string;
+      series: string;
+      titleDetails: string;
+      publicationYear: number;
+      publisher: string;
+      publicationCity: string;
+      isbn: string;
+      pageCount: number;
+      language: string;
+      udc: string;
+    }) => {
+      const res = await api.patch(`/admin/base-books/${data.id}`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["base-book"] });
+    },
+  });
+};
+
+export const useDeleteBaseBook = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string | any) => {
+      const res = await api.delete(`/admin/base-books/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["base-book"] });
+    },
+  });
+};

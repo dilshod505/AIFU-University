@@ -89,7 +89,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [t],
+    [deleteCategory, t],
   );
 
   const fields = useMemo<FormField[]>(

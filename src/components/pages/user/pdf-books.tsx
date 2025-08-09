@@ -12,6 +12,7 @@ import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
 import { Divider } from "antd";
 import { useTranslations } from "next-intl";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const PdfBooks = () => {
   const t = useTranslations();
@@ -85,8 +86,19 @@ const PdfBooks = () => {
         onPageChange={(e) => setPageNum(e.selected + 1)}
         pageRangeDisplayed={pageSize}
         pageCount={books?.data?.totalElements / pageSize || 0}
-        previousLabel={<Button>{t("Previous")}</Button>}
-        nextLabel={<Button>{t("Next")}</Button>}
+        previousLabel={
+          <Button className={"bg-white text-black"}>
+            <ChevronLeft />
+            {t("Return")}
+          </Button>
+        }
+        nextLabel={
+          <Button className={"bg-white text-black"}>
+            {t("Next")} <ChevronRight />
+          </Button>
+        }
+        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+        activeClassName="bg-green-600 text-white rounded-full"
         className={"flex justify-center gap-3 items-center"}
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}

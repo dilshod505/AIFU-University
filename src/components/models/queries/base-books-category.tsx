@@ -22,7 +22,7 @@ export const useUpdateBaseBooksCategory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["base-base-base-books.tsx-category"],
+        queryKey: ["base-book-category"],
       });
     },
   });
@@ -37,7 +37,7 @@ export const useCreateBaseBooksCategory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["base-base-base-books.tsx-category"],
+        queryKey: ["base-book-category"],
       });
     },
   });
@@ -52,7 +52,7 @@ export const useDeleteBaseBooksCategory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["base-base-base-books.tsx-category"],
+        queryKey: ["base-book-category"],
       });
     },
   });
