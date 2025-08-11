@@ -195,7 +195,7 @@ const TranslationEditor = ({
       return;
     }
 
-    if (values.kri?.[newKey]) {
+    if (values.uzb?.[newKey]) {
       toast.error("Translation key already exists");
       return;
     }
@@ -307,7 +307,7 @@ const TranslationEditor = ({
       return;
     }
 
-    if (values.kri?.[newKey]) {
+    if (values.uzb?.[newKey]) {
       toast.error("Translation key already exists");
       return;
     }

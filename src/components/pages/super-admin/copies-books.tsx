@@ -127,36 +127,31 @@ export const CopiesBooks = () => {
   const columns = useMemo<IColumn[]>(
     () => [
       {
+        title: "#",
         key: "index",
         dataIndex: "index",
-        title: "#",
         render: (_: any, __: any, index: number) =>
           (pageNum - 1) * pageSize + index + 1,
       },
       {
+        title: t("Inventory Number"),
         key: "inventoryNumber",
         dataIndex: "inventoryNumber",
-        title: t("Inventory Number"),
       },
       {
+        title: t("Shelf Location"),
         key: "shelfLocation",
         dataIndex: "shelfLocation",
-        title: t("Shelf Location"),
       },
       {
-        key: "notes",
-        dataIndex: "notes",
-        title: t("Notes"),
-      },
-      {
-        key: "baseBookId",
-        dataIndex: "baseBookId",
         title: t("Base Book"),
+        key: "title",
+        dataIndex: "title",
       },
       {
+        title: t("isTaken"),
         key: "isTaken",
         dataIndex: "isTaken",
-        title: t("isTaken"),
         render: (value: boolean) => (
           <Badge variant={value ? "default" : "destructive"}>
             {value ? t("Active") : t("Inactive")}

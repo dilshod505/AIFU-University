@@ -22,9 +22,3 @@ export interface ExtendFormData {
   bookingId: string;
   newDueDate: string;
 }
-
-// New type for History
-export interface HistoryRecord
-  extends Omit<Booking, "status" | "extendedCount"> {
-  status: "returned";
-}

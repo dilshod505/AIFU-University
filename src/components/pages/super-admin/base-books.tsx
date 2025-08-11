@@ -21,16 +21,7 @@ import {
 } from "lucide-react";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
 import ReactPaginate from "react-paginate";
-import {
-  Col,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Row,
-  Select,
-} from "antd";
+import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
 import { Button } from "@/components/ui/button";
 import {
   SelectContent,
@@ -269,145 +260,124 @@ const BaseBooks = () => {
       />
 
       <Modal
-        title={editingBook ? t("Edit Book") : t("Add Book")}
+        title={editingBook ? t("Edit book") : t("Add book")}
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
         width={800}
       >
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-          {/* Section 1 */}
-          <Divider orientation="left">Title</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label={t("Category")} required>
-                <Controller
-                  name="categoryId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} style={{ width: "100%" }}>
-                      {categories?.data?.map((cat: any) => (
-                        <Option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label={t("Author")} required>
-                <Controller
-                  name="author"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label={t("Series")}>
-                <Controller
-                  name="series"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label={t("Title")} required>
-                <Controller
-                  name="title"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+          <h1 className={"text-base font-semibold mb-2"}>{t("Title")}</h1>
+          <div className={"grid md:grid-cols-2 gap-3"}>
+            <Form.Item label={t("Category")} required>
+              <Controller
+                name="categoryId"
+                control={control}
+                render={({ field }) => (
+                  <Select {...field} style={{ width: "100%" }}>
+                    {categories?.data?.map((cat: any) => (
+                      <Option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label={t("Author")} required>
+              <Controller
+                name="author"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Series")}>
+              <Controller
+                name="series"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Title")} required>
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+          </div>
 
-          {/* Section 2 */}
-          <Divider orientation="left">Publication Details</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label={t("Publication year")} required>
-                <Controller
-                  name="publicationYear"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber {...field} style={{ width: "100%" }} />
-                  )}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label={t("Publisher")} required>
-                <Controller
-                  name="publisher"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label={t("Publication City")}>
-                <Controller
-                  name="publicationCity"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Divider />
+          <h1 className={"text-base font-semibold mb-2"}>
+            Publication Details
+          </h1>
+          <div className={"grid md:grid-cols-3 gap-3"}>
+            <Form.Item label={t("Publication year")} required>
+              <Controller
+                name="publicationYear"
+                control={control}
+                render={({ field }) => (
+                  <InputNumber {...field} style={{ width: "100%" }} />
+                )}
+              />
+            </Form.Item>
+            <Form.Item label={t("Publisher")} required>
+              <Controller
+                name="publisher"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Publication City")}>
+              <Controller
+                name="publicationCity"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+          </div>
 
-          {/* Section 3 */}
-          <Divider orientation="left">Additional Information</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label={t("Isbn")}>
-                <Controller
-                  name="isbn"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label={t("Page Count")} required>
-                <Controller
-                  name="pageCount"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber {...field} style={{ width: "100%" }} />
-                  )}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label={t("Language")} required>
-                <Controller
-                  name="language"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Divider />
+          <h1 className={"text-base font-semibold mb-2"}>
+            Additional Information
+          </h1>
+          <div className={"grid md:grid-cols-2 gap-3"}>
+            <Form.Item label={t("Isbn")}>
+              <Controller
+                name="isbn"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Page Count")} required>
+              <Controller
+                name="pageCount"
+                control={control}
+                render={({ field }) => (
+                  <InputNumber {...field} style={{ width: "100%" }} />
+                )}
+              />
+            </Form.Item>
+            <Form.Item label={t("Language")} required>
+              <Controller
+                name="language"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
 
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label={t("UDC")}>
-                <Controller
-                  name="udc"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Form.Item label={t("UDC")}>
+              <Controller
+                name="udc"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+          </div>
 
           <div className="flex justify-end mt-4">
             <Button type="submit" className="bg-green-600 text-white">
-              {editingBook ? t("Edit Book") : t("Add Book")}
+              {editingBook ? t("Edit book") : t("Add book")}
             </Button>
           </div>
         </Form>

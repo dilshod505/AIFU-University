@@ -176,5 +176,9 @@
   "ijara muddati muvaffaqiyatli uzaytirildi": "Lease extended successfully.",
   "kamida 1 kunga uzaytirish mumkin": "Can extend for at least 1 day",
   "kitob ID-sini kiriting": "Enter book ID",
-  "ijara muvaffaqiyatli yakunlandi": "Lease completed successfully."
+  "ijara muvaffaqiyatli yakunlandi": "Lease completed successfully.",
+  "Qaytarilgan": "Returned",
+  "Add book": "Add book",
+  "Edit book": "Edit book",
+  "Category": "Category"
 }

@@ -1,48 +1,52 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { Archive, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Archive } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HistoryRecord } from "@/types/booking";
-import { historyKeys, useHistory } from "@/hooks/use-bookings";
+import { useHistory } from "@/hooks/use-bookings";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookingSearch } from "@/components/pages/super-admin/bookings/booking-search";
 import { useTranslations } from "next-intl";
+import dayjs from "dayjs";
 
 // A new card component for history records
-function HistoryCard({ record }: { record: HistoryRecord }) {
+function HistoryCard({ record }: { record: Record<string, any> }) {
+  const t = useTranslations();
+
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">{record.bookTitle}</CardTitle>
+      <CardHeader className="">
+        <CardTitle className="text-lg">
+          {record.bookTitle} ({record.inventoryNumber})
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <span className="font-medium text-muted-foreground">Muallif:</span>
-            <p className="font-medium">{record.bookAuthor}</p>
+            <p className="font-medium">{record.author}</p>
           </div>
           <div>
             <span className="font-medium text-muted-foreground">
               Foydalanuvchi:
             </span>
-            <p className="font-medium">{record.userName}</p>
+            <p className="font-medium text-sm">
+              {record.name} {record.surname}
+            </p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <span className="font-medium text-muted-foreground">Olingan:</span>
             <p className="font-medium">
-              {new Date(record.borrowDate).toLocaleDateString("uz-UZ")}
+              {dayjs(record.givenAt).format("DD-MM-YYYY")}
             </p>
           </div>
           <div>
             <span className="font-medium text-muted-foreground">
-              Qaytarilgan:
+              {t("Qaytarilgan")}:
             </span>
             <p className="font-medium text-green-600">
-              {new Date(record.returnDate!).toLocaleDateString("uz-UZ")}
+              {dayjs(record.returnedAt).format("DD-MM-YYYY")}
             </p>
           </div>
         </div>
@@ -53,41 +57,12 @@ function HistoryCard({ record }: { record: HistoryRecord }) {
 
 export default function HistoryPage() {
   const t = useTranslations();
-  const [displayedHistory, setDisplayedHistory] = useState<HistoryRecord[]>([]);
+  const [displayedHistory, setDisplayedHistory] = useState<
+    Record<string, any>[]
+  >([]);
   const [isSearching, setIsSearching] = useState(false);
   const queryClient = useQueryClient();
-  const { data: history = [], isLoading, error, refetch } = useHistory();
-
-  const currentHistory = isSearching ? displayedHistory : history;
-
-  // Memoize callback functions to prevent infinite re-renders
-  const handleSearchResults = useCallback((results: HistoryRecord[]) => {
-    setDisplayedHistory(results);
-    setIsSearching(true);
-  }, []);
-
-  const handleClearSearch = useCallback(() => {
-    setDisplayedHistory([]);
-    setIsSearching(false);
-  }, []);
-
-  const handleRefresh = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: historyKeys.all });
-    refetch();
-  }, [queryClient, refetch]);
-
-  if (error) {
-    return (
-      <div className="p-6">
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">
-            Tarixni yuklashda xatolik yuz berdi
-          </p>
-          <Button onClick={handleRefresh}>Qayta urinish</Button>
-        </div>
-      </div>
-    );
-  }
+  const { data: history, isLoading, error, refetch } = useHistory();
 
   return (
     <div className="p-6 space-y-6">
@@ -95,29 +70,17 @@ export default function HistoryPage() {
         <div>
           <h1 className="text-3xl font-bold">{t("arxivlangan ijaralar")}</h1>
           <p className="text-muted-foreground mt-1">
-            {t("arxivlangan ijaralar royxati")} ({currentHistory.length})
+            {t("arxivlangan ijaralar royxati")} ({history?.length || 0})
           </p>
         </div>
-        <Button onClick={handleRefresh} disabled={isLoading}>
-          <RefreshCw
-            className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-          />
-          {t("Yangilash")}
-        </Button>
       </div>
-
-      <BookingSearch
-        onResults={handleSearchResults}
-        onClear={handleClearSearch}
-        searchType="history"
-      />
 
       {isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Yuklanmoqda...</p>
+          <p className="mt-4 text-muted-foreground">{t("loading")}</p>
         </div>
-      ) : currentHistory.length === 0 ? (
+      ) : history?.length === 0 ? (
         <div className="text-center py-12">
           <Archive className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-lg font-medium text-muted-foreground mb-2">
@@ -132,7 +95,7 @@ export default function HistoryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {currentHistory?.map((record: Record<string, any>) => (
+          {history?.map((record: Record<string, any>) => (
             <HistoryCard key={record.id} record={record as any} />
           ))}
         </div>
