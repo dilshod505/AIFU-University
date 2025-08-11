@@ -26,8 +26,9 @@ export default function SidebarWrapper({
   return (
     <SidebarProvider defaultOpen={true}>
       <OptimizedSidebar notifications={notifications} onLogout={onLogout} />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
+      {/* Bu yerga overflow-x-hidden klassini qo'shing */}
+      <SidebarInset className="overflow-x-hidden">
+        <header className="flex h-16 w-auto shrink-0 justify-between items-center gap-2 border-b px-4">
           <div className="flex justify-center items-center gap-3">
             <SidebarTrigger className="-ml-1" />
             <h1 className={"text-2xl font-semibold py-5"}>AIFU</h1>

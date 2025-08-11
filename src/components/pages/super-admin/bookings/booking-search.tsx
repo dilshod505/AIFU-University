@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSearchBookings, useSearchHistory } from "@/hooks/use-bookings";
+import { useTranslations } from "next-intl";
 
 interface BookingSearchProps {
   onResults: (results: any[]) => void;
@@ -17,6 +18,7 @@ export function BookingSearch({
   onClear,
   searchType = "bookings",
 }: BookingSearchProps) {
+  const t = useTranslations();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
@@ -77,7 +79,7 @@ export function BookingSearch({
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Kitob nomi, muallif yoki foydalanuvchi bo'yicha qidiring..."
+          placeholder={t("Qidirish")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="pl-10 pr-10"

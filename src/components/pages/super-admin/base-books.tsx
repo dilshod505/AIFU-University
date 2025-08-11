@@ -9,7 +9,7 @@ import {
   useUpdateBaseBook,
 } from "@/components/models/queries/base-book";
 import MyTable, { IColumn } from "@/components/my-table";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import TooltipBtn from "@/components/tooltip-btn";
 import {
@@ -22,14 +22,14 @@ import {
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
 import ReactPaginate from "react-paginate";
 import {
+  Col,
   Divider,
-  Modal,
   Form,
   Input,
   InputNumber,
-  Select,
+  Modal,
   Row,
-  Col,
+  Select,
 } from "antd";
 import { Button } from "@/components/ui/button";
 import {
@@ -199,7 +199,7 @@ const BaseBooks = () => {
             />
             <Select
               value={pageSize.toString()}
-              onValueChange={(a: string) => setPageSize(Number(a))}
+              onChange={(a: string) => setPageSize(Number(a))}
             >
               <SelectTrigger suppressHydrationWarning>
                 <Tooltip>

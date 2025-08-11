@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner"; // sonner'dan toast import qilindi
-import { Booking } from "@/types/booking";
 import {
-  borrowBook,
   extendBooking,
   getBookingById,
   getBookings,
@@ -56,30 +54,6 @@ export function useSearchBookings(query: string, field: string) {
     queryKey: bookingKeys.search(`${field}-${query}`),
     queryFn: () => searchBookings(query, field),
     enabled: !!query.trim(),
-  });
-}
-
-// Borrow book mutation
-export function useBorrowBook() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: borrowBook,
-    onSuccess: (newBooking) => {
-      queryClient.setQueryData<Booking[]>(bookingKeys.lists(), (old) => [
-        newBooking,
-        ...(old || []),
-      ]);
-      toast.success("Muvaffaqiyat", {
-        description: "Kitob muvaffaqiyatli berildi",
-      });
-    },
-    onError: (error) => {
-      const errorMessage =
-        (error as any)?.response?.data?.message ||
-        "Kitob berishda xatolik yuz berdi";
-      toast.error("Xatolik", { description: errorMessage });
-    },
   });
 }
 

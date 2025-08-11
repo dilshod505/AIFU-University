@@ -17,7 +17,7 @@ export const useStudents = ({
     queryKey: ["students", filter, pageNumber, size, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/students?filter=${filter}&pageNumber=${pageNumber}&size=${size}&sortDirection=${sortDirection}`,
+        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`,
       );
       return res.data;
     },

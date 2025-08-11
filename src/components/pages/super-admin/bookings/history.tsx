@@ -8,6 +8,7 @@ import { HistoryRecord } from "@/types/booking";
 import { historyKeys, useHistory } from "@/hooks/use-bookings";
 import { useQueryClient } from "@tanstack/react-query";
 import { BookingSearch } from "@/components/pages/super-admin/bookings/booking-search";
+import { useTranslations } from "next-intl";
 
 // A new card component for history records
 function HistoryCard({ record }: { record: HistoryRecord }) {
@@ -51,9 +52,9 @@ function HistoryCard({ record }: { record: HistoryRecord }) {
 }
 
 export default function HistoryPage() {
+  const t = useTranslations();
   const [displayedHistory, setDisplayedHistory] = useState<HistoryRecord[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
   const queryClient = useQueryClient();
   const { data: history = [], isLoading, error, refetch } = useHistory();
 
@@ -92,16 +93,16 @@ export default function HistoryPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Arxiv</h1>
+          <h1 className="text-3xl font-bold">{t("arxivlangan ijaralar")}</h1>
           <p className="text-muted-foreground mt-1">
-            Qaytarilgan kitoblar tarixi ({currentHistory.length})
+            {t("arxivlangan ijaralar royxati")} ({currentHistory.length})
           </p>
         </div>
         <Button onClick={handleRefresh} disabled={isLoading}>
           <RefreshCw
             className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
           />
-          Yangilash
+          {t("Yangilash")}
         </Button>
       </div>
 
@@ -121,11 +122,12 @@ export default function HistoryPage() {
           <Archive className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-lg font-medium text-muted-foreground mb-2">
             {isSearching
-              ? "Qidiruv natijasi topilmadi"
-              : "Arxivda yozuvlar mavjud emas"}
+              ? t("Qidiruv natijasi topilmadi")
+              : t("Arxivda yozuvlar mavjud emas")}
           </p>
           <p className="text-sm text-muted-foreground">
-            {!isSearching && "Kitoblar qaytarilgandan so'ng bu yerda ko'rinadi"}
+            {!isSearching &&
+              t("Kitoblar qaytarilgandan so'ng bu yerda ko'rinadi")}
           </p>
         </div>
       ) : (
