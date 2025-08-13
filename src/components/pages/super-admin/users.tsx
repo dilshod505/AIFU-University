@@ -72,9 +72,11 @@ const Users = () => {
         title: t("status"),
         dataIndex: "status",
         render: (value: boolean) => (
-          <Badge variant={value ? "default" : "destructive"}>
-            {value ? t("Active") : t("Inactive")}
-          </Badge>
+          <div
+            className={`w-7 h-6 rounded ${
+              value ? "bg-green-500" : "bg-red-400"
+            }`}
+          />
         ),
       },
     ],

@@ -115,10 +115,12 @@ const Administrators = () => {
         width: 300,
         title: t("status"),
         dataIndex: "status",
-        render: (_: boolean, r: Record<string, any>) => (
-          <Badge variant={r.active ? "default" : "destructive"}>
-            {r.active ? t("Active") : t("Inactive")}
-          </Badge>
+        render: (value: boolean) => (
+          <div
+            className={`w-7 h-6 rounded ${
+              value ? "bg-green-500" : "bg-red-400"
+            }`}
+          />
         ),
       },
       {
