@@ -59,22 +59,34 @@ export const useCreateBaseBook = () => {
 export const useUpdateBaseBook = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: {
+    mutationFn: async ({
+      id,
+      categoryId,
+      ...rest
+    }: {
       id: string | number;
       categoryId: number;
       author: string;
       title: string;
-      series: string;
-      titleDetails: string;
-      publicationYear: number;
+      series?: string;
+      titleDetails?: string;
+      publicationYear: number | string;
       publisher: string;
-      publicationCity: string;
-      isbn: string;
-      pageCount: number;
+      publicationCity?: string;
+      isbn?: string;
+      pageCount: number | string;
       language: string;
-      udc: string;
+      udc?: string;
     }) => {
-      const res = await api.patch(`/admin/base-books/${data.id}`, data);
+      // Transform API format
+      const payload = {
+        ...rest,
+        category: Number(categoryId),
+        publicationYear: Number(rest.publicationYear),
+        pageCount: Number(rest.pageCount),
+      };
+
+      const res = await api.patch(`/admin/base-books/${id}`, payload);
       return res.data;
     },
     onSuccess: () => {

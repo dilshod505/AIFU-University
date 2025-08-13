@@ -155,16 +155,26 @@ const BaseBooks = () => {
     }
   }, [editingBook, reset]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (formData: any) => {
+    const payload = {
+      ...formData,
+      category: Number(formData.categoryId),
+      publicationYear: Number(formData.publicationYear),
+      pageCount: Number(formData.pageCount),
+    };
+
     if (editingBook) {
-      updateBook.mutate(data, {
-        onSuccess: () => {
-          setOpen(false);
-          toast.success(t("Book updated successfully"));
+      updateBook.mutate(
+        { id: editingBook.id, ...payload },
+        {
+          onSuccess: () => {
+            setOpen(false);
+            toast.success(t("Book updated successfully"));
+          },
         },
-      });
+      );
     } else {
-      createBaseBook.mutate(data, {
+      createBaseBook.mutate(payload, {
         onSuccess: () => {
           setOpen(false);
           toast.success(t("Book created successfully"));
