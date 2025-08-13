@@ -253,7 +253,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         role: ["ADMIN", "SUPER_ADMIN"],
       },
     ],
-    [t, notifications],
+    [t, user?.role, notifications],
   );
 
   // Combine all menu items
@@ -280,11 +280,11 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         // Default inactive state
         "text-muted-foreground hover:bg-green-600/95 hover:text-white",
         // Active states
-        isActive && "bg-green-600 text-white hover:bg-green-700",
+        isActive && "bg-red-800 text-white hover:bg-green-800",
         // Parent archived state (subtle background when child is archived)
         isParent &&
           !isActive &&
-          "bg-green-600/10 text-green-700 hover:bg-green-600/20 hover:text-green-600",
+          "bg-green-600 text-white hover:bg-green-600/20 hover:text-green-600",
       );
     };
 
@@ -408,7 +408,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
                         "flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative",
                         "text-muted-foreground hover:bg-green-600/50 hover:text-white",
                         isActive(child) &&
-                          "bg-green-600 text-white hover:bg-green-700",
+                          "bg-green-400 text-white hover:bg-green-700",
                       )}
                     >
                       <span className="w-1.5 h-1.5 bg-current rounded-full flex-shrink-0" />
