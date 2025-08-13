@@ -281,9 +281,11 @@ export const CopiesBooks = () => {
   };
 
   return (
-    <div className={""}>
-      <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
+    <div>
       <MyTable
+        title={
+          <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
+        }
         columnVisibility
         pagination={false}
         isLoading={isLoading}

@@ -141,15 +141,15 @@ const BaseBooks = () => {
 
   return (
     <div>
-      <h1 className={"text-2xl font-semibold py-5"}>
-        {t("Categories of Base BaseBooks")}
-      </h1>
-
       <MyTable
+        title={
+          <h1 className={"text-2xl font-semibold py-5"}>
+            {t("Categories of Base BaseBooks")}
+          </h1>
+        }
         columns={columns}
-        searchable
+        searchable={false}
         columnVisibility
-        fullscreen
         header={
           <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>
             <Plus />

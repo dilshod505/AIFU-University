@@ -161,8 +161,12 @@ const Administrators = () => {
 
   return (
     <div>
-      <h3 className={"text-2xl font-semibold py-5"}>{t("Administrators")}</h3>
       <MyTable
+        title={
+          <h3 className={"text-2xl font-semibold py-5"}>
+            {t("Administrators")}
+          </h3>
+        }
         columns={columns}
         dataSource={admins?.data || []}
         columnVisibility

@@ -138,15 +138,17 @@ const EBookCategories = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold py-5">
-        {t("Categories of E-Base Books")}
-      </h1>
-
       <MyTable
+        title={
+          <h1 className="text-2xl font-semibold py-5">
+            {t("Categories of E-Base Books")}
+          </h1>
+        }
+        columnVisibility
         columns={columns}
         isLoading={isLoading}
         dataSource={categories?.data || []}
-        searchable
+        searchable={false}
         header={
           <TooltipBtn
             variant={"default"}

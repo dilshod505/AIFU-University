@@ -85,8 +85,8 @@ const Users = () => {
 
   return (
     <div>
-      <h3 className={"text-2xl font-semibold py-5"}>{t("users")}</h3>
       <MyTable
+        title={<h3 className={"text-2xl font-semibold py-5"}>{t("users")}</h3>}
         columns={columns}
         dataSource={students?.data || []}
         columnVisibility

@@ -199,7 +199,7 @@ export default function ActiveBookingsPage() {
         ),
       },
     ],
-    [t],
+    [extendReservation, form, returnReservation, t],
   );
 
   return (

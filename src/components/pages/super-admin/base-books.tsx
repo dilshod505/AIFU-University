@@ -185,9 +185,8 @@ const BaseBooks = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold py-5">{t("Base books")}</h1>
-
       <MyTable
+        title={<h1 className="text-2xl font-semibold">{t("Base books")}</h1>}
         columns={columns}
         dataSource={baseBooks?.data?.data || []}
         isLoading={isLoading}
