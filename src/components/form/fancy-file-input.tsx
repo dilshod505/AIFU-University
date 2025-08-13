@@ -61,17 +61,20 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
     formData.append("file", file);
 
     try {
-      // Agar fayl turi aniqlangan bo‘lsa, uni tekshiramiz
-      if (accept && file.type !== accept) {
+      if (accept && !accept.split(",").includes(file.type)) {
         toast.error(t("invalid file type"));
         return null;
       }
 
-      const response = await api.post("/admin/attachment", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await api.post(
+        `/admin/upload/${accept === "application/pdf" ? "pdf" : "image"}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
 
-      const uploadPath = response.data;
+      const uploadPath = response?.data?.url;
 
       if (!uploadPath) {
         throw new Error("URL qaytmadi");
@@ -86,7 +89,7 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
       }
       return uploadPath;
     } catch (error) {
-      toast.error("Fayl yuklashda xatolik yuz berdi");
+      // toast.error("Fayl yuklashda xatolik yuz berdi");
       console.log(error);
       return null;
     } finally {
@@ -142,7 +145,7 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
           ) : previewUrl && isImage ? (
             <Link href={previewUrl} target="_blank">
               <Image
-                src={baseBackendUrl + "/api/v1/attachment/" + previewUrl}
+                src={previewUrl}
                 alt="Preview"
                 width={95}
                 height={95}

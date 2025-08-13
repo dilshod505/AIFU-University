@@ -122,4 +122,8 @@
     .cont {
         @apply max-w-7xl mx-auto px-5;
     }
+
+    .hide-scroll::-webkit-scrollbar {
+        display: none;
+    }
 }

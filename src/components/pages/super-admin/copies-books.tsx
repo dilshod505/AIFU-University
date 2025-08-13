@@ -46,10 +46,9 @@ export const CopiesBooks = () => {
   const updateBook = useUpdateCopiesBooks();
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
-  const [editingBook, setEditingCategory] = useState<Record<
-    string,
-    any
-  > | null>(null);
+  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
+    null,
+  );
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -171,7 +170,7 @@ export const CopiesBooks = () => {
               title={t("See")}
               onClick={() => {
                 setActionType("view");
-                setEditingCategory(record);
+                setEditingBook(record);
                 setOpen2(true);
                 setOpen(false);
               }}
@@ -184,7 +183,7 @@ export const CopiesBooks = () => {
               title={t("Edit")}
               onClick={() => {
                 setActionType("edit");
-                setEditingCategory(record);
+                setEditingBook(record);
                 form.reset({
                   inventoryNumber: record.inventoryNumber || "",
                   shelfLocation: record.shelfLocation || "",
@@ -276,7 +275,7 @@ export const CopiesBooks = () => {
       );
     }
     setActionType("add");
-    setEditingCategory(null);
+    setEditingBook(null);
     setOpen(false);
     setOpen2(false);
   };
@@ -376,7 +375,7 @@ export const CopiesBooks = () => {
             if (!v) {
               setOpen(false);
               setActionType("add");
-              setEditingCategory(null);
+              setEditingBook(null);
             }
           }}
         >
@@ -415,7 +414,7 @@ export const CopiesBooks = () => {
               setOpen(false);
               setOpen2(false);
               setActionType("add");
-              setEditingCategory(null);
+              setEditingBook(null);
             }
           }}
         >

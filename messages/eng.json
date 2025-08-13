@@ -191,5 +191,16 @@
   "E-books": "E-books",
   "AIFU - E-books": "AIFU - E-books",
   "kitob muqovasi": "Book Cover",
-  "Add e-book": "Add e-book"
+  "Add e-book": "Add e-book",
+  "PDF url;": "URL PDF",
+  "invalid file type": "Invalid file type",
+  "selectFile": "Select file",
+  "Publication Year": "Publication Year",
+  "elektron kitob fayli": "E-book file",
+  "kitob qaysi tilda yozilgan": "What language is the book written in?",
+  "size": "Size",
+  "Description": "Description",
+  "See e-book": "See E-book",
+  "Edit e-book": "Edit e-book",
+  "createdAt": "Created at"
 }

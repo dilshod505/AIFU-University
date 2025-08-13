@@ -191,5 +191,16 @@
   "E-books": "Elektron kitoblar",
   "AIFU - E-books": "AIFU - Elektron kitoblar",
   "kitob muqovasi": "Kitob muqovasi",
-  "Add e-book": "Elektron kitob qo'shish"
+  "Add e-book": "Elektron kitob qo'shish",
+  "PDF url;": "PDF manzili",
+  "invalid file type": "Noto'g'ri fayl turi",
+  "selectFile": "Faylni tanlang",
+  "Publication Year": "Nashr yili",
+  "elektron kitob fayli": "Elektron kitob fayli",
+  "kitob qaysi tilda yozilgan": "Kitob qaysi tilda yozilgan?",
+  "size": "Hajmi",
+  "Description": "Tavsif",
+  "See e-book": "E-kitobni ko'rish",
+  "Edit e-book": "E-kitobni tahrirlash",
+  "createdAt": "Yaratilgan vaqti"
 }

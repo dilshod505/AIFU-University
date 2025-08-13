@@ -796,10 +796,11 @@ export const AutoForm: FC<AutoFormProps> = ({
                   case "select":
                     return (
                       <Select
+                        value={form.watch(field.name)}
+                        defaultValue={field.defaultValue}
                         onValueChange={(value) => {
-                          baseInputProps.onChange(value);
+                          form.setValue(field.name, value);
                         }}
-                        defaultValue={rf.value}
                         disabled={field.disabled}
                       >
                         <SelectTrigger

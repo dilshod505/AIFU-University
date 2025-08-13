@@ -40,7 +40,7 @@ const AuthProvider = ({
         }
         setIsLoading(false);
       } catch (e: any) {
-        if (e.response.status !== 200 || e.response.status !== 201) {
+        if (e.response?.status !== 200 || e.response?.status !== 201) {
           router.push("/login");
         }
         setIsLoading(false);

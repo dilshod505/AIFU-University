@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import {
   ArrowDownWideNarrow,
@@ -12,17 +11,26 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  PenSquareIcon,
   Plus,
   Search,
+  Trash,
   X,
 } from "lucide-react";
 import TooltipBtn from "@/components/tooltip-btn";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { Image } from "antd";
 import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import dayjs from "dayjs";
 
 const EBaseBooks = () => {
   const t = useTranslations();
@@ -32,6 +40,10 @@ const EBaseBooks = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
+  const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
+  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
+    null,
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,13 +55,62 @@ const EBaseBooks = () => {
 
     return () => clearTimeout(timer);
   }, [searchQuery, debouncedSearchQuery]);
+
   const { data: books, isLoading } = useQuery({
-    queryKey: ["pdf-books", pageNumber, pageSize],
+    queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdfbooks/list?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
       );
       return data;
+    },
+  });
+  const queryClient = useQueryClient();
+  const categories = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await api.get("/admin/categories");
+      return data;
+    },
+    select: (data: Record<string, any>): Record<string, any> => data?.data,
+  });
+  const createBook = useMutation({
+    mutationFn: async (data: Record<string, any>) => {
+      const res = await api.post("/admin/pdf-books", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
+    },
+  });
+  const updateBook = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Record<string, any>;
+    }) => {
+      const res = await api.patch(`/admin/pdf-books/${id}`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
+    },
+  });
+  const deleteBook = useMutation({
+    mutationFn: async ({
+      data,
+      id,
+    }: {
+      id: string;
+      data: Record<string, any>;
+    }) => {
+      const res = await api.delete(`/admin/pdf-books/${id}`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
     },
   });
 
@@ -59,13 +120,119 @@ const EBaseBooks = () => {
   const fields = useMemo<FormField[]>(
     () => [
       {
+        label: t("Author"),
+        name: "author",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Category"),
+        name: "categoryId",
+        type: "select",
+        required: true,
+        options: categories.data?.map((category: Record<string, any>) => {
+          return {
+            label: category?.name,
+            value: category?.id,
+          };
+        }),
+        sm: 12,
+        md: 6,
+      },
+      {
         label: t("Title"),
         name: "title",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Description"),
+        name: "description",
+        type: "textarea",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Publication Year"),
+        name: "publicationYear",
+        type: "number",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("elektron kitob fayli"),
+        name: "pdfUrl",
+        type: "file",
+        required: true,
+        accept: "application/pdf",
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("kitob muqovasi"),
+        name: "imageUrl",
+        type: "file",
+        required: true,
+        accept: "image/png, image/jpeg, image/jpg, image/webp",
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Isbn"),
+        name: "isbn",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Page Count"),
+        name: "pageCount",
+        type: "number",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Publisher"),
+        name: "publisher",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("Language"),
+        name: "language",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("kitob qaysi tilda yozilgan"),
+        name: "script",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("size") + " (MB)",
+        name: "size",
+        type: "number",
+        required: true,
+        sm: 12,
+        md: 6,
       },
     ],
-    [t],
+    [t, categories.data],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -102,23 +269,76 @@ const EBaseBooks = () => {
       },
       {
         key: "Category",
-        dataIndex: ["categoryPreviewDTO", "name"],
+        dataIndex: ["categoryPreview", "name"],
         title: t("Category"),
+      },
+      {
+        title: t("Isbn"),
+        dataIndex: "isbn",
+        key: "isbn",
+      },
+      {
+        title: t("Page Count"),
+        dataIndex: "pageCount",
+        key: "pageCount",
+      },
+      {
+        title: t("Publisher"),
+        dataIndex: "publisher",
+        key: "publisher",
+      },
+      {
+        title: t("Language"),
+        dataIndex: "language",
+        key: "language",
+      },
+      {
+        title: t("createdAt"),
+        dataIndex: "createdAt",
+        key: "createdAt",
+        render: (createdAt: string) => (
+          <p>{dayjs(createdAt).format("DD-MM-YYYY")}</p>
+        ),
       },
       {
         title: t("actions"),
         dataIndex: "actions",
-        render: (_: any, record: any) => (
+        render: (_: any, record: Record<string, any>) => (
           <div className={"flex justify-start items-center gap-2"}>
             <TooltipBtn
               variant={"ampersand"}
               size={"sm"}
               title={t("See")}
               onClick={() => {
+                setActionType("view");
+                setEditingBook(record);
                 setOpen(true);
               }}
             >
               <Eye />
+            </TooltipBtn>
+            <TooltipBtn
+              variant={"view"}
+              size={"sm"}
+              title={t("Edit")}
+              onClick={() => {
+                setActionType("edit");
+                setEditingBook(record);
+                setOpen(true);
+              }}
+            >
+              <PenSquareIcon />
+            </TooltipBtn>
+            <TooltipBtn
+              variant={"destructive"}
+              title={t("Delete")}
+              size={"sm"}
+              color={"red"}
+              onClick={() => {
+                deleteBook.mutate({ id: record.id, data: record });
+              }}
+            >
+              <Trash />
             </TooltipBtn>
           </div>
         ),
@@ -126,6 +346,15 @@ const EBaseBooks = () => {
     ],
     [t],
   );
+
+  useEffect(() => {
+    if (editingBook) {
+      form.reset({
+        ...editingBook,
+        categoryId: editingBook?.categoryPreviewDTO?.id,
+      });
+    }
+  }, [editingBook]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -138,7 +367,20 @@ const EBaseBooks = () => {
     setPageNumber(1);
   };
 
-  const onSubmit = async (data: any) => {};
+  const onSubmit = async (data: any) => {
+    try {
+      if (editingBook) {
+        updateBook.mutate({ id: editingBook.id, data });
+      } else {
+        createBook.mutate(data);
+      }
+      setOpen(false);
+      setEditingBook(null);
+      setActionType("add");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div>
@@ -146,7 +388,7 @@ const EBaseBooks = () => {
       <MyTable
         columns={columns}
         isLoading={isLoading}
-        dataSource={books?.data?.data || []}
+        dataSource={books?.data?.content || []}
         pagination={false}
         header={
           <div className={"flex justify-between items-center gap-2 flex-wrap"}>
@@ -220,15 +462,51 @@ const EBaseBooks = () => {
         pageClassName="px-3 py-1 rounded-full border cursor-pointer"
         activeClassName="bg-green-600 text-white rounded-full"
       />
-
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent>
-          <div className="p-3">
+      <Sheet
+        open={open}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setEditingBook(null);
+            setActionType("add");
+            form.reset();
+          }
+          setOpen(open);
+        }}
+      >
+        <SheetContent
+          className={
+            "rounded-xl hide-scroll bg-white dark:bg-background max-w-[800px]"
+          }
+        >
+          <SheetHeader>
+            <SheetTitle asChild>
+              <h1 className={"text-xl font-bold"}>
+                {actionType === "add"
+                  ? t("Add e-book")
+                  : actionType === "edit"
+                    ? t("Edit e-book")
+                    : t("See e-book")}
+              </h1>
+            </SheetTitle>
+          </SheetHeader>
+          <div className="py-1">
             <AutoForm
+              className={"bg-white dark:bg-background"}
               onSubmit={onSubmit}
               form={form}
-              fields={fields}
+              fields={
+                actionType === "view"
+                  ? fields.map((f) => ({ ...f, disabled: true }))
+                  : fields
+              }
               showResetButton={false}
+              submitText={
+                actionType === "add"
+                  ? t("Add e-book")
+                  : actionType === "edit"
+                    ? t("Edit")
+                    : t("close")
+              }
             />
           </div>
         </SheetContent>

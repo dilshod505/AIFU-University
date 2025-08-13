@@ -191,5 +191,16 @@
   "E-books": "Электронные книги",
   "AIFU - E-books": "AIFU - Электронные книги",
   "kitob muqovasi": "Книжная обложка",
-  "Add e-book": "Добавить электронную книгу"
+  "Add e-book": "Добавить электронную книгу",
+  "PDF url;": "PDF URL",
+  "invalid file type": "Недопустимый тип файла",
+  "selectFile": "Выберите файл",
+  "Publication Year": "Год публикации",
+  "elektron kitob fayli": "Файл электронной книги",
+  "kitob qaysi tilda yozilgan": "На каком языке написана книга?",
+  "size": "Размер",
+  "Description": "Описание",
+  "See e-book": "Посмотреть электронную книгу",
+  "Edit e-book": "Редактировать электронную книгу",
+  "createdAt": "Создано"
 }
