@@ -134,7 +134,7 @@ export interface IMyTableProps {
   size?: "small" | "middle" | "large";
   bordered?: boolean;
   showHeader?: boolean;
-  title?: () => ReactNode;
+  title?: ReactNode;
   footer?: () => ReactNode;
   rowClassName?: (record: any, index: number) => string;
   onRow?: (
@@ -480,8 +480,7 @@ const MyTable = ({
                 <div className="mt-4 space-y-3">
                   <div className="flex flex-wrap gap-2 justify-between items-center">
                     <div className="flex flex-wrap gap-2 items-center">
-                      {/*@ts-ignore*/}
-                      {title && <span className="font-semibold">{title}</span>}
+                      {title ? <>{title}</> : <span></span>}
                       {searchable && (
                         <div className="relative flex-1 min-w-[200px] max-w-sm">
                           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />

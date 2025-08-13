@@ -385,9 +385,9 @@ const EBaseBooks = () => {
   return (
     <div>
       <MyTable
-        title={() => (
+        title={
           <h1 className={"text-2xl font-semibold"}>{t("E-Base-Books")}</h1>
-        )}
+        }
         columns={columns}
         isLoading={isLoading}
         dataSource={books?.data?.content || []}
