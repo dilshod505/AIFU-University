@@ -480,7 +480,8 @@ const MyTable = ({
                 <div className="mt-4 space-y-3">
                   <div className="flex flex-wrap gap-2 justify-between items-center">
                     <div className="flex flex-wrap gap-2 items-center">
-                      {/* Enhanced Search */}
+                      {/*@ts-ignore*/}
+                      {title && <span className="font-semibold">{title}</span>}
                       {searchable && (
                         <div className="relative flex-1 min-w-[200px] max-w-sm">
                           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />

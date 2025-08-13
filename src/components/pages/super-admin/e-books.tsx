@@ -60,7 +60,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
@@ -384,8 +384,10 @@ const EBaseBooks = () => {
 
   return (
     <div>
-      <h1 className={"text-2xl font-semibold py-5"}>{t("E-Base-Books")}</h1>
       <MyTable
+        title={() => (
+          <h1 className={"text-2xl font-semibold"}>{t("E-Base-Books")}</h1>
+        )}
         columns={columns}
         isLoading={isLoading}
         dataSource={books?.data?.content || []}
