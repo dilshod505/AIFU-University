@@ -128,10 +128,10 @@ const Administrators = () => {
         width: 150,
         render: (_: any, r: Record<string, any>) => (
           <TooltipBtn
-            title={r.active ? t("Ban") : t("Unban")}
-            variant={r.active ? "destructive" : "default"}
+            title={r.isActive ? t("Ban") : t("Unban")}
+            variant={r.isActive ? "destructive" : "default"}
           >
-            {r.active ? <Ban /> : <Check />}
+            {r.isActive ? <Ban /> : <Check />}
           </TooltipBtn>
         ),
       },
@@ -245,7 +245,7 @@ const Administrators = () => {
             {t("Next")} <ChevronRight />
           </Button>
         }
-        className={"flex justify-center gap-2 items-center"}
+        className={"flex justify-center gap-2 items-center my-5"}
         pageClassName="px-3 py-1 rounded-full border cursor-pointer"
         activeClassName="bg-green-600 text-white rounded-full"
         renderOnZeroPageCount={null}

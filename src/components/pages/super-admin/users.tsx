@@ -156,7 +156,7 @@ const Users = () => {
             {t("Next")} <ChevronRight />
           </Button>
         }
-        className={"flex justify-center gap-3 items-center"}
+        className={"flex justify-center gap-3 items-center my-5"}
         pageClassName="px-3 py-1 rounded-full border cursor-pointer"
         activeClassName="bg-green-600 text-white rounded-full"
         renderOnZeroPageCount={null}

@@ -6,7 +6,7 @@ import ChangeLanguage from "@/components/widgets/change-language";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
+      <header className="cont flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
         <div className="flex justify-center items-center gap-3">
           <h1 className={"text-2xl font-semibold py-5"}>AIFU</h1>
         </div>

@@ -180,5 +180,15 @@
   "Qaytarilgan": "Возвращено",
   "Add book": "Добавить книгу",
   "Edit book": "Редактировать книгу",
-  "Category": "Категория"
+  "Category": "Категория",
+  "AIFU - System Administrators": "AIFU - Системные администраторы",
+  "System Administrators": "Системные администраторы",
+  "Name": "Имя",
+  "Surname": "Фамилия",
+  "Email": "Электронная почта",
+  "Unban": "Разблокировать",
+  "Ban": "Блокировка",
+  "E-books": "Электронные книги",
+  "AIFU - E-books": "AIFU - Электронные книги",
+  "kitob muqovasi": "Книжная обложка"
 }

@@ -180,5 +180,15 @@
   "Qaytarilgan": "Qaytarilgan sana",
   "Add book": "Kitob qo'shish",
   "Edit book": "Kitobni tahrirlash",
-  "Category": "Turkum"
+  "Category": "Turkum",
+  "AIFU - System Administrators": "AIFU - Tizim administratorlari",
+  "System Administrators": "Tizim administratorlari",
+  "Name": "Ism",
+  "Surname": "Familiyasi",
+  "Email": "Elektron pochta",
+  "Unban": "Blokdan chiqarish",
+  "Ban": "Bloklash",
+  "E-books": "Elektron kitoblar",
+  "AIFU - E-books": "AIFU - Elektron kitoblar",
+  "kitob muqovasi": "Kitob muqovasi"
 }

@@ -180,5 +180,15 @@
   "Qaytarilgan": "Returned",
   "Add book": "Add book",
   "Edit book": "Edit book",
-  "Category": "Category"
+  "Category": "Category",
+  "AIFU - System Administrators": "AIFU - System Administrators",
+  "System Administrators": "System Administrators",
+  "Name": "Name",
+  "Surname": "Surname",
+  "Email": "Email",
+  "Unban": "Unban",
+  "Ban": "Ban",
+  "E-books": "E-books",
+  "AIFU - E-books": "AIFU - E-books",
+  "kitob muqovasi": "Book Cover"
 }

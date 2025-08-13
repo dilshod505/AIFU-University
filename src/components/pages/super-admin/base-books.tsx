@@ -252,7 +252,7 @@ const BaseBooks = () => {
             {t("Next")} <ChevronRight />
           </Button>
         }
-        className="flex justify-center gap-2 items-center"
+        className="flex justify-center gap-2 items-center my-5"
         renderOnZeroPageCount={null}
         forcePage={pageNum - 1}
         pageClassName="px-3 py-1 rounded-full border cursor-pointer"
