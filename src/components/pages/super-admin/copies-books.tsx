@@ -75,9 +75,6 @@ export const CopiesBooks = () => {
     query: debouncedSearchQuery,
   });
 
-  // Determine which data to use
-  const isSearching = debouncedSearchQuery.trim().length > 0;
-
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
     id: editingBook?.id,
   });

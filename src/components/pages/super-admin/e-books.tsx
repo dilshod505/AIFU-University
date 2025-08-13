@@ -1,28 +1,53 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import MyTable, { IColumn } from "@/components/my-table";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
-import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import TooltipBtn from "@/components/tooltip-btn";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { Image } from "antd";
 import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const EBaseBooks = () => {
   const t = useTranslations();
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState<string>(searchQuery);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      if (searchQuery !== debouncedSearchQuery) {
+        setPageNumber(1);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, debouncedSearchQuery]);
   const { data: books, isLoading } = useQuery({
     queryKey: ["pdf-books", pageNumber, pageSize],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdfbooks/list?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        `/admin/pdfbooks/list?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
       );
       return data;
     },
@@ -80,36 +105,6 @@ const EBaseBooks = () => {
         dataIndex: ["categoryPreviewDTO", "name"],
         title: t("Category"),
       },
-      // {
-      //   key: "givenAt",
-      //   dataIndex: "givenAt",
-      //   title: t("Given At"),
-      // },
-      // {
-      //   key: "dueDate",
-      //   dataIndex: "dueDate",
-      //   title: t("Due Date"),
-      // },
-      // {
-      //   key: "status",
-      //   dataIndex: "status",
-      //   title: t("status"),
-      //   render: (status: string) => (
-      //     <div className={"flex justify-start items-center gap-2"}>
-      //       <span
-      //         className={`px-2 py-1 rounded text-xs ${
-      //           status === "OVERDUE"
-      //             ? "bg-red-100 text-red-600"
-      //             : status === "APPROVED"
-      //               ? "bg-green-100 text-green-600"
-      //               : "bg-gray-100 text-gray-600"
-      //         }`}
-      //       >
-      //         {t(status)}
-      //       </span>
-      //     </div>
-      //   ),
-      // },
       {
         title: t("actions"),
         dataIndex: "actions",
@@ -132,6 +127,17 @@ const EBaseBooks = () => {
     [t],
   );
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setDebouncedSearchQuery("");
+    setPageNumber(1);
+  };
+
   const onSubmit = async (data: any) => {};
 
   return (
@@ -142,17 +148,50 @@ const EBaseBooks = () => {
         isLoading={isLoading}
         dataSource={books?.data?.data || []}
         pagination={false}
-        // header={
-        //   <TooltipBtn
-        //     title={t("Add Category")}
-        //     onClick={() => {
-        //       setOpen(true);
-        //     }}
-        //   >
-        //     <Plus />
-        //     {t("Add Category")}
-        //   </TooltipBtn>
-        // }
+        header={
+          <div className={"flex justify-between items-center gap-2 flex-wrap"}>
+            <div className="relative max-w-[250px]">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="text-gray-400" size={16} />
+              </div>
+              <Input
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-10"
+                placeholder={t("Search")}
+              />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                </button>
+              )}
+            </div>
+            {sortDirection === "asc" ? (
+              <Button size={"sm"} onClick={() => setSortDirection("desc")}>
+                <ArrowUpWideNarrow />
+              </Button>
+            ) : (
+              <Button size={"sm"} onClick={() => setSortDirection("asc")}>
+                <ArrowDownWideNarrow />
+              </Button>
+            )}
+            <div>
+              <TooltipBtn
+                size={"sm"}
+                title={t("Add e-book")}
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <Plus />
+                {t("Add e-book")}
+              </TooltipBtn>
+            </div>
+          </div>
+        }
       />
 
       {/* Pagination */}
