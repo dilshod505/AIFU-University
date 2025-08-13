@@ -1,6 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-import PdfBooks from "@/components/pages/user/pdf-books";
+import { HeroSection } from "@/components/pages/landing/hero-section";
+import { CategorySection } from "@/components/pages/landing/category-section";
+import { FeaturedBooks } from "@/components/pages/landing/featured-books";
+import { BookGrid } from "@/components/pages/landing/book-grid";
 
 export const generateMetadata = async ({
   params,
@@ -19,7 +22,16 @@ export const generateMetadata = async ({
 };
 
 const Page = async () => {
-  return <PdfBooks />;
+  return (
+    <div className="min-h-screen bg-background">
+      <main>
+        <HeroSection />
+        <CategorySection />
+        <FeaturedBooks />
+        <BookGrid />
+      </main>
+    </div>
+  );
 };
 
 export default Page;
