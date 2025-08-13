@@ -5,7 +5,7 @@ export const useBooking = () =>
   useQuery({
     queryKey: ["bookings"],
     queryFn: async () => {
-      const res = await api.get("/admin/booking?pageSize=100000");
+      const res = await api.get("/admin/booking?pageNumber=100000");
       return res.data;
     },
   });

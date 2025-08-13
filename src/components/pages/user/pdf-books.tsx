@@ -2,7 +2,10 @@
 
 import React, { useState } from "react";
 import SimpleTranslation from "@/components/simple-translation";
-import { usePdfBooksList } from "@/components/models/queries/pdf-books";
+import {
+  usePdfBooksList,
+  usePdfDownload,
+} from "@/components/models/queries/pdf-books";
 import Image from "next/image";
 import logo from "../../../../public/img-bg.png";
 import { Skeleton } from "@/components/ui/skeleton";

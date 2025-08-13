@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
-import { usePdfBookId } from "@/components/models/queries/pdf-books";
+import {
+  usePdfBookId,
+  usePdfDownload,
+} from "@/components/models/queries/pdf-books";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +27,7 @@ const PdfBookDetail = () => {
   const t = useTranslations();
   const { id } = useParams();
   const { data: book } = usePdfBookId({ id: id?.toString() || "" });
+  const { mutate: downloadBook, isPending } = usePdfDownload();
 
   return book ? (
     <div className="min-h-screen ">
@@ -73,9 +77,11 @@ const PdfBookDetail = () => {
               <Button
                 variant="outline"
                 className="w-full border-green-600 text-green-600 hover:bg-green-50 bg-transparent"
+                onClick={() => downloadBook(id?.toString() || "")}
+                disabled={isPending}
               >
                 <Download className="mr-2 h-4 w-4" />
-                PDF Yuklab Olish
+                {isPending ? "Yuklanmoqda..." : "PDF Yuklab Olish"}
               </Button>
             </div>
           </div>

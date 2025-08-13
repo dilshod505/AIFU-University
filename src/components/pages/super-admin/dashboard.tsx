@@ -43,40 +43,41 @@ const Dashboard = () => {
   const studentsCount = useStudentsCount();
   const studentsTop = useStudentsTop();
 
-  const chartData = Array.isArray(bookingDiagram.data)
-    ? bookingDiagram.data
-    : [];
+  const perMonthData = bookingPerMonth.data?.data || [];
 
-  const categories = chartData.map((item) => item.month);
-  const bookingsSeries = chartData.map((item) => item.bookings);
-  const returnsSeries = chartData.map((item) => item.returns);
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const monthCategories = perMonthData.map(
+    (item: any) => monthNames[item.month - 1],
+  );
+  const takenPerMonth = perMonthData.map((item: any) => item.taken);
+  const returnedPerMonth = perMonthData.map((item: any) => item.returned);
+  const returnedLatePerMonth = perMonthData.map(
+    (item: any) => item.returnedLate,
+  );
 
-  const chartOptions: ApexOptions = {
-    chart: {
-      type: "line", // ✅ TypeScript buni "line" deb aniq taniydi
-      toolbar: {
-        show: true,
-      },
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    xaxis: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-    markers: {
-      size: 5,
-    },
-    tooltip: {
-      shared: true,
-    },
+  const perMonthOptions: ApexOptions = {
+    chart: { type: "bar", toolbar: { show: true } },
+    xaxis: { categories: monthCategories },
+    tooltip: { shared: true, intersect: false },
   };
 
-  const chartSeries = [
-    {
-      name: "Bookings",
-      data: [10, 41, 35, 51, 49, 62, 69],
-    },
+  const perMonthSeries = [
+    { name: "Taken", data: takenPerMonth },
+    { name: "Returned", data: returnedPerMonth },
+    { name: "Returned Late", data: returnedLatePerMonth },
   ];
 
   return (
@@ -194,11 +195,10 @@ const Dashboard = () => {
             </div>
           ) : (
             <Chart
-              options={chartOptions}
-              series={chartSeries}
-              type="line"
-              height="100%"
-              width="100%"
+              options={perMonthOptions}
+              series={perMonthSeries}
+              type="bar"
+              height="300"
             />
           )}
         </div>

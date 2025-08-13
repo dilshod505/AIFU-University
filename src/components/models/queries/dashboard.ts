@@ -33,7 +33,7 @@ export const useBookingsDiagram = () =>
     queryKey: ["bookingsDiagram"],
     queryFn: async () => {
       const res = await api.get("/admin/statistics/bookings/diagram");
-      return res.data;
+      return res.data.data;
     },
   });
 
