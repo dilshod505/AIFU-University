@@ -437,7 +437,6 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
     );
   };
 
-  // Handle logout
   const handleLogout = () => {
     logout();
     router.push("/login");

@@ -3,25 +3,28 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { useTranslations } from "next-intl";
 
 export function CategorySection() {
+  const t = useTranslations();
+
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await api.get("/admin/categories");
+      const res = await api.get("/client/categories");
       return res.data;
     },
   });
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-background ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-            Explore by Category
+            {t("Explore by Category")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Find your perfect book in our carefully curated categories
+            {t("Find your perfect book in our carefully curated categories")}
           </p>
         </div>
 
