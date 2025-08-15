@@ -14,16 +14,15 @@ export function HeroSection() {
             </div>
           </div>
 
-          <h1 className="text-5xl lg:text-7xl font-serif font-bold text-slate-900 dark:text-white mb-6 leading-tight">
+          {/*<h1 className="text-5xl lg:text-7xl font-serif font-bold text-slate-900 dark:text-white mb-6 leading-tight">*/}
+          <TypingAnimation startOnView={true} className={"text-3xl"}>
+            Discover Your Next
+          </TypingAnimation>
+          <span className="text-cyan-800 dark:text-cyan-300 block">
             <TypingAnimation startOnView={true} as={"h1"}>
-              Discover Your Next
+              Great Read
             </TypingAnimation>
-            <span className="text-cyan-800 dark:text-cyan-300 block">
-              <TypingAnimation startOnView={true} as={"h1"}>
-                Great Read
-              </TypingAnimation>
-            </span>
-          </h1>
+          </span>
 
           <p className="text-xl lg:text-2xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             <TextAnimate animation="blurInUp" as="h1">

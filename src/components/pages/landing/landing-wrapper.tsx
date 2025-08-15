@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { HeroSection } from "@/components/pages/landing/hero-section";
 import { CategorySection } from "@/components/pages/landing/category-section";
 import { BookGrid } from "@/components/pages/landing/book-grid";
+import { FeaturedBooks } from "@/components/pages/landing/featured-books";
 
 const LandingWrapper = () => {
   const [categoryId, setCategoryId] = useState<string | number>();
@@ -12,7 +13,8 @@ const LandingWrapper = () => {
       <main>
         <HeroSection />
         {/*@ts-ignore*/}
-        <CategorySection setCategoryId={setCategoryId} />
+        <FeaturedBooks />
+        <CategorySection setCategoryId={setCategoryId as any} />
         <BookGrid categoryId={categoryId} />
       </main>
     </div>
