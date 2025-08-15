@@ -6,6 +6,7 @@ import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
 import { Marquee } from "@/components/magicui/marquee";
+import { TextAnimate } from "@/components/magicui/text-animate";
 
 export function CategorySection({
   setCategoryId,
@@ -27,10 +28,14 @@ export function CategorySection({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-            {t("Explore by Category")}
+            <TextAnimate animation="blurInUp" as="h1">
+              {t("Explore by Category")}
+            </TextAnimate>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("Find your perfect book in our carefully curated categories")}
+            <TextAnimate animation="blurInUp" as="h1">
+              {t("Find your perfect book in our carefully curated categories")}
+            </TextAnimate>
           </p>
         </div>
 

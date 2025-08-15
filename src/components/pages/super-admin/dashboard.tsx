@@ -26,6 +26,7 @@ import {
   Users,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -86,49 +87,29 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title={t("Total Users")}
-          value={
-            studentsCount.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
-            ) : (
-              studentsCount.data?.data
-            )
-          }
+          value={studentsCount.isLoading ? null : studentsCount.data?.data}
+          loading={studentsCount.isLoading}
           subtitle={t("Registered library members")}
           icon={<Users />}
         />
         <StatCard
           title={t("Total Books")}
-          value={
-            booksCount.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
-            ) : (
-              booksCount.data?.data
-            )
-          }
+          value={booksCount.isLoading ? null : booksCount.data?.data}
+          loading={booksCount.isLoading}
           subtitle={t("Books in collection")}
           icon={<BookCopy />}
         />
         <StatCard
           title={t("Book Copies")}
-          value={
-            bookCopiesCount.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
-            ) : (
-              bookCopiesCount.data?.data
-            )
-          }
+          value={bookCopiesCount.isLoading ? null : bookCopiesCount.data?.data}
+          loading={bookCopiesCount.isLoading}
           subtitle={t("Physical book copies")}
           icon={<BookOpen />}
         />
         <StatCard
           title={t("Total Bookings")}
-          value={
-            bookingCount.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-5 h-7"} />
-            ) : (
-              bookingCount.data?.data
-            )
-          }
+          value={bookingCount.isLoading ? null : bookingCount.data?.data}
+          loading={bookingCount.isLoading}
           subtitle={t("All time bookings")}
           icon={<CalendarDays />}
         />
@@ -212,11 +193,13 @@ const StatCard = ({
   value,
   subtitle,
   icon,
+  loading,
 }: {
   title: string;
-  value: number;
+  value: number | null;
   subtitle: string;
   icon: any;
+  loading?: boolean;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -224,9 +207,15 @@ const StatCard = ({
       <span className="text-2xl">{icon}</span>
     </CardHeader>
     <CardContent>
-      <div suppressHydrationWarning className="text-2xl font-bold">
-        {value}
-      </div>
+      {loading ? (
+        <Skeleton suppressHydrationWarning className="w-12 h-8" />
+      ) : (
+        <NumberTicker
+          value={value || 0}
+          decimalPlaces={0}
+          className="text-2xl font-bold"
+        />
+      )}
       <p className="text-xs text-muted-foreground">{subtitle}</p>
     </CardContent>
   </Card>

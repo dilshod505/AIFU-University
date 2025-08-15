@@ -4,22 +4,59 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import TooltipBtn from "@/components/tooltip-btn";
 import { useTranslations } from "next-intl";
+import { useRef } from "react";
+import { flushSync } from "react-dom";
 
-const ThemeSwitcher = () => {
+const AnimatedThemeSwitcher = () => {
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  const changeTheme = async () => {
+    if (!buttonRef.current) return;
+
+    await document.startViewTransition(() => {
+      flushSync(() => {
+        setTheme(theme === "dark" ? "light" : "dark");
+      });
+    }).ready;
+
+    const { top, left, width, height } =
+      buttonRef.current.getBoundingClientRect();
+    const y = top + height / 2;
+    const x = left + width / 2;
+
+    const right = window.innerWidth - left;
+    const bottom = window.innerHeight - top;
+    const maxRad = Math.hypot(Math.max(left, right), Math.max(top, bottom));
+
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${maxRad}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration: 700,
+        easing: "ease-in-out",
+        pseudoElement: "::view-transition-new(root)",
+      },
+    );
+  };
 
   return (
     <TooltipBtn
-      variant={"ghost"}
+      ref={buttonRef}
+      variant="ghost"
       title={
         theme === "dark" ? t("Switch to light mode") : t("Switch to dark mode")
       }
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={changeTheme}
     >
       {theme === "dark" ? <Sun /> : <Moon />}
     </TooltipBtn>
   );
 };
 
-export default ThemeSwitcher;
+export default AnimatedThemeSwitcher;

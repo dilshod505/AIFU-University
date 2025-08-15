@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button"
-import { ArrowRight, BookOpen } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { TextAnimate } from "@/components/magicui/text-animate";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
 
 export function HeroSection() {
   return (
@@ -13,13 +15,21 @@ export function HeroSection() {
           </div>
 
           <h1 className="text-5xl lg:text-7xl font-serif font-bold text-slate-900 dark:text-white mb-6 leading-tight">
-            Discover Your Next
-            <span className="text-cyan-800 dark:text-cyan-300 block">Great Read</span>
+            <TypingAnimation startOnView={true} as={"h1"}>
+              Discover Your Next
+            </TypingAnimation>
+            <span className="text-cyan-800 dark:text-cyan-300 block">
+              <TypingAnimation startOnView={true} as={"h1"}>
+                Great Read
+              </TypingAnimation>
+            </span>
           </h1>
 
           <p className="text-xl lg:text-2xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Explore a curated selection of books across all genres. From bestsellers to hidden gems, find your perfect
-            literary companion.
+            <TextAnimate animation="blurInUp" as="h1">
+              Explore a curated selection of books across all genres. From
+              bestsellers to hidden gems, find your perfect literary companion.
+            </TextAnimate>
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -49,5 +59,5 @@ export function HeroSection() {
         <div className="w-40 h-40 bg-orange-500 rounded-full blur-3xl"></div>
       </div>
     </section>
-  )
+  );
 }

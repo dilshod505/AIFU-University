@@ -7,6 +7,7 @@ import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
+import { TextAnimate } from "@/components/magicui/text-animate";
 
 export function BookGrid({ categoryId }: { categoryId?: string | number }) {
   const t = useTranslations();
@@ -25,10 +26,14 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-            {t("All Books")}
+            <TextAnimate animation="blurInUp" as="h1">
+              {t("All Books")}
+            </TextAnimate>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("Browse our complete collection of carefully selected titles")}
+            <TextAnimate animation="blurInUp" as="h1">
+              {t("Browse our complete collection of carefully selected titles")}
+            </TextAnimate>
           </p>
         </div>
 
