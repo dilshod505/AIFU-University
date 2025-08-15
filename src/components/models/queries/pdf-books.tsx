@@ -4,15 +4,18 @@ import { api } from "@/components/models/axios";
 export const usePdfBooksList = ({
   pageNum,
   pageSize,
+  category,
 }: {
   pageNum: number;
   pageSize: number;
+  category?: number;
 }) => {
   return useQuery({
-    queryKey: ["pdf-books", pageNum, pageSize],
+    enabled: !!pageNum && !!pageSize,
+    queryKey: ["pdf-books", pageNum, pageSize, category],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?pageNumber=${pageNum}&pageSize=${pageSize}`,
+        `/client/pdf-books?pageNumber=${pageNum}&pageSize=${pageSize}${category ? `&category=${category}` : ""}`,
       );
       return res.data;
     },

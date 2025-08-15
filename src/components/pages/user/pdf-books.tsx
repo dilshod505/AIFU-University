@@ -1,11 +1,7 @@
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import SimpleTranslation from "@/components/simple-translation";
-import {
-  usePdfBooksList,
-  usePdfDownload,
-} from "@/components/models/queries/pdf-books";
+import { usePdfBooksList } from "@/components/models/queries/pdf-books";
 import Image from "next/image";
 import logo from "../../../../public/img-bg.png";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,99 +9,224 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Divider } from "antd";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Grid3X3,
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/components/models/axios";
+import { cn } from "@/lib/utils";
 
 const PdfBooks = () => {
   const t = useTranslations();
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(9);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: books, isLoading } = usePdfBooksList({ pageNum, pageSize });
+  const { data: books, isLoading } = usePdfBooksList({
+    pageNum,
+    pageSize,
+    category: selectedCategory ? +selectedCategory : undefined,
+  });
+
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await api.get("/client/categories");
+      return res.data;
+    },
+    select: (data: Record<string, any>): Record<string, any> => data?.data,
+  });
+
+  const handleCategorySelect = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+    setPageNum(1); // Reset to first page when category changes
+  };
 
   return (
-    <div className={"cont"}>
-      <h1 className={"text-2xl font-semibold py-5 text-start"}>
-        <SimpleTranslation title={""} hasLocale />
-      </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {books?.data?.data.map((book: Record<string, any>, i: number) => (
-          <Link
-            href={`/books/${book?.id}`}
-            key={i}
-            className="rounded-lg shadow-md p-4"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Image
-                  src={logo}
-                  alt={book?.title}
-                  width={150}
-                  height={150}
-                  priority
-                  quality={100}
-                  className="w-full max-w-48 rounded-lg mr-4"
-                />
-                <div
-                  className={
-                    "flex flex-col justify-evenly h-full w-full items-start"
-                  }
-                >
-                  {isLoading ? (
-                    <Skeleton className="h-6 w-24 mb-1" />
-                  ) : (
-                    <Badge className={"mb-1"}>
-                      {book?.categoryPreviewDTO?.name}
-                    </Badge>
-                  )}
-                  {isLoading ? (
-                    <Skeleton className="h-6 w-32 mb-1" />
-                  ) : (
-                    <p className="text-lg font-semibold mb-1">{book?.title}</p>
-                  )}
-                  {isLoading ? (
-                    <Skeleton className="h-6 w-28" />
-                  ) : (
-                    <p className="text-sm text-gray-500">
-                      {book?.author}
-                      <span className="mx-2">|</span>
-                      <span className="text-gray-600">
-                        {book?.categoryPreviewDTO.name}
-                      </span>
-                    </p>
-                  )}
-                </div>
-              </div>
-              <p className="text-sm text-gray-500">{book?.description}</p>
-            </div>
-          </Link>
-        ))}
+    <div className="cont">
+      {/* Header Section */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <BookOpen className="h-6 w-6 text-primary" />
+          </div>
+          <h1 className="text-3xl font-bold text-foreground">
+            <SimpleTranslation title="PDF Kitoblar" hasLocale />
+          </h1>
+        </div>
+        <p className="text-muted-foreground text-lg">
+          Eng yaxshi kitoblar to'plamini kashf eting
+        </p>
       </div>
-      <Divider />
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => setPageNum(e.selected + 1)}
-        pageRangeDisplayed={pageSize}
-        pageCount={books?.data?.totalElements / pageSize || 0}
-        previousLabel={
-          <Button className={"bg-white text-black"}>
-            <ChevronLeft />
-            {t("Previous")}
-          </Button>
-        }
-        nextLabel={
-          <Button className={"bg-white text-black"}>
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
-        className={"flex justify-center gap-3 items-center my-5"}
-        renderOnZeroPageCount={null}
-        forcePage={pageNum - 1}
-      />
+
+      {/* Categories Filter Section */}
+      <Card className="mb-8 border-0 shadow-lg bg-gradient-to-r from-primary/5 to-secondary/5">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold">Kategoriyalar</h2>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            {/* All Categories Button */}
+            <Button
+              variant={selectedCategory === null ? "default" : "outline"}
+              onClick={() => handleCategorySelect(null)}
+              className={cn(
+                "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
+                selectedCategory === null
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "hover:bg-primary/10",
+              )}
+            >
+              <Grid3X3 className="h-4 w-4 mr-2" />
+              Barcha kitoblar
+            </Button>
+
+            {/* Category Buttons */}
+            {categoriesLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-10 w-24 rounded-full" />
+                ))
+              : categories?.map((category: Record<string, any>) => (
+                  <Button
+                    key={category.id}
+                    variant={
+                      selectedCategory === category.id ? "default" : "outline"
+                    }
+                    onClick={() => handleCategorySelect(category.id)}
+                    className={cn(
+                      "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
+                      selectedCategory === category.id
+                        ? "bg-primary text-primary-foreground shadow-lg"
+                        : "hover:bg-primary/10",
+                    )}
+                  >
+                    {category.name}
+                    {category.bookCount && (
+                      <Badge variant="secondary" className="ml-2 text-xs">
+                        {category.bookCount}
+                      </Badge>
+                    )}
+                  </Button>
+                ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Books Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {isLoading
+          ? Array.from({ length: pageSize }).map((_, i) => (
+              <Card key={i} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-4">
+                    <Skeleton className="h-6 w-20 mb-2" />
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <Skeleton className="h-4 w-28" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          : books?.data?.data.map((book: Record<string, any>, i: number) => (
+              <Link href={`/books/${book?.id}`} key={i}>
+                <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                  <CardContent className="p-0">
+                    <div className="relative">
+                      <Image
+                        src={logo || "/placeholder.svg"}
+                        alt={book?.title}
+                        width={400}
+                        height={200}
+                        priority
+                        quality={100}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-primary/90 text-primary-foreground">
+                          {book?.categoryPreviewDTO?.name}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        {book?.title}
+                      </h3>
+
+                      <div className="flex items-center text-sm text-muted-foreground mb-3">
+                        <span>{book?.author}</span>
+                        <span className="mx-2">•</span>
+                        <span>{book?.categoryPreviewDTO?.name}</span>
+                      </div>
+
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {book?.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+      </div>
+
+      {/* Empty State */}
+      {!isLoading && (!books?.data?.data || books?.data?.data.length === 0) && (
+        <Card className="text-center py-12">
+          <CardContent>
+            <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Kitoblar topilmadi</h3>
+            <p className="text-muted-foreground">
+              {selectedCategory
+                ? "Tanlangan kategoriyada kitoblar mavjud emas"
+                : "Hozircha kitoblar mavjud emas"}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      <Divider className="my-8" />
+
+      {/* Pagination */}
+      {books?.data?.data && books?.data?.data.length > 0 && (
+        <ReactPaginate
+          breakLabel="..."
+          onPageChange={(e) => setPageNum(e.selected + 1)}
+          pageRangeDisplayed={5}
+          pageCount={Math.ceil((books?.data?.totalElements || 0) / pageSize)}
+          previousLabel={
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 bg-transparent"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {t("Previous")}
+            </Button>
+          }
+          nextLabel={
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 bg-transparent"
+            >
+              {t("Next")}
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          }
+          pageClassName="px-3 py-2 rounded-lg border cursor-pointer hover:bg-primary/10 transition-colors"
+          activeClassName="bg-primary text-primary-foreground border-primary"
+          className="flex justify-center gap-2 items-center my-8 flex-wrap"
+          renderOnZeroPageCount={null}
+          forcePage={pageNum - 1}
+        />
+      )}
     </div>
   );
 };

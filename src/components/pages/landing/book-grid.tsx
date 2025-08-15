@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
@@ -37,7 +37,7 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {books?.data?.data.map((book: any) => (
             <Card
               key={book.id}
@@ -64,7 +64,7 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
                   </Button>
                 </div>
 
-                <div className="p-4">
+                <div className="px-4">
                   <Badge variant="secondary" className="mb-2 text-xs">
                     {book.category}
                   </Badge>
@@ -79,18 +79,6 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
                   <div className="flex items-center mb-3">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
                     <span className="text-sm font-semibold">{book.rating}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-foreground">
-                      {book.price}
-                    </span>
-                    <Button
-                      size="sm"
-                      className="bg-cyan-800 hover:bg-cyan-900 dark:bg-cyan-300 dark:text-slate-900 dark:hover:bg-cyan-200"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
                   </div>
                 </div>
               </CardContent>

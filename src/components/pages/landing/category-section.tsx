@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction } from "react";
 import { Marquee } from "@/components/magicui/marquee";
 import { TextAnimate } from "@/components/magicui/text-animate";
+import Link from "next/link";
 
 export function CategorySection({
   setCategoryId,
@@ -41,6 +42,20 @@ export function CategorySection({
 
         {/*<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">*/}
         <Marquee pauseOnHover className="[--duration:20s]">
+          <Link href={"/books"}>
+            <Card className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm">
+              <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
+                <div>
+                  <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
+                    {t("All")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t("books count")}: 0
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
           {data?.data
             .slice(0, data?.data?.length / 2)
             .map((category: Record<string, any>) => {
@@ -56,7 +71,7 @@ export function CategorySection({
                         {category.name}
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        {category.bookCount} books
+                        {t("books count")}: {category.bookCount}
                       </p>
                     </div>
                   </CardContent>
@@ -65,6 +80,20 @@ export function CategorySection({
             })}
         </Marquee>
         <Marquee reverse pauseOnHover className="[--duration:20s]">
+          <Link href={"/books"}>
+            <Card className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm">
+              <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
+                <div>
+                  <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
+                    {t("All")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t("books count")}: 0
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
           {data?.data
             .slice(data?.data?.length / 2, data?.data?.length)
             .map((category: Record<string, any>) => {
@@ -80,7 +109,7 @@ export function CategorySection({
                         {category.name}
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        {category.bookCount} books
+                        {t("books count")}: {category.bookCount}
                       </p>
                     </div>
                   </CardContent>
