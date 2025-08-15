@@ -13,15 +13,16 @@ import useLayoutStore from "@/store/layout-store";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
 
 export default function Login() {
   const t = useTranslations();
   const router = useRouter();
-  const { setCredentials, user } = useLayoutStore();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setCredentials } = useLayoutStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
@@ -41,11 +42,9 @@ export default function Login() {
         router.replace(
           `/${res?.data.data?.user?.role.toString().toLowerCase().replace("_", "-")}/dashboard`,
         );
-        setIsLoading(false);
       }
-    } catch (e) {
+    } catch {
       toast.error(t("Invalid credentials"));
-      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
@@ -61,8 +60,8 @@ export default function Login() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Email and Password Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Email */}
             <div className="space-y-2">
               <Label
                 htmlFor="email"
@@ -72,7 +71,7 @@ export default function Login() {
               </Label>
               <Input
                 id="email"
-                name={"email"}
+                name="email"
                 type="text"
                 placeholder="Enter your email address"
                 className="h-11 border-gray-200 text-black bg-white"
@@ -80,6 +79,7 @@ export default function Login() {
               />
             </div>
 
+            {/* Password */}
             <div className="space-y-2">
               <Label
                 htmlFor="password"
@@ -87,15 +87,26 @@ export default function Login() {
               >
                 {t("Password")}
               </Label>
-              <Input
-                id="password"
-                name={"password"}
-                type="password"
-                placeholder="Create a password"
-                className="h-11 border-gray-200 text-black bg-white"
-                required
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password"
+                  className="h-11 border-gray-200 text-black bg-white pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
+
+            {/* Forgot password */}
             <div className="text-right">
               <Link
                 href="/login/forget"
@@ -104,12 +115,15 @@ export default function Login() {
                 {t("Forgot Password?")}
               </Link>
             </div>
+
             <Button
               type="submit"
               disabled={isLoading}
               className="w-full h-11 bg-[#FF0258] hover:bg-[#FF0258]/90 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
             >
-              {isLoading && <LoaderCircle className={"animate-spin"} />}
+              {isLoading && (
+                <LoaderCircle className="animate-spin mr-2" size={18} />
+              )}
               {t("Login")}
             </Button>
           </form>
