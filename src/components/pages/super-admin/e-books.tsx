@@ -344,7 +344,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [t],
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -354,7 +354,7 @@ const EBaseBooks = () => {
         categoryId: editingBook?.categoryPreviewDTO?.id,
       });
     }
-  }, [editingBook]);
+  }, [editingBook, form]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -390,7 +390,7 @@ const EBaseBooks = () => {
         }
         columns={columns}
         isLoading={isLoading}
-        dataSource={books?.data?.content || []}
+        dataSource={books?.data?.data}
         pagination={false}
         header={
           <div className={"flex justify-between items-center gap-2 flex-wrap"}>
