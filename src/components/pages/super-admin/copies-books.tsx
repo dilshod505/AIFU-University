@@ -335,38 +335,42 @@ export const CopiesBooks = () => {
             </div>
           </div>
         }
+        footer={
+          <>
+            <ReactPaginate
+              breakLabel="..."
+              onPageChange={(e) => {
+                const newPageNum = e.selected + 1;
+                setPageNum(newPageNum);
+              }}
+              pageRangeDisplayed={pageSize}
+              pageCount={Math.ceil(
+                (copiesBooks?.data?.totalElements || 0) / pageSize,
+              )}
+              previousLabel={
+                <Button className={"bg-white text-black"}>
+                  <ChevronLeft />
+                  {t("Return")}
+                </Button>
+              }
+              nextLabel={
+                <Button className={"bg-white text-black"}>
+                  {t("Next")} <ChevronRight />
+                </Button>
+              }
+              className={"flex justify-center gap-2 items-center my-5"}
+              renderOnZeroPageCount={null}
+              forcePage={pageNum - 1}
+              pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+              activeClassName="bg-green-600 text-white rounded-full"
+            />
+          </>
+        }
       />
 
       <Divider />
 
       {/* Pagination */}
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => {
-          const newPageNum = e.selected + 1;
-          setPageNum(newPageNum);
-        }}
-        pageRangeDisplayed={pageSize}
-        pageCount={Math.ceil(
-          (copiesBooks?.data?.totalElements || 0) / pageSize,
-        )}
-        previousLabel={
-          <Button className={"bg-white text-black"}>
-            <ChevronLeft />
-            {t("Return")}
-          </Button>
-        }
-        nextLabel={
-          <Button className={"bg-white text-black"}>
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        className={"flex justify-center gap-2 items-center my-5"}
-        renderOnZeroPageCount={null}
-        forcePage={pageNum - 1}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
-      />
 
       {/* Add/Edit Sheet */}
       {(actionType === "add" || actionType === "edit") && (

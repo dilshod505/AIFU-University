@@ -135,7 +135,7 @@ export interface IMyTableProps {
   bordered?: boolean;
   showHeader?: boolean;
   title?: ReactNode;
-  footer?: () => ReactNode;
+  footer?: ReactNode;
   rowClassName?: (record: any, index: number) => string;
   onRow?: (
     record: any,
@@ -1044,7 +1044,7 @@ const MyTable = ({
           </div>
 
           {/* Footer */}
-          {footer && <div className="z-50 p-4 border-t">{footer()}</div>}
+          {footer && <div className="z-50 p-4 border-t w-full">{footer}</div>}
 
           {/* Optimized Pagination */}
           {pagination && processedData.length > 0 && (
