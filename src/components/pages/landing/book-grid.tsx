@@ -3,18 +3,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
 
-export function BookGrid() {
+export function BookGrid({ categoryId }: { categoryId?: string | number }) {
   const t = useTranslations();
 
   const { data: books } = useQuery({
-    queryKey: ["books"],
+    enabled: !!categoryId,
+    queryKey: ["books", categoryId],
     queryFn: async () => {
-      const res = await api.get("/client/pdf-books");
+      const res = await api.get(`/client/pdf-books?category=${categoryId}`);
       return res.data;
     },
   });
@@ -90,16 +91,6 @@ export function BookGrid() {
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-2 border-cyan-800 text-cyan-800 hover:bg-cyan-800 hover:text-white dark:border-cyan-300 dark:text-cyan-300 dark:hover:bg-cyan-300 dark:hover:text-slate-900 px-8 py-3 text-lg font-semibold rounded-xl transition-all duration-200 bg-transparent"
-          >
-            Load More Books
-          </Button>
         </div>
       </div>
     </section>

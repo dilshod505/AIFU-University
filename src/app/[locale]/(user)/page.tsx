@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-import { HeroSection } from "@/components/pages/landing/hero-section";
-import { CategorySection } from "@/components/pages/landing/category-section";
-import { BookGrid } from "@/components/pages/landing/book-grid";
+import LandingWrapper from "@/components/pages/landing/landing-wrapper";
 
 export const generateMetadata = async ({
   params,
@@ -21,16 +19,7 @@ export const generateMetadata = async ({
 };
 
 const Page = async () => {
-  return (
-    <div className="min-h-screen bg-background">
-      <main>
-        <HeroSection />
-        <CategorySection />
-        {/*<FeaturedBooks />*/}
-        <BookGrid />
-      </main>
-    </div>
-  );
+  return <LandingWrapper />;
 };
 
 export default Page;

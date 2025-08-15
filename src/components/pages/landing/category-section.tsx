@@ -4,8 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
+import { Dispatch, SetStateAction } from "react";
 
-export function CategorySection() {
+export function CategorySection({
+  setCategoryId,
+}: {
+  setCategoryId: Dispatch<SetStateAction<string | number>>;
+}) {
   const t = useTranslations();
 
   const { data, isLoading } = useQuery({
@@ -32,6 +37,7 @@ export function CategorySection() {
           {data?.data.map((category: Record<string, any>) => {
             return (
               <Card
+                onClick={() => setCategoryId(category.id)}
                 key={category.name}
                 className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm"
               >
