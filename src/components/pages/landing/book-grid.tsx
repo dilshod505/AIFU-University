@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
 import { TextAnimate } from "@/components/magicui/text-animate";
+import Link from "next/link";
 
 export function BookGrid({ categoryId }: { categoryId?: string | number }) {
   const t = useTranslations();
@@ -39,50 +40,54 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {books?.data?.data.map((book: any) => (
-            <Card
-              key={book.id}
-              className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 bg-card border-border"
-            >
-              <CardContent className="p-0">
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={book.imageUrl || "/placeholder.svg"}
-                    alt={book.title}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  {book.isNew && (
-                    <Badge className="absolute top-3 left-3 bg-orange-500 text-white">
-                      New
-                    </Badge>
-                  )}
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 hover:bg-white"
-                  >
-                    <Heart className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="px-4">
-                  <Badge variant="secondary" className="mb-2 text-xs">
-                    {book.category}
-                  </Badge>
-
-                  <h3 className="font-serif font-bold text-foreground mb-1 line-clamp-2 group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
-                    {book.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    by {book.author}
-                  </p>
-
-                  <div className="flex items-center mb-3">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="text-sm font-semibold">{book.rating}</span>
+            <Link href={`/books/${book.id}`}>
+              <Card
+                key={book.id}
+                className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 bg-card border-border"
+              >
+                <CardContent className="p-0">
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img
+                      src={book.imageUrl || "/placeholder.svg"}
+                      alt={book.title}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {book.isNew && (
+                      <Badge className="absolute top-3 left-3 bg-orange-500 text-white">
+                        New
+                      </Badge>
+                    )}
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 hover:bg-white"
+                    >
+                      <Heart className="h-4 w-4" />
+                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+
+                  <div className="px-4">
+                    <Badge variant="secondary" className="mb-2 text-xs">
+                      {book.category}
+                    </Badge>
+
+                    <h3 className="font-serif font-bold text-foreground mb-1 line-clamp-2 group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      by {book.author}
+                    </p>
+
+                    <div className="flex items-center mb-3">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="text-sm font-semibold">
+                        {book.rating}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
