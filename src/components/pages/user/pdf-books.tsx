@@ -33,7 +33,7 @@ const PdfBooks = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {books?.data?.data.map((book: Record<string, any>, i: number) => (
           <Link
-            href={`/${book?.id}`}
+            href={`/books/${book?.id}`}
             key={i}
             className="rounded-lg shadow-md p-4"
           >
