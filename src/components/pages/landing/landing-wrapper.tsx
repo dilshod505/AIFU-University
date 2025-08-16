@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/pages/landing/hero-section";
 import { CategorySection } from "@/components/pages/landing/category-section";
 import { BookGrid } from "@/components/pages/landing/book-grid";
 import { FeaturedBooks } from "@/components/pages/landing/featured-books";
+import Footer from "@/components/pages/landing/footer";
 
 const LandingWrapper = () => {
   const [categoryId, setCategoryId] = useState<string | number>();
@@ -16,6 +17,7 @@ const LandingWrapper = () => {
         <FeaturedBooks />
         <CategorySection setCategoryId={setCategoryId as any} />
         <BookGrid categoryId={categoryId} />
+        <Footer />
       </main>
     </div>
   );
