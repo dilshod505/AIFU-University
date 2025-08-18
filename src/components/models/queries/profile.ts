@@ -1,0 +1,74 @@
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/components/models/axios";
+
+export const useProfile = () =>
+  useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const res = await api.get("/admin/profile");
+      return res.data;
+    },
+  });
+
+export const useAdmin = () =>
+  useQuery({
+    queryKey: ["admin"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/top");
+      return res.data;
+    },
+  });
+
+export const useAdminReturnBooks = () =>
+  useQuery({
+    queryKey: ["admin-return-books"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/return-books");
+      return res.data;
+    },
+  });
+
+export const useAdminIssuedBooks = () =>
+  useQuery({
+    queryKey: ["admin-issued-books"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/issued-books");
+      return res.data;
+    },
+  });
+
+export const useAdminExtendedBooks = () =>
+  useQuery({
+    queryKey: ["admin-extended-books"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/extended-books");
+      return res.data.data; // ✅
+    },
+  });
+
+export const useAdminActivity = () =>
+  useQuery({
+    queryKey: ["admin-activity"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/activity");
+      return res.data;
+    },
+  });
+
+export const useAdminActivityToday = () =>
+  useQuery({
+    queryKey: ["admin-activity-today"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/activity/today");
+      return res.data;
+    },
+  });
+
+export const useAdminActivityAnalytics = () =>
+  useQuery({
+    queryKey: ["admin-activity-analytics"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/activity/analytics");
+      return res.data;
+    },
+  });

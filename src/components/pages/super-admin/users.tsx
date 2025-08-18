@@ -12,6 +12,8 @@ import {
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  GraduationCap,
+  User,
 } from "lucide-react";
 import ReactPaginate from "react-paginate";
 import { Divider } from "antd";
@@ -51,6 +53,21 @@ const Users = () => {
         dataIndex: "index",
         width: 50,
         render: (_: any, __: any, index: number) => index + 1,
+      },
+      {
+        key: "degree",
+        title: t("degree"),
+        dataIndex: "degree",
+        render: (value: string) => (
+          <div className="flex items-center gap-2">
+            {value === "Bakalavr" ? (
+              <GraduationCap className="w-5 h-5 text-blue-600" />
+            ) : (
+              <User className="w-5 h-5 text-gray-600" />
+            )}
+            <span>{value}</span>
+          </div>
+        ),
       },
       {
         key: "name",
