@@ -1,7 +1,7 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Star, ShoppingCart } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Star, ShoppingCart } from "lucide-react";
 
 const featuredBooks = [
   {
@@ -14,7 +14,8 @@ const featuredBooks = [
     reviews: 12847,
     image: "/midnight-library-cover.png",
     badge: "Bestseller",
-    description: "A dazzling novel about all the choices that go into a life well lived.",
+    description:
+      "A dazzling novel about all the choices that go into a life well lived.",
   },
   {
     id: 2,
@@ -38,9 +39,23 @@ const featuredBooks = [
     reviews: 15623,
     image: "/project-hail-mary-cover.png",
     badge: "New Release",
-    description: "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
+    description:
+      "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
   },
-]
+  {
+    id: 3,
+    title: "Project Hail Mary",
+    author: "Andy Weir",
+    price: "$13.99",
+    originalPrice: "$18.99",
+    rating: 4.7,
+    reviews: 15623,
+    image: "/project-hail-mary-cover.png",
+    badge: "New Release",
+    description:
+      "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
+  },
+];
 
 export function FeaturedBooks() {
   return (
@@ -51,11 +66,12 @@ export function FeaturedBooks() {
             Featured Picks of the Month
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Handpicked selections from our curators - the books everyone's talking about
+            Handpicked selections from our curators - the books everyone's
+            talking about
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredBooks.map((book) => (
             <Card
               key={book.id}
@@ -66,7 +82,7 @@ export function FeaturedBooks() {
                   <img
                     src={book.image || "/placeholder.svg"}
                     alt={book.title}
-                    className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <Badge className="absolute top-4 left-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold">
                     {book.badge}
@@ -82,17 +98,27 @@ export function FeaturedBooks() {
                   <div className="flex items-center mb-3">
                     <div className="flex items-center mr-3">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                      <span className="text-sm font-semibold">{book.rating}</span>
+                      <span className="text-sm font-semibold">
+                        {book.rating}
+                      </span>
                     </div>
-                    <span className="text-sm text-muted-foreground">({book.reviews.toLocaleString()} reviews)</span>
+                    <span className="text-sm text-muted-foreground">
+                      ({book.reviews.toLocaleString()} reviews)
+                    </span>
                   </div>
 
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{book.description}</p>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    {book.description}
+                  </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-foreground">{book.price}</span>
-                      <span className="text-sm text-muted-foreground line-through">{book.originalPrice}</span>
+                      <span className="text-2xl font-bold text-foreground">
+                        {book.price}
+                      </span>
+                      <span className="text-sm text-muted-foreground line-through">
+                        {book.originalPrice}
+                      </span>
                     </div>
                     <Button
                       size="sm"
@@ -109,5 +135,5 @@ export function FeaturedBooks() {
         </div>
       </div>
     </section>
-  )
+  );
 }
