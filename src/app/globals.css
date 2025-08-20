@@ -41,7 +41,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
-  --custom-bg: var(--custom-color);
+  --color-custom-bg: var(--custom-color);
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -137,7 +137,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background dark:bg-custom-bg text-foreground;
   }
 
   .cont {
