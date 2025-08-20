@@ -8,7 +8,13 @@ import {
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   BookOpen,
   Building,
@@ -22,16 +28,30 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/components/models/axios";
+import bookPlaceholder from "../../../../public/book-placeholder.png";
+import Link from "next/link";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
   const { id } = useParams();
   const { data: book } = usePdfBookId({ id: id?.toString() || "" });
-  const { mutate: downloadBook, isPending } = usePdfDownload();
+  const pdfBooks = useQuery({
+    enabled: !!book,
+    queryKey: ["pdf-books", book],
+    queryFn: async () => {
+      const res = await api.get(
+        `/client/pdf-books?category=${book.categoryPreview.id}`,
+      );
+      return res.data;
+    },
+    select: (data) => data.data?.data,
+  });
 
   return book ? (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Левый столбец: обложка и действия */}
         <aside className="md:col-span-1 flex flex-col items-center">
           <div className="w-full shadow-lg rounded-2xl overflow-hidden">
@@ -112,22 +132,56 @@ const PdfBookDetail = () => {
             <h3 className="text-xl font-semibold">Описание</h3>
             <p className="mt-2 text-gray-700">{book.description}</p>
           </section>
-          <section className="mt-6">
-            <h3 className="text-lg font-semibold">Рекомендуем также</h3>
-            <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {/* Заглушки: заменить на реальные рекомендации */}
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="p-3 border rounded-lg text-sm text-gray-700"
-                >
-                  Рекомендуемая книга #{i + 1}
-                </div>
-              ))}
-            </div>
-          </section>
         </main>
       </div>
+      <section>
+        <Card className={"shadow-lg"}>
+          <CardHeader>
+            <CardTitle>Shu kategoriyadagi boshqa kitoblar</CardTitle>
+            <CardDescription className={"hidden"} />
+          </CardHeader>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 px-6 gap-3">
+            {pdfBooks.data?.map((book: Record<string, any>, i: number) => (
+              <Link href={`/books/${book?.id}`} key={i}>
+                <div className="overflow-hidden transition-all group">
+                  <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                    <Image
+                      src={book?.imageUrl || bookPlaceholder}
+                      alt={book?.title}
+                      width={400}
+                      height={200}
+                      priority
+                      quality={100}
+                      className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                        {book?.categoryPreviewDTO?.name}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {book?.title}
+                    </h3>
+
+                    <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                      <span>{book?.author}</span>
+                      <span className="mx-2">•</span>
+                      <span>{book?.categoryPreviewDTO?.name}</span>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {book?.description}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Card>
+      </section>
     </div>
   ) : (
     <div className="absolute bg-white top-0 left-0 z-50 flex justify-center items-center h-screen w-full gap-3  ">

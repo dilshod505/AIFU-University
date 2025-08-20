@@ -156,7 +156,7 @@ const PdfBooks = () => {
             ))
           : books?.data?.data.map((book: Record<string, any>, i: number) => (
               <Link href={`/books/${book?.id}`} key={i}>
-                <div className="overflow-hidden transition-all group hover:shadow-lg">
+                <div className="overflow-hidden transition-all ">
                   <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
                     <Image
                       src={book?.imageUrl || bookPlaceholder}
@@ -165,7 +165,7 @@ const PdfBooks = () => {
                       height={200}
                       priority
                       quality={100}
-                      className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
                     />
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
