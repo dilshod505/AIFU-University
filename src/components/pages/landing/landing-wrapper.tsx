@@ -6,7 +6,8 @@ import { CategorySection } from "@/components/pages/landing/category-section";
 import { BookGrid } from "@/components/pages/landing/book-grid";
 import { FeaturedBooks } from "@/components/pages/landing/featured-books";
 import Footer from "@/components/pages/landing/footer";
-import { ShowByCategoriesSection } from "@/components/pages/landing/show-by-categories";
+import { ShopByCategory } from "@/components/pages/landing/show-by-categories";
+import TopBtn from "@/components/widgets/top-btn";
 
 const LandingWrapper = () => {
   const [categoryId, setCategoryId] = useState<string | number>();
@@ -14,13 +15,12 @@ const LandingWrapper = () => {
     <div className="min-h-screen bg-background">
       <main>
         <HeroSection />
-        {/*@ts-ignore*/}
         <FeaturedBooks />
-        {/*@ts-ignore*/}
-        <ShowByCategoriesSection />
         <CategorySection setCategoryId={setCategoryId as any} />
         <BookGrid categoryId={categoryId} />
+        <ShopByCategory />
         <Footer />
+        <TopBtn />
       </main>
     </div>
   );

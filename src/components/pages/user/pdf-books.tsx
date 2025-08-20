@@ -52,7 +52,7 @@ const PdfBooks = () => {
   const t = useTranslations();
   const [pageNum, setPageNum] = useState<number>(1);
   const isMobile = useIsMobile();
-  const [pageSize, setPageSize] = useState<number>(isMobile ? 10 : 20);
+  const [pageSize, setPageSize] = useState<number>(18);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   console.log(isMobile);

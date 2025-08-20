@@ -10,60 +10,6 @@ import Image from "next/image";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
 import { Marquee } from "@/components/magicui/marquee";
 
-const featuredBooks = [
-  {
-    id: 1,
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    price: "$14.99",
-    originalPrice: "$19.99",
-    rating: 4.8,
-    reviews: 12847,
-    image: "/midnight-library-cover.png",
-    badge: "Bestseller",
-    description:
-      "A dazzling novel about all the choices that go into a life well lived.",
-  },
-  {
-    id: 2,
-    title: "Atomic Habits",
-    author: "James Clear",
-    price: "$16.99",
-    originalPrice: "$22.99",
-    rating: 4.9,
-    reviews: 8934,
-    image: "/atomic-habits-inspired-cover.png",
-    badge: "Editor's Choice",
-    description: "An easy & proven way to build good habits & break bad ones.",
-  },
-  {
-    id: 3,
-    title: "Project Hail Mary",
-    author: "Andy Weir",
-    price: "$13.99",
-    originalPrice: "$18.99",
-    rating: 4.7,
-    reviews: 15623,
-    image: "/project-hail-mary-cover.png",
-    badge: "New Release",
-    description:
-      "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
-  },
-  {
-    id: 3,
-    title: "Project Hail Mary",
-    author: "Andy Weir",
-    price: "$13.99",
-    originalPrice: "$18.99",
-    rating: 4.7,
-    reviews: 15623,
-    image: "/project-hail-mary-cover.png",
-    badge: "New Release",
-    description:
-      "A lone astronaut must save the earth from disaster in this incredible new science-based thriller.",
-  },
-];
-
 export function FeaturedBooks() {
   const { data } = useQuery({
     queryKey: ["new-books"],
