@@ -3,7 +3,7 @@ import { useState } from "react";
 import SimpleTranslation from "@/components/simple-translation";
 import { usePdfBooksList } from "@/components/models/queries/pdf-books";
 import Image from "next/image";
-import logo from "../../../../public/img-bg.png";
+import bookPlaceholder from "../../../../public/book-placeholder.png";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -22,13 +22,40 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+const BookSkeleton = () => (
+  <div className="overflow-hidden transition-all group">
+    <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+      <Skeleton className="w-full h-48 rounded-lg" />
+      <div className="absolute top-3 left-3">
+        <Skeleton className="h-6 w-16 rounded-full" />
+      </div>
+    </div>
+    <div className="p-4 space-y-3">
+      <Skeleton className="h-5 w-full" />
+      <Skeleton className="h-5 w-3/4" />
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-3 w-20" />
+        <span className="text-muted-foreground">•</span>
+        <Skeleton className="h-3 w-16" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-2/3" />
+      </div>
+    </div>
+  </div>
+);
 
 const PdfBooks = () => {
   const t = useTranslations();
   const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(9);
+  const isMobile = useIsMobile();
+  const [pageSize, setPageSize] = useState<number>(isMobile ? 10 : 20);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  console.log(isMobile);
   const { data: books, isLoading } = usePdfBooksList({
     pageNum,
     pageSize,
@@ -122,58 +149,47 @@ const PdfBooks = () => {
       </Card>
 
       {/* Books Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {isLoading
           ? Array.from({ length: pageSize }).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <Skeleton className="h-48 w-full" />
-                  <div className="p-4">
-                    <Skeleton className="h-6 w-20 mb-2" />
-                    <Skeleton className="h-6 w-32 mb-2" />
-                    <Skeleton className="h-4 w-28" />
-                  </div>
-                </CardContent>
-              </Card>
+              <BookSkeleton key={i} />
             ))
           : books?.data?.data.map((book: Record<string, any>, i: number) => (
               <Link href={`/books/${book?.id}`} key={i}>
-                <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
-                  <CardContent className="p-0">
-                    <div className="relative">
-                      <Image
-                        src={logo || "/placeholder.svg"}
-                        alt={book?.title}
-                        width={400}
-                        height={200}
-                        priority
-                        quality={100}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <Badge className="bg-primary/90 text-primary-foreground">
-                          {book?.categoryPreviewDTO?.name}
-                        </Badge>
-                      </div>
+                <div className="overflow-hidden transition-all group hover:shadow-lg">
+                  <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                    <Image
+                      src={book?.imageUrl || bookPlaceholder}
+                      alt={book?.title}
+                      width={400}
+                      height={200}
+                      priority
+                      quality={100}
+                      className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                        {book?.categoryPreviewDTO?.name}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {book?.title}
+                    </h3>
+
+                    <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                      <span>{book?.author}</span>
+                      <span className="mx-2">•</span>
+                      <span>{book?.categoryPreviewDTO?.name}</span>
                     </div>
 
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                        {book?.title}
-                      </h3>
-
-                      <div className="flex items-center text-sm text-muted-foreground mb-3">
-                        <span>{book?.author}</span>
-                        <span className="mx-2">•</span>
-                        <span>{book?.categoryPreviewDTO?.name}</span>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {book?.description}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {book?.description}
+                    </p>
+                  </div>
+                </div>
               </Link>
             ))}
       </div>
