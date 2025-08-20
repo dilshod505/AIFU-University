@@ -210,5 +210,8 @@
   "All": "Все",
   "books count": "Количество книг",
   "Profile": "Профиль",
-  "Show by Categories": "Показать по категориям"
+  "Show by Categories": "Показать по категориям",
+  "Total Pages": "Общее количество страниц",
+  "Current Page": "Текущая страница",
+  "Total Elements": "Всего элементов"
 }

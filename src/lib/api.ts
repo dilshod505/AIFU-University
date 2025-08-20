@@ -2,8 +2,13 @@ import { BookingFormData, ExtendFormData } from "@/types/booking";
 import { api } from "@/components/models/axios"; // Booking API functions
 
 // Booking API functions
-export async function getBookings(): Promise<any> {
-  const response = await api.get("/admin/booking");
+export async function getBookings(
+  pageNum: number,
+  pageSize: number,
+): Promise<any> {
+  const response = await api.get(
+    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`,
+  );
   return response.data;
 }
 
@@ -27,12 +32,12 @@ export async function borrowBook(data: BookingFormData): Promise<any> {
   return response.data;
 }
 
-export async function returnBook(bookingId: string): Promise<void> {
+export async function returnBook(bookingId: string): Promise<any> {
   const response = await api.post("/admin/booking/return", { bookingId });
   return response.data;
 }
 
-export async function extendBooking(data: ExtendFormData): Promise<void> {
+export async function extendBooking(data: ExtendFormData): Promise<any> {
   const response = await api.post("/admin/booking/extend", data);
   return response.data;
 }
@@ -48,16 +53,22 @@ export async function getHistoryById(id: string): Promise<any> {
   return response.data;
 }
 
-export async function searchHistory(query: string, field: string) {
+export async function searchHistory(
+  query: string,
+  field: string,
+  pageNumber: number = 1,
+  pageSize: number = 10,
+  sortDirection: "asc" | "desc" = "asc",
+): Promise<any> {
   const res = await api.get("/api/admin/history/search", {
     params: {
       query,
       field,
-      pageNumber: 1,
-      pageSize: 10,
-      sortDirection: "asc",
+      pageNumber,
+      pageSize,
+      sortDirection,
     },
   });
 
-  return res.data.data;
+  return res.data;
 }

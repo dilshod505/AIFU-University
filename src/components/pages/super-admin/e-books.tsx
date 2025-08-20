@@ -268,29 +268,14 @@ const EBaseBooks = () => {
         title: t("Author"),
       },
       {
-        key: "Category",
-        dataIndex: ["categoryPreview", "name"],
+        key: "categoryPreviewDTO",
+        dataIndex: ["categoryPreviewDTO", "name"],
         title: t("Category"),
       },
       {
         title: t("Isbn"),
         dataIndex: "isbn",
         key: "isbn",
-      },
-      {
-        title: t("Page Count"),
-        dataIndex: "pageCount",
-        key: "pageCount",
-      },
-      {
-        title: t("Publisher"),
-        dataIndex: "publisher",
-        key: "publisher",
-      },
-      {
-        title: t("Language"),
-        dataIndex: "language",
-        key: "language",
       },
       {
         title: t("createdAt"),
@@ -382,6 +367,8 @@ const EBaseBooks = () => {
     }
   };
 
+  // const data;
+
   return (
     <div>
       <MyTable
@@ -436,33 +423,60 @@ const EBaseBooks = () => {
             </div>
           </div>
         }
-      />
+        footer={
+          <div className={"flex justify-between items-center gap-2"}>
+            <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+              <p>
+                {t("Total Pages")}:{" "}
+                <span className="text-green-600">
+                  {books?.data?.totalPages}
+                </span>
+              </p>
+              <p>
+                {t("Current Page")}:{" "}
+                <span className="text-green-600">
+                  {books?.data?.currentPage}
+                </span>
+              </p>
+              <p>
+                {t("Total Elements")}:{" "}
+                <span className="text-green-600">
+                  {books?.data?.totalElements}
+                </span>
+              </p>
+            </div>
 
-      {/* Pagination */}
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => {
-          const newPageNum = e.selected + 1;
-          setPageNumber(newPageNum);
-        }}
-        pageRangeDisplayed={pageSize}
-        pageCount={Math.ceil((books?.data?.totalElements || 0) / pageSize)}
-        previousLabel={
-          <Button className={"bg-white text-black"}>
-            <ChevronLeft />
-            {t("Return")}
-          </Button>
+            <div>
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => {
+                  const newPageNum = e.selected + 1;
+                  setPageNumber(newPageNum);
+                }}
+                pageRangeDisplayed={pageSize}
+                pageCount={Math.ceil(
+                  (books?.data?.totalElements || 0) / pageSize,
+                )}
+                previousLabel={
+                  <Button className={"bg-white text-black"}>
+                    <ChevronLeft />
+                    {t("Return")}
+                  </Button>
+                }
+                nextLabel={
+                  <Button className={"bg-white text-black"}>
+                    {t("Next")} <ChevronRight />
+                  </Button>
+                }
+                className={"flex justify-center gap-2 items-center my-5"}
+                renderOnZeroPageCount={null}
+                forcePage={pageNumber - 1}
+                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+                activeClassName="bg-green-600 text-white rounded-full"
+              />
+            </div>
+          </div>
         }
-        nextLabel={
-          <Button className={"bg-white text-black"}>
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        className={"flex justify-center gap-2 items-center my-5"}
-        renderOnZeroPageCount={null}
-        forcePage={pageNumber - 1}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
       />
       <Sheet
         open={open}

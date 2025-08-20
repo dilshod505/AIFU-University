@@ -155,31 +155,39 @@ const Users = () => {
             </Tabs>
           </div>
         }
-      />
-      <Divider />
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => {
-          setPageNumber(e.selected + 1);
-        }}
-        pageRangeDisplayed={size}
-        pageCount={Math.ceil(students?.totalElements / size) || 0}
-        previousLabel={
-          <Button className={"bg-white text-black"}>
-            <ChevronLeft />
-            {t("Return")}
-          </Button>
+        footer={
+          <div className={"flex justify-between items-center gap-2"}>
+            <div>
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => {
+                  const newPageNum = e.selected + 1;
+                  setPageNumber(newPageNum);
+                }}
+                pageRangeDisplayed={size}
+                pageCount={Math.ceil(
+                  (students?.data?.totalElements || 0) / size,
+                )}
+                previousLabel={
+                  <Button className={"bg-white text-black"}>
+                    <ChevronLeft />
+                    {t("Return")}
+                  </Button>
+                }
+                nextLabel={
+                  <Button className={"bg-white text-black"}>
+                    {t("Next")} <ChevronRight />
+                  </Button>
+                }
+                className={"flex justify-center gap-2 items-center my-5"}
+                renderOnZeroPageCount={null}
+                forcePage={pageNumber - 1}
+                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+                activeClassName="bg-green-600 text-white rounded-full"
+              />
+            </div>
+          </div>
         }
-        nextLabel={
-          <Button className={"bg-white text-black"}>
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        className={"flex justify-center gap-3 items-center my-5"}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
-        renderOnZeroPageCount={null}
-        forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
       />
     </div>
   );

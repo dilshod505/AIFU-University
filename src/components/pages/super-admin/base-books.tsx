@@ -242,31 +242,63 @@ const BaseBooks = () => {
             </TooltipBtn>
           </div>
         }
+        footer={
+          <div className={"flex justify-between items-center gap-2"}>
+            <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+              <p>
+                {t("Total Pages")}:{" "}
+                <span className="text-green-600">
+                  {baseBooks?.data?.totalPages}
+                </span>
+              </p>
+              <p>
+                {t("Current Page")}:{" "}
+                <span className="text-green-600">
+                  {baseBooks?.data?.currentPage}
+                </span>
+              </p>
+              <p>
+                {t("Total Elements")}:{" "}
+                <span className="text-green-600">
+                  {baseBooks?.data?.totalElements}
+                </span>
+              </p>
+            </div>
+
+            <div>
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => {
+                  const newPageNum = e.selected + 1;
+                  setPageNum(newPageNum);
+                }}
+                pageRangeDisplayed={pageSize}
+                pageCount={Math.ceil(
+                  (baseBooks?.data?.totalElements || 0) / pageSize,
+                )}
+                previousLabel={
+                  <Button className={"bg-white text-black"}>
+                    <ChevronLeft />
+                    {t("Return")}
+                  </Button>
+                }
+                nextLabel={
+                  <Button className={"bg-white text-black"}>
+                    {t("Next")} <ChevronRight />
+                  </Button>
+                }
+                className={"flex justify-center gap-2 items-center my-5"}
+                renderOnZeroPageCount={null}
+                forcePage={pageNum - 1}
+                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+                activeClassName="bg-green-600 text-white rounded-full"
+              />
+            </div>
+          </div>
+        }
       />
 
       <Divider />
-
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => setPageNum(e.selected + 1)}
-        pageRangeDisplayed={pageSize}
-        pageCount={Math.ceil((baseBooks?.data?.totalElements || 0) / pageSize)}
-        previousLabel={
-          <Button className="bg-white text-black">
-            <ChevronLeft /> {t("Previous")}
-          </Button>
-        }
-        nextLabel={
-          <Button className="bg-white text-black">
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        className="flex justify-center gap-2 items-center my-5"
-        renderOnZeroPageCount={null}
-        forcePage={pageNum - 1}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
-      />
 
       <Modal
         title={editingBook ? t("Edit book") : t("Add book")}
