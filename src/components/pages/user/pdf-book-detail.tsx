@@ -30,196 +30,103 @@ const PdfBookDetail = () => {
   const { mutate: downloadBook, isPending } = usePdfDownload();
 
   return book ? (
-    <div className="min-h-screen ">
-      <div className="cont mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Book Cover Section */}
-          <div className="lg:col-span-1">
-            <Card className="overflow-hidden border-green-200 shadow-xl">
-              <CardContent className="p-0">
-                <div className="relative">
-                  <Image
-                    src="/placeholder.svg?height=600&width=400"
-                    alt={book?.data?.title}
-                    width={400}
-                    height={600}
-                    className="w-full max-h-[400px] h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-600 hover:bg-green-700">
-                      {book?.data?.categoryPreview.name}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="p-6 bg-gradient-to-t from-green-600 to-emerald-500 text-white">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      <span className="text-sm">
-                        {book?.data?.pageCount} sahifa
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Layers className="h-4 w-4" />
-                      <span className="text-sm">{book?.data?.size} MB</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Левый столбец: обложка и действия */}
+        <aside className="md:col-span-1 flex flex-col items-center">
+          <div className="w-full shadow-lg rounded-2xl overflow-hidden">
+            <img
+              src={book.imageUrl}
+              alt={`Обложка книги ${book.title} — ${book.author}`}
+              className="w-full h-96 object-cover"
+            />
+            <div className="p-4 bg-white">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">
+                  {book.pageCount} стр.
+                </span>
+                <span className="text-sm font-medium">{book.size} MB</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <a
+                  href={book.pdfUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
+                >
+                  Читать онлайн
+                </a>
+                <a
+                  href={book.pdfUrl}
+                  download
+                  className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                >
+                  Скачать PDF
+                </a>
+              </div>
+            </div>
+          </div>
+        </aside>
 
-            {/* Action Buttons */}
-            <div className="mt-6 space-y-3">
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg">
-                <BookOpen className="mr-2 h-4 w-4" />
-                Kitobni O'qish
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full border-green-600 text-green-600 hover:bg-green-50 bg-transparent"
-                onClick={() => downloadBook(id?.toString() || "")}
-                disabled={isPending}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                {isPending ? "Yuklanmoqda..." : "PDF Yuklab Olish"}
-              </Button>
+        {/* Правый столбец: информация о книге */}
+        <main className="md:col-span-2 bg-white p-6 rounded-2xl shadow">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
+              <p className="mt-2 text-lg text-gray-700">
+                {book.author} •{" "}
+                <span className="text-sm text-gray-500">
+                  {book.categoryPreview?.name}
+                </span>
+              </p>
+            </div>
+
+            <div className="flex gap-3 items-center">
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Год издания</div>
+                <div className="font-semibold">{book.publicationYear}</div>
+              </div>
+
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Добавлена</div>
+                <div className="font-semibold">{book.createdDate}</div>
+              </div>
             </div>
           </div>
 
-          {/* Book Details Section */}
-          <div className="lg:col-span-2 space-y-6 h-full">
-            {/* Title and Author */}
-            <Card>
-              <CardContent>
-                <div className="grid grid-cols-2">
-                  <div className="space-y-4 col-span-1">
-                    <div>
-                      <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                        {book?.data?.title}
-                      </h1>
-                      <div className="flex items-center gap-2 text-green-600">
-                        <User className="h-5 w-5" />
-                        <span className="text-xl font-medium">
-                          {book?.data?.author}
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-600 text-lg leading-relaxed">
-                      {book?.data?.description}
-                    </p>
-                  </div>
-                  <div className="col-span-1 space-y-4">
-                    <div className="">
-                      <div className="flex items-center gap-3 mb-3">
-                        <Hash className="h-5 w-5 text-green-600" />
-                        <h3 className="font-semibold text-gray-900">ISBN</h3>
-                      </div>
-                      <div className="text-sm">
-                        <span className="font-mono bg-green-50 px-2 py-1 rounded text-green-800">
-                          {book?.data?.isbn}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="flex items-center gap-3 mb-3">
-                        <Building className="h-5 w-5 text-green-600" />
-                        <h3 className="font-semibold text-gray-900">
-                          Kategoriya
-                        </h3>
-                      </div>
-                      <div className="text-sm">
-                        <Badge
-                          variant="secondary"
-                          className="bg-green-100 text-green-800"
-                        >
-                          {book?.data?.categoryPreview.name}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Book Information Cards */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <Card className="border-green-200 hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Calendar className="h-5 w-5 text-green-600" />
-                    <h3 className="font-semibold text-gray-900">
-                      Nashr Ma'lumotlari
-                    </h3>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Nashr yili:</span>
-                      <span className="font-medium">
-                        {book?.data?.publicationYear}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Nashriyot:</span>
-                      <span className="font-medium">
-                        {book?.data?.publisher}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Sana:</span>
-                      <span className="font-medium">
-                        {book?.data?.localDate}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-green-200 hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Globe className="h-5 w-5 text-green-600" />
-                    <h3 className="font-semibold text-gray-900">
-                      Til va Format
-                    </h3>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Til:</span>
-                      <span className="font-medium">
-                        {book?.data?.language}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Yozuv:</span>
-                      <span className="font-medium">{book?.data?.script}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Sahifalar:</span>
-                      <span className="font-medium">
-                        {book?.data?.pageCount}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <MetaRow label="ISBN" value={book.isbn} />
+              <MetaRow label="Издатель" value={book.publisher} />
+              <MetaRow label="Язык" value={book.language} />
             </div>
 
-            {/* About Section */}
-            <Card className="border-green-200">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Kitob Haqida
-                </h3>
-                <div className="prose prose-green max-w-none">
-                  <p className="text-gray-700 leading-relaxed">
-                    {book?.data?.description}
-                  </p>
+            <div className="space-y-2">
+              <MetaRow label="Скрипт" value={book.script} />
+              <MetaRow label="Страниц" value={String(book.pageCount)} />
+              <MetaRow label="Размер" value={`${book.size} MB`} />
+            </div>
+          </section>
+
+          <section className="mt-6">
+            <h3 className="text-xl font-semibold">Описание</h3>
+            <p className="mt-2 text-gray-700">{book.description}</p>
+          </section>
+          <section className="mt-6">
+            <h3 className="text-lg font-semibold">Рекомендуем также</h3>
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {/* Заглушки: заменить на реальные рекомендации */}
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="p-3 border rounded-lg text-sm text-gray-700"
+                >
+                  Рекомендуемая книга #{i + 1}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              ))}
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   ) : (
@@ -229,5 +136,14 @@ const PdfBookDetail = () => {
     </div>
   );
 };
+
+function MetaRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between border-b py-2">
+      <div className="text-sm text-gray-500">{label}</div>
+      <div className="text-sm font-medium">{value}</div>
+    </div>
+  );
+}
 
 export default PdfBookDetail;

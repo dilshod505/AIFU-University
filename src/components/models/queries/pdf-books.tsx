@@ -29,6 +29,7 @@ export const usePdfBookId = ({ id }: { id: string | number }) => {
       const res = await api.get(`/client/pdf-book/${id}`);
       return res.data;
     },
+    select: (data) => data.data,
   });
 };
 
