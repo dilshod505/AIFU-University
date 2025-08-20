@@ -86,7 +86,7 @@ const Profile = () => {
             <p className=" text-sm">{profile?.data?.email}</p>
           </div>
         </div>
-        <TooltipBtn title={"Edit"}>
+        <TooltipBtn title={"Edit"} className="text-white">
           <UserRoundPen />
         </TooltipBtn>
       </div>
