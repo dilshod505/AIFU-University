@@ -9,7 +9,7 @@ import Link from "next/link";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <div className="bg-[#213148]">
+      <div className="bg-[#213148] sticky top-0 z-50 py-3">
         <header className="cont flex h-16 shrink-0 justify-between items-center gap-2 px-4 ">
           <div className="flex justify-center items-center gap-3">
             <Link href="/">
