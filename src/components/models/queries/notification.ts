@@ -10,12 +10,15 @@ export const useGetNotifications = () =>
     },
   });
 
-export const useGetNotificationById = () =>
+export const useGetNotificationById = (id?: number) =>
   useQuery({
-    queryKey: ["notification-id"],
-    queryFn: async (id: number | any) => {
+    queryKey: ["notification-id", id],
+    queryFn: async () => {
+      if (!id) return null;
       const res = await api.get(`/admin/notification/${id}`);
+      return res.data;
     },
+    enabled: !!id,
   });
 
 export const useDeleteNotification = () =>
