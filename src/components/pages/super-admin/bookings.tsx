@@ -17,7 +17,12 @@ export default function Bookings() {
   const [isSearching, setIsSearching] = useState(false);
 
   const queryClient = useQueryClient();
-  const { data: bookings = [], isLoading, error, refetch } = useBookings();
+  const {
+    data: bookings = [],
+    isLoading,
+    error,
+    refetch,
+  } = useBookings({ pageNum: 1, pageSize: 100000 });
 
   // Use original bookings when not searching
   const currentBookings = isSearching ? displayedBookings : bookings;

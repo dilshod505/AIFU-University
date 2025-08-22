@@ -31,10 +31,16 @@ export const historyKeys = {
 };
 
 // Get all bookings
-export function useBookings() {
+export function useBookings({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return useQuery({
     queryKey: bookingKeys.lists(),
-    queryFn: getBookings,
+    queryFn: () => getBookings(pageNum, pageSize),
     select: (data) => data?.data?.data || [],
   });
 }
