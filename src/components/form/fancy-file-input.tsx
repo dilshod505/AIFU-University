@@ -71,10 +71,10 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-        },
+        }
       );
 
-      const uploadPath = response?.data?.url;
+      const uploadPath = response?.data?.data;
 
       if (!uploadPath) {
         throw new Error("URL qaytmadi");
@@ -124,7 +124,7 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
           onClick={handleClick}
           className={cn(
             "flex gap-2 justify-center items-center px-3 py-2 text-sm font-medium rounded-md border transition-all bg-muted-foreground/30 text-muted-foreground hover:bg-muted-foreground/50",
-            "dark:hover:bg-muted-foreground/30",
+            "dark:hover:bg-muted-foreground/30"
           )}
         >
           <UploadCloud className="size-5" />
@@ -137,7 +137,7 @@ export const FancyFileInput: React.FC<FancyFileInputProps> = ({
             "w-[112px] h-[112px] relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/30",
             "hover:bg-muted/50 cursor-pointer transition-all text-sm text-muted-foreground",
             "dark:hover:bg-muted/30",
-            loading && "opacity-70 cursor-wait",
+            loading && "opacity-70 cursor-wait"
           )}
         >
           {loading ? (

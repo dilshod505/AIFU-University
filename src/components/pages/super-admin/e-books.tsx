@@ -1,10 +1,20 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
 import { AutoForm, FormField } from "@/components/form/auto-form";
+import { api } from "@/components/models/axios";
 import MyTable, { IColumn } from "@/components/my-table";
-import { useForm } from "react-hook-form";
+import TooltipBtn from "@/components/tooltip-btn";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Image } from "antd";
+import dayjs from "dayjs";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -17,20 +27,10 @@ import {
   Trash,
   X,
 } from "lucide-react";
-import TooltipBtn from "@/components/tooltip-btn";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/components/models/axios";
-import { Image } from "antd";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import dayjs from "dayjs";
 
 const EBaseBooks = () => {
   const t = useTranslations();
@@ -42,7 +42,7 @@ const EBaseBooks = () => {
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
       );
       return data;
     },
@@ -120,6 +120,24 @@ const EBaseBooks = () => {
   const fields = useMemo<FormField[]>(
     () => [
       {
+        label: t("kitob muqovasi"),
+        name: "imageUrl",
+        type: "file",
+        required: true,
+        accept: "image/png, image/jpeg, image/jpg, image/webp",
+        sm: 12,
+        md: 6,
+      },
+      {
+        label: t("elektron kitob fayli"),
+        name: "pdfUrl",
+        type: "file",
+        required: true,
+        accept: "application/pdf",
+        sm: 12,
+        md: 6,
+      },
+      {
         label: t("Author"),
         name: "author",
         type: "text",
@@ -149,37 +167,12 @@ const EBaseBooks = () => {
         sm: 12,
         md: 6,
       },
-      {
-        label: t("Description"),
-        name: "description",
-        type: "textarea",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
+
       {
         label: t("Publication Year"),
         name: "publicationYear",
         type: "number",
         required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("elektron kitob fayli"),
-        name: "pdfUrl",
-        type: "file",
-        required: true,
-        accept: "application/pdf",
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("kitob muqovasi"),
-        name: "imageUrl",
-        type: "file",
-        required: true,
-        accept: "image/png, image/jpeg, image/jpg, image/webp",
         sm: 12,
         md: 6,
       },
@@ -224,15 +217,15 @@ const EBaseBooks = () => {
         md: 6,
       },
       {
-        label: t("size") + " (MB)",
-        name: "size",
-        type: "number",
+        label: t("Description"),
+        name: "description",
+        type: "textarea",
         required: true,
         sm: 12,
         md: 6,
       },
     ],
-    [t, categories.data],
+    [t, categories.data]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -329,7 +322,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
@@ -355,19 +348,40 @@ const EBaseBooks = () => {
   const onSubmit = async (data: any) => {
     try {
       if (editingBook) {
-        updateBook.mutate({ id: editingBook.id, data });
+        updateBook.mutate({
+          id: editingBook.id,
+          data: {
+            ...data,
+            imageUrl:
+              typeof data.imageUrl === "string"
+                ? data.imageUrl
+                : data.imageUrl?.url,
+            pdfUrl:
+              typeof data.pdfUrl === "string" ? data.pdfUrl : data.pdfUrl?.url,
+            size:
+              typeof data.size === "number" ? data.size : data.pdfUrl?.sizeMB,
+          },
+        });
       } else {
-        createBook.mutate(data);
+        createBook.mutate({
+          ...data,
+          imageUrl:
+            typeof data.imageUrl === "string"
+              ? data.imageUrl
+              : data.imageUrl?.url,
+          pdfUrl:
+            typeof data.pdfUrl === "string" ? data.pdfUrl : data.pdfUrl?.url,
+          size: data.pdfUrl?.sizeMB,
+        });
       }
       setOpen(false);
       setEditingBook(null);
       setActionType("add");
+      form.reset();
     } catch (e) {
       console.log(e);
     }
   };
-
-  // const data;
 
   return (
     <div>
@@ -424,21 +438,21 @@ const EBaseBooks = () => {
           </div>
         }
         footer={
-          <div className={"flex justify-between items-center gap-2"}>
+          <div className={"flex justify-between items-center gap-2 flex-wrap"}>
             <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-              <p>
+              <p className="text-sm flex justify-center items-center gap-2">
                 {t("Total Pages")}:{" "}
                 <span className="text-green-600">
                   {books?.data?.totalPages}
                 </span>
               </p>
-              <p>
+              <p className="text-sm flex justify-center items-center gap-2">
                 {t("Current Page")}:{" "}
                 <span className="text-green-600">
                   {books?.data?.currentPage}
                 </span>
               </p>
-              <p>
+              <p className="text-sm flex justify-center items-center gap-2">
                 {t("Total Elements")}:{" "}
                 <span className="text-green-600">
                   {books?.data?.totalElements}
@@ -455,7 +469,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize,
+                  (books?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -484,8 +498,8 @@ const EBaseBooks = () => {
           if (!open) {
             setEditingBook(null);
             setActionType("add");
-            form.reset();
           }
+          form.reset();
           setOpen(open);
         }}
       >

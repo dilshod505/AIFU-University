@@ -6,12 +6,18 @@ import {
   Form,
   FormControl,
   FormDescription,
-  FormField as RHFField,
   FormItem,
   FormLabel,
   FormMessage,
+  FormField as RHFField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -62,15 +68,9 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Controller } from "react-hook-form";
 import { CustomCheckbox } from "./checkbox";
 import { FancyFileInput } from "./fancy-file-input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Controller } from "react-hook-form";
 
 export type ListItemContainer = {
   children: ReactNode;
@@ -258,7 +258,7 @@ export const AutoForm: FC<AutoFormProps> = ({
   disabled,
 }) => {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
   const [showPasswords, setShowPasswords] = useState<Set<string>>(new Set());
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -425,7 +425,7 @@ export const AutoForm: FC<AutoFormProps> = ({
           } else if (persistFormState) {
             localStorage.setItem(
               `form-state-${formId}`,
-              JSON.stringify(formData),
+              JSON.stringify(formData)
             );
           }
           setAutoSaveStatus("saved");
@@ -503,7 +503,7 @@ export const AutoForm: FC<AutoFormProps> = ({
     const getClass = (
       breakpoint: string,
       span: number,
-      type: "col" | "row",
+      type: "col" | "row"
     ): string | null => {
       if (
         span < 1 ||
@@ -675,7 +675,7 @@ export const AutoForm: FC<AutoFormProps> = ({
             className={cn(
               "space-y-2 relative group",
               enableAnimations && "transition-all duration-200 ease-in-out",
-              fieldState.error && "animate-pulse",
+              fieldState.error && "animate-pulse"
             )}
           >
             {field.label && field.type !== "checkbox" && (
@@ -733,7 +733,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                     field.conditionalStyle &&
                       !fieldState.error &&
                       rf.value &&
-                      field.conditionalStyle.success,
+                      field.conditionalStyle.success
                   ),
                   onChange: (e: any) => {
                     let value = e.target ? e.target.value : e;
@@ -813,7 +813,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                             <SelectItem
                               className={cn(
                                 field.className,
-                                "w-[90vw] md:w-full",
+                                "w-[90vw] md:w-full"
                               )}
                               key={opt.value.toString()}
                               value={opt.value.toString()}
@@ -909,7 +909,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                             field.className,
                             "w-full",
                             field.addonBefore && "rounded-l-none",
-                            field.addonAfter && "rounded-r-none",
+                            field.addonAfter && "rounded-r-none"
                           )}
                         />
                         {field.addonAfter && (
@@ -1041,7 +1041,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                           className={cn(
                             field.className,
                             field.addonBefore && "rounded-l-none",
-                            field.addonAfter && "rounded-r-none",
+                            field.addonAfter && "rounded-r-none"
                           )}
                         />
                         {field.addonAfter && (
@@ -1080,7 +1080,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                           className={cn(
                             field.className,
                             field.addonBefore && "rounded-l-none",
-                            field.addonAfter && "rounded-r-none",
+                            field.addonAfter && "rounded-r-none"
                           )}
                         />
                         {field.addonAfter && (
@@ -1119,7 +1119,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                           className={cn(
                             field.className,
                             field.addonBefore && "rounded-l-none",
-                            field.addonAfter && "rounded-r-none",
+                            field.addonAfter && "rounded-r-none"
                           )}
                         />
                         {field.addonAfter && (
@@ -1180,7 +1180,7 @@ export const AutoForm: FC<AutoFormProps> = ({
 
     const currentStepData = steps[currentStep];
     return fields.filter((field) =>
-      currentStepData.fields.includes(field.name),
+      currentStepData.fields.includes(field.name)
     );
   };
 
@@ -1229,7 +1229,7 @@ export const AutoForm: FC<AutoFormProps> = ({
       return groups.map((group) => {
         const groupFields = fieldsToRender.filter(
           (field) =>
-            group.fields.includes(field.name) || field.group === group.title,
+            group.fields.includes(field.name) || field.group === group.title
         );
 
         if (groupFields.length === 0) return null;
@@ -1245,7 +1245,7 @@ export const AutoForm: FC<AutoFormProps> = ({
               className={cn(
                 "cursor-pointer transition-all duration-200",
                 group.collapsible && "hover:bg-muted/50",
-                enableAnimations && "hover:scale-[1.02]",
+                enableAnimations && "hover:scale-[1.02]"
               )}
               onClick={() => {
                 if (group.collapsible) {
@@ -1376,7 +1376,7 @@ export const AutoForm: FC<AutoFormProps> = ({
             "grid grid-cols-12 auto-rows-min gap-4",
             themeClasses[theme],
             "p-6 rounded-lg",
-            className,
+            className
           )}
         >
           {renderFormContent()}
@@ -1422,7 +1422,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                           const formData = form.getValues();
                           localStorage.setItem(
                             `form-state-${formId}`,
-                            JSON.stringify(formData),
+                            JSON.stringify(formData)
                           );
                         }
                       }}
