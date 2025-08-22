@@ -23,7 +23,7 @@ const Notifications = () => {
     <div>
       <h1 className="text-2xl font-semibold py-5">{t("Notifications")}</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* LEFT SIDE: LIST */}
         <div className="md:col-span-1">
           <Tabs defaultValue="EXTEND" className="w-full">
