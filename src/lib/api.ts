@@ -1,7 +1,6 @@
 import { BookingFormData, ExtendFormData } from "@/types/booking";
-import { api } from "@/components/models/axios"; // Booking API functions
+import { api } from "@/components/models/axios";
 
-// Booking API functions
 export async function getBookings(
   pageNum: number,
   pageSize: number,

@@ -3,7 +3,10 @@
 import React, { useMemo, useState } from "react";
 import MyTable, { IColumn } from "@/components/my-table";
 import { useTranslations } from "next-intl";
-import { useStudents } from "@/components/models/queries/students";
+import {
+  useExcelExport,
+  useStudents,
+} from "@/components/models/queries/students";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -29,6 +32,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import TooltipBtn from "@/components/tooltip-btn";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -44,6 +49,7 @@ const Users = () => {
     size,
     sortDirection,
   });
+  const expertToExcel = useExcelExport();
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -153,6 +159,19 @@ const Users = () => {
                 <TabsTrigger value={"inactive"}>{t("Inactive")}</TabsTrigger>
               </TabsList>
             </Tabs>
+            <TooltipBtn
+              title={t("Export to Excel")}
+              onClick={() => {
+                expertToExcel.mutate({
+                  filter,
+                  pageNumber,
+                  size,
+                  sortDirection,
+                });
+              }}
+            >
+              <RiFileExcel2Line />
+            </TooltipBtn>
           </div>
         }
         footer={

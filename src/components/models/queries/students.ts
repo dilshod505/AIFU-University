@@ -52,3 +52,12 @@ export const useCreateAdministrator = () => {
     },
   });
 };
+
+export const useExcelExport = () => {
+  return useMutation({
+    mutationFn: async (data: Record<string, any>) => {
+      const res = await api.get("/admin/backup/student", data);
+      return res.data;
+    },
+  });
+};

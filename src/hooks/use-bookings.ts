@@ -30,7 +30,6 @@ export const historyKeys = {
   search: (query: string) => [...historyKeys.all, "search", query] as const,
 };
 
-// Get all bookings
 export function useBookings({
   pageNum,
   pageSize,
