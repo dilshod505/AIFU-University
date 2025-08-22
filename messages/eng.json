@@ -219,5 +219,7 @@
   "Notification detail": "Notification detail",
   "Inventory number": "Inventory number",
   "Degree": "Degree",
-  "Faculty": "Faculty"
+  "Faculty": "Faculty",
+  "accept": "Accept",
+  "reject": "Reject"
 }

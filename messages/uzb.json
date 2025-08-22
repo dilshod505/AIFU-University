@@ -219,5 +219,7 @@
   "Notification detail": "Xabar tafsiloti",
   "Inventory number": "Inventar raqami",
   "Degree": "Daraja",
-  "Faculty": "Fakultet"
+  "Faculty": "Fakultet",
+  "accept": "Qabul qilish",
+  "reject": "Rad etish"
 }

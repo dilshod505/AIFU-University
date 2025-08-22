@@ -219,5 +219,7 @@
   "Notification detail": "Детали уведомления",
   "Inventory number": "Инвентарный номер",
   "Degree": "Градус",
-  "Faculty": "Факультет"
+  "Faculty": "Факультет",
+  "accept": "Принять",
+  "reject": "Отклонить"
 }

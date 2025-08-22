@@ -1,33 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTranslations } from "next-intl";
+import { AutoForm } from "@/components/form/auto-form";
+import { api } from "@/components/models/axios";
 import {
-  useGetNotifications,
   useGetNotificationById,
+  useGetNotifications,
 } from "@/components/models/queries/notification";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import TooltipBtn from "@/components/tooltip-btn";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Notifications = () => {
   const t = useTranslations();
+  const form = useForm();
   const { data: notifications } = useGetNotifications();
+  const [extendingNotification, setExtendingNotification] = useState<
+    number | null
+  >(null);
   const [selected, setSelected] = useState<{ id: number; type: string } | null>(
-    null,
+    null
   );
-
   const { data: detail } = useGetNotificationById(selected?.id || undefined);
 
-  const list = notifications?.data?.data || [];
-
-  if (!notifications)
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
+  const accept = useMutation({
+    mutationFn: async ({
+      extendDays,
+      notificationId,
+    }: {
+      notificationId: number;
+      extendDays: number;
+    }) => {
+      const res = await api.post("/admin/actions/extend/accept", {
+        extendDays: +extendDays,
+        notificationId,
+      });
+      return res.data;
+    },
+  });
+  const reject = useMutation({
+    mutationFn: async ({ notificationId }: { notificationId: number }) => {
+      const res = await api.post("/admin/actions/extend/reject", {
+        notificationId,
+      });
+      return res.data;
+    },
+  });
+  const warning = useMutation({
+    mutationFn: async ({ notificationId }: { notificationId: number }) => {
+      const res = await api.post("/admin/actions/warning", {
+        notificationId,
+      });
+      return res.data;
+    },
+  });
 
   return (
     <div>
@@ -36,7 +72,11 @@ const Notifications = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* LEFT SIDE */}
         <div className="md:col-span-1">
-          <Tabs defaultValue="EXTEND" className="w-full">
+          <Tabs
+            defaultValue="EXTEND"
+            className="w-full"
+            onValueChange={() => setSelected(null)}
+          >
             <TabsList className="mb-5 w-full">
               <TabsTrigger
                 value="EXTEND"
@@ -54,7 +94,7 @@ const Notifications = () => {
 
             <TabsContent value="EXTEND">
               <div className="flex flex-col gap-3">
-                {list
+                {(notifications?.data?.data || [])
                   .filter((n: any) => n.notificationType === "EXTEND")
                   .map((n: any) => (
                     <Card
@@ -85,7 +125,7 @@ const Notifications = () => {
             {/* WARNING list */}
             <TabsContent value="WARNING">
               <div className="flex flex-col gap-3">
-                {list
+                {(notifications?.data?.data || [])
                   .filter((n: any) => n.notificationType === "WARNING")
                   .map((n: any) => (
                     <Card
@@ -116,7 +156,7 @@ const Notifications = () => {
         {/* RIGHT SIDE: DETAILS */}
         <div className="md:col-span-2 mt-16">
           {!selected || !detail ? (
-            <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg border p-10 text-center">
+            <div className="flex items-center justify-center h-full rounded-lg border p-10 text-center">
               <div>
                 <div className="text-gray-400 text-5xl mb-3">📋</div>
                 <h2 className="font-semibold text-gray-600">
@@ -213,6 +253,29 @@ const Notifications = () => {
                         {detail.data.book.inventoryNumber}
                       </span>
                     </p>
+                    <div className="flex justify-start items-center gap-3 mt-3">
+                      <Button
+                        onClick={() => {
+                          setExtendingNotification(selected.id);
+                        }}
+                        size={"sm"}
+                      >
+                        {t("accept")}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          if (extendingNotification) {
+                            reject.mutate({
+                              notificationId: extendingNotification,
+                            });
+                          }
+                        }}
+                        size={"sm"}
+                        variant={"destructive"}
+                      >
+                        {t("reject")}
+                      </Button>
+                    </div>
                   </div>
                 )}
                 <div></div>
@@ -221,6 +284,37 @@ const Notifications = () => {
           )}
         </div>
       </div>
+      <Sheet
+        open={!!extendingNotification}
+        onOpenChange={() => setExtendingNotification(null)}
+      >
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle asChild>
+              <h1>{t("ijara vaqtini uzaytirish")}</h1>
+            </SheetTitle>
+            <AutoForm
+              submitText={t("ijara vaqtini uzaytirish")}
+              className="p-0 my-5 border-0 bg-transparent"
+              onSubmit={(values: Record<string, any>) => {
+                if (extendingNotification) {
+                  accept.mutate({
+                    extendDays: values.extendDays,
+                    notificationId: extendingNotification,
+                  });
+                }
+              }}
+              fields={[
+                {
+                  label: t("yana necha kunga ijarani uzaytirmoqchisiz"),
+                  name: "extendDays",
+                },
+              ]}
+              form={form}
+            />
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
