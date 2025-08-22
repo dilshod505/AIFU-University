@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
 
@@ -22,9 +22,9 @@ export function ShopByCategory() {
 
   return (
     <section className="py-20 bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="cont">
         {data?.map((categoryBlock: any) => (
-          <div key={categoryBlock.category.id}>
+          <div key={categoryBlock.category.id} className="my-10">
             {/* Category nomi */}
             <div className="mb-8 text-center">
               <h2 className="text-3xl font-bold text-foreground">
@@ -34,12 +34,11 @@ export function ShopByCategory() {
                 Eng so‘nggi kitoblar - {categoryBlock.category.name}
               </p>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
               {categoryBlock.books.slice(0, 6).map((book: any) => (
                 <div
                   key={book.id}
-                  className="overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-lg transition-all group"
+                  className="overflow-hidden  shadow-sm hover:shadow-lg transition-all group"
                 >
                   <div className="relative">
                     <Image
@@ -47,7 +46,7 @@ export function ShopByCategory() {
                       alt={book.title}
                       width={400}
                       height={250}
-                      className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-56 object-cover rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">

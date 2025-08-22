@@ -1,6 +1,6 @@
-import { getTranslations } from "next-intl/server";
-import { Metadata } from "next";
 import LandingWrapper from "@/components/pages/landing/landing-wrapper";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const generateMetadata = async ({
   params,
@@ -13,12 +13,12 @@ export const generateMetadata = async ({
   return {
     title: "AIFU University",
     description: t(
-      `Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi`,
+      `Aniq va ijtimoiy fanlar universitetining kutubxona bo'limi`
     ),
   };
 };
 
-const Page = async () => {
+const Page = () => {
   return <LandingWrapper />;
 };
 

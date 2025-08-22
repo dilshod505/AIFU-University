@@ -1,13 +1,13 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/components/models/axios";
-import { useTranslations } from "next-intl";
-import { Dispatch, SetStateAction } from "react";
 import { Marquee } from "@/components/magicui/marquee";
 import { TextAnimate } from "@/components/magicui/text-animate";
+import { api } from "@/components/models/axios";
+import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
 export function CategorySection({
   setCategoryId,
@@ -25,7 +25,7 @@ export function CategorySection({
   });
 
   return (
-    <section className="py-20 bg-background ">
+    <section className="py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
