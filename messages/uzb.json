@@ -213,5 +213,11 @@
   "Show by Categories": "Kategoriyalar bo'yicha ko'rsatish",
   "Total Pages": "Jami sahifalar",
   "Current Page": "Joriy sahifa",
-  "Total Elements": "Jami elementlar"
+  "Total Elements": "Jami elementlar",
+  "No notification selected": "Hech qanday bildirishnoma tanlanmagan",
+  "Click on a notification to view its details": "Bildirishnomani tafsilotlarini ko'rish uchun bosing.",
+  "Notification detail": "Xabar tafsiloti",
+  "Inventory number": "Inventar raqami",
+  "Degree": "Daraja",
+  "Faculty": "Fakultet"
 }

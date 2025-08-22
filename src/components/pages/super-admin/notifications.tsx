@@ -9,29 +9,45 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import TooltipBtn from "@/components/tooltip-btn";
 
 const Notifications = () => {
   const t = useTranslations();
   const { data: notifications } = useGetNotifications();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selected, setSelected] = useState<{ id: number; type: string } | null>(
+    null,
+  );
 
-  const { data: detail } = useGetNotificationById(selectedId || undefined);
+  const { data: detail } = useGetNotificationById(selected?.id || undefined);
 
   const list = notifications?.data?.data || [];
+
+  if (!notifications)
+    return (
+      <div>
+        <h1>Loading...</h1>
+      </div>
+    );
 
   return (
     <div>
       <h1 className="text-2xl font-semibold py-5">{t("Notifications")}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* LEFT SIDE: LIST */}
+        {/* LEFT SIDE */}
         <div className="md:col-span-1">
           <Tabs defaultValue="EXTEND" className="w-full">
             <TabsList className="mb-5 w-full">
-              <TabsTrigger value="EXTEND" className="flex-1">
+              <TabsTrigger
+                value="EXTEND"
+                className="flex-1 data-[state=active]:bg-green-100 data-[state=active]:text-green-700"
+              >
                 Extend
               </TabsTrigger>
-              <TabsTrigger value="WARNING" className="flex-1">
+              <TabsTrigger
+                value="WARNING"
+                className="flex-1 data-[state=active]:bg-red-100 data-[state=active]:text-red-700"
+              >
                 Warning
               </TabsTrigger>
             </TabsList>
@@ -44,9 +60,9 @@ const Notifications = () => {
                     <Card
                       key={n.id}
                       className={`cursor-pointer transition hover:shadow-md ${
-                        selectedId === n.id ? "border-blue-500" : ""
+                        selected?.id === n.id ? "border-green-700 border-2" : ""
                       }`}
-                      onClick={() => setSelectedId(n.id)}
+                      onClick={() => setSelected({ id: n.id, type: "EXTEND" })}
                     >
                       <CardContent className="p-3">
                         <div className="flex justify-between items-center">
@@ -66,6 +82,7 @@ const Notifications = () => {
               </div>
             </TabsContent>
 
+            {/* WARNING list */}
             <TabsContent value="WARNING">
               <div className="flex flex-col gap-3">
                 {list
@@ -74,9 +91,9 @@ const Notifications = () => {
                     <Card
                       key={n.id}
                       className={`cursor-pointer transition hover:shadow-md ${
-                        selectedId === n.id ? "border-blue-500" : ""
+                        selected?.id === n.id ? "border-red-700" : ""
                       }`}
-                      onClick={() => setSelectedId(n.id)}
+                      onClick={() => setSelected({ id: n.id, type: "WARNING" })}
                     >
                       <CardContent className="p-3">
                         <div className="flex justify-between items-center">
@@ -96,57 +113,109 @@ const Notifications = () => {
           </Tabs>
         </div>
 
-        {/* RIGHT SIDE: DETAIL */}
-        <div className="md:col-span-2">
-          {!selectedId || !detail ? (
+        {/* RIGHT SIDE: DETAILS */}
+        <div className="md:col-span-2 mt-16">
+          {!selected || !detail ? (
             <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg border p-10 text-center">
               <div>
                 <div className="text-gray-400 text-5xl mb-3">📋</div>
                 <h2 className="font-semibold text-gray-600">
-                  No notification selected
+                  {t("No notification selected")}
                 </h2>
-                <p className="text-sm text-gray-500">
-                  Click on a notification to view its details
+                <p className="text-lg text-gray-500">
+                  {t("Click on a notification to view its details")}
                 </p>
               </div>
             </div>
           ) : (
             <Card className="shadow-sm">
               <CardContent className="p-5 space-y-4">
-                <h2 className="text-xl font-semibold">
-                  {t("Notification detail")}
-                </h2>
-                <div>
-                  <h3 className="font-medium mb-1">👤 Student</h3>
-                  <p>
-                    {detail.data.student.name} {detail.data.student.surname}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {detail.data.student.faculty}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {detail.data.student.degree}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Card: {detail.data.student.cardNumber}
-                  </p>
+                <div className={"flex justify-between items-center"}>
+                  <div>
+                    <h2 className="text-3xl font-semibold">
+                      {t("Notification detail")}
+                    </h2>
+                  </div>
+                  <div>
+                    {selected?.type === "EXTEND" && (
+                      <Badge className="bg-green-100 text-green-700 text-lg">
+                        EXTEND
+                      </Badge>
+                    )}
+                    {selected?.type === "WARNING" && (
+                      <Badge className="bg-red-100 text-red-700 text-lg">
+                        WARNING
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium mb-1">📚 Book</h3>
-                  <p>{detail.data.book.title}</p>
-                  <p className="text-sm text-gray-500">
-                    {detail.data.book.author}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    ISBN: {detail.data.book.isbn}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Inv: {detail.data.book.inventoryNumber}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    EPC: {detail.data.book.epc}
-                  </p>
-                </div>
+                {selected.type === "EXTEND" && detail?.data?.student && (
+                  <div className="space-y-1">
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Name")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.student.name}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Surname")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.student.surname}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Faculty")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.student.faculty}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Degree")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.student.degree}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Card number")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.student.cardNumber}
+                      </span>
+                    </p>
+                  </div>
+                )}
+
+                {detail?.data?.book && (
+                  <div className="space-y-1">
+                    <h3 className="text-2xl font-bold mb-2">📚 {t("Book")}</h3>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Title")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.book.title}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">{t("Author")}:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.book.author}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">ISBN:</span>{" "}
+                      <span className="font-normal">
+                        {detail.data.book.isbn}
+                      </span>
+                    </p>
+                    <p className="text-lg">
+                      <span className="font-bold">
+                        {t("Inventory number")}:
+                      </span>{" "}
+                      <span className="font-normal">
+                        {detail.data.book.inventoryNumber}
+                      </span>
+                    </p>
+                  </div>
+                )}
+                <div></div>
               </CardContent>
             </Card>
           )}

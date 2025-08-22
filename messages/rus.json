@@ -213,5 +213,11 @@
   "Show by Categories": "Показать по категориям",
   "Total Pages": "Общее количество страниц",
   "Current Page": "Текущая страница",
-  "Total Elements": "Всего элементов"
+  "Total Elements": "Всего элементов",
+  "No notification selected": "Ни одно уведомление не выбрано",
+  "Click on a notification to view its details": "Нажмите на уведомление, чтобы посмотреть подробности.",
+  "Notification detail": "Детали уведомления",
+  "Inventory number": "Инвентарный номер",
+  "Degree": "Градус",
+  "Faculty": "Факультет"
 }

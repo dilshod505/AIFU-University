@@ -213,5 +213,11 @@
   "Show by Categories": "Show by Categories",
   "Total Pages": "Total Pages",
   "Current Page": "Current Page",
-  "Total Elements": "Total Elements"
+  "Total Elements": "Total Elements",
+  "No notification selected": "No notification selected",
+  "Click on a notification to view its details": "Click a notification to view details.",
+  "Notification detail": "Notification detail",
+  "Inventory number": "Inventory number",
+  "Degree": "Degree",
+  "Faculty": "Faculty"
 }
