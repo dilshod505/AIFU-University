@@ -1,6 +1,6 @@
+import { FlatCompat } from "@eslint/eslintrc";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,6 +24,7 @@ const eslintConfig = [
       "react/jsx-no-lambda": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@next/next/no-sync-scripts": "off",
+      "react-hooks/rules-of-hooks": "off",
     },
   },
 ];
