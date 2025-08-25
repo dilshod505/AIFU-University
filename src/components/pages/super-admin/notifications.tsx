@@ -16,7 +16,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -24,12 +24,13 @@ import { useForm } from "react-hook-form";
 const Notifications = () => {
   const t = useTranslations();
   const form = useForm();
+  const queryClient = useQueryClient();
   const { data: notifications } = useGetNotifications();
   const [extendingNotification, setExtendingNotification] = useState<
     number | null
   >(null);
   const [selected, setSelected] = useState<{ id: number; type: string } | null>(
-    null
+    null,
   );
   const { data: detail } = useGetNotificationById(selected?.id || undefined);
 
@@ -296,13 +297,18 @@ const Notifications = () => {
             <AutoForm
               submitText={t("ijara vaqtini uzaytirish")}
               className="p-0 my-5 border-0 bg-transparent"
-              onSubmit={(values: Record<string, any>) => {
+              onSubmit={async (values: Record<string, any>) => {
                 if (extendingNotification) {
                   accept.mutate({
                     extendDays: values.extendDays,
                     notificationId: extendingNotification,
                   });
                 }
+                form.reset();
+                await queryClient.invalidateQueries({
+                  queryKey: ["notifications"],
+                });
+                setExtendingNotification(null);
               }}
               fields={[
                 {
