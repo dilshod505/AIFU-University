@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
       },
       {
+        protocol: "https",
+        hostname: "cdn.domain.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "3232",
