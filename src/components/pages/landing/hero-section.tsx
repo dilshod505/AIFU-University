@@ -6,6 +6,7 @@ export function HeroSection() {
     <Image
       src={heroBg || "/placeholder.svg"}
       alt={"bg"}
+      priority
       draggable={false}
       className={"inset-0 w-full h-[700px] object-cover z-0"}
     />

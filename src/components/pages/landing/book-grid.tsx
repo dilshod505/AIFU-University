@@ -1,13 +1,14 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, Star } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/components/models/axios";
-import { useTranslations } from "next-intl";
 import { TextAnimate } from "@/components/magicui/text-animate";
+import { api } from "@/components/models/axios";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { Heart, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 
 export function BookGrid({ categoryId }: { categoryId?: string | number }) {
@@ -35,7 +36,7 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               <TextAnimate animation="blurInUp" as="h1">
                 {t(
-                  "Browse our complete collection of carefully selected titles",
+                  "Browse our complete collection of carefully selected titles"
                 )}
               </TextAnimate>
             </p>
@@ -50,7 +51,9 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
                 >
                   <CardContent className="p-0">
                     <div className="relative overflow-hidden rounded-t-lg">
-                      <img
+                      <Image
+                        width={300}
+                        height={400}
                         src={book.imageUrl || "/placeholder.svg"}
                         alt={book.title}
                         className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
