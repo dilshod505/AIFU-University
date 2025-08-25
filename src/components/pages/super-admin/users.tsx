@@ -18,13 +18,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Modal } from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -67,7 +72,18 @@ const Users = () => {
     any
   > | null>(null);
   const [open, setOpen] = useState(false);
-  const form = useForm();
+  const form = useForm({
+    defaultValues: {
+      degree: "",
+      name: "",
+      surname: "",
+      cardNumber: "",
+      admissionTime: new Date(),
+      graduationTime: new Date(),
+      passportSeries: { label: "AA", value: "AA" },
+      passportNumber: 0,
+    },
+  });
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -211,16 +227,28 @@ const Users = () => {
       {
         label: t("passportSeries"),
         name: "passportSeries",
-        type: "text",
+        type: "select",
+        options: [
+          { label: "AA", value: "AA" },
+          { label: "AB", value: "AB" },
+          { label: "AC", value: "AC" },
+          { label: "AD", value: "AD" },
+          { label: "AE", value: "AE" },
+          { label: "FA", value: "FA" },
+          { label: "FB", value: "FB" },
+          { label: "FC", value: "FC" },
+        ],
         required: true,
+        maxLength: 2,
         sm: 12,
         md: 6,
       },
       {
         label: t("passportNumber"),
         name: "passportNumber",
-        type: "text",
+        type: "number",
         required: true,
+        maxLength: 7,
         sm: 12,
         md: 6,
       },
@@ -396,23 +424,25 @@ const Users = () => {
           </div>
         }
       />
-      <Modal
-        open={open}
-        title={editingCategory ? t("Edit Category") : t("Add Category")}
-        onCancel={() => setOpen(false)}
-        onOk={onSubmit}
-        okText={editingCategory ? t("Edit Category") : t("Add Category")}
-        footer={null}
-      >
-        <AutoForm
-          className="bg-transparent border-none p-0 m-0 mt-5"
-          submitText={editingCategory ? t("Edit Category") : t("Add Category")}
-          onSubmit={onSubmit}
-          form={form}
-          fields={fields}
-          showResetButton={false}
-        />
-      </Modal>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent className="bg-white dark:bg-background hide-scroll w-fit">
+          <SheetHeader>
+            <SheetTitle>
+              {editingCategory ? t("Edit Category") : t("Add Category")}
+            </SheetTitle>
+          </SheetHeader>
+          <AutoForm
+            className="bg-transparent mt-5 mx-5 border-none p-0"
+            submitText={
+              editingCategory ? t("Edit Category") : t("Add Category")
+            }
+            onSubmit={onSubmit}
+            form={form}
+            fields={fields}
+            showResetButton={false}
+          />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

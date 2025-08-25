@@ -12,12 +12,6 @@ import {
   FormField as RHFField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -68,7 +62,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Controller } from "react-hook-form";
 import { CustomCheckbox } from "./checkbox";
 import { FancyFileInput } from "./fancy-file-input";
 
@@ -255,7 +248,7 @@ export const AutoForm: FC<AutoFormProps> = ({
   maxUndoSteps = 10,
   footer = true,
   defaultValues,
-  disabled,
+  disabled = false,
 }) => {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
     new Set()
@@ -770,37 +763,13 @@ export const AutoForm: FC<AutoFormProps> = ({
                       />
                     );
 
-                  case "input-otp":
-                    return (
-                      <Controller
-                        name={field.name}
-                        control={form.control}
-                        rules={{ required: field.required }}
-                        render={({ field }) => (
-                          <InputOTP maxLength={6} {...field}>
-                            <InputOTPGroup>
-                              {[...Array(6)].map((_, i: number) => (
-                                <>
-                                  <InputOTPSlot key={i} index={i} />
-                                  {i === 2 && (
-                                    <InputOTPSeparator key={"aaa" + i} />
-                                  )}
-                                </>
-                              ))}
-                            </InputOTPGroup>
-                          </InputOTP>
-                        )}
-                      />
-                    );
-
                   case "select":
                     return (
                       <Select
-                        value={form.watch(field.name)}
-                        defaultValue={field.defaultValue}
                         onValueChange={(value) => {
-                          form.setValue(field.name, value);
+                          baseInputProps.onChange(value);
                         }}
+                        defaultValue={rf.value}
                         disabled={field.disabled}
                       >
                         <SelectTrigger
@@ -808,12 +777,15 @@ export const AutoForm: FC<AutoFormProps> = ({
                         >
                           <SelectValue placeholder={field.placeholder} />
                         </SelectTrigger>
-                        <SelectContent className="w-full">
+                        <SelectContent
+                          style={{ zIndex: "50 !important" }}
+                          className="w-full z-50"
+                        >
                           {field.options?.map((opt) => (
                             <SelectItem
                               className={cn(
                                 field.className,
-                                "w-[90vw] md:w-full"
+                                "w-[90vw] md:w-full whitespace-pre-line z-50"
                               )}
                               key={opt.value.toString()}
                               value={opt.value.toString()}
@@ -1303,7 +1275,7 @@ export const AutoForm: FC<AutoFormProps> = ({
   };
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header with progress and controls */}
       <div className="flex justify-between items-center">
         <div className="space-y-2">
@@ -1426,7 +1398,7 @@ export const AutoForm: FC<AutoFormProps> = ({
                           );
                         }
                       }}
-                      disabled={loading}
+                      disabled={loading || disabled}
                     >
                       <Save className="mr-2 w-4 h-4" />
                       Save Draft
