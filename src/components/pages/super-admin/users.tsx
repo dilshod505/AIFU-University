@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import MyTable, { IColumn } from "@/components/my-table";
-import { useTranslations } from "next-intl";
+import { AutoForm } from "@/components/form/auto-form";
 import {
   useCreateStudents,
   useDeleteStudents,
@@ -10,9 +8,23 @@ import {
   useStudents,
   useUpdateStudents,
 } from "@/components/models/queries/students";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MyTable, { IColumn } from "@/components/my-table";
+import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Modal } from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -24,31 +36,12 @@ import {
   Trash,
   User,
 } from "lucide-react";
-import ReactPaginate from "react-paginate";
-import { Divider } from "antd";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import TooltipBtn from "@/components/tooltip-btn";
-import { RiFileExcel2Line } from "react-icons/ri";
-import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { AutoForm } from "@/components/form/auto-form";
+import { RiFileExcel2Line } from "react-icons/ri";
+import ReactPaginate from "react-paginate";
+import { toast } from "sonner";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -165,34 +158,42 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, form, t],
+    [deleteStudent, form, t]
   );
 
   const fields = useMemo<any[]>(
     () => [
       {
-        label: t("First Name"),
+        label: t("firstName"),
         name: "name",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
-        label: t("Last Name"),
+        label: t("lastName"),
         name: "surname",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
-        label: t("Phone Number"),
+        label: t("phoneNumber"),
         name: "phoneNumber",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
         label: t("Faculty"),
         name: "faculty",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
         label: t("Degree"),
@@ -204,39 +205,51 @@ const Users = () => {
           { label: "PhD", value: "PhD" },
         ],
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
-        label: t("Passport Series"),
+        label: t("passportSeries"),
         name: "passportSeries",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
-        label: t("Passport Number"),
+        label: t("passportNumber"),
         name: "passportNumber",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
-        label: t("Card Number"),
+        label: t("Card number"),
         name: "cardNumber",
         type: "text",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
         label: t("Admission Time"),
         name: "admissionTime",
         type: "date",
         required: true,
+        sm: 12,
+        md: 6,
       },
       {
         label: t("Graduation Time"),
         name: "graduationTime",
         type: "date",
         required: true,
+        sm: 12,
+        md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const onSubmit = (data: any) => {
@@ -251,7 +264,7 @@ const Users = () => {
             toast.success(t("Student updated successfully"));
             setOpen(false);
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -264,7 +277,7 @@ const Users = () => {
             setOpen(false);
             form.reset();
           },
-        },
+        }
       );
     }
   };
@@ -360,7 +373,7 @@ const Users = () => {
                 }}
                 pageRangeDisplayed={size}
                 pageCount={Math.ceil(
-                  (students?.data?.totalElements || 0) / size,
+                  (students?.data?.totalElements || 0) / size
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -383,26 +396,23 @@ const Users = () => {
           </div>
         }
       />
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>
-              {editingCategory ? t("Edit Category") : t("Add Category")}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="p-3">
-            <AutoForm
-              submitText={
-                editingCategory ? t("Edit Category") : t("Add Category")
-              }
-              onSubmit={onSubmit}
-              form={form}
-              fields={fields}
-              showResetButton={false}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+      <Modal
+        open={open}
+        title={editingCategory ? t("Edit Category") : t("Add Category")}
+        onCancel={() => setOpen(false)}
+        onOk={onSubmit}
+        okText={editingCategory ? t("Edit Category") : t("Add Category")}
+        footer={null}
+      >
+        <AutoForm
+          className="bg-transparent border-none p-0 m-0 mt-5"
+          submitText={editingCategory ? t("Edit Category") : t("Add Category")}
+          onSubmit={onSubmit}
+          form={form}
+          fields={fields}
+          showResetButton={false}
+        />
+      </Modal>
     </div>
   );
 };

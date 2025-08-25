@@ -221,5 +221,10 @@
   "Degree": "Degree",
   "Faculty": "Faculty",
   "accept": "Accept",
-  "reject": "Reject"
+  "reject": "Reject",
+  "phoneNumber": "Phone number",
+  "passportSeries": "Passport Series",
+  "passportNumber": "Passport Number",
+  "Admission Time": "Admission Time",
+  "Graduation Time": "Graduation Time"
 }

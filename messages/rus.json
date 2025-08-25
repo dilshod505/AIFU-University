@@ -221,5 +221,10 @@
   "Degree": "Градус",
   "Faculty": "Факультет",
   "accept": "Принять",
-  "reject": "Отклонить"
+  "reject": "Отклонить",
+  "phoneNumber": "Номер телефона",
+  "passportSeries": "Серия паспорта",
+  "passportNumber": "Номер паспорта",
+  "Admission Time": "Время приема",
+  "Graduation Time": "Время выпуска"
 }
