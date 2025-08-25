@@ -158,7 +158,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, form, t]
+    [deleteStudent, form, t],
   );
 
   const fields = useMemo<any[]>(
@@ -179,14 +179,7 @@ const Users = () => {
         sm: 12,
         md: 6,
       },
-      {
-        label: t("phoneNumber"),
-        name: "phoneNumber",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
+
       {
         label: t("Faculty"),
         name: "faculty",
@@ -195,6 +188,7 @@ const Users = () => {
         sm: 12,
         md: 6,
       },
+
       {
         label: t("Degree"),
         name: "degree",
@@ -225,6 +219,14 @@ const Users = () => {
         md: 6,
       },
       {
+        label: t("phoneNumber"),
+        name: "phoneNumber",
+        type: "text",
+        required: true,
+        sm: 12,
+        md: 6,
+      },
+      {
         label: t("Card number"),
         name: "cardNumber",
         type: "text",
@@ -249,7 +251,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const onSubmit = (data: any) => {
@@ -257,19 +259,19 @@ const Users = () => {
       updating.mutate(
         {
           id: editingCategory.id,
-          ...data, // barcha fieldlarni yuboramiz
+          ...data,
         },
         {
           onSuccess: () => {
             toast.success(t("Student updated successfully"));
             setOpen(false);
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
         {
-          ...data, // yangi student uchun barcha fieldlar
+          ...data,
         },
         {
           onSuccess: () => {
@@ -277,7 +279,7 @@ const Users = () => {
             setOpen(false);
             form.reset();
           },
-        }
+        },
       );
     }
   };
@@ -373,7 +375,7 @@ const Users = () => {
                 }}
                 pageRangeDisplayed={size}
                 pageCount={Math.ceil(
-                  (students?.data?.totalElements || 0) / size
+                  (students?.data?.totalElements || 0) / size,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
