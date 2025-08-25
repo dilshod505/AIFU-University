@@ -4,8 +4,11 @@ import React, { useMemo, useState } from "react";
 import MyTable, { IColumn } from "@/components/my-table";
 import { useTranslations } from "next-intl";
 import {
+  useCreateStudents,
+  useDeleteStudents,
   useExcelExport,
   useStudents,
+  useUpdateStudents,
 } from "@/components/models/queries/students";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +19,9 @@ import {
   ChevronLeft,
   ChevronRight,
   GraduationCap,
+  PenSquareIcon,
+  Plus,
+  Trash,
   User,
 } from "lucide-react";
 import ReactPaginate from "react-paginate";
@@ -34,6 +40,15 @@ import {
 } from "@/components/ui/tooltip";
 import TooltipBtn from "@/components/tooltip-btn";
 import { RiFileExcel2Line } from "react-icons/ri";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { AutoForm } from "@/components/form/auto-form";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -49,7 +64,17 @@ const Users = () => {
     size,
     sortDirection,
   });
+  const createStudent = useCreateStudents();
+  const updating = useUpdateStudents();
+  const deleteStudent = useDeleteStudents();
   const expertToExcel = useExcelExport();
+
+  const [editingCategory, setEditingCategory] = useState<Record<
+    string,
+    any
+  > | null>(null);
+  const [open, setOpen] = useState(false);
+  const form = useForm();
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -102,9 +127,147 @@ const Users = () => {
           />
         ),
       },
+      {
+        key: "actions",
+        dataIndex: "actions",
+        width: 200,
+        title: t("actions"),
+        render: (_: any, record: any) => (
+          <div className="flex gap-2">
+            <TooltipBtn
+              variant={"view"}
+              size={"sm"}
+              title={t("Edit category")}
+              onClick={() => {
+                setEditingCategory(record);
+                form.reset({ name: record.name });
+                setOpen(true);
+              }}
+            >
+              <PenSquareIcon />
+            </TooltipBtn>
+            <TooltipBtn
+              variant={"destructive"}
+              size={"sm"}
+              color={"red"}
+              title={t("Delete category")}
+              onClick={() => {
+                deleteStudent.mutate(record.id, {
+                  onSuccess: () =>
+                    toast.success(t("Category deleted successfully")),
+                  onError: () => toast.error(t("Error deleting category")),
+                });
+              }}
+            >
+              <Trash />
+            </TooltipBtn>
+          </div>
+        ),
+      },
+    ],
+    [deleteStudent, form, t],
+  );
+
+  const fields = useMemo<any[]>(
+    () => [
+      {
+        label: t("First Name"),
+        name: "name",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Last Name"),
+        name: "surname",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Phone Number"),
+        name: "phoneNumber",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Faculty"),
+        name: "faculty",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Degree"),
+        name: "degree",
+        type: "select",
+        options: [
+          { label: "Bakalavr", value: "Bakalavr" },
+          { label: "Magistr", value: "Magistr" },
+          { label: "PhD", value: "PhD" },
+        ],
+        required: true,
+      },
+      {
+        label: t("Passport Series"),
+        name: "passportSeries",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Passport Number"),
+        name: "passportNumber",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Card Number"),
+        name: "cardNumber",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Admission Time"),
+        name: "admissionTime",
+        type: "date",
+        required: true,
+      },
+      {
+        label: t("Graduation Time"),
+        name: "graduationTime",
+        type: "date",
+        required: true,
+      },
     ],
     [t],
   );
+
+  const onSubmit = (data: any) => {
+    if (editingCategory) {
+      updating.mutate(
+        {
+          id: editingCategory.id,
+          ...data, // barcha fieldlarni yuboramiz
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("Student updated successfully"));
+            setOpen(false);
+          },
+        },
+      );
+    } else {
+      createStudent.mutate(
+        {
+          ...data, // yangi student uchun barcha fieldlar
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("Student created successfully"));
+            setOpen(false);
+            form.reset();
+          },
+        },
+      );
+    }
+  };
 
   return (
     <div>
@@ -172,6 +335,18 @@ const Users = () => {
             >
               <RiFileExcel2Line />
             </TooltipBtn>
+            <TooltipBtn
+              variant={"default"}
+              title={t("Add Student")}
+              onClick={() => {
+                setEditingCategory(null);
+                form.reset({ name: "" });
+                setOpen(true);
+              }}
+            >
+              <Plus />
+              {t("Add Student")}
+            </TooltipBtn>
           </div>
         }
         footer={
@@ -208,6 +383,26 @@ const Users = () => {
           </div>
         }
       />
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>
+              {editingCategory ? t("Edit Category") : t("Add Category")}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="p-3">
+            <AutoForm
+              submitText={
+                editingCategory ? t("Edit Category") : t("Add Category")
+              }
+              onSubmit={onSubmit}
+              form={form}
+              fields={fields}
+              showResetButton={false}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

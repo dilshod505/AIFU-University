@@ -2,6 +2,19 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { FilterType } from "@/components/pages/super-admin/users";
 
+export interface ICreateStudent {
+  name: string;
+  surname: string;
+  phoneNumber: string;
+  faculty: string;
+  degree: string;
+  passportSeries: string;
+  passportNumber: string;
+  cardNumber: string;
+  admissionTime: number;
+  graduationTime: number;
+}
+
 export const useStudents = ({
   filter,
   pageNumber,
@@ -57,6 +70,33 @@ export const useExcelExport = () => {
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const res = await api.get("/admin/backup/student", data);
+      return res.data;
+    },
+  });
+};
+
+export const useUpdateStudents = () => {
+  return useMutation({
+    mutationFn: async (data: Record<string, any>) => {
+      const res = await api.patch(`/admin/students/${data.id}`, data);
+      return res.data;
+    },
+  });
+};
+
+export const useDeleteStudents = () => {
+  return useMutation({
+    mutationFn: async (id: string | any) => {
+      const res = await api.delete(`/admin/students/${id}`);
+      return res.data;
+    },
+  });
+};
+
+export const useCreateStudents = () => {
+  return useMutation({
+    mutationFn: async (data: ICreateStudent) => {
+      const res = await api.post("/admin/students", data);
       return res.data;
     },
   });
