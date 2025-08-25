@@ -2,19 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { FilterType } from "@/components/pages/super-admin/users";
 
-export interface ICreateStudent {
-  name: string;
-  surname: string;
-  phoneNumber: string;
-  faculty: string;
-  degree: string;
-  passportSeries: string;
-  passportNumber: string;
-  cardNumber: string;
-  admissionTime: number;
-  graduationTime: number;
-}
-
 export const useStudents = ({
   filter,
   pageNumber,
@@ -95,8 +82,17 @@ export const useDeleteStudents = () => {
 
 export const useCreateStudents = () => {
   return useMutation({
-    mutationFn: async (data: ICreateStudent) => {
-      const res = await api.post("/admin/students", data);
+    mutationFn: async ({ payload }: { payload: Record<string, any> }) => {
+      const res = await api.post("/admin/students", payload);
+      return res.data;
+    },
+  });
+};
+
+export const useGetById = () => {
+  return useMutation({
+    mutationFn: async (id: string | any) => {
+      const res = await api.get(`/admin/students/${id}`);
       return res.data;
     },
   });
