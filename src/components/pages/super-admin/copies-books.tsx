@@ -24,6 +24,8 @@ import { Divider } from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
+  BookMinus,
+  BookOpenCheck,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -155,9 +157,9 @@ export const CopiesBooks = () => {
         render: (value: boolean) => (
           <div className="flex items-center justify-start">
             {value ? (
-              <GraduationCap className="text-green-600 w-5 h-5" />
+              <BookOpenCheck className="text-green-600 w-5 h-5" />
             ) : (
-              <LuLibrary className="text-red-500 w-5 h-5" />
+              <BookMinus className="text-red-500 w-5 h-5" />
             )}
           </div>
         ),

@@ -22,6 +22,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 const EBookCategories = () => {
   const t = useTranslations();
@@ -36,6 +37,14 @@ const EBookCategories = () => {
   > | null>(null);
   const [open, setOpen] = useState(false);
   const form = useForm();
+
+  const [search, setSearch] = useState("");
+  const filteredCategories = useMemo(() => {
+    if (!categories?.data) return [];
+    return categories.data.filter((item: any) =>
+      item.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [categories, search]);
 
   const fields = useMemo<FormField[]>(
     () => [
@@ -55,17 +64,20 @@ const EBookCategories = () => {
         key: "index",
         dataIndex: "index",
         title: "#",
+        width: 300,
         render: (_: any, __: any, index: number) => index + 1,
       },
       {
         key: "name",
         dataIndex: "name",
         title: t("name"),
+        width: 350,
       },
       {
         key: "bookCount",
         dataIndex: "bookCount",
         title: t("Book count"),
+        width: 400,
       },
       {
         key: "actions",
@@ -143,21 +155,33 @@ const EBookCategories = () => {
         columnVisibility
         columns={columns}
         isLoading={isLoading}
-        dataSource={categories?.data || []}
-        searchable
+        dataSource={filteredCategories}
+        pagination={false}
         header={
-          <TooltipBtn
-            variant={"default"}
-            title={t("Add Category")}
-            onClick={() => {
-              setEditingCategory(null);
-              form.reset({ name: "" });
-              setOpen(true);
-            }}
-          >
-            <Plus />
-            {t("Add Category")}
-          </TooltipBtn>
+          <div className={"flex items-center justify-center gap-2"}>
+            <div>
+              <Input
+                placeholder={t("Search category")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-64"
+              />
+            </div>
+            <div>
+              <TooltipBtn
+                variant={"default"}
+                title={t("Add Category")}
+                onClick={() => {
+                  setEditingCategory(null);
+                  form.reset({ name: "" });
+                  setOpen(true);
+                }}
+              >
+                <Plus />
+                {t("Add Category")}
+              </TooltipBtn>
+            </div>
+          </div>
         }
       />
 

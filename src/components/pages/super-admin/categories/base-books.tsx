@@ -16,11 +16,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { PenSquareIcon, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, PenSquareIcon, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import ReactPaginate from "react-paginate";
+import { Input } from "@/components/ui/input";
 
 const BaseBooks = () => {
   const t = useTranslations();
@@ -39,23 +41,34 @@ const BaseBooks = () => {
     },
   });
 
+  const [search, setSearch] = useState("");
+  const filteredCategories = useMemo(() => {
+    if (!data?.data) return [];
+    return data.data.filter((item: any) =>
+      item.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [data, search]);
+
   const columns = useMemo<IColumn[]>(
     () => [
       {
         key: "index",
         dataIndex: "index",
         title: "#",
+        width: 300,
         render: (_: any, __: any, index: number) => index + 1,
       },
       {
         key: "name",
         dataIndex: "name",
         title: t("name"),
+        width: 350,
       },
       {
         key: "bookCount",
         dataIndex: "bookCount",
         title: t("Book count"),
+        width: 400,
       },
       {
         key: "actions",
@@ -142,16 +155,29 @@ const BaseBooks = () => {
           </h1>
         }
         columns={columns}
-        searchable
+        searchable={false}
         columnVisibility
         header={
-          <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>
-            <Plus />
-            {t("Add Regular book category")}
-          </TooltipBtn>
+          <div className={"flex items-center justify-center gap-2"}>
+            <div>
+              <Input
+                placeholder={t("Search category")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-64"
+              />
+            </div>
+            <div>
+              <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>
+                <Plus />
+                {t("Add Regular book category")}
+              </TooltipBtn>
+            </div>
+          </div>
         }
         isLoading={isLoading}
-        dataSource={data?.data}
+        dataSource={filteredCategories}
+        pagination={false}
       />
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
