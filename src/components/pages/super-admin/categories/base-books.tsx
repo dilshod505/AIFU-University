@@ -83,7 +83,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteCategory, t]
+    [deleteCategory, t],
   );
 
   const fields = useMemo<FormField[]>(
@@ -95,7 +95,7 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const handleSubmit = async (values: Record<string, any>) => {
@@ -142,7 +142,7 @@ const BaseBooks = () => {
           </h1>
         }
         columns={columns}
-        searchable={false}
+        searchable
         columnVisibility
         header={
           <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>

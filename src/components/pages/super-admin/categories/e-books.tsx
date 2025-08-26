@@ -46,7 +46,7 @@ const EBookCategories = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -100,7 +100,7 @@ const EBookCategories = () => {
         ),
       },
     ],
-    [deleteCategory, form, t]
+    [deleteCategory, form, t],
   );
 
   const onSubmit = async (data: any) => {
@@ -115,7 +115,7 @@ const EBookCategories = () => {
             toast.success(t("Category updated successfully"));
             setOpen(false);
           },
-        }
+        },
       );
     } else {
       createCategory.mutate(
@@ -127,7 +127,7 @@ const EBookCategories = () => {
             toast.success(t("Category created successfully"));
             setOpen(false);
           },
-        }
+        },
       );
     }
   };
@@ -144,7 +144,7 @@ const EBookCategories = () => {
         columns={columns}
         isLoading={isLoading}
         dataSource={categories?.data || []}
-        searchable={false}
+        searchable
         header={
           <TooltipBtn
             variant={"default"}
