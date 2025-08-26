@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import DeleteActionDialog from "@/components/delete-action-dialog";
+import { AutoForm, FormField } from "@/components/form/auto-form";
 import {
   useBaseBooksCategory,
   useCreateBaseBooksCategory,
@@ -9,15 +9,16 @@ import {
   useUpdateBaseBooksCategory,
 } from "@/components/models/queries/base-books-category";
 import MyTable, { IColumn } from "@/components/my-table";
-import { AutoForm, FormField } from "@/components/form/auto-form";
 import TooltipBtn from "@/components/tooltip-btn";
-import { PenSquareIcon, Plus, Search, Trash } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { PenSquareIcon, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -74,22 +75,15 @@ const BaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
-              title={t("Delete")}
-              size={"sm"}
-              color={"red"}
-              onClick={() => {
-                deleteCategory.mutate(record.id);
-              }}
-            >
-              <Trash />
-            </TooltipBtn>
+            <DeleteActionDialog
+              onConfirm={() => deleteCategory.mutate(record.id)}
+              title={t("Delete category")}
+            />
           </div>
         ),
       },
     ],
-    [deleteCategory, t],
+    [deleteCategory, t]
   );
 
   const fields = useMemo<FormField[]>(
@@ -101,7 +95,7 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const handleSubmit = async (values: Record<string, any>) => {
@@ -144,7 +138,7 @@ const BaseBooks = () => {
       <MyTable
         title={
           <h1 className={"text-2xl font-semibold py-5"}>
-            {t("Categories of Base BaseBooks")}
+            {t("Categories of Base Books")}
           </h1>
         }
         columns={columns}

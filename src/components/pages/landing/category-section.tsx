@@ -16,7 +16,7 @@ export function CategorySection({
 }) {
   const t = useTranslations();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
       const res = await api.get("/client/categories");
@@ -28,16 +28,20 @@ export function CategorySection({
     <section className="py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-            <TextAnimate animation="blurInUp" as="h1">
-              {t("Explore by Category")}
-            </TextAnimate>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            <TextAnimate animation="blurInUp" as="h1">
-              {t("Find your perfect book in our carefully curated categories")}
-            </TextAnimate>
-          </p>
+          <TextAnimate
+            animation="blurInUp"
+            as="h1"
+            className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4"
+          >
+            {t("Explore by Category")}
+          </TextAnimate>
+          <TextAnimate
+            animation="blurInUp"
+            as="h1"
+            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+          >
+            {t("Find your perfect book in our carefully curated categories")}
+          </TextAnimate>
         </div>
 
         {/*<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">*/}

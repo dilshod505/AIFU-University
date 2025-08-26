@@ -38,15 +38,15 @@ export function ShopByCategory() {
               {categoryBlock.books.slice(0, 6).map((book: any) => (
                 <div
                   key={book.id}
-                  className="overflow-hidden  shadow-sm hover:shadow-lg transition-all group"
+                  className="overflow-hidden transition-all group"
                 >
-                  <div className="relative">
+                  <div className="relative rounded-xl overflow-hidden">
                     <Image
                       src={book.imageUrl || bookPlaceholder}
                       alt={book.title}
                       width={400}
                       height={250}
-                      className="w-full h-56 object-cover rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute top-3 left-3">
                       <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
@@ -55,8 +55,8 @@ export function ShopByCategory() {
                     </div>
                   </div>
 
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                  <div className="py-2">
+                    <h3 className="text-lg font-semibold line-clamp-2 mb-1 group-hover:text-primary transition-colors">
                       {book.title}
                     </h3>
                     <p className="text-sm text-muted-foreground">

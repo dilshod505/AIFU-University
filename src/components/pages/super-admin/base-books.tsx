@@ -1,27 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import {
   useBaseBook,
   useCreateBaseBook,
   useDeleteBaseBook,
   useUpdateBaseBook,
 } from "@/components/models/queries/base-book";
-import MyTable, { IColumn } from "@/components/my-table";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import TooltipBtn from "@/components/tooltip-btn";
-import {
-  ChevronLeft,
-  ChevronRight,
-  PenSquareIcon,
-  Plus,
-  Trash,
-} from "lucide-react";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
-import ReactPaginate from "react-paginate";
-import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
+import MyTable, { IColumn } from "@/components/my-table";
+import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
   SelectContent,
@@ -34,6 +22,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
+import { ChevronLeft, ChevronRight, PenSquareIcon, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import ReactPaginate from "react-paginate";
+import { toast } from "sonner";
 
 const { Option } = Select;
 
@@ -105,22 +100,15 @@ const BaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
+            <DeleteActionDialog
+              onConfirm={() => deleteBook.mutate(record.id)}
               title={t("Delete")}
-              size={"sm"}
-              color={"red"}
-              onClick={() => {
-                deleteBook.mutate(record.id);
-              }}
-            >
-              <Trash />
-            </TooltipBtn>
+            />
           </div>
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
@@ -171,7 +159,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        },
+        }
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -245,19 +233,19 @@ const BaseBooks = () => {
         footer={
           <div className={"flex justify-between items-center gap-2"}>
             <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-              <p>
+              <p className="text-sm text-start">
                 {t("Total Pages")}:{" "}
                 <span className="text-green-600">
                   {baseBooks?.data?.totalPages}
                 </span>
               </p>
-              <p>
+              <p className="text-sm text-start">
                 {t("Current Page")}:{" "}
                 <span className="text-green-600">
                   {baseBooks?.data?.currentPage}
                 </span>
               </p>
-              <p>
+              <p className="text-sm text-start">
                 {t("Total Elements")}:{" "}
                 <span className="text-green-600">
                   {baseBooks?.data?.totalElements}
@@ -274,12 +262,12 @@ const BaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (baseBooks?.data?.totalElements || 0) / pageSize,
+                  (baseBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
                     <ChevronLeft />
-                    {t("Return")}
+                    {t("Previous")}
                   </Button>
                 }
                 nextLabel={

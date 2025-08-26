@@ -21,6 +21,7 @@ import {
   useUpdateCategory,
 } from "@/components/models/queries/e-books-categories";
 import { toast } from "sonner";
+import DeleteActionDialog from "@/components/delete-action-dialog";
 
 const EBookCategories = () => {
   const t = useTranslations();
@@ -85,12 +86,9 @@ const EBookCategories = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
-              size={"sm"}
-              color={"red"}
+            <DeleteActionDialog
               title={t("Delete category")}
-              onClick={() => {
+              onConfirm={() => {
                 deleteCategory.mutate(record.id, {
                   onSuccess: () =>
                     toast.success(t("Category deleted successfully")),
@@ -99,7 +97,7 @@ const EBookCategories = () => {
               }}
             >
               <Trash />
-            </TooltipBtn>
+            </DeleteActionDialog>
           </div>
         ),
       },

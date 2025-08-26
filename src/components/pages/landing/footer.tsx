@@ -1,14 +1,11 @@
-"use client";
-
-import React from "react";
 import {
   Facebook,
   Instagram,
-  Youtube,
-  Send,
-  Phone,
   Mail,
   MapPin,
+  Phone,
+  Send,
+  Youtube,
 } from "lucide-react";
 import Link from "next/link";
 

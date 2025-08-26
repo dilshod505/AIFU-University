@@ -140,6 +140,10 @@
     @apply bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800 text-foreground;
   }
 
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
   .cont {
     @apply max-w-7xl mx-auto px-5;
   }

@@ -1,14 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
-import { Marquee } from "@/components/magicui/marquee";
 
 export function FeaturedBooks() {
   const { data } = useQuery({
@@ -36,8 +32,8 @@ export function FeaturedBooks() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 cont gap-8">
-          {data?.map((book: Record<string, any>) => (
-            <div className="overflow-hidden transition-all group">
+          {data?.map((book: Record<string, any>, i: number) => (
+            <div key={i} className="overflow-hidden transition-all group">
               <div className="relative rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-lg">
                 <Image
                   src={book?.imageUrl || bookPlaceholder}

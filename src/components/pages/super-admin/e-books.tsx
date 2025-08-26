@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import { api } from "@/components/models/axios";
 import MyTable, { IColumn } from "@/components/my-table";
@@ -24,7 +25,6 @@ import {
   PenSquareIcon,
   Plus,
   Search,
-  Trash,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -307,17 +307,12 @@ const EBaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
+            <DeleteActionDialog
               title={t("Delete")}
-              size={"sm"}
-              color={"red"}
-              onClick={() => {
-                deleteBook.mutate({ id: record.id, data: record });
-              }}
-            >
-              <Trash />
-            </TooltipBtn>
+              onConfirm={() =>
+                deleteBook.mutate({ id: record.id, data: record })
+              }
+            />
           </div>
         ),
       },
