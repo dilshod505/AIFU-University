@@ -45,7 +45,7 @@ import {
   User,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
@@ -201,7 +201,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t]
+    [deleteStudent, detail, form, t],
   );
 
   const fields = useMemo<any[]>(
@@ -304,7 +304,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const onSubmit = (data: any) => {
@@ -336,7 +336,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -351,7 +351,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -441,6 +441,24 @@ const Users = () => {
           }
           footer={
             <div className={"flex justify-between items-center gap-2"}>
+              <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+                <p>
+                  {t("Total Pages")}:{" "}
+                  <span className="text-green-600">{students?.totalPages}</span>
+                </p>
+                <p>
+                  {t("Current Page")}:{" "}
+                  <span className="text-green-600">
+                    {students?.currentPage}
+                  </span>
+                </p>
+                <p>
+                  {t("Total Elements")}:{" "}
+                  <span className="text-green-600">
+                    {students?.totalElements}
+                  </span>
+                </p>
+              </div>
               <div>
                 <ReactPaginate
                   breakLabel="..."
@@ -450,7 +468,7 @@ const Users = () => {
                   }}
                   pageRangeDisplayed={size}
                   pageCount={Math.ceil(
-                    (students?.data?.totalElements || 0) / size
+                    (students?.data?.totalElements || 1) / size,
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
