@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm } from "@/components/form/auto-form";
 import {
   useCreateStudents,
@@ -29,8 +30,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
   ArrowDownWideNarrow,
@@ -41,7 +42,6 @@ import {
   GraduationCap,
   PenSquareIcon,
   Plus,
-  Trash,
   User,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -186,26 +186,22 @@ const Users = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
-              size={"sm"}
-              color={"red"}
-              title={t("Delete category")}
-              onClick={() => {
+
+            <DeleteActionDialog
+              title={t("Delete")}
+              onConfirm={() => {
                 deleteStudent.mutate(record.id, {
                   onSuccess: () =>
                     toast.success(t("Category deleted successfully")),
                   onError: () => toast.error(t("Error deleting category")),
                 });
               }}
-            >
-              <Trash />
-            </TooltipBtn>
+            />
           </div>
         ),
       },
     ],
-    [deleteStudent, detail, form, t],
+    [deleteStudent, detail, form, t]
   );
 
   const fields = useMemo<any[]>(
@@ -308,7 +304,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const onSubmit = (data: any) => {
@@ -340,7 +336,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -355,7 +351,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
@@ -454,7 +450,7 @@ const Users = () => {
                   }}
                   pageRangeDisplayed={size}
                   pageCount={Math.ceil(
-                    (students?.data?.totalElements || 0) / size,
+                    (students?.data?.totalElements || 0) / size
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>

@@ -1,8 +1,26 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm, FormField } from "@/components/form/auto-form";
+import { useBaseBook } from "@/components/models/queries/base-book";
+import {
+  useCopiesBooks,
+  useCopiesBooksId,
+  useCreateCopiesBooks,
+  useDeleteCopiesBooks,
+  useUpdateCopiesBooks,
+} from "@/components/models/queries/copies-books";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Divider } from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -12,32 +30,13 @@ import {
   PenSquareIcon,
   Plus,
   Search,
-  Trash,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import {
-  useCopiesBooks,
-  useCopiesBooksId,
-  useCreateCopiesBooks,
-  useDeleteCopiesBooks,
-  useUpdateCopiesBooks,
-} from "@/components/models/queries/copies-books";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useBaseBook } from "@/components/models/queries/base-book";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Divider } from "antd";
-import { Button } from "@/components/ui/button";
 import ReactPaginate from "react-paginate";
-import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export const CopiesBooks = () => {
   const t = useTranslations();
@@ -47,7 +46,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const [pageSize, setPageSize] = useState<number>(10);
@@ -95,7 +94,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          }),
+          })
         ),
       },
       {
@@ -117,7 +116,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks],
+    [t, baseBooks]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -196,26 +195,22 @@ export const CopiesBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <TooltipBtn
-              variant={"destructive"}
-              size={"sm"}
-              color={"red"}
-              title={t("Delete")}
-              onClick={() => {
+
+            <DeleteActionDialog
+              onConfirm={() => {
                 deleteCategory.mutate(record.id, {
                   onSuccess: () =>
                     toast.success(t("Category deleted successfully")),
                   onError: () => toast.error(t("Error deleting category")),
                 });
               }}
-            >
-              <Trash />
-            </TooltipBtn>
+              title={t("Delete")}
+            />
           </div>
         ),
       },
     ],
-    [t, deleteCategory, form, pageNum, pageSize],
+    [t, deleteCategory, form, pageNum, pageSize]
   );
 
   useEffect(() => {
@@ -256,7 +251,7 @@ export const CopiesBooks = () => {
             toast.success(t("Category updated successfully"));
             setOpen(false);
           },
-        },
+        }
       );
     } else {
       createCopiesBook.mutate(
@@ -271,7 +266,7 @@ export const CopiesBooks = () => {
             toast.success(t("Category created successfully"));
             setOpen(false);
           },
-        },
+        }
       );
     }
     setActionType("add");
@@ -367,7 +362,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize,
+                  (copiesBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>

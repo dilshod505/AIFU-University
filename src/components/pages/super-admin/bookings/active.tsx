@@ -1,22 +1,11 @@
 "use client";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  RefreshCw,
-  TimerReset,
-  Undo2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BorrowBookForm } from "@/components/pages/super-admin/bookings/borrow-book-form";
-import { useTranslations } from "next-intl";
+import { AutoForm } from "@/components/form/auto-form";
+import { api } from "@/components/models/axios";
 import MyTable, { IColumn } from "@/components/my-table";
-import React, { useMemo, useState } from "react";
-import { Tag } from "antd";
+import { BorrowBookForm } from "@/components/pages/super-admin/bookings/borrow-book-form";
 import TooltipBtn from "@/components/tooltip-btn";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -25,17 +14,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { api } from "@/components/models/axios";
-import { toast } from "sonner";
-import { AutoForm } from "@/components/form/auto-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Tag } from "antd";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  RefreshCw,
+  TimerReset,
+  Undo2,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
-import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 // 🔹 API orqali bookinglarni olish
 async function fetchBookings(pageNum: number, pageSize: number) {
   const res = await api.get(
-    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`,
+    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`
   );
   return res.data;
 }
@@ -207,7 +206,7 @@ export default function ActiveBookingsPage() {
         ),
       },
     ],
-    [extendReservation, form, returnReservation, t, pageNumber, pageSize],
+    [extendReservation, form, returnReservation, t, pageNumber, pageSize]
   );
 
   return (
@@ -247,19 +246,19 @@ export default function ActiveBookingsPage() {
             footer={
               <div className={"flex justify-between items-center gap-2"}>
                 <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-                  <p>
+                  <p className="text-sm">
                     {t("Total Pages")}:{" "}
                     <span className="text-green-600">
                       {bookings?.data?.totalPages}
                     </span>
                   </p>
-                  <p>
+                  <p className="text-sm">
                     {t("Current Page")}:{" "}
                     <span className="text-green-600">
                       {bookings?.data?.currentPage}
                     </span>
                   </p>
-                  <p>
+                  <p className="text-sm">
                     {t("Total Elements")}:{" "}
                     <span className="text-green-600">
                       {bookings?.data?.totalElements}
