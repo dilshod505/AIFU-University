@@ -106,7 +106,7 @@ const BaseBooks = () => {
           name: values.name,
         });
         if (updateCategory.isSuccess) {
-          toast.success(t("Category updated successfully"));
+          toast.success(t("Category updated successfullyy"));
           setIsOpen(false);
         }
       } else {
