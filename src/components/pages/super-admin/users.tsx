@@ -43,6 +43,8 @@ import {
   PenSquareIcon,
   Plus,
   User,
+  UserRoundCheck,
+  UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
@@ -127,9 +129,13 @@ const Users = () => {
         title: t("status"),
         dataIndex: "status",
         render: (value: boolean) => (
-          <div
-            className={`w-7 h-6 rounded ${value ? "bg-green-500" : "bg-red-400"}`}
-          />
+          <div className="flex items-center justify-center">
+            {value ? (
+              <UserRoundCheck className="text-green-600 w-5 h-5" />
+            ) : (
+              <UserRoundX className="text-red-500 w-5 h-5" />
+            )}
+          </div>
         ),
       },
       {
