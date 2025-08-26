@@ -1,27 +1,27 @@
 "use client";
 
+import { PenSquareIcon, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
-import { Eye, PenSquareIcon, Plus, Trash } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm, FormField } from "@/components/form/auto-form";
-import TooltipBtn from "@/components/tooltip-btn";
-import MyTable, { IColumn } from "@/components/my-table";
 import {
   useCategories,
   useCreateCategory,
   useDeleteCategory,
   useUpdateCategory,
 } from "@/components/models/queries/e-books-categories";
+import MyTable, { IColumn } from "@/components/my-table";
+import TooltipBtn from "@/components/tooltip-btn";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { toast } from "sonner";
-import DeleteActionDialog from "@/components/delete-action-dialog";
 
 const EBookCategories = () => {
   const t = useTranslations();
@@ -46,7 +46,7 @@ const EBookCategories = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -95,14 +95,12 @@ const EBookCategories = () => {
                   onError: () => toast.error(t("Error deleting category")),
                 });
               }}
-            >
-              <Trash />
-            </DeleteActionDialog>
+            />
           </div>
         ),
       },
     ],
-    [deleteCategory, form, t],
+    [deleteCategory, form, t]
   );
 
   const onSubmit = async (data: any) => {
@@ -117,7 +115,7 @@ const EBookCategories = () => {
             toast.success(t("Category updated successfully"));
             setOpen(false);
           },
-        },
+        }
       );
     } else {
       createCategory.mutate(
@@ -129,7 +127,7 @@ const EBookCategories = () => {
             toast.success(t("Category created successfully"));
             setOpen(false);
           },
-        },
+        }
       );
     }
   };
