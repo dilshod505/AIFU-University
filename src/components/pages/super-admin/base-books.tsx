@@ -19,6 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -36,13 +43,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const { Option } = Select;
 
@@ -71,7 +71,7 @@ const BaseBooks = () => {
     selectedId,
     {
       enabled: !!selectedId,
-    },
+    }
   );
 
   const [editingBook, setEditingCategory] = useState<Record<
@@ -143,7 +143,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
@@ -194,7 +194,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        },
+        }
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -297,7 +297,7 @@ const BaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (baseBooks?.data?.totalElements || 0) / pageSize,
+                  (baseBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
