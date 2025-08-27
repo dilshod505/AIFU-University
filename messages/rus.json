@@ -227,5 +227,6 @@
   "passportNumber": "Номер паспорта",
   "Admission Time": "Время приема",
   "Graduation Time": "Время выпуска",
-  "Are you sure you want to delete this? This action cannot be undone": "Вы уверены, что хотите удалить это? Это действие нельзя отменить."
+  "Are you sure you want to delete this? This action cannot be undone": "Вы уверены, что хотите удалить это? Это действие нельзя отменить.",
+  "Total count": "Общее количество"
 }

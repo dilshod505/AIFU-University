@@ -112,7 +112,7 @@
   "Next": "Keyingi",
   "Is Taken": "Olingan",
   "Search": "Qidiruv",
-  "category": "Turkum",
+  "category": "Categoriya",
   "Series": "Turkum",
   "UDC": "UDC",
   "select data size": "Ma'lumot hajmini tanlang",
@@ -180,7 +180,7 @@
   "Qaytarilgan": "Qaytarilgan sana",
   "Add book": "Kitob qo'shish",
   "Edit book": "Kitobni tahrirlash",
-  "Category": "Turkum",
+  "Category": "Categoriya",
   "AIFU - System Administrators": "AIFU - Tizim administratorlari",
   "System Administrators": "Tizim administratorlari",
   "Name": "Ism",
@@ -227,5 +227,6 @@
   "passportNumber": "Pasport raqami",
   "Admission Time": "Qabul vaqti",
   "Graduation Time": "Bitiruv vaqti",
-  "Are you sure you want to delete this? This action cannot be undone": "Buni o'chirib tashlamoqchimisiz? Bu harakatni bekor qilib bo'lmaydi."
+  "Are you sure you want to delete this? This action cannot be undone": "Buni o'chirib tashlamoqchimisiz? Bu harakatni bekor qilib bo'lmaydi.",
+  "Total count": "Jami soni"
 }

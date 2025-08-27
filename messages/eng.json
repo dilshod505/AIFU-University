@@ -227,5 +227,6 @@
   "passportNumber": "Passport Number",
   "Admission Time": "Admission Time",
   "Graduation Time": "Graduation Time",
-  "Are you sure you want to delete this? This action cannot be undone": "Are you sure you want to delete this? This action cannot be undone."
+  "Are you sure you want to delete this? This action cannot be undone": "Are you sure you want to delete this? This action cannot be undone.",
+  "Total count": "Total count"
 }

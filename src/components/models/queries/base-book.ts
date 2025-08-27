@@ -20,13 +20,15 @@ export const useBaseBook = ({
     },
   });
 
-export const useBaseBookId = () =>
+export const useBaseBookId = (id: number, options = {}) =>
   useQuery({
-    queryKey: ["base-book"],
-    queryFn: async (id: string | any) => {
+    queryKey: ["base-book-id", id], // id queryKey ichida
+    queryFn: async () => {
       const res = await api.get(`/admin/base-books/${id}`);
       return res.data;
     },
+    enabled: !!id, // id bo‘lmasa query ishlamasin
+    ...options,
   });
 
 export const useCreateBaseBook = () => {

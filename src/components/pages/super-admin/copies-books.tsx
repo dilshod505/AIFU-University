@@ -238,7 +238,6 @@ export const CopiesBooks = () => {
     setSearchQuery(value);
   };
 
-  // Clear search
   const clearSearch = () => {
     setSearchQuery("");
     setDebouncedSearchQuery("");

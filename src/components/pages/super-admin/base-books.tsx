@@ -3,6 +3,7 @@
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import {
   useBaseBook,
+  useBaseBookId,
   useCreateBaseBook,
   useDeleteBaseBook,
   useUpdateBaseBook,
@@ -23,12 +24,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
-import { ChevronLeft, ChevronRight, PenSquareIcon, Plus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  PenSquareIcon,
+  Plus,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const { Option } = Select;
 
@@ -40,6 +54,9 @@ const BaseBooks = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
   const [open, setOpen] = useState<boolean>(false);
 
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
     pageSize,
@@ -49,6 +66,13 @@ const BaseBooks = () => {
   const { data: categories } = useBaseBooksCategory();
   const deleteBook = useDeleteBaseBook();
   const updateBook = useUpdateBaseBook();
+
+  const { data: detailData, isLoading: detailLoading } = useBaseBookId(
+    selectedId,
+    {
+      enabled: !!selectedId,
+    },
+  );
 
   const [editingBook, setEditingCategory] = useState<Record<
     string,
@@ -90,6 +114,17 @@ const BaseBooks = () => {
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <TooltipBtn
+              variant={"ampersand"}
+              title={t("Detail")}
+              size={"sm"}
+              onClick={() => {
+                setSelectedId(record.id);
+                setDetailOpen(true);
+              }}
+            >
+              <Eye />
+            </TooltipBtn>
+            <TooltipBtn
               variant={"view"}
               title={t("Edit")}
               size={"sm"}
@@ -108,7 +143,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -159,7 +194,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        }
+        },
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -262,7 +297,7 @@ const BaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (baseBooks?.data?.totalElements || 0) / pageSize
+                  (baseBooks?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -288,6 +323,7 @@ const BaseBooks = () => {
 
       <Divider />
 
+      {/* Add/Edit Modal */}
       <Modal
         title={editingBook ? t("Edit book") : t("Add book")}
         open={open}
@@ -394,7 +430,6 @@ const BaseBooks = () => {
                 render={({ field }) => <Input {...field} />}
               />
             </Form.Item>
-
             <Form.Item label={t("UDC")}>
               <Controller
                 name="udc"
@@ -411,6 +446,144 @@ const BaseBooks = () => {
           </div>
         </Form>
       </Modal>
+
+      {/* Detail Sheet */}
+      <Sheet
+        open={detailOpen}
+        onOpenChange={(v) => {
+          setDetailOpen(v);
+          if (!v) {
+            setSelectedId(null);
+          }
+        }}
+      >
+        <SheetContent>
+          <SheetHeader className="flex justify-center items-center text-[20px]">
+            <SheetTitle>{t("Book detail")}</SheetTitle>
+          </SheetHeader>
+
+          <div className="p-3">
+            <div className="space-y-4">
+              <p className="flex justify-between items-center">
+                <strong>{t("Id")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.id
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Title")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.title
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Author")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.author
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Category")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.category?.name
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Language")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.language
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Publisher")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.publisher
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Publication city")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.publicationCity
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Publication Year")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.publicationYear
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Total count")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.totalCount
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("ISBN")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.isbn
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Udc")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.udc
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Seria")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.series || (
+                    <h1 className={"text-red-600"}>--</h1>
+                  )
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Page Count")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.book?.pageCount
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Title details")}:</strong>{" "}
+                {detailLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  detailData?.data?.totalDetails || (
+                    <h1 className={"text-red-600"}>mavjud emas</h1>
+                  )
+                )}
+              </p>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
