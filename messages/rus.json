@@ -229,5 +229,12 @@
   "Graduation Time": "Время выпуска",
   "Are you sure you want to delete this? This action cannot be undone": "Вы уверены, что хотите удалить это? Это действие нельзя отменить.",
   "Total count": "Общее количество",
-  "Taken copies": "Взято экземпляров"
+  "Taken copies": "Взято экземпляров",
+  "Add Book": "Добавить книгу",
+  "book detail": "Подробности о книге",
+  "id": "ID",
+  "Detail": "Деталь",
+  "Publication city": "Город публикации",
+  "Publication Details": "Подробности публикации",
+  "Additional Information": "Дополнительная информация"
 }

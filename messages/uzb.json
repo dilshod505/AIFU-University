@@ -229,5 +229,12 @@
   "Graduation Time": "Bitiruv vaqti",
   "Are you sure you want to delete this? This action cannot be undone": "Buni o'chirib tashlamoqchimisiz? Bu harakatni bekor qilib bo'lmaydi.",
   "Total count": "Jami soni",
-  "Taken copies": "Olingan nusxalar"
+  "Taken copies": "Olingan nusxalar",
+  "Add Book": "Kitob qo'shish",
+  "book detail": "Kitob tafsiloti",
+  "id": "ID",
+  "Detail": "Tafsilot",
+  "Publication city": "Nashr shahri",
+  "Publication Details": "Nashr tafsilotlari",
+  "Additional Information": "Qo'shimcha ma'lumot"
 }

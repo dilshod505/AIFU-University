@@ -7,6 +7,7 @@ import { TooltipTrigger } from "@/components/ui/tooltip";
 import { Tooltip } from "@/components/ui/tooltip";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
+import { api } from "@/components/models/axios";
 import {
   useBaseBook,
   useBaseBookId,
@@ -32,7 +33,9 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useQuery } from "@tanstack/react-query";
 import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
+import TextArea from "antd/es/input/TextArea";
 import {
   ChevronLeft,
   ChevronRight,
@@ -42,11 +45,9 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import TextArea from "antd/es/input/TextArea";
-import { useCopiesBooksId } from "@/components/models/queries/copies-books";
 
 const { Option } = Select;
 
@@ -57,6 +58,7 @@ const BaseBooks = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
   const [open, setOpen] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -70,14 +72,20 @@ const BaseBooks = () => {
   const { data: categories } = useBaseBooksCategory();
   const deleteBook = useDeleteBaseBook();
   const updateBook = useUpdateBaseBook();
+  const [editingBook, setEditingBook] = useState<string | null>(null);
+  const baseBookDetail = useQuery({
+    queryKey: ["base-book-detail", editingBook],
+    queryFn: async () => {
+      const res = await api.get(`/admin/base-books/${editingBook}`);
+      return res.data;
+    },
+    enabled: !!editingBook,
+    select: (data: Record<string, any>) => data?.data?.book,
+  });
 
   const { data: detail, isLoading: detailLoading } = useBaseBookId(selectedId, {
     enabled: !!selectedId,
   });
-
-  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
-  );
 
   const { control, handleSubmit, reset } = useForm();
 
@@ -135,7 +143,7 @@ const BaseBooks = () => {
               title={t("Edit")}
               size={"sm"}
               onClick={() => {
-                setEditingBook(record);
+                setEditingBook(record.id);
                 setOpen(true);
               }}
             >
@@ -149,43 +157,19 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
+    console.log(baseBookDetail.data);
+
     if (editingBook) {
-      reset({
-        categoryId: editingBook.category?.id || "",
-        author: editingBook.author || "",
-        series: editingBook.series || "",
-        title: editingBook.title || "",
-        publicationYear: editingBook.publicationYear || "",
-        publisher: editingBook.publisher || "",
-        publicationCity: editingBook.publicationCity || "",
-        isbn: editingBook.isbn || "",
-        pageCount: editingBook.pageCount || "",
-        language: editingBook.language || "",
-        udc: editingBook.udc || "",
-        titleDetails: editingBook.titleDetails || "",
-      });
-      console.log(editingBook, "update ");
-    } else {
-      reset({
-        categoryId: "",
-        author: "",
-        series: "",
-        title: "",
-        publicationYear: "",
-        publisher: "",
-        publicationCity: "",
-        isbn: "",
-        pageCount: "",
-        language: "",
-        udc: "",
-        titleDetails: "",
+      form.setFieldsValue({
+        ...baseBookDetail.data,
+        categoryId: baseBookDetail?.data?.category?.id,
       });
     }
-  }, [editingBook, reset]);
+  }, [editingBook, form, baseBookDetail.isLoading]);
 
   const onSubmit = async (formData: any) => {
     const payload = {
@@ -198,13 +182,13 @@ const BaseBooks = () => {
 
     if (editingBook) {
       updateBook.mutate(
-        { id: editingBook.id, ...payload },
+        { id: editingBook, ...payload },
         {
           onSuccess: () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        },
+        }
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -312,7 +296,7 @@ const BaseBooks = () => {
                   }}
                   pageRangeDisplayed={pageSize}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / pageSize,
+                    (baseBooks?.data?.totalElements || 0) / pageSize
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
@@ -347,189 +331,104 @@ const BaseBooks = () => {
         footer={null}
         width={800}
       >
-        <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-          <div className={"grid md:grid-cols-2 gap-3"}>
-            <Form.Item label={t("Title")} required>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+        <Form form={form} layout="vertical" onFinish={onSubmit}>
+          <div className="grid md:grid-cols-2 gap-3">
+            <Form.Item
+              label={t("Title")}
+              name="title"
+              rules={[{ required: true }]}
+            >
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Author")} required>
-              <Controller
-                name="author"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item
+              label={t("Author")}
+              name="author"
+              rules={[{ required: true }]}
+            >
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Seria")}>
-              <Controller
-                name="series"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item
+              rules={[{ required: true }]}
+              label={t("Series")}
+              name="series"
+            >
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Category")} required>
-              <Controller
-                name="categoryId"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    value={field.value || ""}
-                    onChange={(val) => field.onChange(val)}
-                    style={{ width: "100%" }}
-                  >
-                    {categories?.data?.map((cat: any) => (
-                      <Option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              />
+            <Form.Item
+              label={t("Category")}
+              name="categoryId"
+              rules={[{ required: true }]}
+            >
+              <Select style={{ width: "100%" }}>
+                {categories?.data?.map((cat: any) => (
+                  <Option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </div>
 
           <Divider />
-          <h1 className={"text-base font-semibold mb-2"}>
-            Publication Details
+          <h1 className="text-base font-semibold mb-2">
+            {t("Publication Details")}
           </h1>
-          <div className={"grid md:grid-cols-3 gap-3"}>
-            <Form.Item label={t("Publication year")} required>
-              <Controller
-                name="publicationYear"
-                control={control}
-                render={({ field }) => (
-                  <InputNumber
-                    value={field.value || null}
-                    onChange={(val) => field.onChange(val)}
-                    style={{ width: "100%" }}
-                  />
-                )}
-              />
+          <div className="grid md:grid-cols-3 gap-3">
+            <Form.Item
+              label={t("Publication year")}
+              name="publicationYear"
+              rules={[{ required: true }]}
+            >
+              <InputNumber style={{ width: "100%" }} />
             </Form.Item>
-            <Form.Item label={t("Publisher")} required>
-              <Controller
-                name="publisher"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item
+              label={t("Publisher")}
+              name="publisher"
+              rules={[{ required: true }]}
+            >
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Publication City")}>
-              <Controller
-                name="publicationCity"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item label={t("Publication City")} name="publicationCity">
+              <Input />
             </Form.Item>
           </div>
 
           <Divider />
-          <h1 className={"text-base font-semibold mb-2"}>
-            Additional Information
+          <h1 className="text-base font-semibold mb-2">
+            {t("Additional Information")}
           </h1>
-          <div className={"grid md:grid-cols-2 gap-3"}>
-            <Form.Item label={t("Isbn")}>
-              <Controller
-                name="isbn"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+          <div className="grid md:grid-cols-2 gap-3">
+            <Form.Item label={t("Isbn")} name="isbn">
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Page Count")} required>
-              <Controller
-                name="pageCount"
-                control={control}
-                render={({ field }) => (
-                  <InputNumber
-                    value={field.value || null}
-                    onChange={(val) => field.onChange(val)}
-                    style={{ width: "100%" }}
-                  />
-                )}
-              />
+            <Form.Item
+              label={t("Page Count")}
+              name="pageCount"
+              rules={[{ required: true }]}
+            >
+              <InputNumber style={{ width: "100%" }} />
             </Form.Item>
-            <Form.Item label={t("Language")} required>
-              <Controller
-                name="language"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item
+              label={t("Language")}
+              name="language"
+              rules={[{ required: true }]}
+            >
+              <Input />
             </Form.Item>
-            <Form.Item label={t("UDC")}>
-              <Controller
-                name="udc"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item label={t("UDC")} name="udc">
+              <Input />
             </Form.Item>
-            <Form.Item label={t("Title details")} required>
-              <Controller
-                name="titleDetails"
-                control={control}
-                render={({ field }) => (
-                  <TextArea
-                    rows={4}
-                    {...field}
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
+            <Form.Item
+              label={t("Title details")}
+              name="titleDetails"
+              rules={[{ required: true }]}
+            >
+              <TextArea rows={4} />
             </Form.Item>
           </div>
 
           <div className="flex justify-end mt-4">
-            <Button type="submit" className="bg-green-600 text-white">
+            <Button className="bg-green-600 text-white">
               {editingBook ? t("Edit book") : t("Add book")}
             </Button>
           </div>
@@ -548,13 +447,13 @@ const BaseBooks = () => {
       >
         <SheetContent>
           <SheetHeader className="flex justify-center items-center text-[20px]">
-            <SheetTitle>{t("Book detail")}</SheetTitle>
+            <SheetTitle>{t("book detail")}</SheetTitle>
           </SheetHeader>
 
           <div className="p-3">
             <div className="space-y-4">
               <p className="flex justify-between items-center">
-                <strong>{t("Id")}:</strong>{" "}
+                <strong>{t("id")}:</strong>{" "}
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
@@ -626,7 +525,7 @@ const BaseBooks = () => {
                 )}
               </p>
               <p className="flex justify-between items-center">
-                <strong>{t("ISBN")}:</strong>{" "}
+                <strong>{t("Isbn")}:</strong>{" "}
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
@@ -634,7 +533,7 @@ const BaseBooks = () => {
                 )}
               </p>
               <p className="flex justify-between items-center">
-                <strong>{t("Udc")}:</strong>{" "}
+                <strong>{t("UDC")}:</strong>{" "}
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
@@ -642,7 +541,7 @@ const BaseBooks = () => {
                 )}
               </p>
               <p className="flex justify-between items-center">
-                <strong>{t("Seria")}:</strong>{" "}
+                <strong>{t("Series")}:</strong>{" "}
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
@@ -665,7 +564,7 @@ const BaseBooks = () => {
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
                   detail?.data?.book?.titleDetails || (
-                    <h1 className={"text-red-600"}>mavjud emas</h1>
+                    <span className={"text-red-600"}>mavjud emas</span>
                   )
                 )}
               </p>

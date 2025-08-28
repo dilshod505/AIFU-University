@@ -229,5 +229,12 @@
   "Graduation Time": "Graduation Time",
   "Are you sure you want to delete this? This action cannot be undone": "Are you sure you want to delete this? This action cannot be undone.",
   "Total count": "Total count",
-  "Taken copies": "Taken copies"
+  "Taken copies": "Taken copies",
+  "Add Book": "Add Book",
+  "book detail": "Book Details",
+  "id": "ID",
+  "Detail": "Detail",
+  "Publication city": "Publication city",
+  "Publication Details": "Publication Details",
+  "Additional Information": "Additional Information"
 }
