@@ -14,7 +14,7 @@ export const useBaseBook = ({
     queryKey: ["base-book", pageNum, pageSize, searchQuery],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`
+        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
       );
       return res.data;
     },

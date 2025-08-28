@@ -1,5 +1,11 @@
 "use client";
 
+import { TooltipContent } from "@/components/ui/tooltip";
+
+import { TooltipTrigger } from "@/components/ui/tooltip";
+
+import { Tooltip } from "@/components/ui/tooltip";
+
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import {
   useBaseBook,
@@ -9,7 +15,7 @@ import {
   useUpdateBaseBook,
 } from "@/components/models/queries/base-book";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,11 +31,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
 import {
   ChevronLeft,
@@ -44,6 +46,7 @@ import { Controller, useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import TextArea from "antd/es/input/TextArea";
+import { useCopiesBooksId } from "@/components/models/queries/copies-books";
 
 const { Option } = Select;
 
@@ -68,17 +71,14 @@ const BaseBooks = () => {
   const deleteBook = useDeleteBaseBook();
   const updateBook = useUpdateBaseBook();
 
-  const { data: detailData, isLoading: detailLoading } = useBaseBookId(
-    selectedId,
-    {
-      enabled: !!selectedId,
-    },
+  const { data: detail, isLoading: detailLoading } = useBaseBookId(selectedId, {
+    enabled: !!selectedId,
+  });
+
+  const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
+    null,
   );
 
-  const [editingBook, setEditingCategory] = useState<Record<
-    string,
-    any
-  > | null>(null);
   const { control, handleSubmit, reset } = useForm();
 
   useEffect(() => {
@@ -135,7 +135,7 @@ const BaseBooks = () => {
               title={t("Edit")}
               size={"sm"}
               onClick={() => {
-                setEditingCategory(record);
+                setEditingBook(record);
                 setOpen(true);
               }}
             >
@@ -168,6 +168,7 @@ const BaseBooks = () => {
         udc: editingBook.udc || "",
         titleDetails: editingBook.titleDetails || "",
       });
+      console.log(editingBook, "update ");
     } else {
       reset({
         categoryId: "",
@@ -189,7 +190,7 @@ const BaseBooks = () => {
   const onSubmit = async (formData: any) => {
     const payload = {
       ...formData,
-      titleDetails: formData.titleDetails || "", // agar null yoki undefined bo‘lsa, bo‘sh string yuboramiz
+      titleDetails: formData.titleDetails || "",
       category: Number(formData.categoryId),
       publicationYear: Number(formData.publicationYear),
       pageCount: Number(formData.pageCount),
@@ -217,119 +218,124 @@ const BaseBooks = () => {
 
   return (
     <div>
-      <MyTable
-        title={<h1 className="text-2xl font-semibold">{t("Base books")}</h1>}
-        columns={columns}
-        dataSource={baseBooks?.data?.data || []}
-        isLoading={isLoading}
-        pagination={false}
-        header={
-          <div className="flex justify-start items-center gap-2">
-            <Input
-              placeholder={t("search")}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Select
-              value={pageSize.toString()}
-              onChange={(a: string) => setPageSize(Number(a))}
-            >
-              <SelectTrigger suppressHydrationWarning>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <SelectValue placeholder={pageSize} />
-                  </TooltipTrigger>
-                  <TooltipContent sideOffset={5}>
-                    {t("select data size")}
-                  </TooltipContent>
-                </Tooltip>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="25">25</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
-              </SelectContent>
-            </Select>
-            <TooltipBtn
-              size="sm"
-              title={t("Add Book")}
-              onClick={() => {
-                setEditingCategory(null);
-                reset({
-                  categoryId: "",
-                  author: "",
-                  series: "",
-                  title: "",
-                  publicationYear: "",
-                  publisher: "",
-                  publicationCity: "",
-                  isbn: "",
-                  pageCount: "",
-                  language: "",
-                  titleDetails: "",
-                });
-                setOpen(true);
-              }}
-            >
-              <Plus /> {t("Add Book")}
-            </TooltipBtn>
-          </div>
-        }
-        footer={
-          <div className={"flex justify-between items-center gap-2"}>
-            <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-              <p className="text-sm text-start">
-                {t("Total Pages")}:{" "}
-                <span className="text-green-600">
-                  {baseBooks?.data?.totalPages}
-                </span>
-              </p>
-              <p className="text-sm text-start">
-                {t("Current Page")}:{" "}
-                <span className="text-green-600">
-                  {baseBooks?.data?.currentPage}
-                </span>
-              </p>
-              <p className="text-sm text-start">
-                {t("Total Elements")}:{" "}
-                <span className="text-green-600">
-                  {baseBooks?.data?.totalElements}
-                </span>
-              </p>
-            </div>
-
-            <div>
-              <ReactPaginate
-                breakLabel="..."
-                onPageChange={(e) => {
-                  const newPageNum = e.selected + 1;
-                  setPageNum(newPageNum);
-                }}
-                pageRangeDisplayed={pageSize}
-                pageCount={Math.ceil(
-                  (baseBooks?.data?.totalElements || 0) / pageSize,
-                )}
-                previousLabel={
-                  <Button className={"bg-white text-black"}>
-                    <ChevronLeft />
-                    {t("Previous")}
-                  </Button>
-                }
-                nextLabel={
-                  <Button className={"bg-white text-black"}>
-                    {t("Next")} <ChevronRight />
-                  </Button>
-                }
-                className={"flex justify-center gap-2 items-center my-5"}
-                renderOnZeroPageCount={null}
-                forcePage={pageNum - 1}
-                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-                activeClassName="bg-green-600 text-white rounded-full"
+      <TooltipProvider>
+        <MyTable
+          title={<h1 className="text-2xl font-semibold">{t("Base books")}</h1>}
+          columns={columns}
+          dataSource={baseBooks?.data?.data || []}
+          isLoading={isLoading}
+          pagination={false}
+          header={
+            <div className="flex justify-start items-center gap-2">
+              <Input
+                placeholder={t("search")}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <Select
+                value={pageSize.toString()}
+                onChange={(a: string) => setPageSize(Number(a))}
+              >
+                <SelectTrigger suppressHydrationWarning>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <SelectValue placeholder={pageSize} />
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={5}>
+                        {t("select data size")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+              <TooltipBtn
+                size="sm"
+                title={t("Add Book")}
+                onClick={() => {
+                  setEditingBook(null);
+                  reset({
+                    categoryId: "",
+                    author: "",
+                    series: "",
+                    title: "",
+                    publicationYear: "",
+                    publisher: "",
+                    publicationCity: "",
+                    isbn: "",
+                    pageCount: "",
+                    language: "",
+                    udc: "",
+                    titleDetails: "",
+                  });
+                  setOpen(true);
+                }}
+              >
+                <Plus /> {t("Add Book")}
+              </TooltipBtn>
             </div>
-          </div>
-        }
-      />
+          }
+          footer={
+            <div className={"flex justify-between items-center gap-2"}>
+              <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+                <p className="text-sm text-start">
+                  {t("Total Pages")}:{" "}
+                  <span className="text-green-600">
+                    {baseBooks?.data?.totalPages}
+                  </span>
+                </p>
+                <p className="text-sm text-start">
+                  {t("Current Page")}:{" "}
+                  <span className="text-green-600">
+                    {baseBooks?.data?.currentPage}
+                  </span>
+                </p>
+                <p className="text-sm text-start">
+                  {t("Total Elements")}:{" "}
+                  <span className="text-green-600">
+                    {baseBooks?.data?.totalElements}
+                  </span>
+                </p>
+              </div>
+
+              <div>
+                <ReactPaginate
+                  breakLabel="..."
+                  onPageChange={(e) => {
+                    const newPageNum = e.selected + 1;
+                    setPageNum(newPageNum);
+                  }}
+                  pageRangeDisplayed={pageSize}
+                  pageCount={Math.ceil(
+                    (baseBooks?.data?.totalElements || 0) / pageSize,
+                  )}
+                  previousLabel={
+                    <Button className={"bg-white text-black"}>
+                      <ChevronLeft />
+                      {t("Previous")}
+                    </Button>
+                  }
+                  nextLabel={
+                    <Button className={"bg-white text-black"}>
+                      {t("Next")} <ChevronRight />
+                    </Button>
+                  }
+                  className={"flex justify-center gap-2 items-center my-5"}
+                  renderOnZeroPageCount={null}
+                  forcePage={pageNum - 1}
+                  pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+                  activeClassName="bg-green-600 text-white rounded-full"
+                />
+              </div>
+            </div>
+          }
+        />
+      </TooltipProvider>
 
       <Divider />
 
@@ -347,21 +353,39 @@ const BaseBooks = () => {
               <Controller
                 name="title"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Author")} required>
               <Controller
                 name="author"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Seria")}>
               <Controller
                 name="series"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Category")} required>
@@ -369,7 +393,11 @@ const BaseBooks = () => {
                 name="categoryId"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} style={{ width: "100%" }}>
+                  <Select
+                    value={field.value || ""}
+                    onChange={(val) => field.onChange(val)}
+                    style={{ width: "100%" }}
+                  >
                     {categories?.data?.map((cat: any) => (
                       <Option key={cat.id} value={cat.id}>
                         {cat.name}
@@ -391,7 +419,11 @@ const BaseBooks = () => {
                 name="publicationYear"
                 control={control}
                 render={({ field }) => (
-                  <InputNumber {...field} style={{ width: "100%" }} />
+                  <InputNumber
+                    value={field.value || null}
+                    onChange={(val) => field.onChange(val)}
+                    style={{ width: "100%" }}
+                  />
                 )}
               />
             </Form.Item>
@@ -399,14 +431,26 @@ const BaseBooks = () => {
               <Controller
                 name="publisher"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Publication City")}>
               <Controller
                 name="publicationCity"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
           </div>
@@ -420,7 +464,13 @@ const BaseBooks = () => {
               <Controller
                 name="isbn"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Page Count")} required>
@@ -428,7 +478,11 @@ const BaseBooks = () => {
                 name="pageCount"
                 control={control}
                 render={({ field }) => (
-                  <InputNumber {...field} style={{ width: "100%" }} />
+                  <InputNumber
+                    value={field.value || null}
+                    onChange={(val) => field.onChange(val)}
+                    style={{ width: "100%" }}
+                  />
                 )}
               />
             </Form.Item>
@@ -436,21 +490,40 @@ const BaseBooks = () => {
               <Controller
                 name="language"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("UDC")}>
               <Controller
                 name="udc"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
             <Form.Item label={t("Title details")} required>
               <Controller
                 name="titleDetails"
                 control={control}
-                render={({ field }) => <TextArea rows={4} {...field} />}
+                render={({ field }) => (
+                  <TextArea
+                    rows={4}
+                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </Form.Item>
           </div>
@@ -485,7 +558,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.id
+                  detail?.data?.book?.id
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -493,7 +566,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.title
+                  detail?.data?.book?.title
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -501,7 +574,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.author
+                  detail?.data?.book?.author
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -509,7 +582,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.category?.name
+                  detail?.data?.book?.category?.name
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -517,7 +590,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.language
+                  detail?.data?.book?.language
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -525,7 +598,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.publisher
+                  detail?.data?.book?.publisher
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -533,7 +606,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.publicationCity
+                  detail?.data?.book?.publicationCity
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -541,7 +614,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.publicationYear
+                  detail?.data?.book?.publicationYear
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -549,7 +622,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.totalCount
+                  detail?.data?.totalCount
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -557,7 +630,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.isbn
+                  detail?.data?.book?.isbn
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -565,7 +638,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.udc
+                  detail?.data?.book?.udc
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -573,7 +646,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.series || (
+                  detail?.data?.book?.series || (
                     <h1 className={"text-red-600"}>--</h1>
                   )
                 )}
@@ -583,7 +656,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.pageCount
+                  detail?.data?.book?.pageCount
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -591,7 +664,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.book?.titleDetails || (
+                  detail?.data?.book?.titleDetails || (
                     <h1 className={"text-red-600"}>mavjud emas</h1>
                   )
                 )}
