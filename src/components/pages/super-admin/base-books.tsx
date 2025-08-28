@@ -166,6 +166,7 @@ const BaseBooks = () => {
         pageCount: editingBook.pageCount || "",
         language: editingBook.language || "",
         udc: editingBook.udc || "",
+        titleDetails: editingBook.titleDetails || "",
       });
     } else {
       reset({
@@ -180,6 +181,7 @@ const BaseBooks = () => {
         pageCount: "",
         language: "",
         udc: "",
+        titleDetails: "",
       });
     }
   }, [editingBook, reset]);
@@ -187,6 +189,7 @@ const BaseBooks = () => {
   const onSubmit = async (formData: any) => {
     const payload = {
       ...formData,
+      titleDetails: formData.titleDetails || "", // agar null yoki undefined bo‘lsa, bo‘sh string yuboramiz
       category: Number(formData.categoryId),
       publicationYear: Number(formData.publicationYear),
       pageCount: Number(formData.pageCount),
@@ -263,6 +266,7 @@ const BaseBooks = () => {
                   isbn: "",
                   pageCount: "",
                   language: "",
+                  titleDetails: "",
                 });
                 setOpen(true);
               }}
@@ -442,8 +446,12 @@ const BaseBooks = () => {
                 render={({ field }) => <Input {...field} />}
               />
             </Form.Item>
-            <Form.Item label={t("Text")} required>
-              <TextArea rows={4} />
+            <Form.Item label={t("Title details")} required>
+              <Controller
+                name="titleDetails"
+                control={control}
+                render={({ field }) => <TextArea rows={4} {...field} />}
+              />
             </Form.Item>
           </div>
 
@@ -583,7 +591,7 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detailData?.data?.totalDetails || (
+                  detailData?.data?.book?.titleDetails || (
                     <h1 className={"text-red-600"}>mavjud emas</h1>
                   )
                 )}
