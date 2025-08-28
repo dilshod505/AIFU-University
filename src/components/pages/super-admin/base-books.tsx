@@ -43,6 +43,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import TextArea from "antd/es/input/TextArea";
 
 const { Option } = Select;
 
@@ -71,7 +72,7 @@ const BaseBooks = () => {
     selectedId,
     {
       enabled: !!selectedId,
-    }
+    },
   );
 
   const [editingBook, setEditingCategory] = useState<Record<
@@ -105,6 +106,11 @@ const BaseBooks = () => {
         key: "totalCopies",
         dataIndex: "totalCopies",
         title: t("Total copies"),
+      },
+      {
+        key: "takenCopies",
+        dataIndex: "takenCopies",
+        title: t("Taken copies"),
       },
       {
         key: "actions",
@@ -143,7 +149,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -194,7 +200,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        }
+        },
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -297,7 +303,7 @@ const BaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (baseBooks?.data?.totalElements || 0) / pageSize
+                  (baseBooks?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -332,8 +338,28 @@ const BaseBooks = () => {
         width={800}
       >
         <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-          <h1 className={"text-base font-semibold mb-2"}>{t("Title")}</h1>
           <div className={"grid md:grid-cols-2 gap-3"}>
+            <Form.Item label={t("Title")} required>
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Author")} required>
+              <Controller
+                name="author"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
+            <Form.Item label={t("Seria")}>
+              <Controller
+                name="series"
+                control={control}
+                render={({ field }) => <Input {...field} />}
+              />
+            </Form.Item>
             <Form.Item label={t("Category")} required>
               <Controller
                 name="categoryId"
@@ -347,27 +373,6 @@ const BaseBooks = () => {
                     ))}
                   </Select>
                 )}
-              />
-            </Form.Item>
-            <Form.Item label={t("Author")} required>
-              <Controller
-                name="author"
-                control={control}
-                render={({ field }) => <Input {...field} />}
-              />
-            </Form.Item>
-            <Form.Item label={t("Series")}>
-              <Controller
-                name="series"
-                control={control}
-                render={({ field }) => <Input {...field} />}
-              />
-            </Form.Item>
-            <Form.Item label={t("Title")} required>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field }) => <Input {...field} />}
               />
             </Form.Item>
           </div>
@@ -436,6 +441,9 @@ const BaseBooks = () => {
                 control={control}
                 render={({ field }) => <Input {...field} />}
               />
+            </Form.Item>
+            <Form.Item label={t("Text")} required>
+              <TextArea rows={4} />
             </Form.Item>
           </div>
 
