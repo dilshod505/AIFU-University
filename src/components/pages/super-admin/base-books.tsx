@@ -327,7 +327,10 @@ const BaseBooks = () => {
       <Modal
         title={editingBook ? t("Edit book") : t("Add book")}
         open={open}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          form.resetFields();
+        }}
         footer={null}
         width={800}
       >
