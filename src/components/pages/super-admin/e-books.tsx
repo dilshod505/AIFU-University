@@ -1,9 +1,9 @@
 "use client";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import { AutoForm, FormField } from "@/components/form/auto-form";
+import { AutoForm, type FormField } from "@/components/form/auto-form";
 import { api } from "@/components/models/axios";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,8 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 
@@ -42,7 +43,7 @@ const EBaseBooks = () => {
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -60,12 +61,13 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
   });
   const queryClient = useQueryClient();
+
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -74,6 +76,17 @@ const EBaseBooks = () => {
     },
     select: (data: Record<string, any>): Record<string, any> => data?.data,
   });
+
+  const getById = useQuery({
+    queryKey: ["get-book-by-id", editingBook?.id],
+    queryFn: async () => {
+      if (!editingBook?.id) return null;
+      const { data } = await api.get(`/admin/pdf-books/${editingBook.id}`);
+      return data;
+    },
+    enabled: !!editingBook?.id && actionType === "view", // Only fetch when viewing a specific book
+  });
+
   const createBook = useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const res = await api.post("/admin/pdf-books", data);
@@ -83,6 +96,7 @@ const EBaseBooks = () => {
       queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
     },
   });
+
   const updateBook = useMutation({
     mutationFn: async ({
       id,
@@ -98,15 +112,10 @@ const EBaseBooks = () => {
       queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
     },
   });
+
   const deleteBook = useMutation({
-    mutationFn: async ({
-      data,
-      id,
-    }: {
-      id: string;
-      data: Record<string, any>;
-    }) => {
-      const res = await api.delete(`/admin/pdf-books/${id}`, data);
+    mutationFn: async (id: string) => {
+      const res = await api.delete(`/admin/pdf-books/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -167,7 +176,6 @@ const EBaseBooks = () => {
         sm: 12,
         md: 6,
       },
-
       {
         label: t("Publication Year"),
         name: "publicationYear",
@@ -225,7 +233,7 @@ const EBaseBooks = () => {
         md: 6,
       },
     ],
-    [t, categories.data]
+    [t, categories.data],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -242,7 +250,7 @@ const EBaseBooks = () => {
         key: "imageUrl",
         render: (imageUrl: string) => (
           <Image
-            src={imageUrl}
+            src={imageUrl || "/placeholder.svg"}
             width={70}
             height={70}
             alt={imageUrl}
@@ -309,15 +317,13 @@ const EBaseBooks = () => {
             </TooltipBtn>
             <DeleteActionDialog
               title={t("Delete")}
-              onConfirm={() =>
-                deleteBook.mutate({ id: record.id, data: record })
-              }
+              onConfirm={() => deleteBook.mutate(record.id)}
             />
           </div>
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -464,7 +470,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize
+                  (books?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -510,29 +516,160 @@ const EBaseBooks = () => {
                   ? t("Add e-book")
                   : actionType === "edit"
                     ? t("Edit e-book")
-                    : t("See e-book")}
+                    : t("Book Details")}{" "}
+                {/* Updated title for detail view */}
               </h1>
             </SheetTitle>
           </SheetHeader>
           <div className="py-1">
-            <AutoForm
-              className={"bg-white dark:bg-background"}
-              onSubmit={onSubmit}
-              form={form}
-              fields={
-                actionType === "view"
-                  ? fields.map((f) => ({ ...f, disabled: true }))
-                  : fields
-              }
-              showResetButton={false}
-              submitText={
-                actionType === "add"
-                  ? t("Add e-book")
-                  : actionType === "edit"
-                    ? t("Edit")
-                    : t("close")
-              }
-            />
+            {actionType === "view" ? (
+              <div className="space-y-6">
+                {getById.isLoading ? (
+                  <div className="flex justify-center items-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                  </div>
+                ) : getById.data?.data ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Book Cover */}
+                    <div className="space-y-4">
+                      <div className="aspect-[3/4] max-w-[200px] mx-auto">
+                        <Image
+                          src={getById.data.data.imageUrl || "/placeholder.svg"}
+                          alt={getById.data.data.title}
+                          className="w-full h-full object-cover rounded-lg shadow-lg"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <Button
+                          onClick={() =>
+                            window.open(getById.data.data.pdfUrl, "_blank")
+                          }
+                          className="w-full"
+                        >
+                          {t("Open PDF")}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Book Details */}
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Title")}
+                        </h3>
+                        <p className="text-xl font-bold">
+                          {getById.data.data.title}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Author")}
+                        </h3>
+                        <p>{getById.data.data.author}</p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Category")}
+                        </h3>
+                        <p>{getById.data.data.categoryPreview?.name}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            {t("Publication Year")}
+                          </h3>
+                          <p>{getById.data.data.publicationYear}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            {t("Page Count")}
+                          </h3>
+                          <p>{getById.data.data.pageCount}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            {t("Language")}
+                          </h3>
+                          <p>{getById.data.data.language}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Script
+                          </h3>
+                          <p>{getById.data.data.script}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Publisher")}
+                        </h3>
+                        <p>{getById.data.data.publisher}</p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Isbn")}
+                        </h3>
+                        <p>{getById.data.data.isbn}</p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          File Size
+                        </h3>
+                        <p>{getById.data.data.size} MB</p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Created Date
+                        </h3>
+                        <p>
+                          {dayjs(getById.data.data.createdDate).format(
+                            "DD-MM-YYYY",
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Description")}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                          {getById.data.data.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Failed to load book details</p>
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-4 border-t">
+                  <Button variant="outline" onClick={() => setOpen(false)}>
+                    {t("close")}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <AutoForm
+                className={"bg-white dark:bg-background"}
+                onSubmit={onSubmit}
+                form={form}
+                fields={fields}
+                showResetButton={false}
+                submitText={actionType === "add" ? t("Add e-book") : t("Edit")}
+              />
+            )}
           </div>
         </SheetContent>
       </Sheet>

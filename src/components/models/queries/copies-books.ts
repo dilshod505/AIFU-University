@@ -64,6 +64,7 @@ export const useCreateCopiesBooks = () => {
       inventoryNumber: string;
       shelfLocation: string;
       notes: string;
+      epc: string;
       baseBookId: number;
     }) => {
       const res = await api.post("/admin/book-copies", data);
@@ -102,6 +103,17 @@ export const useDeleteCopiesBooks = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["copies-book"] });
+    },
+  });
+};
+
+export const useCheckInventoryNumber = () => {
+  return useMutation({
+    mutationFn: async (inventoryNumber: string) => {
+      const res = await api.get(
+        `/admin/book-copies/check-inventory-number?inventoryNumber=${inventoryNumber}`,
+      );
+      return res.data;
     },
   });
 };
