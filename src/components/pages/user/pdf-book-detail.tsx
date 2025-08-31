@@ -1,37 +1,20 @@
 "use client";
 
-import React from "react";
-import {
-  usePdfBookId,
-  usePdfDownload,
-} from "@/components/models/queries/pdf-books";
-import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { api } from "@/components/models/axios";
+import { usePdfBookId } from "@/components/models/queries/pdf-books";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  BookOpen,
-  Building,
-  Calendar,
-  Download,
-  FileText,
-  Globe,
-  Hash,
-  Layers,
-  User,
-} from "lucide-react";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/components/models/axios";
-import bookPlaceholder from "../../../../public/book-placeholder.png";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import bookPlaceholder from "../../../../public/book-placeholder.png";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
@@ -42,7 +25,7 @@ const PdfBookDetail = () => {
     queryKey: ["pdf-books", book],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?category=${book.categoryPreview.id}`,
+        `/client/pdf-books?category=${book.categoryPreview.id}`
       );
       return res.data;
     },
@@ -55,7 +38,10 @@ const PdfBookDetail = () => {
         {/* Левый столбец: обложка и действия */}
         <aside className="md:col-span-1 flex flex-col items-center">
           <div className="w-full shadow-lg rounded-2xl overflow-hidden">
-            <img
+            <Image
+              width={400}
+              height={600}
+              priority
               src={book.imageUrl}
               alt={`Обложка книги ${book.title} — ${book.author}`}
               className="w-full h-96 object-cover"
@@ -63,26 +49,26 @@ const PdfBookDetail = () => {
             <div className="p-4 bg-white">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium">
-                  {book.pageCount} стр.
+                  {t("pages count")}: {book.pageCount}
                 </span>
                 <span className="text-sm font-medium">{book.size} MB</span>
               </div>
               <div className="flex flex-col gap-2">
-                <a
+                <Link
                   href={book.pdfUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
                 >
-                  Читать онлайн
-                </a>
-                <a
+                  {t("read online")}
+                </Link>
+                <Link
                   href={book.pdfUrl}
                   download
                   className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
                 >
-                  Скачать PDF
-                </a>
+                  {t("download PDF")}
+                </Link>
               </div>
             </div>
           </div>
@@ -95,7 +81,7 @@ const PdfBookDetail = () => {
               <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
               <p className="mt-2 text-lg text-gray-700">
                 {book.author} •{" "}
-                <span className="text-sm text-gray-500">
+                <span className="text-base text-gray-500">
                   {book.categoryPreview?.name}
                 </span>
               </p>
@@ -103,12 +89,14 @@ const PdfBookDetail = () => {
 
             <div className="flex gap-3 items-center">
               <div className="text-right">
-                <div className="text-sm text-gray-500">Год издания</div>
+                <div className="text-sm text-gray-500">
+                  {t("Publication year")}
+                </div>
                 <div className="font-semibold">{book.publicationYear}</div>
               </div>
 
               <div className="text-right">
-                <div className="text-sm text-gray-500">Добавлена</div>
+                <div className="text-sm text-gray-500">{t("createdAt")}</div>
                 <div className="font-semibold">{book.createdDate}</div>
               </div>
             </div>
@@ -116,20 +104,23 @@ const PdfBookDetail = () => {
 
           <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <MetaRow label="ISBN" value={book.isbn} />
-              <MetaRow label="Издатель" value={book.publisher} />
-              <MetaRow label="Язык" value={book.language} />
+              <MetaRow label={t("Isbn")} value={book.isbn} />
+              <MetaRow label={t("Publisher")} value={book.publisher} />
+              <MetaRow label={t("Language")} value={book.language} />
             </div>
 
             <div className="space-y-2">
-              <MetaRow label="Скрипт" value={book.script} />
-              <MetaRow label="Страниц" value={String(book.pageCount)} />
-              <MetaRow label="Размер" value={`${book.size} MB`} />
+              <MetaRow label={t("script")} value={book.script} />
+              <MetaRow
+                label={t("pages count")}
+                value={String(book.pageCount)}
+              />
+              <MetaRow label={t("size")} value={`${book.size} MB`} />
             </div>
           </section>
 
           <section className="mt-6">
-            <h3 className="text-xl font-semibold">Описание</h3>
+            <h3 className="text-xl font-semibold">{t("Description")}</h3>
             <p className="mt-2 text-gray-700">{book.description}</p>
           </section>
         </main>
@@ -137,11 +128,12 @@ const PdfBookDetail = () => {
       <section>
         <Card className={"shadow-lg"}>
           <CardHeader>
-            <CardTitle>Shu kategoriyadagi boshqa kitoblar</CardTitle>
+            <CardTitle>{t("Shu kategoriyadagi boshqa kitoblar")}</CardTitle>
             <CardDescription className={"hidden"} />
           </CardHeader>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 px-6 gap-3">
             {pdfBooks.data
+              ?.slice(0, 7)
               ?.filter((b: Record<string, any>) => b.id !== book?.id)
               ?.map((book: Record<string, any>, i: number) => (
                 <Link href={`/books/${book?.id}`} key={i}>
