@@ -3,6 +3,7 @@ import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import { useBaseBook } from "@/components/models/queries/base-book";
 import {
+  useCheckInventoryNumber,
   useCopiesBooks,
   useCopiesBooksId,
   useCreateCopiesBooks,
@@ -34,6 +35,8 @@ import {
   PenSquareIcon,
   Plus,
   Search,
+  ShieldCheck,
+  ShieldMinus,
   UserRoundCheck,
   UserRoundX,
   X,
@@ -55,6 +58,8 @@ export const CopiesBooks = () => {
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null,
   );
+
+  const checkInventoryNumber = useCheckInventoryNumber();
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -117,6 +122,12 @@ export const CopiesBooks = () => {
         required: true,
       },
       {
+        label: t("Epc"),
+        name: "epc",
+        type: "text",
+        required: true,
+      },
+      {
         label: t("Notes"),
         name: "notes",
         type: "textarea",
@@ -146,6 +157,11 @@ export const CopiesBooks = () => {
         dataIndex: "shelfLocation",
       },
       {
+        title: t("Author"),
+        key: "author",
+        dataIndex: "author",
+      },
+      {
         title: t("Base Book"),
         key: "title",
         dataIndex: "title",
@@ -164,7 +180,6 @@ export const CopiesBooks = () => {
           </div>
         ),
       },
-
       {
         key: "actions",
         dataIndex: "actions",
@@ -197,6 +212,7 @@ export const CopiesBooks = () => {
                   shelfLocation: record.shelfLocation || "",
                   notes: record.notes || "",
                   baseBookId: record.baseBookId || "",
+                  epc: record.epc || "",
                 });
                 setOpen(true);
                 setOpen2(false);
@@ -229,6 +245,7 @@ export const CopiesBooks = () => {
         shelfLocation: "",
         notes: "",
         baseBookId: "",
+        epc: "",
       });
     }
   }, [editingBook, open, form, actionType]);
@@ -245,42 +262,40 @@ export const CopiesBooks = () => {
   };
 
   const onSubmit = async (data: any) => {
-    if (editingBook) {
-      updateBook.mutate(
-        {
-          id: editingBook.id,
-          inventoryNumber: data.inventoryNumber,
-          shelfLocation: data.shelfLocation,
-          notes: data.notes,
-          baseBookId: data.baseBookId,
-        },
-        {
-          onSuccess: () => {
-            toast.success(t("Category updated successfully"));
-            setOpen(false);
-          },
-        },
-      );
-    } else {
-      createCopiesBook.mutate(
-        {
-          inventoryNumber: data.inventoryNumber,
-          shelfLocation: data.shelfLocation,
-          notes: data.notes,
-          baseBookId: data.baseBookId,
-        },
-        {
-          onSuccess: () => {
-            toast.success(t("Category created successfully"));
-            setOpen(false);
-          },
-        },
-      );
-    }
-    setActionType("add");
-    setEditingBook(null);
-    setOpen(false);
-    setOpen2(false);
+    // Avval inventory number ni tekshiramiz
+    checkInventoryNumber.mutate(data.inventoryNumber, {
+      onSuccess: (res) => {
+        if (res?.data) {
+          // Agar mavjud bo‘lsa
+          toast.error(t("Bu inventory raqam allaqachon mavjud!"));
+          return; // ❌ keyingi create/update ishlamaydi
+        }
+        if (editingBook) {
+          updateBook.mutate(
+            { id: editingBook.id, ...data },
+            {
+              onSuccess: () => {
+                toast.success(t("Category updated successfully"));
+                setOpen(false);
+              },
+            },
+          );
+        } else {
+          createCopiesBook.mutate(
+            { ...data },
+            {
+              onSuccess: () => {
+                toast.success(t("Category created successfully"));
+                setOpen(false);
+              },
+            },
+          );
+        }
+      },
+      onError: () => {
+        toast.error(t("Server bilan bog‘lanishda xatolik"));
+      },
+    });
   };
 
   return (
@@ -495,9 +510,9 @@ export const CopiesBooks = () => {
                   {isDetailLoading ? (
                     <Skeleton className="w-1/2 h-5" />
                   ) : bookDetail?.data?.isTaken ? (
-                    t("Active")
+                    <BookOpenCheck className="text-green-600 w-5 h-5" />
                   ) : (
-                    t("No Active")
+                    <BookMinus className="text-red-500 w-5 h-5" />
                   )}
                 </p>
               </div>

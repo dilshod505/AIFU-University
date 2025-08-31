@@ -169,7 +169,7 @@ const BaseBooks = () => {
         categoryId: baseBookDetail?.data?.category?.id,
       });
     }
-  }, [editingBook, form, baseBookDetail.isLoading]);
+  }, [editingBook, form, baseBookDetail.isLoading, baseBookDetail.data]);
 
   const onSubmit = async (formData: any) => {
     const payload = {

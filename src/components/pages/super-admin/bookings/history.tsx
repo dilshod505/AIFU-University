@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Archive } from "lucide-react";
+import { Archive, FileDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHistory } from "@/hooks/use-bookings";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
+import { api } from "@/components/models/axios";
+import { Button } from "@/components/ui/button";
 
 // A new card component for history records
 function HistoryCard({ record }: { record: Record<string, any> }) {
@@ -14,7 +16,7 @@ function HistoryCard({ record }: { record: Record<string, any> }) {
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="">
+      <CardHeader>
         <CardTitle className="text-lg">
           {record.bookTitle} ({record.inventoryNumber})
         </CardTitle>
@@ -57,12 +59,26 @@ function HistoryCard({ record }: { record: Record<string, any> }) {
 
 export default function HistoryPage() {
   const t = useTranslations();
-  const [displayedHistory, setDisplayedHistory] = useState<
-    Record<string, any>[]
-  >([]);
   const [isSearching, setIsSearching] = useState(false);
-  const queryClient = useQueryClient();
-  const { data: history, isLoading, error, refetch } = useHistory();
+  const { data: history, isLoading } = useHistory();
+
+  // ✅ Excel export mutation
+  const exportExcel = useMutation({
+    mutationFn: async () => {
+      const res = await api.get("/admin/backup/history", {
+        responseType: "blob", // Excel blob fayl sifatida keladi
+      });
+
+      // Faylni browserda yuklab olish
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "history.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    },
+  });
 
   return (
     <div className="p-6 space-y-6">
@@ -73,6 +89,18 @@ export default function HistoryPage() {
             {t("arxivlangan ijaralar royxati")} ({history?.length || 0})
           </p>
         </div>
+
+        {/* ✅ Excelga export tugmasi */}
+        <Button
+          variant="outline"
+          onClick={() => exportExcel.mutate()}
+          disabled={exportExcel.isPending}
+        >
+          <FileDown className="w-4 h-4 mr-2" />
+          {exportExcel.isPending
+            ? t("Yuklanmoqda...")
+            : t("Excelga yuklab olish")}
+        </Button>
       </div>
 
       {isLoading ? (
@@ -96,7 +124,7 @@ export default function HistoryPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {history?.map((record: Record<string, any>) => (
-            <HistoryCard key={record.id} record={record as any} />
+            <HistoryCard key={record.id} record={record} />
           ))}
         </div>
       )}
