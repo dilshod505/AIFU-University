@@ -1,17 +1,15 @@
 "use client";
-import { useState } from "react";
-import SimpleTranslation from "@/components/simple-translation";
+import { api } from "@/components/models/axios";
 import { usePdfBooksList } from "@/components/models/queries/pdf-books";
-import Image from "next/image";
-import bookPlaceholder from "../../../../public/book-placeholder.png";
-import { Skeleton } from "@/components/ui/skeleton";
+import SimpleTranslation from "@/components/simple-translation";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import ReactPaginate from "react-paginate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import { Divider } from "antd";
-import { useTranslations } from "next-intl";
 import {
   BookOpen,
   ChevronLeft,
@@ -19,10 +17,12 @@ import {
   Filter,
   Grid3X3,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/components/models/axios";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
+import bookPlaceholder from "../../../../public/book-placeholder.png";
 
 const BookSkeleton = () => (
   <div className="overflow-hidden transition-all group">
@@ -53,9 +53,10 @@ const PdfBooks = () => {
   const [pageNum, setPageNum] = useState<number>(1);
   const isMobile = useIsMobile();
   const [pageSize, setPageSize] = useState<number>(18);
+  const searchParams = new URLSearchParams(window.location.search);
+  const initialCategory = searchParams.get("category");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  console.log(isMobile);
   const { data: books, isLoading } = usePdfBooksList({
     pageNum,
     pageSize,
@@ -72,9 +73,16 @@ const PdfBooks = () => {
   });
 
   const handleCategorySelect = (categoryId: string | null) => {
+    searchParams.set("category", categoryId || "");
     setSelectedCategory(categoryId);
     setPageNum(1); // Reset to first page when category changes
   };
+
+  useEffect(() => {
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  useEffect(() => console.log(selectedCategory), [selectedCategory]);
 
   return (
     <div className="cont py-5">
@@ -85,11 +93,11 @@ const PdfBooks = () => {
             <BookOpen className="h-6 w-6 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">
-            <SimpleTranslation title="PDF Kitoblar" hasLocale />
+            <SimpleTranslation title="Elektron kitoblar" />
           </h1>
         </div>
         <p className="text-muted-foreground text-lg">
-          Eng yaxshi kitoblar to'plamini kashf eting
+          {t("Eng yaxshi kitoblar to'plamini kashf eting")}
         </p>
       </div>
 
@@ -110,7 +118,7 @@ const PdfBooks = () => {
                 "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
                 selectedCategory === null
                   ? "bg-primary text-primary-foreground shadow-lg"
-                  : "hover:bg-primary/10",
+                  : "hover:bg-primary/10"
               )}
             >
               <Grid3X3 className="h-4 w-4 mr-2" />
@@ -126,14 +134,16 @@ const PdfBooks = () => {
                   <Button
                     key={category.id}
                     variant={
-                      selectedCategory === category.id ? "default" : "outline"
+                      selectedCategory && +selectedCategory === category.id
+                        ? "default"
+                        : "outline"
                     }
                     onClick={() => handleCategorySelect(category.id)}
                     className={cn(
                       "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground shadow-lg"
-                        : "hover:bg-primary/10",
+                        : "hover:bg-primary/10"
                     )}
                   >
                     {category.name}
@@ -215,32 +225,28 @@ const PdfBooks = () => {
       {books?.data?.data && books?.data?.data.length > 0 && (
         <ReactPaginate
           breakLabel="..."
-          onPageChange={(e) => setPageNum(e.selected + 1)}
-          pageRangeDisplayed={5}
+          onPageChange={(e) => {
+            const newPageNum = e.selected + 1;
+            setPageNum(newPageNum);
+          }}
+          pageRangeDisplayed={pageSize}
           pageCount={Math.ceil((books?.data?.totalElements || 0) / pageSize)}
           previousLabel={
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 bg-transparent"
-            >
-              <ChevronLeft className="h-4 w-4" />
+            <Button className={"bg-white text-black"}>
+              <ChevronLeft />
               {t("Previous")}
             </Button>
           }
           nextLabel={
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 bg-transparent"
-            >
-              {t("Next")}
-              <ChevronRight className="h-4 w-4" />
+            <Button className={"bg-white text-black"}>
+              {t("Next")} <ChevronRight />
             </Button>
           }
-          pageClassName="px-3 py-2 rounded-lg border cursor-pointer hover:bg-primary/10 transition-colors"
-          activeClassName="bg-primary text-primary-foreground border-primary"
-          className="flex justify-center gap-2 items-center my-8 flex-wrap"
+          className={"flex justify-center gap-2 items-center my-5"}
           renderOnZeroPageCount={null}
           forcePage={pageNum - 1}
+          pageClassName="px-3 py-1 rounded-full border cursor-pointer"
+          activeClassName="bg-green-600 text-white rounded-full"
         />
       )}
     </div>

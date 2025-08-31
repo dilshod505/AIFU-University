@@ -26,8 +26,8 @@ export function CategorySection({
 
   return (
     <section className="py-20">
-      <div className="cont">
-        <div className="text-center mb-16">
+      <div className="">
+        <div className="cont text-center mb-16">
           <TextAnimate
             animation="blurInUp"
             as="h1"
@@ -64,22 +64,20 @@ export function CategorySection({
             .slice(0, data?.data?.length / 2)
             .map((category: Record<string, any>) => {
               return (
-                <Card
-                  onClick={() => setCategoryId(category.id)}
-                  key={category.name}
-                  className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm"
-                >
-                  <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
-                    <div>
-                      <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {t("books count")}: {category.bookCount}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Link key={category.id} href={`/books?category=${category.id}`}>
+                  <Card className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm">
+                    <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
+                      <div>
+                        <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {t("books count")}: {category.bookCount}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               );
             })}
         </Marquee>
@@ -102,22 +100,20 @@ export function CategorySection({
             .slice(data?.data?.length / 2, data?.data?.length)
             .map((category: Record<string, any>) => {
               return (
-                <Card
-                  onClick={() => setCategoryId(category.id)}
-                  key={category.name}
-                  className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm"
-                >
-                  <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
-                    <div>
-                      <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {t("books count")}: {category.bookCount}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Link key={category.id} href={`/books?category=${category.id}`}>
+                  <Card className="group cursor-pointer border-2 hover:border-cyan-800 dark:hover:border-cyan-300 transition-all duration-300 hover:shadow-xl hover:scale-105 bg-card/50 backdrop-blur-sm">
+                    <CardContent className="px-8 py-4 min-w-60 flex items-center justify-center">
+                      <div>
+                        <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-cyan-800 dark:group-hover:text-cyan-300 transition-colors">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {t("books count")}: {category.bookCount}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               );
             })}
         </Marquee>
