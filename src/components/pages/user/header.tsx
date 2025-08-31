@@ -1,40 +1,35 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
-import logo from "../../../../public/logo-full.png";
-import FullScreen from "@/components/widgets/full-screen";
-import ThemeSwitcher from "@/components/widgets/theme-switcher";
-import ChangeLanguage from "@/components/widgets/change-language";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { BookOpen, Search } from "lucide-react";
 import { api } from "@/components/models/axios";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  description?: string;
-  coverImage?: string;
-}
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import ChangeLanguage from "@/components/widgets/change-language";
+import ThemeSwitcher from "@/components/widgets/theme-switcher";
+import { useQuery } from "@tanstack/react-query";
+import { BookOpen, Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import logo from "../../../../public/logo-full.png";
 
 const Header = () => {
+  const t = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const { data: searchResults, isLoading } = useQuery<Record<string, any>[]>({
     queryKey: ["books", searchQuery],
     queryFn: async () => {
       const res = await api.get<Record<string, any>[]>(
-        `/client/search?query=${searchQuery}`,
+        `/client/search?query=${searchQuery}`
       );
       return res.data || [];
     },
     enabled: searchQuery.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     select: (data: Record<string, any>) => data?.data,
   });
 
@@ -54,36 +49,59 @@ const Header = () => {
 
   return (
     <div className="bg-[#213148] sticky top-0 z-50 py-3">
-      <header className="cont flex h-16 shrink-0 justify-between items-center gap-2 px-4 ">
-        <div className="flex justify-center items-center gap-3">
-          <Link href="/">
-            <h1 className={`text-2xl font-semibold py-5`}>
-              <Image src={logo || "/placeholder.svg"} alt={""} />
-            </h1>
-          </Link>
-        </div>
-
-        <div className="search relative" ref={searchRef}>
-          <div className="relative">
-            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Kitoblarni qidirish..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchOpen(true)}
-              className="pl-12 pr-4 py-3 w-[30vw] h-12 rounded-3xl bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus:bg-white/20 focus:border-white/40"
-            />
+      <header className="cont flex h-16 shrink-0 justify-between items-center gap-2">
+        {/* Logo va tugmalar - faqat md dan katta ekranda yoki mobilda search yopiq bo‘lsa */}
+        {!isMobileSearchOpen && (
+          <div className="flex justify-center items-center gap-3">
+            <Link href="/">
+              <Image src={logo} alt={"logo"} priority width={150} />
+            </Link>
           </div>
+        )}
+
+        <div
+          className="search relative flex justify-center items-center flex-1"
+          ref={searchRef}
+        >
+          {(isMobileSearchOpen || true) && (
+            <div
+              className={`relative ${
+                isMobileSearchOpen
+                  ? "flex md:hidden w-full"
+                  : "hidden md:flex w-[30vw]"
+              }`}
+            >
+              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                type="text"
+                placeholder={`${t("Kitoblarni qidirish")}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchOpen(true)}
+                className="pl-12 pr-4 py-3 h-12 rounded-3xl bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus:bg-white/20 focus:border-white/40 w-full"
+              />
+              {isMobileSearchOpen && (
+                <button
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
+                  onClick={() => {
+                    setIsMobileSearchOpen(false);
+                    setSearchQuery("");
+                  }}
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+          )}
 
           {isSearchOpen &&
-            // @ts-ignore
-            (searchQuery.length > 0 || searchResults?.length > 0) && (
+            (searchQuery.length > 0 ||
+              (searchResults && searchResults?.length > 0)) && (
               <Card className="absolute hide-scroll py-0 top-full left-0 right-0 mt-2 max-h-96 overflow-y-auto bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                 {isLoading ? (
                   <div className="p-4 text-center text-gray-500">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="mt-2">Qidirilmoqda...</p>
+                    <p className="mt-2">{t("Qidirilmoqda")}...</p>
                   </div>
                 ) : searchResults && searchResults?.length > 0 ? (
                   <div className="py-2">
@@ -94,6 +112,7 @@ const Header = () => {
                           onClick={() => {
                             setIsSearchOpen(false);
                             setSearchQuery("");
+                            setIsMobileSearchOpen(false);
                           }}
                         >
                           <div className="flex items-start gap-3">
@@ -119,20 +138,29 @@ const Header = () => {
                 ) : searchQuery.length > 0 ? (
                   <div className="p-4 text-center text-gray-500">
                     <BookOpen className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p>Hech qanday kitob topilmadi</p>
-                    <p className="text-sm mt-1">
-                      "{searchQuery}" uchun natija yo'q
-                    </p>
+                    <p>{t("Hech qanday kitob topilmadi")}</p>
                   </div>
                 ) : null}
               </Card>
             )}
         </div>
 
-        <div className="flex justify-center items-center gap-2 text-white">
-          <ThemeSwitcher />
-          <ChangeLanguage />
-        </div>
+        {!isMobileSearchOpen && (
+          <div className="flex justify-center items-center gap-2 text-white">
+            {!isMobileSearchOpen && (
+              <Button
+                size={"sm"}
+                variant={"ghost"}
+                className="md:hidden text-white"
+                onClick={() => setIsMobileSearchOpen(true)}
+              >
+                <Search />
+              </Button>
+            )}
+            <ThemeSwitcher />
+            <ChangeLanguage />
+          </div>
+        )}
       </header>
     </div>
   );

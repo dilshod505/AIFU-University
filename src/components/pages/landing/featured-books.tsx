@@ -3,10 +3,12 @@
 import { api } from "@/components/models/axios";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
 
 export function FeaturedBooks() {
+  const t = useTranslations();
   const { data } = useQuery({
     queryKey: ["new-books"],
     queryFn: async () => {
@@ -16,18 +18,17 @@ export function FeaturedBooks() {
     select: (data) => data.data,
   });
 
-  console.log(data);
-
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="pb-10 pt-20 bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
+      <div className="cont">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-            Featured Picks of the Month
+            {t("Featured Picks of the Month")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Handpicked selections from our curators - the books everyone's
-            talking about
+            {t(
+              "Handpicked selections from our curators - the books everyone's talking about"
+            )}
           </p>
         </div>
 
@@ -36,7 +37,11 @@ export function FeaturedBooks() {
             <div key={i} className="overflow-hidden transition-all group">
               <div className="relative rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-lg">
                 <Image
-                  src={book?.imageUrl || bookPlaceholder}
+                  src={
+                    book?.imageUrl?.toString()?.startsWith("http")
+                      ? book?.imageUrl
+                      : bookPlaceholder
+                  }
                   alt={book?.title}
                   width={400}
                   height={200}

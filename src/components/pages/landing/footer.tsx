@@ -7,9 +7,12 @@ import {
   Send,
   Youtube,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 const Footer = () => {
+  const t = useTranslations();
+
   return (
     <footer className="bg-[#0A1C36] text-white py-10">
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
@@ -20,31 +23,35 @@ const Footer = () => {
             <span className="text-pink-600">IFU</span>
           </h2>
           <p className="mt-4 text-sm text-gray-300">
-            Aniq va ijtimoiy fanlar universiteti o‘zining keng qamrovli va
-            zamonaviy ta’lim dasturlari bilan talabalariga yuqori darajada bilim
-            olish imkoniyatini taqdim etadi.
+            {t(
+              "Aniq va ijtimoiy fanlar universiteti o‘zining keng qamrovli va zamonaviy ta’lim dasturlari bilan talabalariga yuqori darajada bilim olish imkoniyatini taqdim etadi"
+            )}
           </p>
-          <p className="mt-4 font-semibold">Obuna bo‘ling:</p>
+          <p className="mt-4 font-semibold">{t("Obuna boling")}:</p>
           <div className="flex gap-3 mt-2">
             <Link
+              target={"_blank"}
               href="https://www.facebook.com/aifu2022"
               className="p-2 bg-[#0F264A] rounded-lg hover:bg-pink-600 transition"
             >
               <Facebook size={18} />
             </Link>
             <Link
+              target={"_blank"}
               href="https://www.instagram.com/aifu.official?igshid=OGQ2MjdiOTE%3D"
               className="p-2 bg-[#0F264A] rounded-lg hover:bg-pink-600 transition"
             >
               <Instagram size={18} />
             </Link>
             <Link
+              target={"_blank"}
               href="https://www.youtube.com/@AIFU_offical"
               className="p-2 bg-[#0F264A] rounded-lg hover:bg-pink-600 transition"
             >
               <Youtube size={18} />
             </Link>
             <Link
+              target={"_blank"}
               href="https://t.me/aifu_university"
               className="p-2 bg-[#0F264A] rounded-lg hover:bg-pink-600 transition"
             >
@@ -55,52 +62,63 @@ const Footer = () => {
 
         {/* Useful Links */}
         <div>
-          <h3 className="font-bold text-lg mb-3">Foydali havolalar</h3>
+          <h3 className="font-bold text-lg mb-3">{t("Foydali havolalar")}</h3>
           <ul className="space-y-2 text-sm text-gray-300">
             <li>
-              <a href="#">Bakalavriat</a>
+              <Link target={"_blank"} href="#">
+                {t("Bakalavriat")}
+              </Link>
             </li>
             <li>
-              <a href="#">Magistratura</a>
+              <Link target={"_blank"} href="#">
+                {t("Magistratura")}
+              </Link>
             </li>
             <li>
-              <a href="#">Maxsus kurslar</a>
+              <Link target={"_blank"} href="#">
+                {t("Maxsus kurslar")}
+              </Link>
             </li>
             <li>
-              <a href="#">Loyiha va grantlar</a>
+              <Link target={"_blank"} href="#">
+                {t("Loyiha va grantlar")}
+              </Link>
             </li>
             <li>
-              <a href="#">Konferensiya va seminarlar</a>
+              <Link target={"_blank"} href="#">
+                {t("Konferensiya va seminarlar")}
+              </Link>
             </li>
           </ul>
         </div>
 
         {/* Info */}
         <div>
-          <h3 className="font-bold text-lg mb-3">Ma’lumotlar</h3>
+          <h3 className="font-bold text-lg mb-3">{t("Ma’lumotlar")}</h3>
           <ul className="space-y-2 text-sm text-gray-300">
             <li>
-              <a href="#">Xalqaro grantlar</a>
+              <a href="#">{t("Xalqaro grantlar")}</a>
             </li>
             <li>
-              <a href="#">Xalqaro reytinglar</a>
+              <a href="#">{t("Xalqaro reytinglar")}</a>
             </li>
             <li>
-              <a href="#">Xalqaro hamkor tashkilotlar</a>
+              <a href="#">{t("Xalqaro hamkor tashkilotlar")}</a>
             </li>
             <li>
-              <a href="#">Work and travel dasturi</a>
+              <a href="#">{t("Work and travel dasturi")}</a>
             </li>
           </ul>
         </div>
 
         {/* Contact */}
         <div>
-          <h3 className="font-bold text-lg mb-3">Bog‘lanish</h3>
+          <h3 className="font-bold text-lg mb-3">{t("Boglanish")}</h3>
           <ul className="space-y-3 text-sm text-gray-300">
             <li className="flex items-start gap-2">
               <MapPin size={16} className="mt-1" />
-              Toshkent shahar, Olmazor tumani <br /> Qorasaroy ko‘chasi 341A
+              {t("Toshkent shahar")}, {t("Olmazor tumani")} <br />{" "}
+              {t("Qorasaroy ko‘chasi 341A-uy")}
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} /> (+998) 78 555 21 21
@@ -114,7 +132,8 @@ const Footer = () => {
 
       {/* Bottom */}
       <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm text-gray-400">
-        Copyright © 2024 Aifu. Barcha huquqlar himoyalangan
+        {t("Copyright")} © {new Date().getFullYear()} AIFU.{" "}
+        {t("Barcha huquqlar himoyalangan")}
       </div>
     </footer>
   );

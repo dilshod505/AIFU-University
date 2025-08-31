@@ -3,10 +3,12 @@
 import { api } from "@/components/models/axios";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
 
 export function ShopByCategory() {
+  const t = useTranslations();
   const { data, isLoading } = useQuery({
     queryKey: ["books-by-category"],
     queryFn: async () => {
@@ -21,7 +23,7 @@ export function ShopByCategory() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
+    <section className="py-10 bg-gradient-to-br from-slate-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
       <div className="cont">
         {data?.map((categoryBlock: any) => (
           <div key={categoryBlock.category.id} className="my-10">
@@ -30,9 +32,6 @@ export function ShopByCategory() {
               <h2 className="text-3xl font-bold text-foreground">
                 {categoryBlock.category.name}
               </h2>
-              <p className="text-muted-foreground">
-                Eng so‘nggi kitoblar - {categoryBlock.category.name}
-              </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
               {categoryBlock.books.slice(0, 6).map((book: any) => (
@@ -42,7 +41,11 @@ export function ShopByCategory() {
                 >
                   <div className="relative rounded-xl overflow-hidden">
                     <Image
-                      src={book.imageUrl || bookPlaceholder}
+                      src={
+                        book?.imageUrl?.toString()?.startsWith("http")
+                          ? book.imageUrl
+                          : bookPlaceholder
+                      }
                       alt={book.title}
                       width={400}
                       height={250}

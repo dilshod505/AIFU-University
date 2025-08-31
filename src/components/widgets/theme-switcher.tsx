@@ -1,9 +1,9 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 import TooltipBtn from "@/components/tooltip-btn";
+import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { useRef } from "react";
 import { flushSync } from "react-dom";
 
@@ -41,12 +41,13 @@ const AnimatedThemeSwitcher = () => {
         duration: 700,
         easing: "ease-in-out",
         pseudoElement: "::view-transition-new(root)",
-      },
+      }
     );
   };
 
   return (
     <TooltipBtn
+      suppressHydrationWarning
       ref={buttonRef}
       variant="ghost"
       title={

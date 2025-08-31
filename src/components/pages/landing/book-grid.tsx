@@ -27,12 +27,10 @@ export function BookGrid({ categoryId }: { categoryId?: string | number }) {
         <div className="cont">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-serif font-bold text-foreground mb-4">
-              <TextAnimate animation="blurInUp" as="h1">
-                {t("All Books")}
-              </TextAnimate>
+              <TextAnimate animation="blurInUp">{t("All Books")}</TextAnimate>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              <TextAnimate animation="blurInUp" as="h1">
+              <TextAnimate animation="blurInUp">
                 {t(
                   "Browse our complete collection of carefully selected titles"
                 )}

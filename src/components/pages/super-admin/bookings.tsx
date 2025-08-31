@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { api } from "@/components/models/axios";
+import { BookingCard } from "@/components/pages/super-admin/bookings/booking-card";
+import { BookingSearch } from "@/components/pages/super-admin/bookings/booking-search";
+import { BorrowBookForm } from "@/components/pages/super-admin/bookings/borrow-book-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Booking } from "@/types/booking";
 import { bookingKeys, useBookings } from "@/hooks/use-bookings";
+import { Booking } from "@/types/booking";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BookingSearch } from "@/components/pages/super-admin/bookings/booking-search";
-import { BookingCard } from "@/components/pages/super-admin/bookings/booking-card";
-import { BorrowBookForm } from "@/components/pages/super-admin/bookings/borrow-book-form";
+import { RefreshCw } from "lucide-react";
+import { useState } from "react";
 
 export default function Bookings() {
   const [displayedBookings, setDisplayedBookings] = useState<Booking[]>([]);
@@ -56,18 +57,18 @@ export default function Bookings() {
   const stats = {
     total: bookings.length,
     borrowed: bookings.filter(
-      (b: Record<string, any>) => b.status === "borrowed",
+      (b: Record<string, any>) => b.status === "borrowed"
     ).length,
     overdue: bookings.filter((b: Record<string, any>) => b.status === "overdue")
       .length,
     returned: bookings.filter(
-      (b: Record<string, any>) => b.status === "returned",
+      (b: Record<string, any>) => b.status === "returned"
     ).length,
   };
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="cont">
         <div className="text-center py-8">
           <p className="text-red-600 mb-4">
             Bookinglarni yuklashda xatolik yuz berdi
@@ -79,7 +80,7 @@ export default function Bookings() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="cont space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Kutubxona Admin Paneli</h1>
         <Button onClick={handleRefresh} disabled={isLoading}>
