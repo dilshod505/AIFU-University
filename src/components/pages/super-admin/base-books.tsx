@@ -20,6 +20,7 @@ import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -34,7 +35,14 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { Divider, Form, Input, InputNumber, Modal, Select } from "antd";
+import {
+  Select as AntdSelect,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {
   ChevronLeft,
@@ -49,7 +57,7 @@ import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 
-const { Option } = Select;
+const { Option } = AntdSelect;
 
 const BaseBooks = () => {
   const t = useTranslations();
@@ -217,7 +225,7 @@ const BaseBooks = () => {
               />
               <Select
                 value={pageSize.toString()}
-                onChange={(a: string) => setPageSize(Number(a))}
+                onValueChange={(a: string) => setPageSize(Number(a))}
               >
                 <SelectTrigger suppressHydrationWarning>
                   <TooltipProvider>
@@ -363,13 +371,13 @@ const BaseBooks = () => {
               name="categoryId"
               rules={[{ required: true }]}
             >
-              <Select style={{ width: "100%" }}>
-                {categories?.data?.map((cat: any) => (
+              <AntdSelect style={{ width: "100%" }}>
+                {categories?.data?.map((cat: Record<string, any>) => (
                   <Option key={cat.id} value={cat.id}>
                     {cat.name}
                   </Option>
                 ))}
-              </Select>
+              </AntdSelect>
             </Form.Item>
           </div>
 
@@ -449,7 +457,7 @@ const BaseBooks = () => {
           }
         }}
       >
-        <SheetContent>
+        <SheetContent className="hide-scroll">
           <SheetHeader className="flex justify-center items-center text-[20px]">
             <SheetTitle>{t("book detail")}</SheetTitle>
           </SheetHeader>
@@ -550,7 +558,7 @@ const BaseBooks = () => {
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
                   detail?.data?.book?.series || (
-                    <h1 className={"text-red-600"}>--</h1>
+                    <span className={"text-red-600"}>--</span>
                   )
                 )}
               </p>
