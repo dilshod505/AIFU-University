@@ -5,6 +5,7 @@ import Chart from "react-apexcharts";
 import {
   useAverageUsage,
   useBookCopiesCount,
+  useBookingOverdue,
   useBookingsCount,
   useBookingsDiagram,
   useBookingsPerDay,
@@ -31,18 +32,19 @@ import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI i
 const Dashboard = () => {
   const t = useTranslations();
 
-  const averageStatic = useAverageUsage();
-  const bookCopiesCount = useBookCopiesCount();
-  const bookingCount = useBookingsCount();
-  const bookingDiagram = useBookingsDiagram();
-  const bookingPerDay = useBookingsPerDay();
-  const bookingPerMonth = useBookingsPerMonth();
+  const studentsTop = useStudentsTop();
+  const studentsCount = useStudentsCount();
+  const booksTop = useBooksTop();
   const bookingToday = useBookingsToday();
   const bookingsTodayOverdue = useBookingsTodayOverdue();
+  const bookingPerMonth = useBookingsPerMonth();
+  const bookingPerDay = useBookingsPerDay();
+  const bookingOverdue = useBookingOverdue();
+  const bookingDiagram = useBookingsDiagram();
+  const bookingCount = useBookingsCount();
   const booksCount = useBooksCount();
-  const booksTop = useBooksTop();
-  const studentsCount = useStudentsCount();
-  const studentsTop = useStudentsTop();
+  const bookCopiesCount = useBookCopiesCount();
+  const averageStatic = useAverageUsage();
 
   const perMonthData = bookingPerMonth.data?.data || [];
 
@@ -113,9 +115,52 @@ const Dashboard = () => {
           subtitle={t("All time bookings")}
           icon={<CalendarDays />}
         />
+        <StatCard
+          title={t("Overdue Total")}
+          value={
+            bookingOverdue.isLoading ? null : bookingOverdue?.data?.totalPages
+          }
+          loading={bookingOverdue.isLoading}
+          subtitle={t("All overdue bookings")}
+          icon={<SquareCheckBig />}
+        />
+        <StatCard
+          title={t("Average Usage")}
+          value={
+            averageStatic.isLoading
+              ? null
+              : averageStatic.data?.data?.averageDays
+          }
+          loading={averageStatic.isLoading}
+          subtitle={t("Avg. books per student")}
+          icon={<BookOpen />}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <Panel title={t("Bookings Per Day")}>
+          {bookingPerDay.isLoading ? (
+            <Skeleton className="w-full h-48" />
+          ) : (
+            <Chart
+              type="line"
+              height="300"
+              options={{
+                chart: { id: "per-day" },
+                xaxis: {
+                  categories: bookingPerDay.data?.data?.map((d: any) => d.date),
+                },
+              }}
+              series={[
+                {
+                  name: "Bookings",
+                  data: bookingPerDay.data?.data?.map((d: any) => d.count),
+                },
+              ]}
+            />
+          )}
+        </Panel>
+
         <Panel title={t("Bookings Status")}>
           <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
             <span className="text-3xl">📅</span>
@@ -123,6 +168,40 @@ const Dashboard = () => {
               {t("No booking data available Check back later for updates")}
             </p>
           </div>
+        </Panel>
+
+        <Panel title={t("Top Students")}>
+          {studentsTop.isLoading ? (
+            <Skeleton className="w-full h-32" />
+          ) : studentsTop.data?.data?.length === 0 ? (
+            <p className="text-muted-foreground">No student data available</p>
+          ) : (
+            <ul className="space-y-2">
+              {studentsTop.data.data.map((student: any, i: number) => (
+                <li key={i} className="flex justify-between text-sm">
+                  <span>{student.fullName}</span>
+                  <span className="font-bold">{student.totalBookings}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
+        <Panel title={t("Top Books")}>
+          {booksTop.isLoading ? (
+            <Skeleton className="w-full h-32" />
+          ) : booksTop.data?.data?.length === 0 ? (
+            <p className="text-muted-foreground">No book data available</p>
+          ) : (
+            <ul className="space-y-2">
+              {booksTop.data.data.map((book: any, i: number) => (
+                <li key={i} className="flex justify-between text-sm">
+                  <span>{book.title}</span>
+                  <span className="font-bold">{book.totalBookings}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </Panel>
 
         <Panel title={t("Today's Bookings")}>
