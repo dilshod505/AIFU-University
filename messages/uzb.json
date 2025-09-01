@@ -273,5 +273,7 @@
   "E-book created successfully": "E-kitob muvaffaqiyatli yaratildi",
   "Book Details": "Kitob tafsilotlari",
   "Open PDF": "PDFni ochish",
-  "close": "Yopish"
+  "close": "Yopish",
+  "Overdue Tota": "Kechiktirilgan jami",
+  "Average Usage": "O'rtacha foydalanish"
 }

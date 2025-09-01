@@ -1,60 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 
-export const useAverageUsage = () =>
+export const useStudentsTop = () =>
   useQuery({
-    queryKey: ["averageUsage"],
+    queryKey: ["studentsTop"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/average/usage");
+      const res = await api.get("/admin/statistics/students/top");
       return res.data;
     },
   });
 
-export const useBookCopiesCount = () =>
+export const useStudentsCount = () =>
   useQuery({
-    queryKey: ["bookCopiesCount"],
+    queryKey: ["studentsCount"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/book/copies/count");
+      const res = await api.get("/admin/statistics/students/count");
       return res.data;
     },
   });
 
-export const useBookingsCount = () =>
+export const useBooksTop = () =>
   useQuery({
-    queryKey: ["bookingsCount"],
+    queryKey: ["booksTop"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/bookings/count");
+      const res = await api.get("/admin/statistics/books/top");
       return res.data;
     },
   });
 
-export const useBookingsDiagram = () =>
+export const useBooksCount = () =>
   useQuery({
-    queryKey: ["bookingsDiagram"],
+    queryKey: ["booksCount"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/bookings/diagram");
-      return res.data.data;
-    },
-  });
-
-export const useBookingsPerDay = () =>
-  useQuery({
-    queryKey: ["bookingsPerDay"],
-    queryFn: async () => {
-      const res = await api.get(
-        "/admin/statistics/bookings/perDay?month=8&year=2025",
-      );
-      return res.data;
-    },
-  });
-
-export const useBookingsPerMonth = () =>
-  useQuery({
-    queryKey: ["bookingsPerMonth"],
-    queryFn: async () => {
-      const res = await api.get(
-        "/admin/statistics/bookings/perMonth?year=2025",
-      );
+      const res = await api.get("/admin/statistics/books/count");
       return res.data;
     },
   });
@@ -77,38 +55,70 @@ export const useBookingsTodayOverdue = () =>
     },
   });
 
-export const useBooksCount = () =>
+export const useBookingsPerMonth = () =>
   useQuery({
-    queryKey: ["booksCount"],
+    queryKey: ["bookingsPerMonth"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/books/count");
+      const res = await api.get(
+        "/admin/statistics/bookings/perMonth?year=2025",
+      );
       return res.data;
     },
   });
 
-export const useBooksTop = () =>
+export const useBookingsPerDay = () =>
   useQuery({
-    queryKey: ["booksTop"],
+    queryKey: ["bookingsPerDay"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/books/top");
+      const res = await api.get(
+        "/admin/statistics/bookings/perDay?month=8&year=2025",
+      );
       return res.data;
     },
   });
 
-export const useStudentsCount = () =>
-  useQuery({
-    queryKey: ["studentsCount"],
+export const useBookingOverdue = () => {
+  return useQuery({
+    queryKey: ["bookingOverdue"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/students/count");
+      const res = await api.get("/admin/statistics/bookings/overdue");
+      return res.data;
+    },
+  });
+};
+
+export const useBookingsDiagram = () =>
+  useQuery({
+    queryKey: ["bookingsDiagram"],
+    queryFn: async () => {
+      const res = await api.get("/admin/statistics/bookings/diagram");
+      return res.data.data;
+    },
+  });
+
+export const useBookingsCount = () =>
+  useQuery({
+    queryKey: ["bookingsCount"],
+    queryFn: async () => {
+      const res = await api.get("/admin/statistics/bookings/count");
       return res.data;
     },
   });
 
-export const useStudentsTop = () =>
+export const useBookCopiesCount = () =>
   useQuery({
-    queryKey: ["studentsTop"],
+    queryKey: ["bookCopiesCount"],
     queryFn: async () => {
-      const res = await api.get("/admin/statistics/students/top");
+      const res = await api.get("/admin/statistics/book/copies/count");
+      return res.data;
+    },
+  });
+
+export const useAverageUsage = () =>
+  useQuery({
+    queryKey: ["averageUsage"],
+    queryFn: async () => {
+      const res = await api.get("/admin/statistics/average/usage");
       return res.data;
     },
   });

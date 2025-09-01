@@ -273,5 +273,7 @@
   "E-book created successfully": "Электронная книга успешно создана",
   "Book Details": "Подробности книги",
   "Open PDF": "Открыть PDF",
-  "close": "Закрыть"
+  "close": "Закрыть",
+  "Overdue Tota": "Просрочено всего",
+  "Average Usage": "Среднее использование"
 }

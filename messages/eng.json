@@ -273,5 +273,7 @@
   "E-book created successfully": "E-book created successfully",
   "Book Details": "Book Details",
   "Open PDF": "Open PDF",
-  "close": "Close"
+  "close": "Close",
+  "Overdue Tota": "Overdue Total",
+  "Average Usage": "Average Usage"
 }
