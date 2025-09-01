@@ -263,7 +263,6 @@ export const CopiesBooks = () => {
     checkInventoryNumber.mutate(data.inventoryNumber, {
       onSuccess: (res) => {
         if (res?.data) {
-          // Agar mavjud bo‘lsa
           toast.error(t("Bu inventory raqam allaqachon mavjud!"));
           return; // ❌ keyingi create/update ishlamaydi
         }
@@ -428,7 +427,7 @@ export const CopiesBooks = () => {
             }
           }}
         >
-          <SheetContent className="hide-scroll">
+          <SheetContent className="hide-scroll bg-white dark:bg-background">
             <SheetHeader>
               <SheetTitle>
                 {actionType === "add"
@@ -440,8 +439,9 @@ export const CopiesBooks = () => {
             </SheetHeader>
             <div className="p-3">
               <AutoForm
+                className="p-0 border-none bg-transparent"
                 submitText={
-                  editingBook ? t("Edit Category") : t("Add Category")
+                  editingBook ? t("Edit book copy") : t("Add book copy")
                 }
                 onSubmit={onSubmit}
                 form={form}

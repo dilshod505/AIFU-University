@@ -280,5 +280,7 @@
   "Excelga yuklab olish": "Скачать в Excel",
   "Export to Excel": "Экспорт в Excel",
   "Add Student": "Добавить студента",
-  "Student Details": "Сведения об ученике"
+  "Student Details": "Сведения об ученике",
+  "Add book copy": "Добавить экземпляр книги",
+  "Edit book copy": "Редактировать экземпляр книги"
 }
