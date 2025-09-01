@@ -32,7 +32,7 @@ export function FeaturedBooks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 cont gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 cont gap-8">
           {data?.map((book: Record<string, any>, i: number) => (
             <div key={i} className="overflow-hidden transition-all group">
               <div className="relative rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-lg">
@@ -47,7 +47,7 @@ export function FeaturedBooks() {
                   height={200}
                   priority
                   quality={100}
-                  className="w-full h-60 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-60 object-cover bg-center rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute top-3 left-3">
                   <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">

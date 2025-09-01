@@ -8,7 +8,13 @@ import {
   Youtube,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Roboto_Slab } from "next/font/google";
 import Link from "next/link";
+
+const robotoSlab = Roboto_Slab({
+  weight: "600",
+  subsets: ["latin"],
+});
 
 const Footer = () => {
   const t = useTranslations();
@@ -18,9 +24,13 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
         {/* Logo and About */}
         <div>
-          <h2 className="text-3xl font-bold">
+          <h2
+            className={`text-3xl font-bold tracking-[-5px] ${robotoSlab.className}`}
+          >
             <span className="text-white">A</span>
-            <span className="text-pink-600">IFU</span>
+            <span className="text-pink-600">I</span>
+            <span className="text-white">F</span>
+            <span className="text-pink-600">U</span>
           </h2>
           <p className="mt-4 text-sm text-gray-300">
             {t(
