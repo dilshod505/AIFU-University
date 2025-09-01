@@ -404,10 +404,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
     return (
       <div key={item.href} className="relative group/menu-item">
         {hasChildren ? (
-          <Collapsible
-            defaultOpen={isParentActive}
-            className="group/collapsible w-full"
-          >
+          <Collapsible defaultOpen={true} className="group/collapsible w-full">
             {mainLinkOrTrigger}
             <CollapsibleContent>
               <div className="flex flex-col gap-1 mt-1 ml-6 pl-2 border-l border-gray-200">
@@ -495,7 +492,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           </div>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="hide-scroll">
           <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-1">
               {allItems.map((item) => renderMenuItem(item))}
