@@ -1,13 +1,8 @@
 "use client";
 
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
 import { api } from "@/components/models/axios";
-import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function BorrowBookForm() {
@@ -23,14 +24,17 @@ export function BorrowBookForm() {
   const form = useForm();
   const [studentCard, setStudentCard] = useState<number | null>(null);
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
-    null,
+    null
   );
   const [bookCard, setBookCard] = useState<string | null>(null);
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
+  const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
+    "epc"
+  );
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
-    [ijaraMuddati],
+    [ijaraMuddati]
   );
 
   const [seeingStudent, setSeeingStudent] = useState<number | null>(null);
@@ -38,7 +42,7 @@ export function BorrowBookForm() {
     queryKey: ["reservations", seeingStudent],
     queryFn: async () => {
       const res = await api.get<Record<string, any>>(
-        `/admin/booking?field=studentId&query=${seeingStudent}`,
+        `/admin/booking?field=studentId&query=${seeingStudent}`
       );
       return res.data;
     },
@@ -80,13 +84,15 @@ export function BorrowBookForm() {
   useEffect(() => {
     const fetchBook = async () => {
       if (bookCard && bookCard.toString().length >= 8) {
-        const res = await api.get(`/admin/book-copies/epc/${bookCard}`);
+        const res = await api.get(
+          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`
+        );
         setBookData(res.data?.data);
       }
     };
 
     fetchBook();
-  }, [bookCard]);
+  }, [bookCard, bookCopyType]);
 
   return (
     <div className="flex flex-col xl:flex-row w-full gap-3 h-full">
@@ -162,12 +168,36 @@ export function BorrowBookForm() {
           <Card className={"h-full"}>
             <CardContent>
               <div className="flex flex-col gap-3">
-                <Input
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setBookCard(e.target.value as string)
-                  }
-                  placeholder={t("ijaraga  berilayotgan kitobni kiriting")}
-                />
+                <Tabs
+                  defaultValue={bookCopyType}
+                  onValueChange={(e: string) => setBookCopyType(e as any)}
+                >
+                  <TabsList>
+                    <TabsTrigger value="epc">{t("epc")}</TabsTrigger>
+                    <TabsTrigger value="inventoryNumber">
+                      {t("Inventory number")}
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="epc">
+                    <Input
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setBookCard(e.target.value as string)
+                      }
+                      placeholder={t("ijaraga  berilayotgan kitobni kiriting")}
+                    />
+                  </TabsContent>
+                  <TabsContent value="inventoryNumber">
+                    <Input
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setBookCard(e.target.value as string)
+                      }
+                      placeholder={t(
+                        "ijaraga berilayotgan kitobning inventar raqamini kiriting"
+                      )}
+                    />
+                  </TabsContent>
+                </Tabs>
+
                 {bookData && (
                   <Card className={"p-3"}>
                     <CardContent className={"p-1 space-y-2"}>

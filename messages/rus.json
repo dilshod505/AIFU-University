@@ -282,5 +282,6 @@
   "Add Student": "Добавить студента",
   "Student Details": "Сведения об ученике",
   "Add book copy": "Добавить экземпляр книги",
-  "Edit book copy": "Редактировать экземпляр книги"
+  "Edit book copy": "Редактировать экземпляр книги",
+  "ijaraga berilayotgan kitobning inventar raqamini kiriting": "Введите инвентарный номер выдаваемой книги."
 }
