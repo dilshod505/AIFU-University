@@ -62,6 +62,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { UseFormReturn } from "react-hook-form";
 import { CustomCheckbox } from "./checkbox";
 import { FancyFileInput } from "./fancy-file-input";
 
@@ -197,7 +198,7 @@ interface AutoFormProps {
   fields: FormField[];
   groups?: FormGroup[];
   steps?: FormStep[];
-  form: any;
+  form: UseFormReturn<any>;
   onSubmit: (data: any) => void;
   loading?: boolean;
   className?: string;
@@ -766,8 +767,10 @@ export const AutoForm: FC<AutoFormProps> = ({
                   case "select":
                     return (
                       <Select
+                        value={form.watch(field.name)}
                         onValueChange={(value) => {
                           baseInputProps.onChange(value);
+                          form.setValue(field.name, value);
                         }}
                         defaultValue={rf.value}
                         disabled={field.disabled}

@@ -208,7 +208,7 @@ const PdfBookDetail = () => {
                     <span className="mx-2">•</span>
                     <span>{book?.categoryPreview?.name}</span>
                   </div>
-                </div>
+                </div> 
               </div>
             </Link>
           </div>

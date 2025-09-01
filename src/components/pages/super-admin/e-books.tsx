@@ -32,6 +32,7 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
+import { toast } from "sonner";
 
 const EBaseBooks = () => {
   const t = useTranslations();
@@ -84,7 +85,7 @@ const EBaseBooks = () => {
       const { data } = await api.get(`/admin/pdf-books/${editingBook.id}`);
       return data;
     },
-    enabled: !!editingBook?.id && actionType === "view", // Only fetch when viewing a specific book
+    enabled: !!editingBook?.id,
   });
 
   const createBook = useMutation({
@@ -94,6 +95,7 @@ const EBaseBooks = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
+      toast.success(t("E-book created successfully"));
     },
   });
 
@@ -183,6 +185,10 @@ const EBaseBooks = () => {
         required: true,
         sm: 12,
         md: 6,
+        min: 1900,
+        max: new Date().getFullYear(),
+        maxLength: 4,
+        step: 1,
       },
       {
         label: t("Isbn"),
@@ -233,7 +239,7 @@ const EBaseBooks = () => {
         md: 6,
       },
     ],
-    [t, categories.data]
+    [t, categories.data, form]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -329,11 +335,12 @@ const EBaseBooks = () => {
   useEffect(() => {
     if (editingBook) {
       form.reset({
-        ...editingBook,
-        categoryId: editingBook?.categoryPreviewDTO?.id,
+        ...getById.data?.data,
       });
+      form.setValue("categoryId", +getById.data?.data?.categoryPreview?.id);
     }
-  }, [editingBook, form]);
+    console.log(editingBook);
+  }, [editingBook, form, getById.data]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -500,6 +507,7 @@ const EBaseBooks = () => {
           if (!open) {
             setEditingBook(null);
             setActionType("add");
+            form.reset({});
           }
           form.reset();
           setOpen(open);
@@ -533,13 +541,13 @@ const EBaseBooks = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Book Cover */}
                     <div className="space-y-4">
-                      <div className="aspect-[3/4] max-w-[200px] mx-auto">
-                        <Image
-                          src={getById.data.data.imageUrl || "/placeholder.svg"}
-                          alt={getById.data.data.title}
-                          className="w-full h-full object-cover rounded-lg shadow-lg"
-                        />
-                      </div>
+                      <Image
+                        height={400}
+                        width={"100%"}
+                        src={getById.data.data.imageUrl || "/placeholder.svg"}
+                        alt={getById.data.data.title}
+                        className="w-full h-[200px] object-cover bg-center rounded-lg shadow-lg"
+                      />
                       <div className="text-center">
                         <Button
                           onClick={() =>
