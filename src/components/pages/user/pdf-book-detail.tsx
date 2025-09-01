@@ -137,7 +137,7 @@ const PdfBookDetail = () => {
           </CardHeader>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 px-6 gap-3">
             {pdfBooks.data
-              ?.slice(0, 7)
+              ?.slice(0, 6)
               ?.filter((b: Record<string, any>) => b.id !== book?.id)
               ?.map((book: Record<string, any>, i: number) => (
                 <Link href={`/books/${book?.id}`} key={i}>
