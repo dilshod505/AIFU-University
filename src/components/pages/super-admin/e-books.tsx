@@ -43,7 +43,7 @@ const EBaseBooks = () => {
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
       );
       return data;
     },
@@ -233,7 +233,7 @@ const EBaseBooks = () => {
         md: 6,
       },
     ],
-    [t, categories.data],
+    [t, categories.data]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -323,7 +323,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
@@ -470,24 +470,25 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize,
+                  (books?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
-                  <Button className={"bg-white text-black"}>
+                  <Button className="bg-white text-black">
                     <ChevronLeft />
                     {t("Return")}
                   </Button>
                 }
                 nextLabel={
-                  <Button className={"bg-white text-black"}>
+                  <Button className="bg-white text-black">
                     {t("Next")} <ChevronRight />
                   </Button>
                 }
-                className={"flex justify-center gap-2 items-center my-5"}
+                className="flex justify-center gap-2 items-center my-5"
                 renderOnZeroPageCount={null}
                 forcePage={pageNumber - 1}
-                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-                activeClassName="bg-green-600 text-white rounded-full"
+                pageClassName="list-none"
+                pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                activeLinkClassName="bg-green-600 text-white rounded-full"
               />
             </div>
           </div>
@@ -633,7 +634,7 @@ const EBaseBooks = () => {
                         </h3>
                         <p>
                           {dayjs(getById.data.data.createdDate).format(
-                            "DD-MM-YYYY",
+                            "DD-MM-YYYY"
                           )}
                         </p>
                       </div>

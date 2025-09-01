@@ -289,8 +289,9 @@ export default function ActiveBookingsPage() {
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
                   forcePage={pageNumber - 1}
-                  pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-                  activeClassName="bg-green-600 text-white rounded-full"
+                  pageClassName="list-none"
+                  pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                  activeLinkClassName="bg-green-600 text-white rounded-full"
                 />
               </div>
             }

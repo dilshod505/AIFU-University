@@ -1,14 +1,32 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import MyTable, { IColumn } from "@/components/my-table";
-import { useTranslations } from "next-intl";
+import { AutoForm, FormField } from "@/components/form/auto-form";
 import {
   useAdministrators,
   useCreateAdministrator,
 } from "@/components/models/queries/students";
-import { Badge } from "@/components/ui/badge";
+import MyTable, { IColumn } from "@/components/my-table";
+import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Divider } from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -18,29 +36,10 @@ import {
   ChevronRight,
   Plus,
 } from "lucide-react";
-import ReactPaginate from "react-paginate";
-import { Divider } from "antd";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import TooltipBtn from "@/components/tooltip-btn";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { AutoForm, FormField } from "@/components/form/auto-form";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 
 export type FilterType = "all" | "active" | "inactive";
@@ -87,7 +86,7 @@ const Administrators = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -138,7 +137,7 @@ const Administrators = () => {
         ),
       },
     ],
-    [t],
+    [t]
   );
 
   const onSubmit = (data: any) => {
@@ -155,7 +154,7 @@ const Administrators = () => {
           setOpen(false);
           form.reset();
         },
-      },
+      }
     );
   };
 
@@ -252,8 +251,9 @@ const Administrators = () => {
           </Button>
         }
         className={"flex justify-center gap-2 items-center my-5"}
-        pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-        activeClassName="bg-green-600 text-white rounded-full"
+        pageClassName="list-none"
+        pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+        activeLinkClassName="bg-green-600 text-white rounded-full"
         renderOnZeroPageCount={null}
         forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
       />

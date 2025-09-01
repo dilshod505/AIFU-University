@@ -10,19 +10,18 @@ import {
 } from "@/components/models/queries/base-books-category";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ChevronLeft, ChevronRight, PenSquareIcon, Plus } from "lucide-react";
+import { PenSquareIcon, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import ReactPaginate from "react-paginate";
-import { Input } from "@/components/ui/input";
 
 const BaseBooks = () => {
   const t = useTranslations();
@@ -45,7 +44,7 @@ const BaseBooks = () => {
   const filteredCategories = useMemo(() => {
     if (!data?.data) return [];
     return data.data.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase()),
+      item.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [data, search]);
 
@@ -96,7 +95,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteCategory, t],
+    [deleteCategory, t]
   );
 
   const fields = useMemo<FormField[]>(
@@ -108,7 +107,7 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const handleSubmit = async (values: Record<string, any>) => {

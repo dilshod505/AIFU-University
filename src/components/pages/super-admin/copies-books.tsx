@@ -30,15 +30,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
-  GraduationCap,
-  Library,
   PenSquareIcon,
   Plus,
   Search,
-  ShieldCheck,
-  ShieldMinus,
-  UserRoundCheck,
-  UserRoundX,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -46,7 +40,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import { LuLibrary } from "react-icons/lu";
 
 export const CopiesBooks = () => {
   const t = useTranslations();
@@ -56,7 +49,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const checkInventoryNumber = useCheckInventoryNumber();
@@ -106,7 +99,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          }),
+          })
         ),
       },
       {
@@ -134,7 +127,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks],
+    [t, baseBooks]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -235,7 +228,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, form, pageNum, pageSize],
+    [t, deleteCategory, form, pageNum, pageSize]
   );
 
   useEffect(() => {
@@ -278,7 +271,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category updated successfully"));
                 setOpen(false);
               },
-            },
+            }
           );
         } else {
           createCopiesBook.mutate(
@@ -288,7 +281,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category created successfully"));
                 setOpen(false);
               },
-            },
+            }
           );
         }
       },
@@ -385,7 +378,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize,
+                  (copiesBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -401,8 +394,9 @@ export const CopiesBooks = () => {
                 className={"flex justify-center gap-2 items-center my-5"}
                 renderOnZeroPageCount={null}
                 forcePage={pageNum - 1}
-                pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-                activeClassName="bg-green-600 text-white rounded-full"
+                pageClassName="list-none"
+                pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                activeLinkClassName="bg-green-600 text-white rounded-full"
               />
             </div>
           </div>

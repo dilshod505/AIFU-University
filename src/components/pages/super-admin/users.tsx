@@ -47,7 +47,7 @@ import {
   UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
@@ -207,7 +207,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t],
+    [deleteStudent, detail, form, t]
   );
 
   const fields = useMemo<any[]>(
@@ -310,7 +310,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const onSubmit = (data: any) => {
@@ -342,7 +342,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -357,7 +357,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
@@ -474,7 +474,7 @@ const Users = () => {
                   }}
                   pageRangeDisplayed={size}
                   pageCount={Math.ceil(
-                    (students?.data?.totalElements || 1) / size,
+                    (students?.data?.totalElements || 1) / size
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
@@ -490,8 +490,9 @@ const Users = () => {
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
                   forcePage={pageNumber - 1}
-                  pageClassName="px-3 py-1 rounded-full border cursor-pointer"
-                  activeClassName="bg-green-600 text-white rounded-full"
+                  pageClassName="list-none"
+                  pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                  activeLinkClassName="bg-green-600 text-white rounded-full"
                 />
               </div>
             </div>
