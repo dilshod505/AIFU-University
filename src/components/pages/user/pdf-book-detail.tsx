@@ -46,7 +46,7 @@ const PdfBookDetail = () => {
               alt={`Обложка книги ${book.title} — ${book.author}`}
               className="w-full h-96 object-cover"
             />
-            <div className="p-4 bg-white">
+            <div className="p-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium">
                   {t("pages count")}: {book.pageCount}
@@ -79,7 +79,7 @@ const PdfBookDetail = () => {
         </aside>
 
         {/* Правый столбец: информация о книге */}
-        <main className="md:col-span-2 bg-white p-6 rounded-2xl shadow">
+        <main className="md:col-span-2 p-6 rounded-2xl shadow">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
@@ -125,7 +125,7 @@ const PdfBookDetail = () => {
 
           <section className="mt-6">
             <h3 className="text-xl font-semibold">{t("Description")}</h3>
-            <p className="mt-2 text-gray-700">{book.description}</p>
+            <p className="mt-2 text-gray-500">{book.description}</p>
           </section>
         </main>
       </div>
