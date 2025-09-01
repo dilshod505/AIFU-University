@@ -273,5 +273,10 @@
   "E-book created successfully": "E-kitob muvaffaqiyatli yaratildi",
   "Book Details": "Kitob tafsilotlari",
   "Open PDF": "PDFni ochish",
-  "close": "Yopish"
+  "close": "Yopish",
+  "epc": "Epc",
+  "Excelga yuklab olish": "Excelga yuklab olish",
+  "Export to Excel": "Excelga eksport qilish",
+  "Add Student": "O'quvchini qo'shish",
+  "Student Details": "O'quvchi tafsilotlari"
 }

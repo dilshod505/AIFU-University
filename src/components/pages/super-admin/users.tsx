@@ -446,19 +446,23 @@ const Users = () => {
             </div>
           }
           footer={
-            <div className={"flex justify-between items-center gap-2"}>
+            <div
+              className={
+                "flex flex-col lg:flex-row justify-between items-center gap-2"
+              }
+            >
               <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-                <p>
+                <p className="text-sm">
                   {t("Total Pages")}:{" "}
                   <span className="text-green-600">{students?.totalPages}</span>
                 </p>
-                <p>
+                <p className="text-sm">
                   {t("Current Page")}:{" "}
                   <span className="text-green-600">
                     {students?.currentPage}
                   </span>
                 </p>
-                <p>
+                <p className="text-sm">
                   {t("Total Elements")}:{" "}
                   <span className="text-green-600">
                     {students?.totalElements}

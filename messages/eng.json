@@ -273,5 +273,10 @@
   "E-book created successfully": "E-book created successfully",
   "Book Details": "Book Details",
   "Open PDF": "Open PDF",
-  "close": "Close"
+  "close": "Close",
+  "epc": "Epc",
+  "Excelga yuklab olish": "Download to Excel",
+  "Export to Excel": "Export to Excel",
+  "Add Student": "Add Student",
+  "Student Details": "Student Details"
 }

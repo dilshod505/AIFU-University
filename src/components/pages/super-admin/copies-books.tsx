@@ -115,7 +115,7 @@ export const CopiesBooks = () => {
         required: true,
       },
       {
-        label: t("Epc"),
+        label: t("epc"),
         name: "epc",
         type: "text",
         required: true,
@@ -160,7 +160,7 @@ export const CopiesBooks = () => {
         dataIndex: "title",
       },
       {
-        title: t("Holat"),
+        title: t("status"),
         key: "isTaken",
         dataIndex: "isTaken",
         render: (value: boolean) => (
@@ -200,13 +200,6 @@ export const CopiesBooks = () => {
               onClick={() => {
                 setActionType("edit");
                 setEditingBook(record);
-                form.reset({
-                  inventoryNumber: record.inventoryNumber || "",
-                  shelfLocation: record.shelfLocation || "",
-                  notes: record.notes || "",
-                  baseBookId: record.baseBookId || "",
-                  epc: record.epc || "",
-                });
                 setOpen(true);
                 setOpen2(false);
               }}
@@ -243,6 +236,18 @@ export const CopiesBooks = () => {
     }
   }, [editingBook, open, form, actionType]);
 
+  useEffect(() => {
+    console.log(editingBook);
+
+    if (editingBook) {
+      form.reset({
+        ...bookDetail,
+        ...editingBook,
+      });
+      form.setValue("baseBookId", bookDetail?.data?.baseBookId);
+    }
+  }, [bookDetail, form, editingBook]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
@@ -255,7 +260,6 @@ export const CopiesBooks = () => {
   };
 
   const onSubmit = async (data: any) => {
-    // Avval inventory number ni tekshiramiz
     checkInventoryNumber.mutate(data.inventoryNumber, {
       onSuccess: (res) => {
         if (res?.data) {
@@ -347,21 +351,25 @@ export const CopiesBooks = () => {
           </div>
         }
         footer={
-          <div className={"flex justify-between items-center gap-2"}>
+          <div
+            className={
+              "flex flex-col lg:flex-row justify-between items-center gap-2"
+            }
+          >
             <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-              <p>
+              <p className="text-sm whitespace-break-spaces">
                 {t("Total Pages")}:{" "}
                 <span className="text-green-600">
                   {copiesBooks?.data?.totalPages}
                 </span>
               </p>
-              <p>
+              <p className="text-sm whitespace-break-spaces">
                 {t("Current Page")}:{" "}
                 <span className="text-green-600">
                   {copiesBooks?.data?.currentPage}
                 </span>
               </p>
-              <p>
+              <p className="text-sm whitespace-break-spaces">
                 {t("Total Elements")}:{" "}
                 <span className="text-green-600">
                   {copiesBooks?.data?.totalElements}
@@ -420,7 +428,7 @@ export const CopiesBooks = () => {
             }
           }}
         >
-          <SheetContent>
+          <SheetContent className="hide-scroll">
             <SheetHeader>
               <SheetTitle>
                 {actionType === "add"
