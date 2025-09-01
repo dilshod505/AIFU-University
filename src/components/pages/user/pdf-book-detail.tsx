@@ -54,21 +54,25 @@ const PdfBookDetail = () => {
                 <span className="text-sm font-medium">{book.size} MB</span>
               </div>
               <div className="flex flex-col gap-2">
-                <Link
-                  href={book.pdfUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
-                >
-                  {t("read online")}
-                </Link>
-                <Link
-                  href={book.pdfUrl}
-                  download
-                  className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
-                >
-                  {t("download PDF")}
-                </Link>
+                {book.pdfUrl && (
+                  <>
+                    <Link
+                      href={book.pdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
+                    >
+                      {t("read online")}
+                    </Link>
+                    <Link
+                      href={book.pdfUrl}
+                      download
+                      className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                    >
+                      {t("download PDF")}
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
