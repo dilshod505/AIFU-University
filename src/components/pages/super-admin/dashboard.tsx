@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import Chart from "react-apexcharts";
+import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
 import {
   useAverageUsage,
   useBookCopiesCount,
@@ -18,6 +17,7 @@ import {
   useStudentsTop,
 } from "@/components/models/queries/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ApexOptions } from "apexcharts";
 import {
   BookCopy,
@@ -26,8 +26,8 @@ import {
   SquareCheckBig,
   Users,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
+import { useTranslations } from "next-intl";
+import Chart from "react-apexcharts";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -63,12 +63,12 @@ const Dashboard = () => {
     "Dec",
   ];
   const monthCategories = perMonthData.map(
-    (item: any) => monthNames[item.month - 1],
+    (item: any) => monthNames[item.month - 1]
   );
   const takenPerMonth = perMonthData.map((item: any) => item.taken);
   const returnedPerMonth = perMonthData.map((item: any) => item.returned);
   const returnedLatePerMonth = perMonthData.map(
-    (item: any) => item.returnedLate,
+    (item: any) => item.returnedLate
   );
 
   const perMonthOptions: ApexOptions = {
@@ -214,7 +214,7 @@ const Dashboard = () => {
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
-            {bookingToday.isLoading ? (
+            {/* {bookingToday.isLoading ? (
               <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
             ) : bookingToday.data.total === 0 ? (
               <p className="mt-2" suppressHydrationWarning>
@@ -224,7 +224,7 @@ const Dashboard = () => {
               <p className="mt-2" suppressHydrationWarning>
                 {bookingToday.data?.data} {t("Today's booking list")}
               </p>
-            )}
+            )} */}
           </div>
         </Panel>
 
