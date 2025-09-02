@@ -34,7 +34,7 @@ import { toast } from "sonner";
 // 🔹 API orqali bookinglarni olish
 async function fetchBookings(pageNum: number, pageSize: number) {
   const res = await api.get(
-    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`,
+    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`
   );
   return res.data;
 }
@@ -208,7 +208,7 @@ export default function ActiveBookingsPage() {
         ),
       },
     ],
-    [extendReservation, form, returnReservation, t, pageNumber, pageSize],
+    [extendReservation, form, returnReservation, t, pageNumber, pageSize]
   );
 
   return (
@@ -246,7 +246,11 @@ export default function ActiveBookingsPage() {
             isLoading={isLoading}
             pagination={false}
             footer={
-              <div className={"flex justify-between items-center gap-2"}>
+              <div
+                className={
+                  "flex flex-col lg:flex-row justify-between items-center gap-2"
+                }
+              >
                 <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
                   <p className="text-sm">
                     {t("Total Pages")}:{" "}
@@ -268,7 +272,6 @@ export default function ActiveBookingsPage() {
                   </p>
                 </div>
 
-                {/* 🔹 Pagination */}
                 <ReactPaginate
                   breakLabel="..."
                   onPageChange={(e) => {

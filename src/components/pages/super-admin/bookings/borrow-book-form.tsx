@@ -24,17 +24,17 @@ export function BorrowBookForm() {
   const form = useForm();
   const [studentCard, setStudentCard] = useState<number | null>(null);
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
-    null,
+    null
   );
   const [bookCard, setBookCard] = useState<string | null>(null);
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
   const [bookCopyType, setBookCopyType] = useState<"id" | "inventoryNumber">(
-    "id",
+    "id"
   );
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
-    [ijaraMuddati],
+    [ijaraMuddati]
   );
 
   const [seeingStudent, setSeeingStudent] = useState<number | null>(null);
@@ -42,7 +42,7 @@ export function BorrowBookForm() {
     queryKey: ["reservations", seeingStudent],
     queryFn: async () => {
       const res = await api.get<Record<string, any>>(
-        `/admin/booking?field=studentId&query=${seeingStudent}`,
+        `/admin/booking?field=studentId&query=${seeingStudent}`
       );
       return res.data;
     },
@@ -85,7 +85,7 @@ export function BorrowBookForm() {
     const fetchBook = async () => {
       if (bookCard && bookCard.toString().length >= 8) {
         const res = await api.get(
-          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`,
+          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`
         );
         setBookData(res.data?.data);
       }
@@ -212,7 +212,7 @@ export function BorrowBookForm() {
                         setBookCard(e.target.value as string)
                       }
                       placeholder={t(
-                        "ijaraga berilayotgan kitobning inventar raqamini kiriting",
+                        "ijaraga berilayotgan kitobning inventar raqamini kiriting"
                       )}
                     />
                   </TabsContent>
@@ -297,9 +297,11 @@ export function BorrowBookForm() {
                   variant={"default"}
                   onClick={async () => {
                     try {
+                      console.log(bookData);
+
                       reservateBook.mutate({
                         cardNumber: studentData?.cardNumber,
-                        id: bookData?.inventoryNumber,
+                        id: bookData?.bookCopyId,
                         days: ijaraMuddati,
                       });
                     } catch (e) {
