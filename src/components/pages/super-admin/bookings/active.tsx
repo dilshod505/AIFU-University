@@ -34,7 +34,7 @@ import { toast } from "sonner";
 // 🔹 API orqali bookinglarni olish
 async function fetchBookings(pageNum: number, pageSize: number) {
   const res = await api.get(
-    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`
+    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`,
   );
   return res.data;
 }
@@ -206,7 +206,7 @@ export default function ActiveBookingsPage() {
         ),
       },
     ],
-    [extendReservation, form, returnReservation, t, pageNumber, pageSize]
+    [extendReservation, form, returnReservation, t, pageNumber, pageSize],
   );
 
   return (

@@ -86,31 +86,9 @@ const PdfBooks = () => {
 
   return (
     <div className="cont py-5">
-      {/* Header Section */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <BookOpen className="h-6 w-6 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">
-            <SimpleTranslation title="Elektron kitoblar" />
-          </h1>
-        </div>
-        <p className="text-muted-foreground text-lg">
-          {t("Eng yaxshi kitoblar to'plamini kashf eting")}
-        </p>
-      </div>
-
-      {/* Categories Filter Section */}
       <Card className="mb-8 border-0 shadow-lg bg-gradient-to-r from-primary/5 to-secondary/5">
         <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Kategoriyalar</h2>
-          </div>
-
           <div className="flex flex-wrap gap-3">
-            {/* All Categories Button */}
             <Button
               variant={selectedCategory === null ? "default" : "outline"}
               onClick={() => handleCategorySelect(null)}
@@ -118,7 +96,7 @@ const PdfBooks = () => {
                 "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
                 selectedCategory === null
                   ? "bg-primary text-primary-foreground shadow-lg"
-                  : "hover:bg-primary/10"
+                  : "hover:bg-primary/10",
               )}
             >
               <Grid3X3 className="h-4 w-4 mr-2" />
@@ -143,7 +121,7 @@ const PdfBooks = () => {
                       "rounded-full px-6 py-2 transition-all duration-200 hover:scale-105",
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground shadow-lg"
-                        : "hover:bg-primary/10"
+                        : "hover:bg-primary/10",
                     )}
                   >
                     {category.name}

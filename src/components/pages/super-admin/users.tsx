@@ -207,7 +207,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t]
+    [deleteStudent, detail, form, t],
   );
 
   const fields = useMemo<any[]>(
@@ -310,7 +310,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const onSubmit = (data: any) => {
@@ -342,7 +342,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -357,7 +357,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -476,10 +476,8 @@ const Users = () => {
                     const newPageNum = e.selected + 1;
                     setPageNumber(newPageNum);
                   }}
-                  pageRangeDisplayed={size}
-                  pageCount={Math.ceil(
-                    (students?.data?.totalElements || 1) / size
-                  )}
+                  pageRangeDisplayed={3} // bu yerda nechta sahifa bir paytda ko‘rinsinligini belgilang
+                  pageCount={Math.ceil((students?.totalElements || 1) / size)} // ✅ tuzatildi
                   previousLabel={
                     <Button className={"bg-white text-black"}>
                       <ChevronLeft />

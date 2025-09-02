@@ -86,7 +86,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
         <StatCard
           title={t("Total Users")}
           value={studentsCount.isLoading ? null : studentsCount.data?.data}
@@ -143,30 +143,35 @@ const Dashboard = () => {
             <Skeleton className="w-full h-48" />
           ) : (
             <Chart
-              type="line"
+              type="donut"
               height="300"
               options={{
-                chart: { id: "per-day" },
-                xaxis: {
-                  categories: bookingPerDay.data?.data?.map((d: any) => d.date),
-                },
+                labels: ["Taken", "Returned", "Returned Late"],
+                legend: { position: "bottom" },
               }}
               series={[
-                {
-                  name: "Bookings",
-                  data: bookingPerDay.data?.data?.map((d: any) => d.count),
-                },
+                bookingPerDay.data?.data?.at(-1)?.taken || 0,
+                bookingPerDay.data?.data?.at(-1)?.returned || 0,
+                bookingPerDay.data?.data?.at(-1)?.returnedLate || 0,
               ]}
             />
           )}
         </Panel>
 
-        <Panel title={t("Bookings Status")}>
-          <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
-            <span className="text-3xl">📅</span>
-            <p className="text-center mt-2">
-              {t("No booking data available Check back later for updates")}
-            </p>
+        <Panel title="Monthly Booking Statistics">
+          <div className="h-64">
+            {bookingPerMonth.isLoading ? (
+              <div className="flex justify-center items-center h-full text-muted-foreground">
+                Loading chart...
+              </div>
+            ) : (
+              <Chart
+                options={perMonthOptions}
+                series={perMonthSeries}
+                type="bar"
+                height="250"
+              />
+            )}
           </div>
         </Panel>
 
@@ -177,7 +182,7 @@ const Dashboard = () => {
             <p className="text-muted-foreground">No student data available</p>
           ) : (
             <ul className="space-y-2">
-              {studentsTop.data.data.map((student: any, i: number) => (
+              {studentsTop?.data?.data?.map((student: any, i: number) => (
                 <li key={i} className="flex justify-between text-sm">
                   <span>{student.fullName}</span>
                   <span className="font-bold">{student.totalBookings}</span>

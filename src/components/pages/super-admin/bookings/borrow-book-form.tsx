@@ -24,17 +24,17 @@ export function BorrowBookForm() {
   const form = useForm();
   const [studentCard, setStudentCard] = useState<number | null>(null);
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
-    null
+    null,
   );
   const [bookCard, setBookCard] = useState<string | null>(null);
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
-  const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
-    "epc"
+  const [bookCopyType, setBookCopyType] = useState<"id" | "inventoryNumber">(
+    "id",
   );
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
-    [ijaraMuddati]
+    [ijaraMuddati],
   );
 
   const [seeingStudent, setSeeingStudent] = useState<number | null>(null);
@@ -42,7 +42,7 @@ export function BorrowBookForm() {
     queryKey: ["reservations", seeingStudent],
     queryFn: async () => {
       const res = await api.get<Record<string, any>>(
-        `/admin/booking?field=studentId&query=${seeingStudent}`
+        `/admin/booking?field=studentId&query=${seeingStudent}`,
       );
       return res.data;
     },
@@ -53,16 +53,16 @@ export function BorrowBookForm() {
   const reservateBook = useMutation({
     mutationFn: async ({
       cardNumber,
-      epc,
+      id,
       days,
     }: {
       cardNumber: string;
-      epc: string;
+      id: string;
       days: number;
     }) => {
       const res = await api.post("/admin/booking/borrow", {
         cardNumber: cardNumber.toString(),
-        epc,
+        id,
         days,
       });
       return res.data;
@@ -85,7 +85,7 @@ export function BorrowBookForm() {
     const fetchBook = async () => {
       if (bookCard && bookCard.toString().length >= 8) {
         const res = await api.get(
-          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`
+          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`,
         );
         setBookData(res.data?.data);
       }
@@ -124,6 +124,18 @@ export function BorrowBookForm() {
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("degree")}:</p>
                         <h1 className={"capitalize"}>{studentData?.degree}</h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Admission Time")}:</p>
+                        <h1 className={"capitalize"}>
+                          {studentData?.admissionTime}
+                        </h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Graduation Time")}:</p>
+                        <h1 className={"capitalize"}>
+                          {studentData?.graduationTime}
+                        </h1>
                       </div>
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("Card number")}:</p>
@@ -173,12 +185,12 @@ export function BorrowBookForm() {
                   onValueChange={(e: string) => setBookCopyType(e as any)}
                 >
                   <TabsList>
-                    <TabsTrigger value="epc">{t("epc")}</TabsTrigger>
+                    <TabsTrigger value="id">{t("id")}</TabsTrigger>
                     <TabsTrigger value="inventoryNumber">
                       {t("Inventory number")}
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="epc">
+                  <TabsContent value="id">
                     <Input
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setBookCard(e.target.value as string)
@@ -192,7 +204,7 @@ export function BorrowBookForm() {
                         setBookCard(e.target.value as string)
                       }
                       placeholder={t(
-                        "ijaraga berilayotgan kitobning inventar raqamini kiriting"
+                        "ijaraga berilayotgan kitobning inventar raqamini kiriting",
                       )}
                     />
                   </TabsContent>
@@ -279,7 +291,7 @@ export function BorrowBookForm() {
                     try {
                       reservateBook.mutate({
                         cardNumber: studentData?.cardNumber,
-                        epc: bookData?.inventoryNumber,
+                        id: bookData?.inventoryNumber,
                         days: ijaraMuddati,
                       });
                     } catch (e) {
