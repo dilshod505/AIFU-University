@@ -144,6 +144,14 @@ export function BorrowBookForm() {
                         </h1>
                       </div>
                       <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Phone number")}:</p>
+                        <h1 className={"capitalize"}>
+                          {studentData?.phoneNumber || (
+                            <p className={"text-red-600 text-2xl"}>-</p>
+                          )}
+                        </h1>
+                      </div>
+                      <div className="flex justify-between">
                         <p className={"text-end"}>{t("talaba bronlari")}:</p>
                         <Dialog>
                           <DialogTrigger asChild>
