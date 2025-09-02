@@ -76,8 +76,8 @@ export default function ActiveBookingsPage() {
   });
 
   const returnReservation = useMutation({
-    mutationFn: async ({ epc }: { epc: string }) => {
-      const res = await api.post("/admin/booking/return", { epc });
+    mutationFn: async ({ field, query }: { field: string; query: string }) => {
+      const res = await api.post("/admin/booking/return", { field, query });
       return res.data;
     },
     onSuccess: async () => {
@@ -182,21 +182,23 @@ export default function ActiveBookingsPage() {
                     submitText={t("ijarani yakunlash")}
                     fields={[
                       {
-                        label: t("kitob ID-sini kiriting"),
-                        name: "epc",
+                        label: t("field (masalan: inventoryNumber)"),
+                        name: "field",
                         type: "text",
-                        minLength: 1,
+                      },
+                      {
+                        label: t("query (kitobning ID yoki inventory raqami)"),
+                        name: "query",
+                        type: "text",
                       },
                     ]}
                     form={form}
                     onSubmit={(values: Record<string, any>) => {
-                      if (!values.epc) {
-                        toast.error(t("kitob ID-sini kiriting"));
-                        return;
-                      }
                       returnReservation.mutate({
-                        epc: values.epc,
+                        field: values.field,
+                        query: values.query,
                       });
+                      form.reset();
                     }}
                   />
                 </div>
