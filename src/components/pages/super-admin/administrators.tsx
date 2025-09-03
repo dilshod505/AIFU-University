@@ -9,23 +9,11 @@ import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Divider } from "antd";
 import {
   ArrowDownWideNarrow,
@@ -47,12 +35,10 @@ export type FilterType = "all" | "active" | "inactive";
 const Administrators = () => {
   const t = useTranslations();
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
   const [open, setOpen] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { data: admins, isLoading } = useAdministrators({
     pageNumber,
-    size,
     sortDirection,
   });
   const createAdmin = useCreateAdministrator();
@@ -174,27 +160,6 @@ const Administrators = () => {
         striped
         header={
           <div className={"flex justify-start items-center gap-2 flex-wrap"}>
-            <Select
-              value={size.toString()}
-              onValueChange={(a: string) => setSize(Number(a) as any)}
-            >
-              <SelectTrigger suppressHydrationWarning>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <SelectValue placeholder={size} />
-                  </TooltipTrigger>
-                  <TooltipContent sideOffset={5}>
-                    {t("select data size")}
-                  </TooltipContent>
-                </Tooltip>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"10"}>10</SelectItem>
-                <SelectItem value={"25"}>25</SelectItem>
-                <SelectItem value={"50"}>50</SelectItem>
-                <SelectItem value={"100"}>100</SelectItem>
-              </SelectContent>
-            </Select>
             {sortDirection === "asc" ? (
               <Button size={"sm"} onClick={() => setSortDirection("desc")}>
                 <ArrowUpWideNarrow />
@@ -236,8 +201,8 @@ const Administrators = () => {
         onPageChange={(e) => {
           setPageNumber(e.selected + 1);
         }}
-        pageRangeDisplayed={size}
-        pageCount={Math.ceil(admins?.totalElements / size) || 0}
+        pageRangeDisplayed={10}
+        pageCount={Math.ceil(admins?.totalElements / 10) || 0}
         previousLabel={
           <Button className={"bg-white text-black"}>
             <ChevronLeft />

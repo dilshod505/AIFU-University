@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 import { FilterType } from "@/components/pages/super-admin/users";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useStudents = ({
   filter,
@@ -17,7 +17,7 @@ export const useStudents = ({
     queryKey: ["students", filter, pageNumber, size, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`,
+        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`
       );
       return res.data;
     },
@@ -26,18 +26,16 @@ export const useStudents = ({
 
 export const useAdministrators = ({
   pageNumber,
-  size,
   sortDirection,
 }: {
   pageNumber: number;
-  size: number;
   sortDirection: "asc" | "desc";
 }) =>
   useQuery({
-    queryKey: ["administrators", pageNumber, size, sortDirection],
+    queryKey: ["administrators", pageNumber, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/super-admin/admins?pageNumber=${pageNumber}&size=${size}&sortDirection=${sortDirection}`,
+        `/super-admin/admins?pageNumber=${pageNumber}&size=10&sortDirection=${sortDirection}`
       );
       return res.data;
     },
