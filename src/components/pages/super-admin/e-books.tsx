@@ -34,6 +34,22 @@ import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 
+const initialValues: Record<string, any> = {
+  imageUrl: "",
+  pdfUrl: "",
+  author: "",
+  categoryId: undefined, // undefined qilib belgilash
+  titleDetails: "",
+  title: "",
+  publicationYear: "",
+  isbn: "",
+  pageCount: 1, // paegCount emas, pageCount deb to'g'irlang
+  publisher: "",
+  language: "",
+  script: "",
+  description: "",
+};
+
 const EBaseBooks = () => {
   const t = useTranslations();
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -43,7 +59,7 @@ const EBaseBooks = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
-  const form = useForm();
+  const form = useForm({ defaultValues: initialValues });
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null
   );
@@ -109,7 +125,10 @@ const EBaseBooks = () => {
       id: string;
       data: Record<string, any>;
     }) => {
-      const res = await api.patch(`/admin/pdf-books/${id}`, data);
+      const res = await api.patch(`/admin/pdf-books/${id}`, {
+        ...data,
+        id: undefined,
+      });
       return res.data;
     },
     onSuccess: () => {
@@ -332,13 +351,15 @@ const EBaseBooks = () => {
 
   useEffect(() => {
     if (editingBook && getById.data?.data && !getById.isLoading) {
+      const bookData = getById.data.data;
       form.reset({
-        ...getById.data.data,
-        categoryId: getById.data.data.categoryPreview?.id
-          ? +getById.data.data.categoryPreview.id
+        ...bookData,
+        categoryId: editingBook.categoryPreviewDTO?.id
+          ? Number(editingBook.categoryPreviewDTO.id)
           : undefined,
       });
     }
+    console.log(form.getValues());
   }, [editingBook, getById.data, getById.isLoading, form]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -385,6 +406,7 @@ const EBaseBooks = () => {
       setEditingBook(null);
       setActionType("add");
       form.reset();
+      form.setValue("categoryId", undefined);
     } catch (e) {
       console.log(e);
     }
@@ -506,7 +528,8 @@ const EBaseBooks = () => {
           if (!open) {
             setEditingBook(null);
             setActionType("add");
-            form.reset({}); // Reset form only when closing
+            form.reset(initialValues);
+            form.setValue("categoryId", undefined);
           }
           setOpen(open);
         }}
@@ -671,6 +694,8 @@ const EBaseBooks = () => {
               </div>
             ) : (
               <AutoForm
+                formId="e-book-form"
+                key={editingBook?.id || "add"}
                 className={
                   "bg-white dark:bg-background p-0 px-5 border-none space-y-0"
                 }

@@ -767,12 +767,12 @@ export const AutoForm: FC<AutoFormProps> = ({
                   case "select":
                     return (
                       <Select
-                        value={form.watch(field.name)}
+                        value={form.watch(field.name) ?? ""} // ensure it's always defined
                         onValueChange={(value) => {
                           baseInputProps.onChange(value);
                           form.setValue(field.name, value);
                         }}
-                        defaultValue={rf.value}
+                        defaultValue={form.watch(field.name) ?? ""}
                         disabled={field.disabled}
                       >
                         <SelectTrigger
@@ -1302,7 +1302,7 @@ export const AutoForm: FC<AutoFormProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id={formId}>
       {/* Header with progress and controls */}
       <div className="flex justify-between items-center">
         <div className="space-y-2">
