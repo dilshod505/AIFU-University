@@ -297,8 +297,6 @@ export function BorrowBookForm() {
                   variant={"default"}
                   onClick={async () => {
                     try {
-                      console.log(bookData);
-
                       reservateBook.mutate({
                         cardNumber: studentData?.cardNumber,
                         id: bookData?.bookCopyId,

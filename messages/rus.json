@@ -284,5 +284,6 @@
   "Add book copy": "Добавить экземпляр книги",
   "Edit book copy": "Редактировать экземпляр книги",
   "ijaraga berilayotgan kitobning inventar raqamini kiriting": "Введите инвентарный номер выдаваемой книги.",
-  "Phone number": "Номер телефона"
+  "Phone number": "Номер телефона",
+  "Failed to load book details": "Не удалось загрузить сведения о книге"
 }

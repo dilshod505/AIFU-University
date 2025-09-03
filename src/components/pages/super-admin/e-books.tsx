@@ -185,10 +185,7 @@ const EBaseBooks = () => {
         required: true,
         sm: 12,
         md: 6,
-        min: 1900,
         max: new Date().getFullYear(),
-        maxLength: 4,
-        step: 1,
       },
       {
         label: t("Isbn"),
@@ -205,6 +202,7 @@ const EBaseBooks = () => {
         required: true,
         sm: 12,
         md: 6,
+        min: 1,
       },
       {
         label: t("Publisher"),
@@ -659,7 +657,9 @@ const EBaseBooks = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">Failed to load book details</p>
+                    <p className="text-gray-500">
+                      {t("Failed to load book details")}
+                    </p>
                   </div>
                 )}
 

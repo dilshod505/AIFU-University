@@ -872,14 +872,25 @@ export const AutoForm: FC<AutoFormProps> = ({
                         <Input
                           type="number"
                           min={field.min}
+                          max={field.max}
                           maxLength={field.maxLength}
                           minLength={field.minLength}
-                          max={field.max}
                           step={field.step}
                           defaultValue={field.defaultValue}
                           placeholder={field.placeholder}
                           disabled={field.disabled}
                           {...baseInputProps}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber; // Input qiymatini raqam sifatida olish
+                            if (field.max !== undefined && value > field.max) {
+                              e.target.value = field.max.toString(); // Agar qiymat max dan katta bo'lsa, max ga tenglashtirish
+                            } else if (
+                              field.min !== undefined &&
+                              value < field.min
+                            ) {
+                              e.target.value = field.min.toString(); // Agar qiymat min dan kichik bo'lsa, min ga tenglashtirish
+                            }
+                          }}
                           className={cn(
                             field.className,
                             "w-full",
@@ -898,11 +909,24 @@ export const AutoForm: FC<AutoFormProps> = ({
                         type="number"
                         min={field.min}
                         max={field.max}
+                        maxLength={field.maxLength}
+                        minLength={field.minLength}
                         step={field.step}
                         defaultValue={field.defaultValue}
                         placeholder={field.placeholder}
                         disabled={field.disabled}
                         {...baseInputProps}
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber;
+                          if (field.max !== undefined && value > field.max) {
+                            e.target.value = field.max.toString();
+                          } else if (
+                            field.min !== undefined &&
+                            value < field.min
+                          ) {
+                            e.target.value = field.min.toString();
+                          }
+                        }}
                         className={cn(field.className, "w-full")}
                       />
                     );
