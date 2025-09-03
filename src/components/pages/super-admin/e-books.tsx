@@ -43,6 +43,7 @@ const EBaseBooks = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
+  const form = useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null
   );
@@ -79,13 +80,14 @@ const EBaseBooks = () => {
   });
 
   const getById = useQuery({
-    queryKey: ["get-book-by-id", editingBook?.id],
+    queryKey: ["get-book-by-id", editingBook, actionType],
     queryFn: async () => {
       if (!editingBook?.id) return null;
       const { data } = await api.get(`/admin/pdf-books/${editingBook.id}`);
       return data;
     },
     enabled: !!editingBook?.id,
+    // staleTime: 0, // Ensure fresh data on each edit
   });
 
   const createBook = useMutation({
@@ -126,7 +128,6 @@ const EBaseBooks = () => {
   });
 
   const [open, setOpen] = useState(false);
-  const form = useForm();
 
   const fields = useMemo<FormField[]>(
     () => [
@@ -161,12 +162,11 @@ const EBaseBooks = () => {
         name: "categoryId",
         type: "select",
         required: true,
-        options: categories.data?.map((category: Record<string, any>) => {
-          return {
+        options:
+          categories.data?.map((category: Record<string, any>) => ({
             label: category?.name,
             value: category?.id,
-          };
-        }),
+          })) || [], // Fallback to empty array to avoid undefined
         sm: 12,
         md: 6,
       },
@@ -237,7 +237,7 @@ const EBaseBooks = () => {
         md: 6,
       },
     ],
-    [t, categories.data, form]
+    [t, categories.data]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -331,14 +331,15 @@ const EBaseBooks = () => {
   );
 
   useEffect(() => {
-    if (editingBook) {
+    if (editingBook && getById.data?.data && !getById.isLoading) {
       form.reset({
-        ...getById.data?.data,
+        ...getById.data.data,
+        categoryId: getById.data.data.categoryPreview?.id
+          ? +getById.data.data.categoryPreview.id
+          : undefined,
       });
-      form.setValue("categoryId", +getById.data?.data?.categoryPreview?.id);
     }
-    console.log(editingBook);
-  }, [editingBook, form, getById.data]);
+  }, [editingBook, getById.data, getById.isLoading, form]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -505,9 +506,8 @@ const EBaseBooks = () => {
           if (!open) {
             setEditingBook(null);
             setActionType("add");
-            form.reset({});
+            form.reset({}); // Reset form only when closing
           }
-          form.reset();
           setOpen(open);
         }}
       >
@@ -671,9 +671,12 @@ const EBaseBooks = () => {
               </div>
             ) : (
               <AutoForm
-                className={"bg-white dark:bg-background"}
+                className={
+                  "bg-white dark:bg-background p-0 px-5 border-none space-y-0"
+                }
                 onSubmit={onSubmit}
                 form={form}
+                loading={!editingBook || getById.isLoading}
                 fields={fields}
                 showResetButton={false}
                 submitText={actionType === "add" ? t("Add e-book") : t("Edit")}
