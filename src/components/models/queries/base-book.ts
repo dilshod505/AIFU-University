@@ -5,16 +5,18 @@ export const useBaseBook = ({
   pageNum,
   pageSize,
   searchQuery,
+  sortDirection,
 }: {
   pageNum: number;
   pageSize: number;
   searchQuery?: string;
+  sortDirection?: "asc" | "desc";
 }) =>
   useQuery({
-    queryKey: ["base-book", pageNum, pageSize, searchQuery],
+    queryKey: ["base-book", pageNum, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/base-books?pageSize=${pageSize}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=title` : ""}`,
+        `/admin/base-books?pageSize=${pageSize}&sortDirection=${sortDirection}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=isbn` : ""}`
       );
       return res.data;
     },

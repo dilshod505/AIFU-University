@@ -45,6 +45,8 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -64,6 +66,7 @@ const BaseBooks = () => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
   const [open, setOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -75,6 +78,7 @@ const BaseBooks = () => {
     pageNum,
     pageSize,
     searchQuery: debouncedSearchQuery || undefined,
+    sortDirection,
   });
   const createBaseBook = useCreateBaseBook();
   const { data: categories } = useBaseBooksCategory();
@@ -223,6 +227,15 @@ const BaseBooks = () => {
                 placeholder={t("search")}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {sortDirection === "asc" ? (
+                <Button size={"sm"} onClick={() => setSortDirection("desc")}>
+                  <ArrowUpWideNarrow />
+                </Button>
+              ) : (
+                <Button size={"sm"} onClick={() => setSortDirection("asc")}>
+                  <ArrowDownWideNarrow />
+                </Button>
+              )}
               <Select
                 value={pageSize.toString()}
                 onValueChange={(a: string) => setPageSize(Number(a))}
