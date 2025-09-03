@@ -1,16 +1,6 @@
 "use client";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import {
-  Form,
-  Input,
-  Select,
-  InputNumber,
-  Upload,
-  Button as AntButton,
-  message,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
 import { api } from "@/components/models/axios";
 import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
@@ -22,8 +12,18 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { UploadOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Image } from "antd";
+import {
+  Button as AntButton,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Upload,
+} from "antd";
 import dayjs from "dayjs";
 import {
   ArrowDownWideNarrow,
@@ -72,7 +72,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -323,7 +323,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   return (
@@ -412,7 +412,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize,
+                  (books?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -573,7 +573,7 @@ const EBaseBooks = () => {
                         </h3>
                         <p>
                           {dayjs(getById.data.data.createdDate).format(
-                            "DD-MM-YYYY",
+                            "DD-MM-YYYY"
                           )}
                         </p>
                       </div>

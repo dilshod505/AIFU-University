@@ -285,5 +285,7 @@
   "Edit book copy": "Kitob nusxasini tahrirlash",
   "ijaraga berilayotgan kitobning inventar raqamini kiriting": "Ijaraga berilayotgan kitobning inventar raqamini kiriting.",
   "Phone number": "Telefon raqami",
-  "Failed to load book details": "Kitob tafsilotlarini yuklab bo'lmadi"
+  "Failed to load book details": "Kitob tafsilotlarini yuklab bo'lmadi",
+  "enter author name": "Muallif ismini kiriting",
+  "enter book title": "Kitob nomini kiriting"
 }

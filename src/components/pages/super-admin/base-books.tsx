@@ -1,11 +1,5 @@
 "use client";
 
-import { TooltipContent } from "@/components/ui/tooltip";
-
-import { TooltipTrigger } from "@/components/ui/tooltip";
-
-import { Tooltip } from "@/components/ui/tooltip";
-
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import { api } from "@/components/models/axios";
 import {
@@ -19,13 +13,6 @@ import { useBaseBooksCategory } from "@/components/models/queries/base-books-cat
 import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -63,10 +50,13 @@ const { Option } = AntdSelect;
 
 const BaseBooks = () => {
   const t = useTranslations();
-  const [pageNum, setPageNum] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchTitle, setSearchTitle] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+  const [debouncedSearchAuthor, setDebouncedSearchAuthor] =
+    useState(searchQuery);
+  const [debouncedSearchTitle, setDebouncedSearchTitle] = useState(searchTitle);
   const [open, setOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
 
@@ -75,7 +65,10 @@ const BaseBooks = () => {
 
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
-    searchQuery: debouncedSearchQuery || undefined,
+    searchQuery:
+      debouncedSearchAuthor || debouncedSearchTitle
+        ? `${debouncedSearchAuthor}-${debouncedSearchTitle}`
+        : undefined,
     sortDirection,
   });
   const createBaseBook = useCreateBaseBook();
@@ -101,13 +94,23 @@ const BaseBooks = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-      if (searchQuery !== debouncedSearchQuery) {
+      setDebouncedSearchAuthor(searchQuery);
+      if (searchQuery !== debouncedSearchAuthor) {
         setPageNum(1);
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchQuery, debouncedSearchQuery]);
+  }, [searchQuery, debouncedSearchAuthor]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTitle(searchTitle);
+      if (searchTitle !== debouncedSearchTitle) {
+        setPageNum(1);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTitle, debouncedSearchTitle]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -219,11 +222,17 @@ const BaseBooks = () => {
           dataSource={baseBooks?.data?.data || []}
           isLoading={isLoading}
           pagination={false}
+          columnVisibility
           header={
             <div className="flex justify-start items-center gap-2">
               <Input
-                placeholder={t("search")}
+                placeholder={t("enter author name")}
                 onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              -
+              <Input
+                placeholder={t("enter book title")}
+                onChange={(e) => setSearchTitle(e.target.value)}
               />
               {sortDirection === "asc" ? (
                 <Button size={"sm"} onClick={() => setSortDirection("desc")}>
@@ -234,7 +243,6 @@ const BaseBooks = () => {
                   <ArrowDownWideNarrow />
                 </Button>
               )}
-             
               <TooltipBtn
                 size="sm"
                 title={t("Add Book")}
