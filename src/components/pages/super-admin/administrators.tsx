@@ -115,6 +115,7 @@ const Administrators = () => {
         width: 150,
         render: (_: any, r: Record<string, any>) => (
           <TooltipBtn
+            size={"sm"}
             title={r.isActive ? t("Ban") : t("Unban")}
             variant={r.isActive ? "destructive" : "default"}
           >
