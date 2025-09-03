@@ -222,7 +222,6 @@ const BaseBooks = () => {
           dataSource={baseBooks?.data?.data || []}
           isLoading={isLoading}
           pagination={false}
-          columnVisibility
           header={
             <div className="flex justify-start items-center gap-2">
               <Input

@@ -152,7 +152,6 @@ const EBookCategories = () => {
             {t("Categories of E-Base Books")}
           </h1>
         }
-        columnVisibility
         columns={columns}
         isLoading={isLoading}
         dataSource={filteredCategories}

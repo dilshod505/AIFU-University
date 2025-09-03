@@ -238,7 +238,6 @@ export default function ActiveBookingsPage() {
 
         <TabsContent value="list" className="space-y-4">
           <MyTable
-            columnVisibility
             columns={columns}
             dataSource={bookings?.data?.data || []}
             isLoading={isLoading}

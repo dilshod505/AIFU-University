@@ -155,7 +155,6 @@ const BaseBooks = () => {
         }
         columns={columns}
         searchable={false}
-        columnVisibility
         header={
           <div className={"flex items-center justify-center gap-2"}>
             <div>

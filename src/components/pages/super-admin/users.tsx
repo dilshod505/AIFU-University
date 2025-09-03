@@ -371,7 +371,6 @@ const Users = () => {
           }
           columns={columns}
           dataSource={students?.data || []}
-          columnVisibility
           isLoading={isLoading}
           pagination={false}
           size={"large"}

@@ -82,7 +82,7 @@ export const CopiesBooks = () => {
     id: editingBook?.id,
   });
 
-  const { data: baseBooks } = useBaseBook({ pageNum, pageSize });
+  const { data: baseBooks } = useBaseBook({ pageNum });
 
   const [open, setOpen] = useState<boolean>(false);
   const [open2, setOpen2] = useState<boolean>(false);
@@ -300,7 +300,6 @@ export const CopiesBooks = () => {
         title={
           <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
         }
-        columnVisibility
         pagination={false}
         isLoading={isLoading}
         columns={columns}

@@ -168,7 +168,6 @@ const Administrators = () => {
         }
         columns={columns}
         dataSource={admins?.data || []}
-        columnVisibility
         isLoading={isLoading}
         pagination={false}
         size={"large"}
