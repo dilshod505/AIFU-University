@@ -1,12 +1,21 @@
 "use client";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import { AutoForm, type FormField } from "@/components/form/auto-form";
+import {
+  Form,
+  Input,
+  Select,
+  InputNumber,
+  Upload,
+  Button as AntButton,
+  message,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { api } from "@/components/models/axios";
 import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input as ShadcnInput } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -30,20 +39,22 @@ import {
 import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 const initialValues: Record<string, any> = {
   imageUrl: "",
   pdfUrl: "",
   author: "",
-  categoryId: undefined, // undefined qilib belgilash
+  categoryId: undefined,
   titleDetails: "",
   title: "",
   publicationYear: "",
   isbn: "",
-  pageCount: 1, // paegCount emas, pageCount deb to'g'irlang
+  pageCount: 1,
   publisher: "",
   language: "",
   script: "",
@@ -59,10 +70,18 @@ const EBaseBooks = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
-  const form = useForm({ defaultValues: initialValues });
+  const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -79,7 +98,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
@@ -103,7 +122,6 @@ const EBaseBooks = () => {
       return data;
     },
     enabled: !!editingBook?.id,
-    // staleTime: 0, // Ensure fresh data on each edit
   });
 
   const createBook = useMutation({
@@ -148,116 +166,75 @@ const EBaseBooks = () => {
 
   const [open, setOpen] = useState(false);
 
-  const fields = useMemo<FormField[]>(
-    () => [
-      {
-        label: t("kitob muqovasi"),
-        name: "imageUrl",
-        type: "file",
-        required: true,
-        accept: "image/png, image/jpeg, image/jpg, image/webp",
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("elektron kitob fayli"),
-        name: "pdfUrl",
-        type: "file",
-        required: true,
-        accept: "application/pdf",
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Author"),
-        name: "author",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Category"),
-        name: "categoryId",
-        type: "select",
-        required: true,
-        options:
-          categories.data?.map((category: Record<string, any>) => ({
-            label: category?.name,
-            value: category?.id,
-          })) || [], // Fallback to empty array to avoid undefined
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Title"),
-        name: "title",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Publication Year"),
-        name: "publicationYear",
-        type: "number",
-        required: true,
-        sm: 12,
-        md: 6,
-        max: new Date().getFullYear(),
-      },
-      {
-        label: t("Isbn"),
-        name: "isbn",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Page Count"),
-        name: "pageCount",
-        type: "number",
-        required: true,
-        sm: 12,
-        md: 6,
-        min: 1,
-      },
-      {
-        label: t("Publisher"),
-        name: "publisher",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Language"),
-        name: "language",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("kitob qaysi tilda yozilgan"),
-        name: "script",
-        type: "text",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-      {
-        label: t("Description"),
-        name: "description",
-        type: "textarea",
-        required: true,
-        sm: 12,
-        md: 6,
-      },
-    ],
-    [t, categories.data]
-  );
+  useEffect(() => {
+    if (editingBook && getById.data?.data && !getById.isLoading) {
+      const bookData = getById.data.data;
+      form.setFieldsValue({
+        ...bookData,
+        categoryId: bookData.categoryPreview?.id
+          ? Number(bookData.categoryPreview.id)
+          : undefined,
+      });
+    }
+  }, [editingBook, getById.data, getById.isLoading, form]);
+
+  const onSubmit = async (values: any) => {
+    try {
+      if (editingBook) {
+        updateBook.mutate({
+          id: editingBook.id,
+          data: {
+            ...values,
+            imageUrl:
+              typeof values.imageUrl === "string"
+                ? values.imageUrl
+                : values.imageUrl?.file?.response?.url || values.imageUrl,
+            pdfUrl:
+              typeof values.pdfUrl === "string"
+                ? values.pdfUrl
+                : values.pdfUrl?.file?.response?.url || values.pdfUrl,
+            size:
+              typeof values.size === "number"
+                ? values.size
+                : values.pdfUrl?.sizeMB,
+          },
+        });
+      } else {
+        createBook.mutate({
+          ...values,
+          imageUrl:
+            typeof values.imageUrl === "string"
+              ? values.imageUrl
+              : values.imageUrl?.file?.response?.url,
+          pdfUrl:
+            typeof values.pdfUrl === "string"
+              ? values.pdfUrl
+              : values.pdfUrl?.file?.response?.url,
+          size: values.pdfUrl?.sizeMB,
+        });
+      }
+      setOpen(false);
+      setEditingBook(null);
+      setActionType("add");
+      form.resetFields();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleUpload = (info: any, fieldName: string) => {
+    if (info.file.status === "uploading") {
+      return;
+    }
+    if (info.file.status === "done") {
+      message.success(`${info.file.name} file uploaded successfully`);
+      form.setFieldsValue({
+        [fieldName]: info.file.response?.url || info.file.response,
+      });
+    } else if (info.file.status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  };
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -346,71 +323,8 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
-
-  useEffect(() => {
-    if (editingBook && getById.data?.data && !getById.isLoading) {
-      const bookData = getById.data.data;
-      form.reset({
-        ...bookData,
-        categoryId: editingBook.categoryPreviewDTO?.id
-          ? Number(editingBook.categoryPreviewDTO.id)
-          : undefined,
-      });
-    }
-    console.log(form.getValues());
-  }, [editingBook, getById.data, getById.isLoading, form]);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-    setDebouncedSearchQuery("");
-    setPageNumber(1);
-  };
-
-  const onSubmit = async (data: any) => {
-    try {
-      if (editingBook) {
-        updateBook.mutate({
-          id: editingBook.id,
-          data: {
-            ...data,
-            imageUrl:
-              typeof data.imageUrl === "string"
-                ? data.imageUrl
-                : data.imageUrl?.url,
-            pdfUrl:
-              typeof data.pdfUrl === "string" ? data.pdfUrl : data.pdfUrl?.url,
-            size:
-              typeof data.size === "number" ? data.size : data.pdfUrl?.sizeMB,
-          },
-        });
-      } else {
-        createBook.mutate({
-          ...data,
-          imageUrl:
-            typeof data.imageUrl === "string"
-              ? data.imageUrl
-              : data.imageUrl?.url,
-          pdfUrl:
-            typeof data.pdfUrl === "string" ? data.pdfUrl : data.pdfUrl?.url,
-          size: data.pdfUrl?.sizeMB,
-        });
-      }
-      setOpen(false);
-      setEditingBook(null);
-      setActionType("add");
-      form.reset();
-      form.setValue("categoryId", undefined);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <div>
@@ -428,7 +342,7 @@ const EBaseBooks = () => {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="text-gray-400" size={16} />
               </div>
-              <Input
+              <ShadcnInput
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="pl-10 pr-10"
@@ -498,7 +412,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize
+                  (books?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -528,8 +442,7 @@ const EBaseBooks = () => {
           if (!open) {
             setEditingBook(null);
             setActionType("add");
-            form.reset(initialValues);
-            form.setValue("categoryId", undefined);
+            form.resetFields();
           }
           setOpen(open);
         }}
@@ -546,8 +459,7 @@ const EBaseBooks = () => {
                   ? t("Add e-book")
                   : actionType === "edit"
                     ? t("Edit e-book")
-                    : t("Book Details")}{" "}
-                {/* Updated title for detail view */}
+                    : t("Book Details")}
               </h1>
             </SheetTitle>
           </SheetHeader>
@@ -560,7 +472,6 @@ const EBaseBooks = () => {
                   </div>
                 ) : getById.data?.data ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Book Cover */}
                     <div className="space-y-4">
                       <Image
                         height={400}
@@ -581,7 +492,6 @@ const EBaseBooks = () => {
                       </div>
                     </div>
 
-                    {/* Book Details */}
                     <div className="space-y-4">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
@@ -663,7 +573,7 @@ const EBaseBooks = () => {
                         </h3>
                         <p>
                           {dayjs(getById.data.data.createdDate).format(
-                            "DD-MM-YYYY"
+                            "DD-MM-YYYY",
                           )}
                         </p>
                       </div>
@@ -693,19 +603,200 @@ const EBaseBooks = () => {
                 </div>
               </div>
             ) : (
-              <AutoForm
-                formId="e-book-form"
-                key={editingBook?.id || "add"}
-                className={
-                  "bg-white dark:bg-background p-0 px-5 border-none space-y-0"
-                }
-                onSubmit={onSubmit}
+              <Form
                 form={form}
-                loading={!editingBook || getById.isLoading}
-                fields={fields}
-                showResetButton={false}
-                submitText={actionType === "add" ? t("Add e-book") : t("Edit")}
-              />
+                layout="vertical"
+                onFinish={onSubmit}
+                initialValues={initialValues}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Form.Item
+                    label={t("kitob muqovasi")}
+                    name="imageUrl"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("Please upload book cover"),
+                      },
+                    ]}
+                  >
+                    <Upload
+                      name="image"
+                      listType="picture"
+                      maxCount={1}
+                      accept="image/png,image/jpeg,image/jpg,image/webp"
+                      onChange={(info) => handleUpload(info, "imageUrl")}
+                    >
+                      <AntButton icon={<UploadOutlined />}>
+                        {t("Upload Image")}
+                      </AntButton>
+                    </Upload>
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("elektron kitob fayli")}
+                    name="pdfUrl"
+                    rules={[
+                      { required: true, message: t("Please upload PDF file") },
+                    ]}
+                  >
+                    <Upload
+                      name="pdf"
+                      maxCount={1}
+                      accept="application/pdf"
+                      onChange={(info) => handleUpload(info, "pdfUrl")}
+                    >
+                      <AntButton icon={<UploadOutlined />}>
+                        {t("Upload PDF")}
+                      </AntButton>
+                    </Upload>
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Author")}
+                    name="author"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("Please enter author name"),
+                      },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter author name")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Category")}
+                    name="categoryId"
+                    rules={[
+                      { required: true, message: t("Please select category") },
+                    ]}
+                  >
+                    <Select
+                      placeholder={t("Select category")}
+                      loading={categories.isLoading}
+                    >
+                      {categories.data?.map((category: Record<string, any>) => (
+                        <Option key={category.id} value={category.id}>
+                          {category.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Title")}
+                    name="title"
+                    rules={[
+                      { required: true, message: t("Please enter title") },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter book title")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Publication Year")}
+                    name="publicationYear"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("Please enter publication year"),
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      placeholder={t("Enter publication year")}
+                      max={new Date().getFullYear()}
+                      min={1000}
+                      className="w-full"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Isbn")}
+                    name="isbn"
+                    rules={[
+                      { required: true, message: t("Please enter ISBN") },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter ISBN")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Page Count")}
+                    name="pageCount"
+                    rules={[
+                      { required: true, message: t("Please enter page count") },
+                    ]}
+                  >
+                    <InputNumber
+                      placeholder={t("Enter page count")}
+                      min={1}
+                      className="w-full"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Publisher")}
+                    name="publisher"
+                    rules={[
+                      { required: true, message: t("Please enter publisher") },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter publisher")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Language")}
+                    name="language"
+                    rules={[
+                      { required: true, message: t("Please enter language") },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter language")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("kitob qaysi tilda yozilgan")}
+                    name="script"
+                    rules={[
+                      { required: true, message: t("Please enter script") },
+                    ]}
+                  >
+                    <Input placeholder={t("Enter script")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label={t("Description")}
+                    name="description"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("Please enter description"),
+                      },
+                    ]}
+                    className="md:col-span-2"
+                  >
+                    <TextArea
+                      rows={4}
+                      placeholder={t("Enter book description")}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <AntButton onClick={() => setOpen(false)}>
+                    {t("Cancel")}
+                  </AntButton>
+                  <TooltipBtn
+                    htmlType="submit"
+                    loading={createBook.isPending || updateBook.isPending}
+                  >
+                    {actionType === "add" ? t("Add e-book") : t("Edit")}
+                  </TooltipBtn>
+                </div>
+              </Form>
             )}
           </div>
         </SheetContent>

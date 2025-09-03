@@ -63,12 +63,12 @@ const Dashboard = () => {
     "Dec",
   ];
   const monthCategories = perMonthData.map(
-    (item: any) => monthNames[item.month - 1]
+    (item: any) => monthNames[item.month - 1],
   );
   const takenPerMonth = perMonthData.map((item: any) => item.taken);
   const returnedPerMonth = perMonthData.map((item: any) => item.returned);
   const returnedLatePerMonth = perMonthData.map(
-    (item: any) => item.returnedLate
+    (item: any) => item.returnedLate,
   );
 
   const perMonthOptions: ApexOptions = {
@@ -184,7 +184,7 @@ const Dashboard = () => {
             <ul className="space-y-2">
               {studentsTop?.data?.data?.map((student: any, i: number) => (
                 <li key={i} className="flex justify-between text-sm">
-                  <span>{student.fullName}</span>
+                  <span>{student?.data?.userName}</span>
                   <span className="font-bold">{student.totalBookings}</span>
                 </li>
               ))}
@@ -202,7 +202,7 @@ const Dashboard = () => {
               {booksTop.data.data.map((book: any, i: number) => (
                 <li key={i} className="flex justify-between text-sm">
                   <span>{book.title}</span>
-                  <span className="font-bold">{book.totalBookings}</span>
+                  <span className="font-bold">{book?.data?.totalBookings}</span>
                 </li>
               ))}
             </ul>
