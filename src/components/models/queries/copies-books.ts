@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCopiesBooks = ({
   pageSize,
@@ -14,7 +14,7 @@ export const useCopiesBooks = ({
     queryKey: ["copies-book", pageNumber, pageSize, query],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}${query ? `&query=${query}&field=inventoryNumber` : ""}`,
+        `/admin/book-copies?pageSize=10&pageNumber=${pageNumber}${query ? `&query=${query}&field=inventoryNumber` : ""}`
       );
       return res.data;
     },
@@ -49,7 +49,7 @@ export const useCopiesBooksSearch = ({
     queryKey: ["copies-book-search", query, field, pageSize, pageNumber],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/book-copies/search?query=${query}&field=${field}&pageSize=${pageSize}&pageNumber=${pageNumber}`,
+        `/admin/book-copies/search?query=${query}&field=${field}&pageSize=10&pageNumber=${pageNumber}`
       );
       return res.data;
     },
@@ -111,7 +111,7 @@ export const useCheckInventoryNumber = () => {
   return useMutation({
     mutationFn: async (inventoryNumber: string) => {
       const res = await api.get(
-        `/admin/book-copies/check-inventory-number?inventoryNumber=${inventoryNumber}`,
+        `/admin/book-copies/check-inventory-number?inventoryNumber=${inventoryNumber}`
       );
       return res.data;
     },

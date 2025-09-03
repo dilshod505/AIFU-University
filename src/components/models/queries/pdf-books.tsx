@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const usePdfBooksList = ({
   pageNum,
@@ -15,7 +15,7 @@ export const usePdfBooksList = ({
     queryKey: ["pdf-books", pageNum, pageSize, category],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?pageNumber=${pageNum}&pageSize=${pageSize}${category ? `&category=${category}` : ""}`,
+        `/client/pdf-books?pageNumber=${pageNum}&pageSize=10${category ? `&category=${category}` : ""}`
       );
       return res.data;
     },

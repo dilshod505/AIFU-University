@@ -33,9 +33,7 @@ import { toast } from "sonner";
 
 // 🔹 API orqali bookinglarni olish
 async function fetchBookings(pageNum: number, pageSize: number) {
-  const res = await api.get(
-    `/admin/booking?pageNum=${pageNum}&pageSize=${pageSize}`
-  );
+  const res = await api.get(`/admin/booking?pageNum=${pageNum}&pageSize=10`);
   return res.data;
 }
 

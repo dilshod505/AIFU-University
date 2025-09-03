@@ -98,7 +98,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=${pageSize}&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
       );
       return data;
     },

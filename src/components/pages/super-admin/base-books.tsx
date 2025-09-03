@@ -64,7 +64,6 @@ const { Option } = AntdSelect;
 const BaseBooks = () => {
   const t = useTranslations();
   const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
@@ -76,7 +75,6 @@ const BaseBooks = () => {
 
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
-    pageSize,
     searchQuery: debouncedSearchQuery || undefined,
     sortDirection,
   });
@@ -236,29 +234,7 @@ const BaseBooks = () => {
                   <ArrowDownWideNarrow />
                 </Button>
               )}
-              <Select
-                value={pageSize.toString()}
-                onValueChange={(a: string) => setPageSize(Number(a))}
-              >
-                <SelectTrigger suppressHydrationWarning>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <SelectValue placeholder={pageSize} />
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={5}>
-                        {t("select data size")}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="25">25</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                </SelectContent>
-              </Select>
+             
               <TooltipBtn
                 size="sm"
                 title={t("Add Book")}
@@ -315,9 +291,9 @@ const BaseBooks = () => {
                     const newPageNum = e.selected + 1;
                     setPageNum(newPageNum);
                   }}
-                  pageRangeDisplayed={pageSize}
+                  pageRangeDisplayed={10}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / pageSize
+                    (baseBooks?.data?.totalElements || 0) / 10
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
