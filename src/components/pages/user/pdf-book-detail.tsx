@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "@/components/models/axios";
+import { api, baseBackendUrl } from "@/components/models/axios";
 import { usePdfBookId } from "@/components/models/queries/pdf-books";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -56,16 +56,16 @@ const PdfBookDetail = () => {
               <div className="flex flex-col gap-2">
                 {book.pdfUrl && (
                   <>
-                    <Link
-                      href={book.pdfUrl}
+                    {/* <Link
+                      href={baseBackendUrl + "/api/client/download/" + book.id}
                       target="_blank"
                       rel="noreferrer"
                       className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
                     >
                       {t("read online")}
-                    </Link>
+                    </Link> */}
                     <Link
-                      href={book.pdfUrl}
+                      href={baseBackendUrl + "/api/client/download/" + book.id}
                       download
                       className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
                     >
@@ -208,7 +208,7 @@ const PdfBookDetail = () => {
                     <span className="mx-2">•</span>
                     <span>{book?.categoryPreview?.name}</span>
                   </div>
-                </div> 
+                </div>
               </div>
             </Link>
           </div>
