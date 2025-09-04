@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
 import {
   useAverageUsage,
@@ -137,7 +139,7 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-4 mb-6">
         <Panel title={t("Bookings Per Day")}>
           {bookingPerDay.isLoading ? (
             <Skeleton className="w-full h-48" />
@@ -175,22 +177,28 @@ const Dashboard = () => {
           </div>
         </Panel>
 
-        <Panel title={t("Top Students")}>
-          {studentsTop.isLoading ? (
-            <Skeleton className="w-full h-32" />
-          ) : studentsTop.data?.data?.length === 0 ? (
-            <p className="text-muted-foreground">No student data available</p>
-          ) : (
-            <ul className="space-y-2">
-              {studentsTop?.data?.data?.map((student: any, i: number) => (
-                <li key={i} className="flex justify-between text-sm">
-                  <span>{student?.data?.userName}</span>
-                  <span className="font-bold">{student.totalBookings}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Panel>
+        <div className="lg:col-span-3 xl:col-span-2">
+          <Panel title={t("Statistics")}>
+            <div className="h-72">
+              {bookingDiagram.isLoading ? (
+                <div className="flex justify-center items-center h-full text-muted-foreground">
+                  Loading chart...
+                </div>
+              ) : bookingDiagram.error ? (
+                <div className="flex justify-center items-center h-full text-red-500">
+                  Failed to load chart data
+                </div>
+              ) : (
+                <Chart
+                  options={perMonthOptions}
+                  series={perMonthSeries}
+                  type="bar"
+                  height="300"
+                />
+              )}
+            </div>
+          </Panel>
+        </div>
 
         <Panel title={t("Top Books")}>
           {booksTop.isLoading ? (
@@ -209,22 +217,28 @@ const Dashboard = () => {
           )}
         </Panel>
 
+        <Panel title={t("Top Students")}>
+          {studentsTop.isLoading ? (
+            <Skeleton className="w-full h-32" />
+          ) : studentsTop.data?.data?.length === 0 ? (
+            <p className="text-muted-foreground">No student data available</p>
+          ) : (
+            <ul className="space-y-2">
+              {studentsTop?.data?.data?.map((student: any, i: number) => (
+                <li key={i} className="flex justify-between text-sm">
+                  <span>{student?.data?.userName}</span>
+                  <span className="font-bold">{student.totalBookings}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
         <Panel title={t("Today's Bookings")}>
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
             </span>
-            {/* {bookingToday.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
-            ) : bookingToday.data.total === 0 ? (
-              <p className="mt-2" suppressHydrationWarning>
-                No bookings today
-              </p>
-            ) : (
-              <p className="mt-2" suppressHydrationWarning>
-                {bookingToday.data?.data} {t("Today's booking list")}
-              </p>
-            )} */}
           </div>
         </Panel>
 
@@ -246,28 +260,56 @@ const Dashboard = () => {
             )}
           </div>
         </Panel>
-      </div>
 
-      <Panel title={t("Statistics")}>
-        <div className="h-72">
-          {bookingDiagram.isLoading ? (
-            <div className="flex justify-center items-center h-full text-muted-foreground">
-              Loading chart...
+        <div className="lg:col-span-3 xl:col-span-2">
+          <Panel title={t("All Overdue Bookings")}>
+            <div className="h-72 overflow-auto">
+              {bookingOverdue.isLoading ? (
+                <div className="flex justify-center items-center h-full text-muted-foreground">
+                  Loading overdue bookings...
+                </div>
+              ) : bookingOverdue.error ? (
+                <div className="flex justify-center items-center h-full text-red-500">
+                  Failed to load overdue bookings
+                </div>
+              ) : bookingOverdue?.data?.length === 0 ? (
+                <div className="flex justify-center items-center h-full text-muted-foreground">
+                  No overdue bookings
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
+                    <div>STUDENT</div>
+                    <div>BOOK TITLE</div>
+                    <div>DUE DATE</div>
+                  </div>
+                  <div className="space-y-3">
+                    {bookingOverdue?.data?.data?.data?.map(
+                      (booking: any, i: number) => (
+                        <div key={i} className="grid grid-cols-3 gap-4 text-sm">
+                          <div className="font-medium">
+                            {booking.studentName ||
+                              booking.student?.name ||
+                              "Unknown Student"}
+                          </div>
+                          <div className="text-muted-foreground">
+                            {booking.bookTitle ||
+                              booking.book?.title ||
+                              "Unknown Book"}
+                          </div>
+                          <div className="text-red-500 font-medium">
+                            {booking.dueDate || booking.due_date || "No Date"}
+                          </div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          ) : bookingDiagram.error ? (
-            <div className="flex justify-center items-center h-full text-red-500">
-              Failed to load chart data
-            </div>
-          ) : (
-            <Chart
-              options={perMonthOptions}
-              series={perMonthSeries}
-              type="bar"
-              height="300"
-            />
-          )}
+          </Panel>
         </div>
-      </Panel>
+      </div>
     </div>
   );
 };
