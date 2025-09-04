@@ -1,6 +1,6 @@
 import { api } from "@/components/models/axios";
 import { FilterType } from "@/components/pages/super-admin/users";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useStudents = ({
   filter,
@@ -17,7 +17,7 @@ export const useStudents = ({
     queryKey: ["students", filter, pageNumber, size, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`
+        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`,
       );
       return res.data;
     },
@@ -35,12 +35,21 @@ export const useAdministrators = ({
     queryKey: ["administrators", pageNumber, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/super-admin/admins?pageNumber=${pageNumber}&size=10&sortDirection=${sortDirection}`
+        `/super-admin/admins?pageNumber=${pageNumber}&size=10&sortDirection=${sortDirection}`,
       );
       return res.data;
     },
     select: (data: Record<string, any>) => data?.data,
   });
+
+export const useAdminDelete = () => {
+  return useMutation({
+    mutationFn: async (id: string | number) => {
+      const res = await api.delete(`super-admin/admins/${id}`);
+      return res.data; // <-- natijani qaytaramiz
+    },
+  });
+};
 
 export const useCreateAdministrator = () => {
   return useMutation({

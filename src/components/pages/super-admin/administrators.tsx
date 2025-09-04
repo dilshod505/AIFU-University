@@ -2,6 +2,7 @@
 
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import {
+  useAdminDelete,
   useAdministrators,
   useCreateAdministrator,
 } from "@/components/models/queries/students";
@@ -29,6 +30,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import DeleteActionDialog from "@/components/delete-action-dialog";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -41,10 +43,10 @@ const Administrators = () => {
     pageNumber,
     sortDirection,
   });
+  const deleteAdmin = useAdminDelete();
   const createAdmin = useCreateAdministrator();
 
   const form = useForm();
-
   const fields = useMemo<FormField[]>(
     () => [
       {
@@ -72,7 +74,7 @@ const Administrators = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -113,18 +115,24 @@ const Administrators = () => {
         title: t("actions"),
         dataIndex: "actions",
         width: 150,
-        render: (_: any, r: Record<string, any>) => (
-          <TooltipBtn
-            size={"sm"}
-            title={r.isActive ? t("Ban") : t("Unban")}
-            variant={r.isActive ? "destructive" : "default"}
-          >
-            {r.isActive ? <Ban /> : <Check />}
-          </TooltipBtn>
+        render: (_: any, record: Record<string, any>) => (
+          <div className="flex items-center gap-3">
+            <TooltipBtn
+              size="sm"
+              title={record.isActive ? t("Ban") : t("Unban")}
+              variant={record.isActive ? "destructive" : "default"}
+            >
+              {record.isActive ? <Ban /> : <Check />}
+            </TooltipBtn>
+            <DeleteActionDialog
+              onConfirm={() => deleteAdmin.mutate(record.id)}
+              title={t("Delete admin")}
+            />
+          </div>
         ),
       },
     ],
-    [t]
+    [t],
   );
 
   const onSubmit = (data: any) => {
@@ -141,7 +149,7 @@ const Administrators = () => {
           setOpen(false);
           form.reset();
         },
-      }
+      },
     );
   };
 

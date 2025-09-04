@@ -71,7 +71,7 @@ const useActiveState = (pathname: string) => {
       }
       if (item.children) {
         return item.children.some((child: Record<string, any>) =>
-          isActive(child)
+          isActive(child),
         );
       }
       return false;
@@ -82,14 +82,14 @@ const useActiveState = (pathname: string) => {
     return (item: Record<string, any>): boolean => {
       if (!item.children) return false;
       return item.children.some((child: Record<string, any>) =>
-        isActive(child)
+        isActive(child),
       );
     };
   }, [isActive]);
 
   const getActiveLevel = useMemo(() => {
     return (
-      item: Record<string, any>
+      item: Record<string, any>,
     ): "exact" | "parent" | "child" | "none" => {
       if (pathname === item.href) return "exact";
       if (isParentActive(item)) return "parent";
@@ -121,8 +121,13 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         title: t("Dashboard"),
         icon: <LayoutDashboard className="w-5 h-5" />,
         href: `/${user?.role?.toLowerCase().replace("_", "-")}/dashboard`,
+        activePatterns: [
+          `/${user?.role?.toLowerCase().replace("_", "-")}/dashboard`,
+          `/${user?.role?.toLowerCase().replace("_", "-")}/dashboard/*`,
+        ],
         role: ["ADMIN", "SUPER_ADMIN"],
       },
+
       {
         title: t("categories"),
         icon: <FolderOpen className="w-5 h-5" />,
@@ -264,13 +269,13 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         role: ["ADMIN", "SUPER_ADMIN"],
       },
     ],
-    [t, user?.role, notifications]
+    [t, user?.role, notifications],
   );
 
   // Combine all menu items
   const allItems = useMemo(
     () => [...defaultItems, ...customMenuItems],
-    [defaultItems, customMenuItems]
+    [defaultItems, customMenuItems],
   );
 
   // Render menu item with children
@@ -295,7 +300,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         // Parent archived state (subtle background when child is archived)
         isParent &&
           !isActive &&
-          "bg-green-600 text-white hover:bg-green-600/20 hover:text-green-600"
+          "bg-green-600 text-white hover:bg-green-600/20 hover:text-green-600",
       );
     };
 
@@ -314,7 +319,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
                 variant={itemIsActive ? "secondary" : "default"}
                 className={cn(
                   "ml-auto h-5 px-1.5 text-xs",
-                  itemIsActive && "bg-white text-green-600"
+                  itemIsActive && "bg-white text-green-600",
                 )}
               >
                 {item.badge}
@@ -324,7 +329,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
               <ChevronDown
                 className={cn(
                   "ml-auto h-4 w-4 transition-transform",
-                  isParentActive && "rotate-180"
+                  isParentActive && "rotate-180",
                 )}
               />
             )}
@@ -339,7 +344,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         <button
           className={getMenuItemClasses(
             activeLevel === "exact" || activeLevel === "child",
-            activeLevel === "parent"
+            activeLevel === "parent",
           )}
           onClick={() => {
             // In collapsed state, clicking parent items could expand sidebar or navigate
@@ -386,8 +391,8 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           "w-full",
           getMenuItemClasses(
             activeLevel === "exact" || activeLevel === "child",
-            activeLevel === "parent"
-          )
+            activeLevel === "parent",
+          ),
         )}
       >
         {menuContent}
@@ -416,7 +421,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
                         "flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative",
                         "text-muted-foreground hover:bg-green-600/50 hover:text-white",
                         isActive(child) &&
-                          "bg-green-400 text-white hover:bg-green-700"
+                          "bg-green-400 text-white hover:bg-green-700",
                       )}
                     >
                       <span className="w-1.5 h-1.5 bg-current rounded-full flex-shrink-0" />
@@ -426,7 +431,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
                           variant={isActive(child) ? "secondary" : "default"}
                           className={cn(
                             "ml-auto h-5 px-1.5 text-xs",
-                            isActive(child) && "bg-white text-green-600"
+                            isActive(child) && "bg-white text-green-600",
                           )}
                         >
                           {child.badge}
@@ -456,7 +461,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         className={cn(
           "border-r bg-white transition-all duration-300",
           isCollapsed ? "w-20" : "w-64",
-          className
+          className,
         )}
         collapsible="icon"
       >
@@ -464,13 +469,13 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           <div
             className={cn(
               "flex items-center w-full py-4 transition-all duration-300",
-              isCollapsed ? "justify-center px-3" : "justify-between px-4"
+              isCollapsed ? "justify-center px-3" : "justify-between px-4",
             )}
           >
             <div
               className={cn(
                 "flex items-center gap-2 transition-all duration-300",
-                isCollapsed && "justify-center"
+                isCollapsed && "justify-center",
               )}
             >
               <LibraryBig className="w-6 h-6 text-primary flex-shrink-0" />
@@ -514,7 +519,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           <div
             className={cn(
               "mb-3 transition-all duration-300",
-              isCollapsed && "px-3 py-4"
+              isCollapsed && "px-3 py-4",
             )}
           >
             {isCollapsed ? (

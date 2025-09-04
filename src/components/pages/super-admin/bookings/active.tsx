@@ -2,7 +2,7 @@
 
 import { AutoForm } from "@/components/form/auto-form";
 import { api } from "@/components/models/axios";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import { BorrowBookForm } from "@/components/pages/super-admin/bookings/borrow-book-form";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Tag } from "antd";
+import { Tag, Form, InputNumber, Button as AntButton } from "antd";
 import {
   ChevronLeft,
   ChevronRight,
@@ -41,6 +41,8 @@ export default function ActiveBookingsPage() {
   const t = useTranslations();
   const form = useForm();
   const queryClient = useQueryClient();
+  const [extendForm] = Form.useForm();
+  const [isExtendOpen, setIsExtendOpen] = useState(false);
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize] = useState<number>(10);
@@ -70,6 +72,7 @@ export default function ActiveBookingsPage() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast.success(t("ijara muddati muvaffaqiyatli uzaytirildi"));
+      setIsExtendOpen(false);
     },
   });
 
@@ -129,35 +132,79 @@ export default function ActiveBookingsPage() {
                   <TimerReset />
                 </TooltipBtn>
               </DialogTrigger>
-              <DialogContent className={"bg-white dark:bg-background"}>
+              <DialogContent className="bg-white dark:bg-background">
                 <DialogHeader>
                   <DialogTitle>{t("ijara vaqtini uzaytirish")}</DialogTitle>
                   <DialogDescription className={"hidden"} />
                 </DialogHeader>
-                <div className="flex flex-col gap-2">
-                  <AutoForm
-                    className={"bg-white dark:bg-background"}
-                    submitText={t("uzaytirish")}
-                    fields={[
-                      {
-                        label: t("yana necha kunga ijarani uzaytirmoqchisiz"),
-                        name: "extendDays",
-                        type: "number",
-                        min: 1,
-                      },
-                    ]}
-                    form={form}
-                    onSubmit={(values: Record<string, any>) => {
-                      if (values.extendDays < 1) {
+                <div className="flex flex-col gap-4">
+                  <Form
+                    form={extendForm}
+                    layout="vertical"
+                    onFinish={(values) => {
+                      console.log("[v0] Form values received:", values);
+
+                      const extendDays = values.extendDays;
+                      console.log(
+                        "[v0] ExtendDays value:",
+                        extendDays,
+                        "Type:",
+                        typeof extendDays,
+                      );
+
+                      if (!extendDays || extendDays < 1) {
                         toast.error(t("kamida 1 kunga uzaytirish mumkin"));
                         return;
                       }
-                      extendReservation.mutate({
-                        extendDays: +values.extendDays,
-                        bookingId: +r.id,
-                      });
+
+                      console.log("[v0] Validated extendDays:", extendDays);
+
+                      extendReservation.mutate(
+                        { extendDays, bookingId: +r.id },
+                        {
+                          onSuccess: () => {
+                            extendForm.resetFields();
+                            setIsExtendOpen(false); // ✅ Modal yopiladi
+                          },
+                        },
+                      );
+
+                      extendForm.resetFields();
                     }}
-                  />
+                  >
+                    <Form.Item
+                      label={t("yana necha kunga ijarani uzaytirmoqchisiz")}
+                      name="extendDays"
+                      rules={[
+                        {
+                          required: true,
+                          message: t("kamida 1 kunga uzaytirish mumkin"),
+                        },
+                        {
+                          type: "number",
+                          min: 1,
+                          message: t("kamida 1 kunga uzaytirish mumkin"),
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        min={1}
+                        placeholder={t("kunlar soni")}
+                        style={{ width: "100%" }}
+                        size="large"
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <TooltipBtn
+                        className={"w-full"}
+                        type="primary"
+                        htmlType="submit"
+                        loading={extendReservation.isPending}
+                      >
+                        {t("uzaytirish")}
+                      </TooltipBtn>
+                    </Form.Item>
+                  </Form>
                 </div>
               </DialogContent>
             </Dialog>
@@ -206,7 +253,15 @@ export default function ActiveBookingsPage() {
         ),
       },
     ],
-    [extendReservation, form, returnReservation, t, pageNumber, pageSize]
+    [
+      extendReservation,
+      form,
+      returnReservation,
+      t,
+      pageNumber,
+      pageSize,
+      extendForm,
+    ],
   );
 
   return (

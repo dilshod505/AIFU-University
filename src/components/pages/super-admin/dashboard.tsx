@@ -278,24 +278,28 @@ const Dashboard = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
+                  <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
                     <div>STUDENT</div>
+                    <div>SURNAME</div>
                     <div>BOOK TITLE</div>
+                    <div>AUTHOR</div>
+                    <div>GIVEN At</div>
                     <div>DUE DATE</div>
                   </div>
                   <div className="space-y-3">
                     {bookingOverdue?.data?.data?.data?.map(
                       (booking: any, i: number) => (
-                        <div key={i} className="grid grid-cols-3 gap-4 text-sm">
+                        <div key={i} className="grid grid-cols-6 gap-4 text-sm">
                           <div className="font-medium">
-                            {booking.studentName ||
-                              booking.student?.name ||
-                              "Unknown Student"}
+                            {booking.name || "Unknown Student"}
                           </div>
+                          <div>{booking.surname || "Unknown"}</div>
                           <div className="text-muted-foreground">
-                            {booking.bookTitle ||
-                              booking.book?.title ||
-                              "Unknown Book"}
+                            {booking.title || "Unknown Book"}
+                          </div>
+                          <div>{booking.author || ""}</div>
+                          <div className="text-green-500 font-medium">
+                            {booking.givenAt || booking.due_date || "No Date"}
                           </div>
                           <div className="text-red-500 font-medium">
                             {booking.dueDate || booking.due_date || "No Date"}
