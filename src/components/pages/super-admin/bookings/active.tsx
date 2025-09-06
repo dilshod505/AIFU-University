@@ -78,8 +78,8 @@ export default function ActiveBookingsPage() {
   });
 
   const returnReservation = useMutation({
-    mutationFn: async ({ field, query }: { field: string; query: string }) => {
-      const res = await api.post("/admin/booking/return", { field, query });
+    mutationFn: async ({ bookingId }: { bookingId: number | string }) => {
+      const res = await api.post("/admin/booking/return", { bookingId });
       return res.data;
     },
     onSuccess: async () => {
@@ -223,30 +223,37 @@ export default function ActiveBookingsPage() {
                   <DialogDescription className={"hidden"} />
                 </DialogHeader>
                 <div className="flex flex-col gap-2">
-                  <AutoForm
-                    className={"bg-white dark:bg-background"}
-                    submitText={t("ijarani yakunlash")}
-                    fields={[
-                      {
-                        label: t("field (masalan: inventoryNumber)"),
-                        name: "field",
-                        type: "text",
-                      },
-                      {
-                        label: t("query (kitobning ID yoki inventory raqami)"),
-                        name: "query",
-                        type: "text",
-                      },
-                    ]}
-                    form={form}
-                    onSubmit={(values: Record<string, any>) => {
-                      returnReservation.mutate({
-                        field: values.field,
-                        query: values.query,
-                      });
-                      form.reset();
-                    }}
-                  />
+                  {/* Yakunlash */}
+                  <Dialog>
+                    <DialogTrigger>
+                      <TooltipBtn title={t("ijarani yakunlash")} size="sm">
+                        <Undo2 />
+                      </TooltipBtn>
+                    </DialogTrigger>
+                    <DialogContent className="bg-white dark:bg-background">
+                      <DialogHeader>
+                        <DialogTitle>{t("ijarani yakunlash")}</DialogTitle>
+                        <DialogDescription>
+                          {t("Haqiqatan ham bu ijarani yakunlamoqchimisiz?")}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="flex justify-end gap-2 mt-4">
+                        {/* Yo‘q tugmasi */}
+                        <Button variant="outline">{t("yoq")}</Button>
+
+                        {/* Ha tugmasi */}
+                        <Button
+                          className="bg-red-600 text-white hover:bg-red-700"
+                          onClick={() => {
+                            returnReservation.mutate({ bookingId: r.id }); // <--- id bo'lishi kerak
+                          }}
+                        >
+                          {t("ha")}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </DialogContent>
             </Dialog>

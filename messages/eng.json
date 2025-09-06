@@ -292,5 +292,7 @@
   "Previous Month": "Previous Month",
   "Data": "Data",
   "Monthly Booking Statistics": "Monthly Booking Statistics",
-  "Year Statistic": "Yearly Statistics"
+  "Year Statistic": "Yearly Statistics",
+  "Book": "Book",
+  "Bookings Per Day": "Bookings Per Day"
 }

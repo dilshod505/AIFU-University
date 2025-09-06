@@ -193,12 +193,20 @@ export function BorrowBookForm() {
                   onValueChange={(e: string) => setBookCopyType(e as any)}
                 >
                   <TabsList>
-                    <TabsTrigger value="id">{t("Epc")}</TabsTrigger>
-                    <TabsTrigger value="inventoryNumber">
+                    <TabsTrigger
+                      value="epc"
+                      className="data-[state=active]:text-white data-[state=active]:bg-green-600"
+                    >
+                      {t("Epc")}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="inventoryNumber"
+                      className="data-[state=active]:text-white data-[state=active]:bg-green-600"
+                    >
                       {t("Inventory number")}
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="id">
+                  <TabsContent value="epc">
                     <Input
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setBookCard(e.target.value as string)
@@ -222,10 +230,26 @@ export function BorrowBookForm() {
                   <Card className={"p-3"}>
                     <CardContent className={"p-1 space-y-2"}>
                       <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Author")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.author}</h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Category")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.category}</h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Title")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.title}</h1>
+                      </div>
+                      <div className="flex justify-between">
                         <p className={"text-end"}>{t("Inventory Number")}:</p>
                         <h1 className={"capitalize"}>
                           {bookData?.inventoryNumber}
                         </h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Udc")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.udc}</h1>
                       </div>
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("shelfLocation")}:</p>

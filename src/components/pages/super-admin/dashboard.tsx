@@ -158,7 +158,7 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 mb-6 space-y-5 space-x-2">
         <Panel title={t("Bookings Per Day")}>
           {bookingPerDay.isLoading ? (
             <Skeleton className="w-full h-48" />
@@ -167,36 +167,44 @@ const Dashboard = () => {
               type="donut"
               height="300"
               options={{
-                labels: ["valid\n", "Overdue"],
+                labels: [t("Valid"), t("Overdue")],
                 legend: { position: "bottom" },
+                colors: ["#22c55e", "#ef4444"], // ✅ yashil, qizil
               }}
               series={[
-                bookingDiagram.data?.total || 0,
+                bookingDiagram.data?.valid || 0,
                 bookingDiagram.data?.overdue || 0,
               ]}
             />
           )}
         </Panel>
+
         <Panel title={t("Today's Bookings")}>
           {bookingToday.isLoading ? (
             <Skeleton className="w-full h-48" />
           ) : bookingToday.data?.data?.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
-              No bookings today
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center p-4 text-green-600">
               <span className="text-3xl mb-2">
                 <SquareCheckBig className="w-10 h-10" />
               </span>
               <p className="font-bold text-lg">
-                {bookingToday.data.data.length} bookings today
+                {bookingToday.data.data.length} {t("bookings today")}
               </p>
-
-              <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-                {bookingToday.data.data.map((b: any) => (
-                  <li key={b.id}>
-                    {b.userName} {b.userSurname}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-4 text-green-600 overflow-y-auto max-h-96">
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground w-full o">
+                {bookingToday.data.data.map((b: any, idx: number) => (
+                  <li key={idx} className="border-b pb-2">
+                    <p className="text-[18px] font-bold">{b.studentFullName}</p>
+                    <p className="text-[16px]">
+                      <span className="font-bold">{t("Book")}:</span> {b.title}{" "}
+                      ({b.author})
+                    </p>
+                    <p className="text-[15px] text-green-600">
+                      <span className="font-semibold">{t("Due Date")}:</span>{" "}
+                      {new Date(b.dueDate).toLocaleDateString()}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -339,7 +347,7 @@ const Dashboard = () => {
                     <div>DUE DATE</div>
                   </div>
                   <div className="space-y-3">
-                    {bookingOverdue?.data?.data?.data?.map(
+                    {bookingOverdue?.data?.data?.map(
                       (booking: any, i: number) => (
                         <div key={i} className="grid grid-cols-6 gap-4 text-sm">
                           <div className="text-[16px]">
@@ -406,11 +414,15 @@ const StatCard = ({
 const Panel = ({
   title,
   children,
+  className,
 }: {
   title: string;
+  className?: string;
   children: React.ReactNode;
 }) => (
-  <Card>
+  <Card
+    className={`transition-transform duration-300 hover:scale-102 hover:shadow-lg ${className || ""}`}
+  >
     <CardHeader>
       <CardTitle className="text-md">{title}</CardTitle>
     </CardHeader>

@@ -348,7 +348,7 @@ const Profile = () => {
               options={todayPieChartOptions}
               series={todayPieChartSeries}
               type="pie"
-              height={250}
+              height={350}
             />
           </CardContent>
         </Card>
@@ -532,7 +532,7 @@ const Profile = () => {
               options={pieChartOptions}
               series={pieChartSeries}
               type="pie"
-              height={250}
+              height={350}
             />
           </CardContent>
         </Card>

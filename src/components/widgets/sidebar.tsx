@@ -296,7 +296,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         // Default inactive state
         "text-muted-foreground hover:bg-green-600/95 hover:text-white",
         // Active states
-        isActive && "bg-green-800 text-white hover:bg-green-800",
+        isActive && "bg-green-600 text-white hover:bg-green-800",
         // Parent archived state (subtle background when child is archived)
         isParent &&
           !isActive &&

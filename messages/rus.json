@@ -292,5 +292,7 @@
   "Previous Month": "Предыдущий месяц",
   "Data": "Данные",
   "Monthly Booking Statistics": "Ежемесячная статистика бронирований",
-  "Year Statistic": "Годовая статистика"
+  "Year Statistic": "Годовая статистика",
+  "Book": "Книга",
+  "Bookings Per Day": "Бронирований в день"
 }
