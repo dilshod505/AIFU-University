@@ -287,5 +287,10 @@
   "Phone number": "Telefon raqami",
   "Failed to load book details": "Kitob tafsilotlarini yuklab bo'lmadi",
   "enter author name": "Muallif ismini kiriting",
-  "enter book title": "Kitob nomini kiriting"
+  "enter book title": "Kitob nomini kiriting",
+  "Current Month": "Joriy oy",
+  "Previous Month": "Oʻtgan oy",
+  "Data": "Ma'lumotlar",
+  "Monthly Booking Statistics": "Oylik bron qilish statistikasi",
+  "Year Statistic": "Yillik statistika"
 }

@@ -287,5 +287,10 @@
   "Phone number": "Номер телефона",
   "Failed to load book details": "Не удалось загрузить сведения о книге",
   "enter author name": "Введите имя автора",
-  "enter book title": "Введите название книги"
+  "enter book title": "Введите название книги",
+  "Current Month": "Текущий месяц",
+  "Previous Month": "Предыдущий месяц",
+  "Data": "Данные",
+  "Monthly Booking Statistics": "Ежемесячная статистика бронирований",
+  "Year Statistic": "Годовая статистика"
 }

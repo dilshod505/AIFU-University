@@ -20,6 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNotificationsSocket } from "@/hooks/webSocket";
 
 const Notifications = () => {
   const t = useTranslations();
@@ -33,6 +34,8 @@ const Notifications = () => {
     null,
   );
   const { data: detail } = useGetNotificationById(selected?.id || undefined);
+
+  useNotificationsSocket();
 
   const accept = useMutation({
     mutationFn: async ({

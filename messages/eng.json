@@ -287,5 +287,10 @@
   "Phone number": "Phone number",
   "Failed to load book details": "Failed to load book details",
   "enter author name": "Enter author name",
-  "enter book title": "Enter book title"
+  "enter book title": "Enter book title",
+  "Current Month": "Current Month",
+  "Previous Month": "Previous Month",
+  "Data": "Data",
+  "Monthly Booking Statistics": "Monthly Booking Statistics",
+  "Year Statistic": "Yearly Statistics"
 }

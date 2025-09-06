@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 
 export const useProfile = () =>
@@ -9,6 +9,25 @@ export const useProfile = () =>
       return res.data;
     },
   });
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      name: string;
+      surname: string;
+      image: string;
+    }) => {
+      const res = await api.patch("/admin/profile", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      // profile qayta fetch qilinadi
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+};
 
 export const useAdmin = () =>
   useQuery({

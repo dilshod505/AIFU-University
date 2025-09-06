@@ -48,8 +48,29 @@ const Dashboard = () => {
   const bookCopiesCount = useBookCopiesCount();
   const averageStatic = useAverageUsage();
 
-  const perMonthData = bookingPerMonth.data?.data || [];
+  // -------------------- Monthly (kunlik) --------------------
+  const perDayData = bookingPerDay.data?.data || [];
+  const dayCategories = perDayData.map((item: any) =>
+    new Date(item.date).getDate(),
+  );
+  const takenPerDay = perDayData.map((item: any) => item.taken);
+  const returnedPerDay = perDayData.map((item: any) => item.returned);
+  const returnedLatePerDay = perDayData.map((item: any) => item.returnedLate);
 
+  const perDayOptions: ApexOptions = {
+    chart: { type: "bar", toolbar: { show: true } },
+    xaxis: { categories: dayCategories, title: { text: "Days of Month" } },
+    tooltip: { shared: true, intersect: false },
+  };
+
+  const perDaySeries = [
+    { name: "Taken", data: takenPerDay },
+    { name: "Returned", data: returnedPerDay },
+    { name: "Returned Late", data: returnedLatePerDay },
+  ];
+
+  // -------------------- Yearly (oylik) --------------------
+  const yearlyData = bookingPerMonth.data?.data || [];
   const monthNames = [
     "Jan",
     "Feb",
@@ -64,25 +85,23 @@ const Dashboard = () => {
     "Nov",
     "Dec",
   ];
-  const monthCategories = perMonthData.map(
+  const yearlyCategories = yearlyData.map(
     (item: any) => monthNames[item.month - 1],
   );
-  const takenPerMonth = perMonthData.map((item: any) => item.taken);
-  const returnedPerMonth = perMonthData.map((item: any) => item.returned);
-  const returnedLatePerMonth = perMonthData.map(
-    (item: any) => item.returnedLate,
-  );
+  const takenYearly = yearlyData.map((item: any) => item.taken);
+  const returnedYearly = yearlyData.map((item: any) => item.returned);
+  const returnedLateYearly = yearlyData.map((item: any) => item.returnedLate);
 
-  const perMonthOptions: ApexOptions = {
+  const yearlyOptions: ApexOptions = {
     chart: { type: "bar", toolbar: { show: true } },
-    xaxis: { categories: monthCategories },
+    xaxis: { categories: yearlyCategories, title: { text: "Months of Year" } },
     tooltip: { shared: true, intersect: false },
   };
 
-  const perMonthSeries = [
-    { name: "Taken", data: takenPerMonth },
-    { name: "Returned", data: returnedPerMonth },
-    { name: "Returned Late", data: returnedLatePerMonth },
+  const yearlySeries = [
+    { name: "Taken", data: takenYearly },
+    { name: "Returned", data: returnedYearly },
+    { name: "Returned Late", data: returnedLateYearly },
   ];
 
   return (
@@ -120,9 +139,9 @@ const Dashboard = () => {
         <StatCard
           title={t("Overdue Total")}
           value={
-            bookingOverdue.isLoading ? null : bookingOverdue?.data?.totalPages
+            bookingDiagram.isLoading ? null : bookingDiagram?.data?.overdue
           }
-          loading={bookingOverdue.isLoading}
+          loading={bookingDiagram.isLoading}
           subtitle={t("All overdue bookings")}
           icon={<SquareCheckBig />}
         />
@@ -139,7 +158,7 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-4 mb-6">
         <Panel title={t("Bookings Per Day")}>
           {bookingPerDay.isLoading ? (
             <Skeleton className="w-full h-48" />
@@ -148,98 +167,41 @@ const Dashboard = () => {
               type="donut"
               height="300"
               options={{
-                labels: ["Taken", "Returned", "Returned Late"],
+                labels: ["valid\n", "Overdue"],
                 legend: { position: "bottom" },
               }}
               series={[
-                bookingPerDay.data?.data?.at(-1)?.taken || 0,
-                bookingPerDay.data?.data?.at(-1)?.returned || 0,
-                bookingPerDay.data?.data?.at(-1)?.returnedLate || 0,
+                bookingDiagram.data?.total || 0,
+                bookingDiagram.data?.overdue || 0,
               ]}
             />
           )}
         </Panel>
-
-        <Panel title="Monthly Booking Statistics">
-          <div className="h-64">
-            {bookingPerMonth.isLoading ? (
-              <div className="flex justify-center items-center h-full text-muted-foreground">
-                Loading chart...
-              </div>
-            ) : (
-              <Chart
-                options={perMonthOptions}
-                series={perMonthSeries}
-                type="bar"
-                height="250"
-              />
-            )}
-          </div>
-        </Panel>
-
-        <div className="lg:col-span-3 xl:col-span-2">
-          <Panel title={t("Statistics")}>
-            <div className="h-72">
-              {bookingDiagram.isLoading ? (
-                <div className="flex justify-center items-center h-full text-muted-foreground">
-                  Loading chart...
-                </div>
-              ) : bookingDiagram.error ? (
-                <div className="flex justify-center items-center h-full text-red-500">
-                  Failed to load chart data
-                </div>
-              ) : (
-                <Chart
-                  options={perMonthOptions}
-                  series={perMonthSeries}
-                  type="bar"
-                  height="300"
-                />
-              )}
-            </div>
-          </Panel>
-        </div>
-
-        <Panel title={t("Top Books")}>
-          {booksTop.isLoading ? (
-            <Skeleton className="w-full h-32" />
-          ) : booksTop.data?.data?.length === 0 ? (
-            <p className="text-muted-foreground">No book data available</p>
-          ) : (
-            <ul className="space-y-2">
-              {booksTop.data.data.map((book: any, i: number) => (
-                <li key={i} className="flex justify-between text-sm">
-                  <span>{book.title}</span>
-                  <span className="font-bold">{book?.data?.totalBookings}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Panel>
-
-        <Panel title={t("Top Students")}>
-          {studentsTop.isLoading ? (
-            <Skeleton className="w-full h-32" />
-          ) : studentsTop.data?.data?.length === 0 ? (
-            <p className="text-muted-foreground">No student data available</p>
-          ) : (
-            <ul className="space-y-2">
-              {studentsTop?.data?.data?.map((student: any, i: number) => (
-                <li key={i} className="flex justify-between text-sm">
-                  <span>{student?.data?.userName}</span>
-                  <span className="font-bold">{student.totalBookings}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Panel>
-
         <Panel title={t("Today's Bookings")}>
-          <div className="flex flex-col items-center justify-center h-48 text-green-600">
-            <span className="text-3xl">
-              <SquareCheckBig className="w-10 h-10" />
-            </span>
-          </div>
+          {bookingToday.isLoading ? (
+            <Skeleton className="w-full h-48" />
+          ) : bookingToday.data?.data?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
+              No bookings today
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-4 text-green-600">
+              <span className="text-3xl mb-2">
+                <SquareCheckBig className="w-10 h-10" />
+              </span>
+              <p className="font-bold text-lg">
+                {bookingToday.data.data.length} bookings today
+              </p>
+
+              <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                {bookingToday.data.data.map((b: any) => (
+                  <li key={b.id}>
+                    {b.userName} {b.userSurname}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </Panel>
 
         <Panel title={t("Overdue Bookings")}>
@@ -261,9 +223,99 @@ const Dashboard = () => {
           </div>
         </Panel>
 
-        <div className="lg:col-span-3 xl:col-span-2">
+        <div className="lg:col-span-1 xl:col-span-4">
+          <Panel title={t("Monthly Booking Statistics")}>
+            <div className="h-64">
+              {bookingPerMonth.isLoading ? (
+                <div className="flex justify-center items-center h-full text-muted-foreground">
+                  Loading chart...
+                </div>
+              ) : (
+                <Chart
+                  options={perDayOptions}
+                  series={perDaySeries}
+                  type="bar"
+                  height="250"
+                />
+              )}
+            </div>
+          </Panel>
+          <div className={"mt-3"}>
+            <Panel title={t("Year Statistic")}>
+              <div className="h-72">
+                {bookingDiagram.isLoading ? (
+                  <div className="flex justify-center items-center h-full text-muted-foreground">
+                    Loading chart...
+                  </div>
+                ) : (
+                  <Chart
+                    options={yearlyOptions}
+                    series={yearlySeries}
+                    type="bar"
+                    height="300"
+                  />
+                )}
+              </div>
+            </Panel>
+          </div>
+        </div>
+
+        {/* Top Books va Top Students yonma yon */}
+        <div className="lg:col-span-3 xl:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Panel title={t("Top Books")}>
+            {booksTop.isLoading ? (
+              <Skeleton className="w-full h-32" />
+            ) : booksTop.data?.data?.length === 0 ? (
+              <p className="text-muted-foreground">No book data available</p>
+            ) : (
+              <ul className="space-y-2">
+                {booksTop.data.data.map((book: any, i: number) => (
+                  <li key={i} className="flex justify-between text-sm">
+                    <div className="flex flex-col">
+                      <span className="text-[18px]">{book.title}</span>
+                      <span className="text-[16px] text-muted-foreground">
+                        {book.author} • {book.category?.name}
+                      </span>
+                    </div>
+                    <span className="font-bold text-[16px] text-green-600">
+                      {book.usageCount}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+
+          <Panel title={t("Top Students")}>
+            {studentsTop.isLoading ? (
+              <Skeleton className="w-full h-32" />
+            ) : studentsTop.data?.data?.length === 0 ? (
+              <p className="text-muted-foreground">No student data available</p>
+            ) : (
+              <ul className="space-y-2">
+                {studentsTop.data.data.map((student: any, i: number) => (
+                  <li key={i} className="flex justify-between text-sm">
+                    <div className="flex flex-col">
+                      <span className="text-[18px]">
+                        {student.name} {student.surname}
+                      </span>
+                      <span className="text-[16px] text-muted-foreground">
+                        {student.degree} • {student.faculty}
+                      </span>
+                    </div>
+                    <span className="font-bold text-[16px] text-green-600">
+                      {student.usageCount}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+        </div>
+
+        <div className="lg:col-span-3 xl:col-span-6">
           <Panel title={t("All Overdue Bookings")}>
-            <div className="h-72 overflow-auto">
+            <div className="overflow-y-auto max-h-96">
               {bookingOverdue.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
                   Loading overdue bookings...
@@ -290,18 +342,18 @@ const Dashboard = () => {
                     {bookingOverdue?.data?.data?.data?.map(
                       (booking: any, i: number) => (
                         <div key={i} className="grid grid-cols-6 gap-4 text-sm">
-                          <div className="font-medium">
+                          <div className="text-[16px]">
                             {booking.name || "Unknown Student"}
                           </div>
                           <div>{booking.surname || "Unknown"}</div>
-                          <div className="text-muted-foreground">
+                          <div className="text-[16px]">
                             {booking.title || "Unknown Book"}
                           </div>
                           <div>{booking.author || ""}</div>
-                          <div className="text-green-500 font-medium">
+                          <div className="text-green-500 text-[16px]">
                             {booking.givenAt || booking.due_date || "No Date"}
                           </div>
-                          <div className="text-red-500 font-medium">
+                          <div className="text-red-500 text-[16px]">
                             {booking.dueDate || booking.due_date || "No Date"}
                           </div>
                         </div>
