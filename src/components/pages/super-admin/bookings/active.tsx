@@ -43,6 +43,7 @@ export default function ActiveBookingsPage() {
   const queryClient = useQueryClient();
   const [extendForm] = Form.useForm();
   const [isExtendOpen, setIsExtendOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"list" | "new-booking">("list"); // 🔹 tab state
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize] = useState<number>(10);
@@ -266,37 +267,28 @@ export default function ActiveBookingsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t("active reservations")}</h1>
-          <p className="text-muted-foreground mt-1">
-            {t("Hozirda olingan va muddati o'tgan kitoblar")} (
-            {bookings?.data?.totalElements || 0})
-          </p>
-        </div>
-        <Button onClick={() => refetch()} disabled={isLoading}>
-          <RefreshCw
-            className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-          />
-          {t("Yangilash")}
-        </Button>
-      </div>
-
-      <Tabs defaultValue="list" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
-          <TabsTrigger value="new-booking">
-            <Plus className="h-4 w-4 mr-2" />
-            {t("bron qilish")}
-          </TabsTrigger>
-        </TabsList>
-
+      <Tabs
+        defaultValue="list"
+        className="space-y-4"
+        value={activeTab}
+        onValueChange={(val) => setActiveTab(val as "list" | "new-booking")}
+      >
         <TabsContent value="list" className="space-y-4">
           <MyTable
+            title={t("active reservations")}
             columns={columns}
             dataSource={bookings?.data?.data || []}
             isLoading={isLoading}
             pagination={false}
+            header={
+              <TabsList>
+                <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
+                <TabsTrigger value="new-booking">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t("bron qilish")}
+                </TabsTrigger>
+              </TabsList>
+            }
             footer={
               <div
                 className={
@@ -356,6 +348,13 @@ export default function ActiveBookingsPage() {
         </TabsContent>
 
         <TabsContent value="new-booking">
+          {/* 🔹 Orqaga qaytish tugmasi qo‘shib qo‘ysak ham bo‘ladi */}
+          <div className="mb-4">
+            <Button onClick={() => setActiveTab("list")}>
+              <ChevronLeft className="mr-2" />
+              {t("royxat")}
+            </Button>
+          </div>
           <BorrowBookForm />
         </TabsContent>
       </Tabs>
