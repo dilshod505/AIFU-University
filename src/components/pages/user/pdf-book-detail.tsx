@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
+import { Marquee } from "@/components/magicui/marquee";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
@@ -25,7 +26,7 @@ const PdfBookDetail = () => {
     queryKey: ["pdf-books", book],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?category=${book.categoryPreview.id}`
+        `/client/pdf-books?category=${book.categoryPreview.id}`,
       );
       return res.data;
     },
@@ -130,87 +131,84 @@ const PdfBookDetail = () => {
         </main>
       </div>
       <section>
-        <Card className={"shadow-lg"}>
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>{t("Shu kategoriyadagi boshqa kitoblar")}</CardTitle>
-            <CardDescription className={"hidden"} />
+            <CardDescription className="hidden" />
           </CardHeader>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 px-6 gap-3">
-            {(pdfBooks.data?.length > 6
-              ? pdfBooks.data?.slice(0, 5)
-              : pdfBooks.data
-            )
-              ?.filter((b: Record<string, any>) => b.id !== book?.id)
-              ?.map((book: Record<string, any>, i: number) => (
-                <Link href={`/books/${book?.id}`} key={i}>
-                  <div className="overflow-hidden transition-all group">
-                    <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                      <Image
-                        src={book?.imageUrl || bookPlaceholder}
-                        alt={book?.title}
-                        width={400}
-                        height={200}
-                        priority
-                        quality={100}
-                        className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                          {book?.categoryPreviewDTO?.name}
-                        </Badge>
+
+          <div className="px-6">
+            <Marquee pauseOnHover className="gap-6 py-4">
+              {pdfBooks.data
+                ?.filter((b: Record<string, any>) => b.id !== book?.id)
+                ?.map((book: Record<string, any>, i: number) => (
+                  <Link href={`/books/${book?.id}`} key={i}>
+                    <div className="w-48 sm:w-56 overflow-hidden transition-all group">
+                      <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                        <Image
+                          src={book?.imageUrl || bookPlaceholder}
+                          alt={book?.title}
+                          width={400}
+                          height={200}
+                          priority
+                          quality={100}
+                          className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+                        />
+                        <div className="absolute top-3 left-3">
+                          <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                            {book?.categoryPreviewDTO?.name}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                          {book?.title}
+                        </h3>
+                        <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                          <span>{book?.author}</span>
+                          <span className="mx-2">•</span>
+                          <span>{book?.categoryPreviewDTO?.name}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {book?.description}
+                        </p>
                       </div>
                     </div>
+                  </Link>
+                ))}
 
-                    <div className="p-4">
-                      <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                        {book?.title}
-                      </h3>
-
-                      <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                        <span>{book?.author}</span>
-                        <span className="mx-2">•</span>
-                        <span>{book?.categoryPreviewDTO?.name}</span>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {book?.description}
-                      </p>
+              {/* All books */}
+              <Link href={`/books?category=${book?.categoryPreview?.id}`}>
+                <div className="w-48 sm:w-56 overflow-hidden transition-all group">
+                  <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                    <Image
+                      src={bookPlaceholder}
+                      alt={book?.title}
+                      width={400}
+                      height={200}
+                      priority
+                      quality={100}
+                      className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                        {book?.categoryPreview?.name}
+                      </Badge>
                     </div>
                   </div>
-                </Link>
-              ))}
-            <Link href={`/books?category=${book?.categoryPreview?.id}`}>
-              <div className="overflow-hidden transition-all group">
-                <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                  <Image
-                    src={bookPlaceholder}
-                    alt={book?.title}
-                    width={400}
-                    height={200}
-                    priority
-                    quality={100}
-                    className="w-full h-48 object-cover rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                      {book?.categoryPreview?.name}
-                    </Badge>
+                  <div className="p-4">
+                    <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {t("All Books")}
+                    </h3>
+                    <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                      <span>{t("category")}</span>
+                      <span className="mx-2">•</span>
+                      <span>{book?.categoryPreview?.name}</span>
+                    </div>
                   </div>
                 </div>
-
-                <div className="p-4">
-                  <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {t("All Books")}
-                  </h3>
-
-                  <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                    <span>{t("category")}</span>
-                    <span className="mx-2">•</span>
-                    <span>{book?.categoryPreview?.name}</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            </Marquee>
           </div>
         </Card>
       </section>

@@ -200,7 +200,11 @@ export default function ActiveBookingsPage() {
       >
         <TabsContent value="list" className="space-y-4">
           <MyTable
-            title={t("active reservations")}
+            title={
+              <h1 className="text-2xl font-semibold">
+                {t("active reservations")}
+              </h1>
+            }
             columns={columns}
             dataSource={bookings?.data?.data || []}
             isLoading={isLoading}
