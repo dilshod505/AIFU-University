@@ -1,68 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import { Archive, FileDown } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/components/models/axios";
+import MyTable, { IColumn } from "@/components/my-table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { useHistory } from "@/hooks/use-bookings";
 import { useMutation } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
-import { api } from "@/components/models/axios";
-import { Button } from "@/components/ui/button";
-
-// A new card component for history records
-function HistoryCard({ record }: { record: Record<string, any> }) {
-  const t = useTranslations();
-
-  return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-lg">
-          {record.bookTitle} ({record.inventoryNumber})
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <span className="font-medium text-muted-foreground">Muallif:</span>
-            <p className="font-medium">{record.author}</p>
-          </div>
-          <div>
-            <span className="font-medium text-muted-foreground">
-              Foydalanuvchi:
-            </span>
-            <p className="font-medium text-sm">
-              {record.name} {record.surname}
-            </p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <span className="font-medium text-muted-foreground">Olingan:</span>
-            <p className="font-medium">
-              {dayjs(record.givenAt).format("DD-MM-YYYY")}
-            </p>
-          </div>
-          <div>
-            <span className="font-medium text-muted-foreground">
-              {t("Qaytarilgan")}:
-            </span>
-            <p className="font-medium text-green-600">
-              {dayjs(record.returnedAt).format("DD-MM-YYYY")}
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+import {
+  Archive,
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ChevronLeft,
+  ChevronRight,
+  FileDown,
+  Search,
+  X,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
+import ReactPaginate from "react-paginate";
 
 export default function HistoryPage() {
   const t = useTranslations();
-  const [isSearching, setIsSearching] = useState(false);
-  const { data: history, isLoading } = useHistory();
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState<string>(searchQuery);
+  const [searchField, setSearchField] = useState<string>("userID");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const { data: history, isLoading } = useHistory({
+    searchField,
+    searchQuery,
+    sortDirection,
+  });
 
-  // ✅ Excel export mutation
   const exportExcel = useMutation({
     mutationFn: async () => {
       const res = await api.get("/admin/backup/history", {
@@ -79,6 +58,73 @@ export default function HistoryPage() {
       link.remove();
     },
   });
+
+  const columns = useMemo<IColumn[]>(
+    () => [
+      {
+        title: "#",
+        key: "index",
+        dataIndex: "index",
+        width: 50,
+        render: (_: any, __: any, index: number) => index + 1,
+      },
+      {
+        title: t("Name"),
+        key: "name",
+        dataIndex: "name",
+      },
+      {
+        title: t("Surname"),
+        key: "surname",
+        dataIndex: "surname",
+      },
+      {
+        title: t("Author"),
+        key: "author",
+        dataIndex: "author",
+      },
+      {
+        title: t("Book title"),
+        key: "bookTitle",
+        dataIndex: "bookTitle",
+      },
+      {
+        title: t("Inventory number"),
+        key: "inventoryNumber",
+        dataIndex: "inventoryNumber",
+      },
+      {
+        title: t("Given at"),
+        key: "givenAt",
+        dataIndex: "givenAt",
+        render: (givenAt: string) => dayjs(givenAt).format("DD.MM.YYYY"),
+      },
+      {
+        title: t("Due date"),
+        key: "dueDate",
+        dataIndex: "dueDate",
+        render: (dueDate: string) => dayjs(dueDate).format("DD.MM.YYYY"),
+      },
+      {
+        title: t("Returned at"),
+        key: "returnedAt",
+        dataIndex: "returnedAt",
+        render: (returnedAt: string) => dayjs(returnedAt).format("DD.MM.YYYY"),
+      },
+    ],
+    [t]
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setDebouncedSearchQuery("");
+    setPageNum(1);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -122,10 +168,93 @@ export default function HistoryPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {history?.map((record: Record<string, any>) => (
-            <HistoryCard key={record.id} record={record} />
-          ))}
+        <div>
+          <MyTable
+            columns={columns}
+            dataSource={history || []}
+            header={
+              <div
+                className={"flex justify-between items-center gap-2 flex-wrap"}
+              >
+                <div className="relative max-w-[250px]">
+                  <Select
+                    value={searchField}
+                    onValueChange={(e: string) => setSearchField(searchField)}
+                    defaultValue="userID"
+                  >
+                    <SelectTrigger value={"userID"}>
+                      {t("user ID")}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="userID">{t("user ID")}</SelectItem>
+                      <SelectItem value="cardNumber">
+                        {t("Card number")}
+                      </SelectItem>
+                      <SelectItem value="inventoryNumber">
+                        {t("Inventory number")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="relative max-w-[250px]">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="text-gray-400" size={16} />
+                  </div>
+                  <Input
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="pl-10 pr-10"
+                    placeholder={t("Search")}
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={clearSearch}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    </button>
+                  )}
+                </div>
+                {sortDirection === "asc" ? (
+                  <Button size={"sm"} onClick={() => setSortDirection("desc")}>
+                    <ArrowUpWideNarrow />
+                  </Button>
+                ) : (
+                  <Button size={"sm"} onClick={() => setSortDirection("asc")}>
+                    <ArrowDownWideNarrow />
+                  </Button>
+                )}
+              </div>
+            }
+          />
+          <div>
+            <ReactPaginate
+              breakLabel="..."
+              onPageChange={(e) => {
+                const newPageNum = e.selected + 1;
+                setPageNum(newPageNum);
+              }}
+              pageRangeDisplayed={10}
+              pageCount={Math.ceil((history?.data?.totalElements || 0) / 10)}
+              previousLabel={
+                <Button className={"bg-white text-black"}>
+                  <ChevronLeft />
+                  {t("Return")}
+                </Button>
+              }
+              nextLabel={
+                <Button className={"bg-white text-black"}>
+                  {t("Next")} <ChevronRight />
+                </Button>
+              }
+              className={"flex justify-center gap-2 items-center my-5"}
+              renderOnZeroPageCount={null}
+              forcePage={pageNum - 1}
+              pageClassName="list-none"
+              pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+              activeLinkClassName="bg-green-600 text-white rounded-full"
+            />
+          </div>
         </div>
       )}
     </div>

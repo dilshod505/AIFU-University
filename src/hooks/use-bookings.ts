@@ -1,15 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner"; // sonner'dan toast import qilindi
+import { api } from "@/components/models/axios";
 import {
   extendBooking,
   getBookingById,
   getBookings,
-  getHistory,
   getHistoryById,
   returnBook,
   searchBookings,
   searchHistory,
 } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner"; // sonner'dan toast import qilindi
 
 // Query keys
 export const bookingKeys = {
@@ -112,10 +112,23 @@ export function useExtendBooking() {
 }
 
 // History hooks
-export function useHistory() {
+export function useHistory({
+  searchField,
+  searchQuery,
+  sortDirection,
+}: {
+  searchField: string;
+  searchQuery: string;
+  sortDirection: "asc" | "desc";
+}) {
   return useQuery({
-    queryKey: historyKeys.lists(),
-    queryFn: getHistory,
+    queryKey: [historyKeys.lists(), searchField, searchQuery, sortDirection],
+    queryFn: async () => {
+      const response = await api.get(
+        `/admin/history?pageSize=10${searchField && searchQuery.length > 0 ? `&field=${searchField}` : ""}${searchQuery.length > 0 && searchField ? `&query=${searchQuery}` : ""}${sortDirection ? `&sortDirection=${sortDirection}` : ""}`
+      );
+      return response.data;
+    },
     select: (data) => data?.data?.data || [],
   });
 }

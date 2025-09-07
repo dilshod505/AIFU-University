@@ -49,7 +49,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const checkInventoryNumber = useCheckInventoryNumber();
@@ -99,7 +99,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          }),
+          })
         ),
       },
       {
@@ -127,7 +127,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks],
+    [t, baseBooks]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -222,7 +222,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, form, pageNum, pageSize],
+    [t, deleteCategory, form, pageNum, pageSize]
   );
 
   useEffect(() => {
@@ -238,8 +238,6 @@ export const CopiesBooks = () => {
   }, [editingBook, open, form, actionType]);
 
   useEffect(() => {
-    console.log(editingBook);
-
     if (editingBook) {
       form.reset({
         ...bookDetail,
@@ -265,7 +263,7 @@ export const CopiesBooks = () => {
       onSuccess: (res) => {
         if (res?.data) {
           toast.error(t("Bu inventory raqam allaqachon mavjud!"));
-          return; // ❌ keyingi create/update ishlamaydi
+          return;
         }
         if (editingBook) {
           updateBook.mutate(
@@ -275,7 +273,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category updated successfully"));
                 setOpen(false);
               },
-            },
+            }
           );
         } else {
           createCopiesBook.mutate(
@@ -285,7 +283,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category created successfully"));
                 setOpen(false);
               },
-            },
+            }
           );
         }
       },
@@ -385,7 +383,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize,
+                  (copiesBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>

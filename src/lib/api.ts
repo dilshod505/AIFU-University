@@ -41,11 +41,6 @@ export async function extendBooking(data: ExtendFormData): Promise<any> {
   return response.data;
 }
 
-// History API functions
-export async function getHistory(): Promise<any> {
-  const response = await api.get("/admin/history");
-  return response.data;
-}
 
 export async function getHistoryById(id: string): Promise<any> {
   const response = await api.get(`/admin/history/${id}`);
