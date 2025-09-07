@@ -3,10 +3,10 @@ import { BookingFormData, ExtendFormData } from "@/types/booking";
 
 export async function getBookings(
   pageNum: number,
-  pageSize: number
+  pageSize: number,
 ): Promise<any> {
   const response = await api.get(
-    `/admin/booking?pageNum=${pageNum}&pageSize=10`
+    `/admin/booking?pageNum=${pageNum}&pageSize=10`,
   );
   return response.data;
 }
@@ -18,10 +18,10 @@ export async function getBookingById(id: string): Promise<any> {
 
 export async function searchBookings(
   query: string,
-  field: string
+  field: string,
 ): Promise<any> {
   const response = await api.get(
-    `/admin/booking/search?query=${encodeURIComponent(query)}&field=${field}`
+    `/admin/booking/search?query=${encodeURIComponent(query)}&field=${field}`,
   );
   return response.data;
 }
@@ -43,7 +43,7 @@ export async function extendBooking(data: ExtendFormData): Promise<any> {
 
 // History API functions
 export async function getHistory(): Promise<any> {
-  const response = await api.get("/admin/history");
+  const response = await api.get(`/admin/history`);
   return response.data;
 }
 
@@ -57,7 +57,7 @@ export async function searchHistory(
   field: string,
   pageNumber: number = 1,
   pageSize: number = 10,
-  sortDirection: "asc" | "desc" = "asc"
+  sortDirection: "asc" | "desc" = "asc",
 ): Promise<any> {
   const res = await api.get("/api/admin/history/search", {
     params: {

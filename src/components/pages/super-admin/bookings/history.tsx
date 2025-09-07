@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Archive, FileDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Archive, FileDown, PenSquareIcon, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHistory } from "@/hooks/use-bookings";
 import { useMutation } from "@tanstack/react-query";
@@ -9,6 +9,11 @@ import { useTranslations } from "next-intl";
 import dayjs from "dayjs";
 import { api } from "@/components/models/axios";
 import { Button } from "@/components/ui/button";
+import MyTable, { IColumn } from "@/components/my-table";
+import { Input } from "@/components/ui/input";
+import TooltipBtn from "@/components/tooltip-btn";
+import DeleteActionDialog from "@/components/delete-action-dialog";
+import { toast } from "sonner";
 
 // A new card component for history records
 function HistoryCard({ record }: { record: Record<string, any> }) {
@@ -78,56 +83,113 @@ export default function HistoryPage() {
       link.click();
       link.remove();
     },
+    onSuccess: () => toast.success(t("Succses download excel")),
   });
 
+  const columns = useMemo<IColumn[]>(
+    () => [
+      {
+        key: "index",
+        dataIndex: "index",
+        title: "#",
+        width: 300,
+        render: (_: any, __: any, index: number) => index + 1,
+      },
+      {
+        key: "name",
+        dataIndex: "name",
+        title: t("name"),
+        width: 350,
+      },
+      {
+        key: "surname",
+        dataIndex: "surname",
+        title: t("Surname"),
+        width: 400,
+      },
+      {
+        key: "author",
+        dataIndex: "author",
+        title: t("Author"),
+        width: 400,
+      },
+      {
+        key: "bookTitle",
+        dataIndex: "bookTitle",
+        title: t("Book title"),
+        width: 400,
+      },
+      {
+        key: "inventoryNumber",
+        dataIndex: "inventoryNumber",
+        title: t("Inventory Number"),
+        width: 400,
+      },
+      {
+        key: "givenAt",
+        dataIndex: "givenAt",
+        title: t("Given At"),
+        width: 400,
+      },
+      {
+        key: "dueDate",
+        dataIndex: "dueDate",
+        title: t("Due Date"),
+        width: 400,
+      },
+      {
+        key: "returnedAt",
+        dataIndex: "returnedAt",
+        title: t("Returned At"),
+        width: 400,
+      },
+    ],
+    [t],
+  );
+
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t("arxivlangan ijaralar")}</h1>
-          <p className="text-muted-foreground mt-1">
-            {t("arxivlangan ijaralar royxati")} ({history?.length || 0})
-          </p>
-        </div>
+    <div className={"mt-6"}>
+      <MyTable
+        title={
+          <div>
+            <h1 className="text-3xl font-bold">{t("arxivlangan ijaralar")}</h1>
+            <p className="text-muted-foreground mt-1">
+              {t("arxivlangan ijaralar royxati")} ({history?.length || 0})
+            </p>
+          </div>
+        }
+        columns={columns}
+        isLoading={isLoading}
+        dataSource={history}
+        pagination={false}
+        header={
+          <div className={"flex items-center justify-center gap-2"}>
+            <div>
+              <Input
+                placeholder={t("Search history")}
+                value={""}
+                // onChange={(e) => setSearch(e.target.value)}
+                className="w-64"
+              />
+            </div>
+            <div>
+              <TooltipBtn
+                title={
+                  exportExcel.isPending
+                    ? t("Yuklanmoqda...")
+                    : t("Excelga yuklab olish")
+                }
+                onClick={() => exportExcel.mutate()}
+                disabled={exportExcel.isPending}
+              >
+                <FileDown />
+              </TooltipBtn>
+            </div>
+          </div>
+        }
+      />
 
-        {/* ✅ Excelga export tugmasi */}
-        <Button
-          variant="outline"
-          onClick={() => exportExcel.mutate()}
-          disabled={exportExcel.isPending}
-        >
-          <FileDown className="w-4 h-4 mr-2" />
-          {exportExcel.isPending
-            ? t("Yuklanmoqda...")
-            : t("Excelga yuklab olish")}
-        </Button>
-      </div>
-
-      {isLoading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">{t("loading")}</p>
-        </div>
-      ) : history?.length === 0 ? (
-        <div className="text-center py-12">
-          <Archive className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-lg font-medium text-muted-foreground mb-2">
-            {isSearching
-              ? t("Qidiruv natijasi topilmadi")
-              : t("Arxivda yozuvlar mavjud emas")}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {!isSearching &&
-              t("Kitoblar qaytarilgandan so'ng bu yerda ko'rinadi")}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {history?.map((record: Record<string, any>) => (
-            <HistoryCard key={record.id} record={record} />
-          ))}
-        </div>
-      )}
+      {/* ✅ Excelga export tugmasi */}
     </div>
   );
 }
