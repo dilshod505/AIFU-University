@@ -135,43 +135,27 @@ export default function ActiveBookingsPage() {
                   <Undo2 />
                 </TooltipBtn>
               </DialogTrigger>
-              <DialogContent className={"bg-white dark:bg-background"}>
+              <DialogContent className="bg-white dark:bg-background">
                 <DialogHeader>
                   <DialogTitle>{t("ijarani yakunlash")}</DialogTitle>
-                  <DialogDescription className={"hidden"} />
+                  <DialogDescription>
+                    {t("Haqiqatan ham bu ijarani yakunlamoqchimisiz")}
+                  </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-2">
-                  {/* Yakunlash */}
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <TooltipBtn title={t("ijarani yakunlash")} size="sm">
-                        <Undo2 />
-                      </TooltipBtn>
-                    </DialogTrigger>
-                    <DialogContent className="bg-white dark:bg-background">
-                      <DialogHeader>
-                        <DialogTitle>{t("ijarani yakunlash")}</DialogTitle>
-                        <DialogDescription>
-                          {t("Haqiqatan ham bu ijarani yakunlamoqchimisiz")}
-                        </DialogDescription>
-                      </DialogHeader>
 
-                      <div className="flex justify-end gap-2 mt-4">
-                        {/* Yo‘q tugmasi */}
-                        <Button variant="outline">{t("yoq")}</Button>
+                <div className="flex justify-end gap-2 mt-4">
+                  {/* Yo‘q tugmasi */}
+                  <Button variant="outline">{t("yoq")}</Button>
 
-                        {/* Ha tugmasi */}
-                        <Button
-                          className="bg-red-600 text-white hover:bg-red-700"
-                          onClick={() => {
-                            returnReservation.mutate({ bookingId: r.id }); // <--- id bo'lishi kerak
-                          }}
-                        >
-                          {t("Ha")}
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  {/* Ha tugmasi */}
+                  <Button
+                    className="bg-red-600 text-white hover:bg-red-700"
+                    onClick={() => {
+                      returnReservation.mutate({ bookingId: r.id }); // <--- id bo'lishi kerak
+                    }}
+                  >
+                    {t("Ha")}
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
