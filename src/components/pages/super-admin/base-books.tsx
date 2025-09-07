@@ -64,14 +64,16 @@ const BaseBooks = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const [filterColumn, setFilterColumn] = useState<string>("title");
+  const [filterColumn, setFilterColumn] = useState<string>("id");
+  const [filterOperator, setFilterOperator] = useState<string>("contains");
   const [filterValue, setFilterValue] = useState<string>("");
 
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
-    field: filterColumn,
-    query: filterValue,
     sortDirection,
+    searchQuery: filterValue
+      ? `${filterColumn}:${filterOperator}:${filterValue}`
+      : undefined,
   });
 
   const createBaseBook = useCreateBaseBook();
@@ -228,24 +230,34 @@ const BaseBooks = () => {
           header={
             <div className="flex justify-start items-center gap-2">
               <Select
-                value={filterColumn}
+                defaultValue="id"
                 style={{ width: 150 }}
-                onChange={setFilterColumn}
+                onChange={(val: any) => setFilterColumn(val)}
               >
                 <Option value="id">{t("id")}</Option>
-                <Option value="category">{t("Category")}</Option>
                 <Option value="title">{t("Title")}</Option>
                 <Option value="author">{t("Author")}</Option>
                 <Option value="isbn">{t("Isbn")}</Option>
-                <Option value="udc">{t("UDC")}</Option>
-                <Option value="series">{t("Series")}</Option>
+                <Option value="totalCopies">{t("Total copies")}</Option>
+                <Option value="takenCopies">{t("Taken copies")}</Option>
               </Select>
 
-              {/* Value */}
+              {/* Operator Select */}
+              <Select
+                defaultValue="contains"
+                style={{ width: 150 }}
+                onChange={(val) => setFilterOperator(val)}
+              >
+                <Option value="contains">{t("contains")}</Option>
+                <Option value="equals">{t("equals")}</Option>
+                <Option value="startsWith">{t("starts with")}</Option>
+                <Option value="endsWith">{t("ends with")}</Option>
+              </Select>
+
+              {/* Value Input */}
               <Input
                 placeholder={t("Filter value")}
                 style={{ width: 200 }}
-                value={filterValue}
                 onChange={(e) => setFilterValue(e.target.value)}
               />
               {sortDirection === "asc" ? (
