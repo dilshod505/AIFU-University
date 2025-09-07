@@ -294,5 +294,11 @@
   "Monthly Booking Statistics": "Ежемесячная статистика бронирований",
   "Year Statistic": "Годовая статистика",
   "Book": "Книга",
-  "Bookings Per Day": "Бронирований в день"
+  "Bookings Per Day": "Бронирований в день",
+  "Overdue Total": "Просроченная сумма",
+  "All overdue bookings": "Все просроченные бронирования",
+  "Haqiqatan ham bu ijarani yakunlamoqchimisiz": "Действительно завершить аренду?",
+  "kunlar soni": "Количество дней",
+  "yoq": "Нет",
+  "Ha": "Да"
 }

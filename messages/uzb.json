@@ -294,5 +294,11 @@
   "Monthly Booking Statistics": "Oylik bron qilish statistikasi",
   "Year Statistic": "Yillik statistika",
   "Book": "Kitob",
-  "Bookings Per Day": "Kuniga band qilishlar soni"
+  "Bookings Per Day": "Kuniga band qilishlar soni",
+  "Overdue Total": "Kechiktirilgan jami",
+  "All overdue bookings": "Barcha muddati o'tgan bandlar",
+  "Haqiqatan ham bu ijarani yakunlamoqchimisiz": "Ijarani yakunlashga ishonchingiz komilmi?",
+  "kunlar soni": "Kunlar soni",
+  "yoq": "Yo'q",
+  "Ha": "Ha"
 }

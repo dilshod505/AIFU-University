@@ -294,5 +294,11 @@
   "Monthly Booking Statistics": "Monthly Booking Statistics",
   "Year Statistic": "Yearly Statistics",
   "Book": "Book",
-  "Bookings Per Day": "Bookings Per Day"
+  "Bookings Per Day": "Bookings Per Day",
+  "Overdue Total": "Overdue Total",
+  "All overdue bookings": "All overdue bookings",
+  "Haqiqatan ham bu ijarani yakunlamoqchimisiz": "Are you sure you want to end this rental?",
+  "kunlar soni": "Number of days",
+  "yoq": "No",
+  "Ha": "Yes"
 }
