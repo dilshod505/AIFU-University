@@ -43,8 +43,8 @@ const PdfBookDetail = () => {
               width={400}
               height={600}
               priority
-              src={book.imageUrl}
-              alt={`Обложка книги ${book.title} — ${book.author}`}
+              src={book?.imageUrl}
+              alt={`Обложка книги ${book?.title} — ${book?.author}`}
               className="w-full h-96 object-cover"
             />
             <div className="p-4">

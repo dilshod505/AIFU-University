@@ -29,6 +29,7 @@ import {
   Input,
   InputNumber,
   Modal,
+  Select,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {
@@ -63,14 +64,16 @@ const BaseBooks = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  const [filterColumn, setFilterColumn] = useState<string>("title");
+  const [filterValue, setFilterValue] = useState<string>("");
+
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
-    searchQuery:
-      debouncedSearchAuthor || debouncedSearchTitle
-        ? `${debouncedSearchAuthor}-${debouncedSearchTitle}`
-        : undefined,
+    field: filterColumn,
+    query: filterValue,
     sortDirection,
   });
+
   const createBaseBook = useCreateBaseBook();
   const { data: categories } = useBaseBooksCategory();
   const deleteBook = useDeleteBaseBook();
@@ -170,7 +173,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -201,7 +204,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        }
+        },
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -224,14 +227,26 @@ const BaseBooks = () => {
           pagination={false}
           header={
             <div className="flex justify-start items-center gap-2">
+              <Select
+                value={filterColumn}
+                style={{ width: 150 }}
+                onChange={setFilterColumn}
+              >
+                <Option value="id">{t("id")}</Option>
+                <Option value="category">{t("Category")}</Option>
+                <Option value="title">{t("Title")}</Option>
+                <Option value="author">{t("Author")}</Option>
+                <Option value="isbn">{t("Isbn")}</Option>
+                <Option value="udc">{t("UDC")}</Option>
+                <Option value="series">{t("Series")}</Option>
+              </Select>
+
+              {/* Value */}
               <Input
-                placeholder={t("enter author name")}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              -
-              <Input
-                placeholder={t("enter book title")}
-                onChange={(e) => setSearchTitle(e.target.value)}
+                placeholder={t("Filter value")}
+                style={{ width: 200 }}
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
               />
               {sortDirection === "asc" ? (
                 <Button size={"sm"} onClick={() => setSortDirection("desc")}>
@@ -300,7 +315,7 @@ const BaseBooks = () => {
                   }}
                   pageRangeDisplayed={10}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / 10
+                    (baseBooks?.data?.totalElements || 0) / 10,
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>

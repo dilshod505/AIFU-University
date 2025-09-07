@@ -36,7 +36,7 @@ export function FeaturedBooks() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 cont gap-8">
           {data?.map((book: Record<string, any>, i: number) => (
             <div key={i} className="overflow-hidden transition-all group">
-              <Link href={"/books"}>
+              <Link href={`/books/${book.id}`}>
                 <div className="relative rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-lg">
                   <Image
                     src={

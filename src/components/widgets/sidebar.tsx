@@ -93,6 +93,7 @@ const useActiveState = (pathname: string) => {
     ): "exact" | "parent" | "child" | "none" => {
       if (pathname === item.href) return "exact";
       if (isParentActive(item)) return "parent";
+
       if (isActive(item)) return "child";
       return "none";
     };
@@ -252,6 +253,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         title: t("Notifications"),
         icon: <Bell className="w-5 h-5" />,
         href: `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
+        badge: notifications > 0 ? notifications : undefined,
         activePatterns: [
           `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
           `/${user?.role?.toLowerCase().replace("_", "-")}/notifications/*`,
@@ -311,6 +313,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
             {item.icon}
           </span>
         )}
+
         {!isCollapsed && (
           <>
             <span className="flex-1 truncate text-start">{item.title}</span>
