@@ -71,9 +71,8 @@ const BaseBooks = () => {
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
     sortDirection,
-    searchQuery: filterValue
-      ? `${filterColumn}:${filterOperator}:${filterValue}`
-      : undefined,
+    field: filterColumn,
+    query: filterValue,
   });
 
   const createBaseBook = useCreateBaseBook();
@@ -235,23 +234,13 @@ const BaseBooks = () => {
                 onChange={(val: any) => setFilterColumn(val)}
               >
                 <Option value="id">{t("id")}</Option>
-                <Option value="title">{t("Title")}</Option>
-                <Option value="author">{t("Author")}</Option>
+                <Option value="category">{t("Category")}</Option>
+                <Option value="fullInfo">
+                  {t("Full Info (Author/Title)")}
+                </Option>
                 <Option value="isbn">{t("Isbn")}</Option>
-                <Option value="totalCopies">{t("Total copies")}</Option>
-                <Option value="takenCopies">{t("Taken copies")}</Option>
-              </Select>
-
-              {/* Operator Select */}
-              <Select
-                defaultValue="contains"
-                style={{ width: 150 }}
-                onChange={(val) => setFilterOperator(val)}
-              >
-                <Option value="contains">{t("contains")}</Option>
-                <Option value="equals">{t("equals")}</Option>
-                <Option value="startsWith">{t("starts with")}</Option>
-                <Option value="endsWith">{t("ends with")}</Option>
+                <Option value="udc">{t("UDC")}</Option>
+                <Option value="series">{t("Series")}</Option>
               </Select>
 
               {/* Value Input */}

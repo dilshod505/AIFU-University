@@ -72,7 +72,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +98,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
@@ -323,7 +323,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   return (
@@ -412,7 +412,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize
+                  (books?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -573,7 +573,7 @@ const EBaseBooks = () => {
                         </h3>
                         <p>
                           {dayjs(getById.data.data.createdDate).format(
-                            "DD-MM-YYYY"
+                            "DD-MM-YYYY",
                           )}
                         </p>
                       </div>
@@ -676,13 +676,13 @@ const EBaseBooks = () => {
                     <Select
                       placeholder={t("Select category")}
                       loading={categories.isLoading}
-                    >
-                      {categories.data?.map((category: Record<string, any>) => (
-                        <Option key={category.id} value={category.id}>
-                          {category.name}
-                        </Option>
-                      ))}
-                    </Select>
+                      options={categories?.data?.map(
+                        (category: Record<string, any>) => ({
+                          label: category.name,
+                          value: Number(category.id), // 🔑 Majburiy number
+                        }),
+                      )}
+                    />
                   </Form.Item>
 
                   <Form.Item
