@@ -676,13 +676,15 @@ const EBaseBooks = () => {
                     <Select
                       placeholder={t("Select category")}
                       loading={categories.isLoading}
-                      options={categories?.data?.map(
-                        (category: Record<string, any>) => ({
-                          label: category.name,
-                          value: Number(category.id), // 🔑 Majburiy number
-                        }),
+                    >
+                      {categories?.data?.map(
+                        (category: Record<string, any>) => (
+                          <Select.Option key={category.id} value={category.id}>
+                            {category.name}
+                          </Select.Option>
+                        ),
                       )}
-                    />
+                    </Select>
                   </Form.Item>
 
                   <Form.Item
