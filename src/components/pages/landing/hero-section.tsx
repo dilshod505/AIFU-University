@@ -8,7 +8,7 @@ export function HeroSection() {
       alt={"bg"}
       priority
       draggable={false}
-      className={"inset-0 w-full h-[700px] object-cover z-0"}
+      className={"inset-0 w-full h-[700px] object-cover z-0 bg-background"}
     />
   );
 }

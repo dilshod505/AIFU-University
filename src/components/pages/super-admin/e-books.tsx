@@ -6,12 +6,6 @@ import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input as ShadcnInput } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { UploadOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -21,6 +15,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Select,
   Upload,
 } from "antd";
@@ -436,235 +431,230 @@ const EBaseBooks = () => {
           </div>
         }
       />
-      <Sheet
+      <Modal
         open={open}
-        onOpenChange={(open: boolean) => {
-          if (!open) {
-            setEditingBook(null);
-            setActionType("add");
-            form.resetFields();
-          }
-          setOpen(open);
+        onCancel={() => {
+          setEditingBook(null);
+          setActionType("add");
+          form.resetFields();
+          setOpen(false);
         }}
+        footer={null}
+        width={800}
+        className="rounded-xl hide-scroll bg-white dark:bg-background"
+        title={
+          <h1 className="text-xl font-bold">
+            {actionType === "add"
+              ? t("Add e-book")
+              : actionType === "edit"
+                ? t("Edit e-book")
+                : t("Book Details")}
+          </h1>
+        }
       >
-        <SheetContent
-          className={
-            "rounded-xl hide-scroll bg-white dark:bg-background max-w-[800px]"
-          }
-        >
-          <SheetHeader>
-            <SheetTitle asChild>
-              <h1 className={"text-xl font-bold"}>
-                {actionType === "add"
-                  ? t("Add e-book")
-                  : actionType === "edit"
-                    ? t("Edit e-book")
-                    : t("Book Details")}
-              </h1>
-            </SheetTitle>
-          </SheetHeader>
-          <div className="py-1">
-            {actionType === "view" ? (
-              <div className="space-y-6">
-                {getById.isLoading ? (
-                  <div className="flex justify-center items-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                  </div>
-                ) : getById.data?.data ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <Image
-                        height={400}
-                        width={"100%"}
-                        src={getById.data.data.imageUrl || "/placeholder.svg"}
-                        alt={getById.data.data.title}
-                        className="w-full h-[200px] object-cover bg-center rounded-lg shadow-lg"
-                      />
-                      <div className="text-center">
-                        <Button
-                          onClick={() =>
-                            window.open(getById.data.data.pdfUrl, "_blank")
-                          }
-                          className="w-full"
-                        >
-                          {t("Open PDF")}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Title")}
-                        </h3>
-                        <p className="text-xl font-bold">
-                          {getById.data.data.title}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Author")}
-                        </h3>
-                        <p>{getById.data.data.author}</p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Category")}
-                        </h3>
-                        <p>{getById.data.data.categoryPreview?.name}</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            {t("Publication Year")}
-                          </h3>
-                          <p>{getById.data.data.publicationYear}</p>
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            {t("Page Count")}
-                          </h3>
-                          <p>{getById.data.data.pageCount}</p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            {t("Language")}
-                          </h3>
-                          <p>{getById.data.data.language}</p>
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Script
-                          </h3>
-                          <p>{getById.data.data.script}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Publisher")}
-                        </h3>
-                        <p>{getById.data.data.publisher}</p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Isbn")}
-                        </h3>
-                        <p>{getById.data.data.isbn}</p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          File Size
-                        </h3>
-                        <p>{getById.data.data.size} MB</p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Created Date
-                        </h3>
-                        <p>
-                          {dayjs(getById.data.data.createdDate).format(
-                            "DD-MM-YYYY",
-                          )}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Description")}
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                          {getById.data.data.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500">
-                      {t("Failed to load book details")}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex justify-end pt-4 border-t">
-                  <Button variant="outline" onClick={() => setOpen(false)}>
-                    {t("close")}
-                  </Button>
+        <div className="py-1">
+          {actionType === "view" ? (
+            <div className="space-y-6">
+              {getById.isLoading ? (
+                <div className="flex justify-center items-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
                 </div>
+              ) : getById.data?.data ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <Image
+                      height={400}
+                      width={400}
+                      src={getById.data.data.imageUrl || "/placeholder.svg"}
+                      alt={getById.data.data.title}
+                      className="w-full h-[200px] object-cover bg-center rounded-lg shadow-lg"
+                    />
+                    <div className="text-center">
+                      <AntButton
+                        onClick={() =>
+                          window.open(getById.data.data.pdfUrl, "_blank")
+                        }
+                        className="w-full"
+                        type="primary"
+                      >
+                        {t("Open PDF")}
+                      </AntButton>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Title")}
+                      </h3>
+                      <p className="text-xl font-bold">
+                        {getById.data.data.title}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Author")}
+                      </h3>
+                      <p>{getById.data.data.author}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Category")}
+                      </h3>
+                      <p>{getById.data.data.categoryPreview?.name}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Publication Year")}
+                        </h3>
+                        <p>{getById.data.data.publicationYear}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Page Count")}
+                        </h3>
+                        <p>{getById.data.data.pageCount}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {t("Language")}
+                        </h3>
+                        <p>{getById.data.data.language}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Script
+                        </h3>
+                        <p>{getById.data.data.script}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Publisher")}
+                      </h3>
+                      <p>{getById.data.data.publisher}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Isbn")}
+                      </h3>
+                      <p>{getById.data.data.isbn}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        File Size
+                      </h3>
+                      <p>{getById.data.data.size} MB</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Created Date
+                      </h3>
+                      <p>
+                        {dayjs(getById.data.data.createdDate).format(
+                          "DD-MM-YYYY"
+                        )}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Description")}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                        {getById.data.data.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">
+                    {t("Failed to load book details")}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex justify-end pt-4 border-t">
+                <AntButton onClick={() => setOpen(false)}>
+                  {t("close")}
+                </AntButton>
               </div>
-            ) : (
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={onSubmit}
-                initialValues={initialValues}
-                className="space-y-4"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Form.Item
-                    label={t("kitob muqovasi")}
-                    name="imageUrl"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("Please upload book cover"),
-                      },
-                    ]}
+            </div>
+          ) : (
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={onSubmit}
+              initialValues={initialValues}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Form.Item
+                  label={t("kitob muqovasi")}
+                  name="imageUrl"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please upload book cover"),
+                    },
+                  ]}
+                >
+                  <Upload
+                    name="image"
+                    listType="picture"
+                    maxCount={1}
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    onChange={(info) => handleUpload(info, "imageUrl")}
                   >
-                    <Upload
-                      name="image"
-                      listType="picture"
-                      maxCount={1}
-                      accept="image/png,image/jpeg,image/jpg,image/webp"
-                      onChange={(info) => handleUpload(info, "imageUrl")}
-                    >
-                      <AntButton icon={<UploadOutlined />}>
-                        {t("Upload Image")}
-                      </AntButton>
-                    </Upload>
-                  </Form.Item>
+                    <AntButton icon={<UploadOutlined />}>
+                      {t("Upload Image")}
+                    </AntButton>
+                  </Upload>
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("elektron kitob fayli")}
-                    name="pdfUrl"
-                    rules={[
-                      { required: true, message: t("Please upload PDF file") },
-                    ]}
+                <Form.Item
+                  label={t("elektron kitob fayli")}
+                  name="pdfUrl"
+                  rules={[
+                    { required: true, message: t("Please upload PDF file") },
+                  ]}
+                >
+                  <Upload
+                    name="pdf"
+                    maxCount={1}
+                    accept="application/pdf"
+                    onChange={(info) => handleUpload(info, "pdfUrl")}
                   >
-                    <Upload
-                      name="pdf"
-                      maxCount={1}
-                      accept="application/pdf"
-                      onChange={(info) => handleUpload(info, "pdfUrl")}
-                    >
-                      <AntButton icon={<UploadOutlined />}>
-                        {t("Upload PDF")}
-                      </AntButton>
-                    </Upload>
-                  </Form.Item>
+                    <AntButton icon={<UploadOutlined />}>
+                      {t("Upload PDF")}
+                    </AntButton>
+                  </Upload>
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Author")}
-                    name="author"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("Please enter author name"),
-                      },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter author name")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Author")}
+                  name="author"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please enter author name"),
+                    },
+                  ]}
+                >
+                  <Input placeholder={t("Enter author name")} />
+                </Form.Item>
 
                   <Form.Item
                     label={t("Category")}
@@ -687,122 +677,118 @@ const EBaseBooks = () => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item
-                    label={t("Title")}
-                    name="title"
-                    rules={[
-                      { required: true, message: t("Please enter title") },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter book title")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Title")}
+                  name="title"
+                  rules={[{ required: true, message: t("Please enter title") }]}
+                >
+                  <Input placeholder={t("Enter book title")} />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Publication Year")}
-                    name="publicationYear"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("Please enter publication year"),
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      placeholder={t("Enter publication year")}
-                      max={new Date().getFullYear()}
-                      min={1000}
-                      className="w-full"
-                    />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Publication Year")}
+                  name="publicationYear"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please enter publication year"),
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder={t("Enter publication year")}
+                    max={new Date().getFullYear()}
+                    min={1000}
+                    className="w-full"
+                  />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Isbn")}
-                    name="isbn"
-                    rules={[
-                      { required: true, message: t("Please enter ISBN") },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter ISBN")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Isbn")}
+                  name="isbn"
+                  rules={[{ required: true, message: t("Please enter ISBN") }]}
+                >
+                  <Input placeholder={t("Enter ISBN")} />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Page Count")}
-                    name="pageCount"
-                    rules={[
-                      { required: true, message: t("Please enter page count") },
-                    ]}
-                  >
-                    <InputNumber
-                      placeholder={t("Enter page count")}
-                      min={1}
-                      className="w-full"
-                    />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Page Count")}
+                  name="pageCount"
+                  rules={[
+                    { required: true, message: t("Please enter page count") },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder={t("Enter page count")}
+                    min={1}
+                    className="w-full"
+                  />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Publisher")}
-                    name="publisher"
-                    rules={[
-                      { required: true, message: t("Please enter publisher") },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter publisher")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Publisher")}
+                  name="publisher"
+                  rules={[
+                    { required: true, message: t("Please enter publisher") },
+                  ]}
+                >
+                  <Input placeholder={t("Enter publisher")} />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Language")}
-                    name="language"
-                    rules={[
-                      { required: true, message: t("Please enter language") },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter language")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("Language")}
+                  name="language"
+                  rules={[
+                    { required: true, message: t("Please enter language") },
+                  ]}
+                >
+                  <Input placeholder={t("Enter language")} />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("kitob qaysi tilda yozilgan")}
-                    name="script"
-                    rules={[
-                      { required: true, message: t("Please enter script") },
-                    ]}
-                  >
-                    <Input placeholder={t("Enter script")} />
-                  </Form.Item>
+                <Form.Item
+                  label={t("kitob qaysi tilda yozilgan")}
+                  name="script"
+                  rules={[
+                    { required: true, message: t("Please enter script") },
+                  ]}
+                >
+                  <Input placeholder={t("Enter script")} />
+                </Form.Item>
 
-                  <Form.Item
-                    label={t("Description")}
-                    name="description"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("Please enter description"),
-                      },
-                    ]}
-                    className="md:col-span-2"
-                  >
-                    <TextArea
-                      rows={4}
-                      placeholder={t("Enter book description")}
-                    />
-                  </Form.Item>
-                </div>
+                <Form.Item
+                  label={t("Description")}
+                  name="description"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please enter description"),
+                    },
+                  ]}
+                  className="md:col-span-2"
+                >
+                  <TextArea
+                    rows={4}
+                    placeholder={t("Enter book description")}
+                  />
+                </Form.Item>
+              </div>
 
-                <div className="flex justify-end gap-2 pt-4">
-                  <AntButton onClick={() => setOpen(false)}>
-                    {t("Cancel")}
-                  </AntButton>
-                  <TooltipBtn
-                    htmlType="submit"
-                    loading={createBook.isPending || updateBook.isPending}
-                  >
-                    {actionType === "add" ? t("Add e-book") : t("Edit")}
-                  </TooltipBtn>
-                </div>
-              </Form>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
+              <div className="flex justify-end gap-2 pt-4">
+                <AntButton onClick={() => setOpen(false)}>
+                  {t("Cancel")}
+                </AntButton>
+                <AntButton
+                  htmlType="submit"
+                  type="primary"
+                  loading={createBook.isPending || updateBook.isPending}
+                >
+                  {actionType === "add" ? t("Add e-book") : t("Edit")}
+                </AntButton>
+              </div>
+            </Form>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };
