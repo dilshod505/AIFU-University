@@ -310,5 +310,16 @@
   "Language enter": "Язык ввода",
   "UDC Number": "Номер УДК",
   "Add Book Copy": "Добавить экземпляр книги",
-  "Edit Book Copy": "Редактировать экземпляр книги"
+  "Edit Book Copy": "Редактировать экземпляр книги",
+  "Upload Image": "Загрузить изображение",
+  "Upload PDF": "Загрузить PDF",
+  "Please enter author name": "Пожалуйста, введите имя автора",
+  "Enter author name": "Введите имя автора",
+  "Please select category": "Пожалуйста, выберите категорию",
+  "Please enter title": "Пожалуйста, введите заголовок",
+  "Enter book title": "Введите название книги",
+  "Please enter publication year": "Пожалуйста, введите год публикации",
+  "Enter publication year": "Введите год публикации",
+  "Enter ISBN": "Введите ISBN",
+  "Enter page count": "Введите количество страниц"
 }

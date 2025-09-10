@@ -68,7 +68,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
@@ -96,7 +96,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
       );
       return data;
     },
@@ -363,7 +363,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   return (
@@ -454,7 +454,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize,
+                  (books?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -513,7 +513,7 @@ const EBaseBooks = () => {
                   <div className="space-y-4">
                     <Image
                       height={400}
-                      width={400}
+                      width={"100%"}
                       src={getById.data.data.imageUrl || "/placeholder.svg"}
                       alt={getById.data.data.title}
                       className="w-full h-[200px] object-cover bg-center rounded-lg shadow-lg"
@@ -531,7 +531,7 @@ const EBaseBooks = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                         {t("Title")}
@@ -540,7 +540,6 @@ const EBaseBooks = () => {
                         {getById.data.data.title}
                       </p>
                     </div>
-
                     <div>
                       <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                         {t("Author")}
@@ -554,69 +553,58 @@ const EBaseBooks = () => {
                       </h3>
                       <p>{getById.data.data.categoryPreview?.name}</p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Publication Year")}
-                        </h3>
-                        <p>{getById.data.data.publicationYear}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Page Count")}
-                        </h3>
-                        <p>{getById.data.data.pageCount}</p>
-                      </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Publication Year")}
+                      </h3>
+                      <p>{getById.data.data.publicationYear}</p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {t("Language")}
-                        </h3>
-                        <p>{getById.data.data.language}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Script
-                        </h3>
-                        <p>{getById.data.data.script}</p>
-                      </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Page Count")}
+                      </h3>
+                      <p>{getById.data.data.pageCount}</p>
                     </div>
-
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("Language")}
+                      </h3>
+                      <p>{getById.data.data.language}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        {t("script")}
+                      </h3>
+                      <p>{getById.data.data.script}</p>
+                    </div>
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         {t("Publisher")}
                       </h3>
                       <p>{getById.data.data.publisher}</p>
                     </div>
-
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         {t("Isbn")}
                       </h3>
                       <p>{getById.data.data.isbn}</p>
                     </div>
-
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                        File Size
+                        {t("size")}
                       </h3>
                       <p>{getById.data.data.size} MB</p>
                     </div>
-
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                        Created Date
+                        {t("createdAt")}
                       </h3>
                       <p>
                         {dayjs(getById.data.data.createdDate).format(
-                          "DD-MM-YYYY",
+                          "DD-MM-YYYY"
                         )}
                       </p>
                     </div>
-
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         {t("Description")}

@@ -310,5 +310,16 @@
   "Language enter": "Input Language",
   "UDC Number": "UDC Number",
   "Add Book Copy": "Add Book Copy",
-  "Edit Book Copy": "Edit Book Copy"
+  "Edit Book Copy": "Edit Book Copy",
+  "Upload Image": "Upload Image",
+  "Upload PDF": "Upload PDF",
+  "Please enter author name": "Please enter author name",
+  "Enter author name": "Enter author name",
+  "Please select category": "Please select a category",
+  "Please enter title": "Please enter title",
+  "Enter book title": "Enter book title",
+  "Please enter publication year": "Please enter publication year",
+  "Enter publication year": "Enter publication year",
+  "Enter ISBN": "Enter ISBN",
+  "Enter page count": "Enter page count"
 }

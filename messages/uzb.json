@@ -310,5 +310,16 @@
   "Language enter": "Tilni kiriting",
   "UDC Number": "UDK raqami",
   "Add Book Copy": "Kitob nusxasini qo'shish",
-  "Edit Book Copy": "Kitob nusxasini tahrirlash"
+  "Edit Book Copy": "Kitob nusxasini tahrirlash",
+  "Upload Image": "Rasm yuklash",
+  "Upload PDF": "PDFni yuklash",
+  "Please enter author name": "Muallif ismini kiriting",
+  "Enter author name": "Muallif ismini kiriting",
+  "Please select category": "Kategoriyani tanlang",
+  "Please enter title": "Iltimos, sarlavhani kiriting",
+  "Enter book title": "Kitob nomini kiriting",
+  "Please enter publication year": "Iltimos, nashr yilini kiriting",
+  "Enter publication year": "Chop etilgan yilni kiriting",
+  "Enter ISBN": "ISBN kiriting",
+  "Enter page count": "Sahifalar sonini kiriting"
 }
