@@ -302,5 +302,11 @@
   "yoq": "No",
   "Ha": "Yes",
   "Returned At": "Returned At",
-  "Succses download excel": "Successful Excel download"
+  "Succses download excel": "Successful Excel download",
+  "Select category": "Select category",
+  "Publication year enter": "Publication year",
+  "Publication enter name": "Enter publication name",
+  "Publication enter city": "Publication city",
+  "Language enter": "Input Language",
+  "UDC Number": "UDC Number"
 }
