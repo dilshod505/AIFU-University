@@ -71,9 +71,8 @@ const BaseBooks = () => {
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
     sortDirection,
-    searchQuery: filterValue
-      ? `${filterColumn}:${filterOperator}:${filterValue}`
-      : undefined,
+    field: filterColumn,
+    query: filterValue,
   });
 
   const createBaseBook = useCreateBaseBook();
@@ -235,23 +234,13 @@ const BaseBooks = () => {
                 onChange={(val: any) => setFilterColumn(val)}
               >
                 <Option value="id">{t("id")}</Option>
-                <Option value="title">{t("Title")}</Option>
-                <Option value="author">{t("Author")}</Option>
+                <Option value="category">{t("Category")}</Option>
+                <Option value="fullInfo">
+                  {t("Full Info (Author/Title)")}
+                </Option>
                 <Option value="isbn">{t("Isbn")}</Option>
-                <Option value="totalCopies">{t("Total copies")}</Option>
-                <Option value="takenCopies">{t("Taken copies")}</Option>
-              </Select>
-
-              {/* Operator Select */}
-              <Select
-                defaultValue="contains"
-                style={{ width: 150 }}
-                onChange={(val) => setFilterOperator(val)}
-              >
-                <Option value="contains">{t("contains")}</Option>
-                <Option value="equals">{t("equals")}</Option>
-                <Option value="startsWith">{t("starts with")}</Option>
-                <Option value="endsWith">{t("ends with")}</Option>
+                <Option value="udc">{t("UDC")}</Option>
+                <Option value="series">{t("Series")}</Option>
               </Select>
 
               {/* Value Input */}
@@ -373,28 +362,31 @@ const BaseBooks = () => {
               name="title"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input placeholder={t("Title")} />
             </Form.Item>
             <Form.Item
               label={t("Author")}
               name="author"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input placeholder={t("Author")} />
             </Form.Item>
             <Form.Item
               rules={[{ required: true }]}
               label={t("Series")}
               name="series"
             >
-              <Input />
+              <Input placeholder={t("Series")} />
             </Form.Item>
             <Form.Item
               label={t("Category")}
               name="categoryId"
               rules={[{ required: true }]}
             >
-              <AntdSelect style={{ width: "100%" }}>
+              <AntdSelect
+                style={{ width: "100%" }}
+                placeholder={t("Select category")}
+              >
                 {categories?.data?.map((cat: Record<string, any>) => (
                   <Option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -414,17 +406,20 @@ const BaseBooks = () => {
               name="publicationYear"
               rules={[{ required: true }]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder={t("Publication year enter")}
+              />
             </Form.Item>
             <Form.Item
               label={t("Publisher")}
               name="publisher"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input placeholder={t("Publication enter name")} />
             </Form.Item>
             <Form.Item label={t("Publication City")} name="publicationCity">
-              <Input />
+              <Input placeholder={t("Publication city")} />
             </Form.Item>
           </div>
 
@@ -434,31 +429,35 @@ const BaseBooks = () => {
           </h1>
           <div className="grid md:grid-cols-2 gap-3">
             <Form.Item label={t("Isbn")} name="isbn">
-              <Input />
+              <Input placeholder={t("ISBN")} />
             </Form.Item>
             <Form.Item
               label={t("Page Count")}
               name="pageCount"
               rules={[{ required: true }]}
             >
-              <InputNumber style={{ width: "100%" }} />
+              <InputNumber
+                style={{ width: "100%" }}
+                min={1}
+                placeholder={t("Page Count")}
+              />
             </Form.Item>
             <Form.Item
               label={t("Language")}
               name="language"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input placeholder={t("Language enter")} />
             </Form.Item>
             <Form.Item label={t("UDC")} name="udc">
-              <Input />
+              <Input placeholder={t("UDC Number")} />
             </Form.Item>
             <Form.Item
               label={t("Title details")}
               name="titleDetails"
               rules={[{ required: true }]}
             >
-              <TextArea rows={4} />
+              <TextArea rows={4} placeholder={t("Title details")} />
             </Form.Item>
           </div>
 

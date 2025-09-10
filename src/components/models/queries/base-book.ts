@@ -3,18 +3,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useBaseBook = ({
   pageNum,
-  searchQuery,
+  field,
+  query,
   sortDirection,
 }: {
   pageNum: number;
-  searchQuery?: string;
+  field?: string;
+  query?: string | number;
   sortDirection?: "asc" | "desc";
 }) =>
   useQuery({
-    queryKey: ["base-book", pageNum, searchQuery, sortDirection],
+    queryKey: ["base-book", pageNum, field, query, sortDirection],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/base-books?pageSize=10&sortDirection=${sortDirection}&pageNumber=${pageNum}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/base-books?pageSize=10&pageNumber=${pageNum}&sortDirection=${sortDirection}${
+          query ? `&field=${field}&query=${query}` : ""
+        }`,
       );
       return res.data;
     },

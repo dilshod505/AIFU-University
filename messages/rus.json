@@ -302,5 +302,13 @@
   "yoq": "Нет",
   "Ha": "Да",
   "Returned At": "Возвращено в",
-  "Succses download excel": "Успешная загрузка Excel"
+  "Succses download excel": "Успешная загрузка Excel",
+  "Select category": "Выберите категорию",
+  "Publication year enter": "Год публикации",
+  "Publication enter name": "Введите название публикации",
+  "Publication enter city": "Город публикации",
+  "Language enter": "Язык ввода",
+  "UDC Number": "Номер УДК",
+  "Add Book Copy": "Добавить экземпляр книги",
+  "Edit Book Copy": "Редактировать экземпляр книги"
 }

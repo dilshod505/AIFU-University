@@ -302,5 +302,13 @@
   "yoq": "Yo'q",
   "Ha": "Ha",
   "Returned At": "Qaytarilgan vaqti",
-  "Succses download excel": "Excel yuklab olish muvaffaqiyatli yakunlandi"
+  "Succses download excel": "Excel yuklab olish muvaffaqiyatli yakunlandi",
+  "Select category": "Kategoriyani tanlang",
+  "Publication year enter": "Nashr yili kiriting",
+  "Publication enter name": "Nashr nomini kiriting",
+  "Publication enter city": "Nashr etish shahri",
+  "Language enter": "Tilni kiriting",
+  "UDC Number": "UDK raqami",
+  "Add Book Copy": "Kitob nusxasini qo'shish",
+  "Edit Book Copy": "Kitob nusxasini tahrirlash"
 }

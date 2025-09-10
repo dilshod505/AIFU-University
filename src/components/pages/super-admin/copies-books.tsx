@@ -49,7 +49,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
 
   const checkInventoryNumber = useCheckInventoryNumber();
@@ -99,7 +99,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          })
+          }),
         ),
       },
       {
@@ -127,7 +127,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks]
+    [t, baseBooks],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -222,7 +222,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, form, pageNum, pageSize]
+    [t, deleteCategory, pageNum, pageSize],
   );
 
   useEffect(() => {
@@ -273,7 +273,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category updated successfully"));
                 setOpen(false);
               },
-            }
+            },
           );
         } else {
           createCopiesBook.mutate(
@@ -283,7 +283,7 @@ export const CopiesBooks = () => {
                 toast.success(t("Category created successfully"));
                 setOpen(false);
               },
-            }
+            },
           );
         }
       },
@@ -336,13 +336,13 @@ export const CopiesBooks = () => {
             <div>
               <TooltipBtn
                 size={"sm"}
-                title={t("Add Category")}
+                title={t("Add Book Copy")}
                 onClick={() => {
                   setOpen(true);
                 }}
               >
                 <Plus />
-                {t("Add Category")}
+                {t("Add Book Copy")}
               </TooltipBtn>
             </div>
           </div>
@@ -383,7 +383,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize
+                  (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -429,9 +429,9 @@ export const CopiesBooks = () => {
             <SheetHeader>
               <SheetTitle>
                 {actionType === "add"
-                  ? t("Add Category")
+                  ? t("Add Book Copy")
                   : actionType === "edit"
-                    ? t("Edit Category")
+                    ? t("Edit Book Copy")
                     : ""}
               </SheetTitle>
             </SheetHeader>
