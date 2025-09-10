@@ -132,7 +132,7 @@ const Administrators = () => {
         ),
       },
     ],
-    [t],
+    [deleteAdmin, t],
   );
 
   const onSubmit = (data: any) => {

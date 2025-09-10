@@ -308,5 +308,7 @@
   "Publication enter name": "Введите название публикации",
   "Publication enter city": "Город публикации",
   "Language enter": "Язык ввода",
-  "UDC Number": "Номер УДК"
+  "UDC Number": "Номер УДК",
+  "Add Book Copy": "Добавить экземпляр книги",
+  "Edit Book Copy": "Редактировать экземпляр книги"
 }

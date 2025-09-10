@@ -308,5 +308,7 @@
   "Publication enter name": "Nashr nomini kiriting",
   "Publication enter city": "Nashr etish shahri",
   "Language enter": "Tilni kiriting",
-  "UDC Number": "UDK raqami"
+  "UDC Number": "UDK raqami",
+  "Add Book Copy": "Kitob nusxasini qo'shish",
+  "Edit Book Copy": "Kitob nusxasini tahrirlash"
 }

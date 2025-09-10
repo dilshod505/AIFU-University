@@ -308,5 +308,7 @@
   "Publication enter name": "Enter publication name",
   "Publication enter city": "Publication city",
   "Language enter": "Input Language",
-  "UDC Number": "UDC Number"
+  "UDC Number": "UDC Number",
+  "Add Book Copy": "Add Book Copy",
+  "Edit Book Copy": "Edit Book Copy"
 }

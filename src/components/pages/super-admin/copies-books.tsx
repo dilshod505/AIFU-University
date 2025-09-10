@@ -336,13 +336,13 @@ export const CopiesBooks = () => {
             <div>
               <TooltipBtn
                 size={"sm"}
-                title={t("Add Category")}
+                title={t("Add Book Copy")}
                 onClick={() => {
                   setOpen(true);
                 }}
               >
                 <Plus />
-                {t("Add Category")}
+                {t("Add Book Copy")}
               </TooltipBtn>
             </div>
           </div>
@@ -429,9 +429,9 @@ export const CopiesBooks = () => {
             <SheetHeader>
               <SheetTitle>
                 {actionType === "add"
-                  ? t("Add Category")
+                  ? t("Add Book Copy")
                   : actionType === "edit"
-                    ? t("Edit Category")
+                    ? t("Edit Book Copy")
                     : ""}
               </SheetTitle>
             </SheetHeader>

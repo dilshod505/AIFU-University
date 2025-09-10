@@ -411,12 +411,28 @@ const Users = () => {
                 value={filter}
                 onValueChange={(a: string) => setFilter(a as any)}
               >
-                <TabsList>
-                  <TabsTrigger value={"all"}>{t("All")}</TabsTrigger>
-                  <TabsTrigger value={"active"}>{t("Active")}</TabsTrigger>
-                  <TabsTrigger value={"inactive"}>{t("Inactive")}</TabsTrigger>
+                <TabsList className="flex gap-2">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("All")}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="active"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("Active")}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="inactive"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("Inactive")}
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
+
               <TooltipBtn
                 title={t("Export to Excel")}
                 onClick={() => {
@@ -503,14 +519,12 @@ const Users = () => {
           <SheetContent className="bg-white dark:bg-background hide-scroll w-fit">
             <SheetHeader>
               <SheetTitle>
-                {editingCategory ? t("Edit Category") : t("Add Category")}
+                {editingCategory ? t("Edit users") : t("Add student")}
               </SheetTitle>
             </SheetHeader>
             <AutoForm
               className="bg-transparent mt-5 mx-5 border-none p-0"
-              submitText={
-                editingCategory ? t("Edit Category") : t("Add Category")
-              }
+              submitText={editingCategory ? t("Edit users") : t("Add student")}
               onSubmit={onSubmit}
               form={form}
               fields={fields}
