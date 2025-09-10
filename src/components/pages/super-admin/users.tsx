@@ -587,6 +587,16 @@ const Users = () => {
                   </div>
                   <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t("Phone number")}
+                    </label>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                      {viewingDetail.phoneNumber
+                        ? viewingDetail.phoneNumber
+                        : "-"}
+                    </div>
+                  </div>
+                  <div className="space-y-2.5 h-full">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Admission Time")}
                     </label>
                     <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
