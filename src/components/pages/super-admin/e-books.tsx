@@ -69,6 +69,8 @@ const EBaseBooks = () => {
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null,
   );
+  const [uploadedImage, setUploadedImage] = useState<any>(null);
+  const [uploadedPdf, setUploadedPdf] = useState<any>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -170,6 +172,12 @@ const EBaseBooks = () => {
           ? Number(bookData.categoryPreview.id)
           : undefined,
       });
+      if (bookData.imageUrl) {
+        setUploadedImage({ url: bookData.imageUrl });
+      }
+      if (bookData.pdfUrl) {
+        setUploadedPdf({ url: bookData.pdfUrl });
+      }
     }
   }, [editingBook, getById.data, getById.isLoading, form]);
 
@@ -212,6 +220,8 @@ const EBaseBooks = () => {
       setEditingBook(null);
       setActionType("add");
       form.resetFields();
+      setUploadedImage(null);
+      setUploadedPdf(null);
     } catch (e) {
       console.log(e);
     }
@@ -223,12 +233,46 @@ const EBaseBooks = () => {
     }
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
+      const uploadedUrl =
+        info.file.response?.data?.url || info.file.response?.data;
+
+      // Update form field
       form.setFieldsValue({
-        [fieldName]: info.file.response?.url || info.file.response,
+        [fieldName]: uploadedUrl,
       });
+
+      // Update upload state for validation
+      if (fieldName === "imageUrl") {
+        setUploadedImage(info.file);
+      } else if (fieldName === "pdfUrl") {
+        setUploadedPdf(info.file);
+      }
+
+      // Trigger validation for the field
+      form.validateFields([fieldName]);
     } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed.`);
     }
+  };
+
+  const validateImageUpload = (_: any, value: any) => {
+    if (actionType === "edit" && editingBook?.imageUrl) {
+      return Promise.resolve();
+    }
+    if (uploadedImage || value) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error(t("Please upload book cover")));
+  };
+
+  const validatePdfUpload = (_: any, value: any) => {
+    if (actionType === "edit" && editingBook?.pdfUrl) {
+      return Promise.resolve();
+    }
+    if (uploadedPdf || value) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error(t("Please upload PDF file")));
   };
 
   const columns = useMemo<IColumn[]>(
@@ -367,6 +411,8 @@ const EBaseBooks = () => {
                 title={t("Add e-book")}
                 onClick={() => {
                   setOpen(true);
+                  setUploadedImage(null);
+                  setUploadedPdf(null);
                 }}
               >
                 <Plus />
@@ -438,6 +484,8 @@ const EBaseBooks = () => {
           setActionType("add");
           form.resetFields();
           setOpen(false);
+          setUploadedImage(null);
+          setUploadedPdf(null);
         }}
         footer={null}
         width={800}
@@ -563,7 +611,7 @@ const EBaseBooks = () => {
                       </h3>
                       <p>
                         {dayjs(getById.data.data.createdDate).format(
-                          "DD-MM-YYYY"
+                          "DD-MM-YYYY",
                         )}
                       </p>
                     </div>
@@ -606,8 +654,7 @@ const EBaseBooks = () => {
                   name="imageUrl"
                   rules={[
                     {
-                      required: true,
-                      message: t("Please upload book cover"),
+                      validator: validateImageUpload,
                     },
                   ]}
                 >
@@ -628,7 +675,9 @@ const EBaseBooks = () => {
                   label={t("elektron kitob fayli")}
                   name="pdfUrl"
                   rules={[
-                    { required: true, message: t("Please upload PDF file") },
+                    {
+                      validator: validatePdfUpload,
+                    },
                   ]}
                 >
                   <Upload
@@ -656,26 +705,24 @@ const EBaseBooks = () => {
                   <Input placeholder={t("Enter author name")} />
                 </Form.Item>
 
-                  <Form.Item
-                    label={t("Category")}
-                    name="categoryId"
-                    rules={[
-                      { required: true, message: t("Please select category") },
-                    ]}
+                <Form.Item
+                  label={t("Category")}
+                  name="categoryId"
+                  rules={[
+                    { required: true, message: t("Please select category") },
+                  ]}
+                >
+                  <Select
+                    placeholder={t("Select category")}
+                    loading={categories.isLoading}
                   >
-                    <Select
-                      placeholder={t("Select category")}
-                      loading={categories.isLoading}
-                    >
-                      {categories?.data?.map(
-                        (category: Record<string, any>) => (
-                          <Select.Option key={category.id} value={category.id}>
-                            {category.name}
-                          </Select.Option>
-                        ),
-                      )}
-                    </Select>
-                  </Form.Item>
+                    {categories?.data?.map((category: Record<string, any>) => (
+                      <Select.Option key={category.id} value={category.id}>
+                        {category.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
 
                 <Form.Item
                   label={t("Title")}
