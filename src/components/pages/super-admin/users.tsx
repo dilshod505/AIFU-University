@@ -207,7 +207,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t],
+    [deleteStudent, detail, form, t]
   );
 
   const fields = useMemo<any[]>(
@@ -310,7 +310,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const onSubmit = (data: any) => {
@@ -342,7 +342,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -357,7 +357,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
@@ -540,7 +540,7 @@ const Users = () => {
             {viewingDetail && (
               <div className="mt-5 mx-5 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("firstName")}
                     </label>
@@ -548,7 +548,7 @@ const Users = () => {
                       {viewingDetail.name}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("lastName")}
                     </label>
@@ -556,7 +556,7 @@ const Users = () => {
                       {viewingDetail.surname}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Faculty")}
                     </label>
@@ -564,7 +564,7 @@ const Users = () => {
                       {viewingDetail.faculty}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Degree")}
                     </label>
@@ -577,31 +577,7 @@ const Users = () => {
                       {viewingDetail.degree}
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {t("passportSeries")}
-                    </label>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                      {viewingDetail.passportSeries}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {t("passportNumber")}
-                    </label>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                      {viewingDetail.passportNumber}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {t("phoneNumber")}
-                    </label>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-                      {viewingDetail.phoneNumber}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Card number")}
                     </label>
@@ -609,7 +585,7 @@ const Users = () => {
                       {viewingDetail.cardNumber}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Admission Time")}
                     </label>
@@ -617,7 +593,7 @@ const Users = () => {
                       {viewingDetail.admissionTime}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("Graduation Time")}
                     </label>
@@ -625,7 +601,7 @@ const Users = () => {
                       {viewingDetail.graduationTime}
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 h-full">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {t("status")}
                     </label>
