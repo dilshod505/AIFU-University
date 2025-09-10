@@ -1,5 +1,6 @@
 "use client";
 
+import { Marquee } from "@/components/magicui/marquee";
 import { api, baseBackendUrl } from "@/components/models/axios";
 import { usePdfBookId } from "@/components/models/queries/pdf-books";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
-import { Marquee } from "@/components/magicui/marquee";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
@@ -26,7 +26,7 @@ const PdfBookDetail = () => {
     queryKey: ["pdf-books", book],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?category=${book.categoryPreview.id}`,
+        `/client/pdf-books?category=${book.categoryPreview.id}`
       );
       return res.data;
     },

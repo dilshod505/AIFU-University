@@ -41,6 +41,7 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import imagePlaceholder from "../../../../public/book-placeholder.png";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -250,7 +251,7 @@ const EBaseBooks = () => {
         key: "imageUrl",
         render: (imageUrl: string) => (
           <Image
-            src={imageUrl || "/placeholder.svg"}
+            src={imageUrl || imagePlaceholder.src}
             width={70}
             height={70}
             alt={imageUrl}
@@ -476,7 +477,7 @@ const EBaseBooks = () => {
                       <Image
                         height={400}
                         width={"100%"}
-                        src={getById.data.data.imageUrl || "/placeholder.svg"}
+                        src={getById.data.data.imageUrl || imagePlaceholder}
                         alt={getById.data.data.title}
                         className="w-full h-[200px] object-cover bg-center rounded-lg shadow-lg"
                       />
