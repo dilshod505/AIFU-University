@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useBookingByStudentId } from "@/components/models/queries/booking";
 
 export function BorrowBookForm() {
   const t = useTranslations();
@@ -38,17 +39,6 @@ export function BorrowBookForm() {
   );
 
   const [seeingStudent, setSeeingStudent] = useState<number | null>(null);
-  const reservationsOfStudent = useQuery({
-    queryKey: ["reservations", seeingStudent],
-    queryFn: async () => {
-      const res = await api.get<Record<string, any>>(
-        `/admin/booking?field=studentId&query=${seeingStudent}`,
-      );
-      return res.data;
-    },
-    enabled: !!seeingStudent,
-    select: (data: Record<string, any>) => data?.data,
-  });
 
   const reservateBook = useMutation({
     mutationFn: async ({
@@ -80,6 +70,8 @@ export function BorrowBookForm() {
 
     fetchStudent();
   }, [studentCard]);
+
+  const studentBookings = useBookingByStudentId(seeingStudent);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -157,22 +149,71 @@ export function BorrowBookForm() {
                           <DialogTrigger asChild>
                             <Button
                               className="w-fit"
-                              size={"sm"}
-                              onClick={() =>
-                                setSeeingStudent(studentData?.cardNumber)
-                              }
+                              size="sm"
+                              onClick={() => setSeeingStudent(studentData?.id)}
                             >
                               {t("see")}
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
+
+                          <DialogContent className="sm:max-w-[600px]">
                             <DialogHeader>
                               <DialogTitle>{t("talaba bronlari")}</DialogTitle>
                             </DialogHeader>
-                            {reservationsOfStudent.data?.length > 0 ? (
-                              <div></div>
+
+                            {studentBookings.isLoading && (
+                              <p>{t("Yuklanmoqda...")}</p>
+                            )}
+
+                            {studentBookings.data?.data?.length > 0 ? (
+                              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                                {studentBookings.data.data.map(
+                                  (booking: any) => (
+                                    <Card key={booking.id} className="p-2">
+                                      <CardContent className="space-y-1">
+                                        <div className="flex justify-between">
+                                          <span>{t("Kitob")}:</span>
+                                          <b>{booking.title}</b>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span>{t("Muallif")}:</span>
+                                          <b>{booking.author}</b>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span>{t("Berilgan sana")}:</span>
+                                          <b>
+                                            {dayjs(booking.givenAt).format(
+                                              "DD-MM-YYYY",
+                                            )}
+                                          </b>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span>{t("Tugash muddati")}:</span>
+                                          <b>
+                                            {dayjs(booking.dueDate).format(
+                                              "DD-MM-YYYY",
+                                            )}
+                                          </b>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span>{t("Status")}:</span>
+                                          <b
+                                            className={
+                                              booking.status === "OVERDUE"
+                                                ? "text-red-600"
+                                                : "text-green-600"
+                                            }
+                                          >
+                                            {booking.status}
+                                          </b>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  ),
+                                )}
+                              </div>
                             ) : (
-                              <div>{t("talaba bronlari mavjud emas")}</div>
+                              <p>{t("talaba bronlari mavjud emas")}</p>
                             )}
                           </DialogContent>
                         </Dialog>
