@@ -227,7 +227,7 @@ const Dashboard = () => {
               </p>
             ) : (
               <p className="mt-2" suppressHydrationWarning>
-                {bookingsTodayOverdue?.data?.data} {t("Today's booking list")}
+                {bookingsTodayOverdue?.data?.total} {t("Today's booking list")}
               </p>
             )}
           </div>
