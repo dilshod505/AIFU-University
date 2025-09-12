@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/components/models/axios";
 import { useTranslations } from "next-intl";
@@ -24,33 +24,29 @@ const AuthProvider = ({
       try {
         const res = await api.post("/admin/auth/me");
         if (res.status === 200 || res.status === 201) {
-          if (role && res.data.data.role.toString().toUpperCase() === role) {
-            setUser(res.data.data);
-          } else {
-            if (user) {
-              router.push(
-                `/${user?.role?.toLowerCase().replace("_", "-")}/dashboard`,
-              );
-            } else {
-              router.push("/login");
-            }
+          const userData = res.data.data;
+          setUser(userData);
+
+          if (
+            role &&
+            userData.role.toString().toUpperCase() !== role.toUpperCase()
+          ) {
+            router.push(
+              `/${userData.role.toLowerCase().replace("_", "-")}/dashboard`,
+            );
           }
         } else {
           router.push("/login");
         }
         setIsLoading(false);
       } catch (e: any) {
-        if (e.response?.status !== 200 || e.response?.status !== 201) {
-          router.push("/login");
-        }
-        setIsLoading(false);
-      } finally {
+        router.push("/login");
         setIsLoading(false);
       }
     };
 
     check();
-  }, []);
+  }, [role, router, setUser]);
 
   if (isLoading) {
     return (
