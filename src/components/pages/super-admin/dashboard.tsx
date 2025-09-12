@@ -188,13 +188,13 @@ const Dashboard = () => {
                 <SquareCheckBig className="w-10 h-10" />
               </span>
               <p className="font-bold text-lg">
-                {bookingToday.data.data.length} {t("bookings today")}
+                {bookingToday.data?.data?.length} {t("bookings today")}
               </p>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center p-4 text-green-600 overflow-y-auto max-h-96">
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground w-full o">
-                {bookingToday.data.data.map((b: any, idx: number) => (
+                {bookingToday?.data?.data?.map((b: any, idx: number) => (
                   <li key={idx} className="border-b pb-2">
                     <p className="text-[18px] font-bold">{b.studentFullName}</p>
                     <p className="text-[16px]">
@@ -219,13 +219,13 @@ const Dashboard = () => {
             </span>
             {bookingsTodayOverdue?.isLoading ? (
               <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
-            ) : bookingsTodayOverdue.data.total === 0 ? (
+            ) : bookingsTodayOverdue?.data?.total === 0 ? (
               <p className="mt-2" suppressHydrationWarning>
                 No overdue books!
               </p>
             ) : (
               <p className="mt-2" suppressHydrationWarning>
-                {bookingsTodayOverdue.data?.data} {t("Today's booking list")}
+                {bookingsTodayOverdue?.data?.data} {t("Today's booking list")}
               </p>
             )}
           </div>
@@ -277,7 +277,7 @@ const Dashboard = () => {
               <p className="text-muted-foreground">No book data available</p>
             ) : (
               <ul className="space-y-2">
-                {booksTop.data.data.map((book: any, i: number) => (
+                {booksTop?.data?.data?.map((book: any, i: number) => (
                   <li key={i} className="flex justify-between text-sm">
                     <div className="flex flex-col">
                       <span className="text-[18px]">{book.title}</span>
@@ -301,7 +301,7 @@ const Dashboard = () => {
               <p className="text-muted-foreground">No student data available</p>
             ) : (
               <ul className="space-y-2">
-                {studentsTop.data.data.map((student: any, i: number) => (
+                {studentsTop?.data?.data?.map((student: any, i: number) => (
                   <li key={i} className="flex justify-between text-sm">
                     <div className="flex flex-col">
                       <span className="text-[18px]">
