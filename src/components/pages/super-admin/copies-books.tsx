@@ -1,6 +1,6 @@
 "use client";
+
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import { AutoForm, FormField } from "@/components/form/auto-form";
 import { useBaseBook } from "@/components/models/queries/base-book";
 import {
   useCheckInventoryNumber,
@@ -10,18 +10,19 @@ import {
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
 } from "@/components/models/queries/copies-books";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Divider } from "antd";
+import {
+  Button as AntButton,
+  Input as AntInput,
+  Divider,
+  Form,
+  Modal,
+  Select,
+} from "antd";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -36,10 +37,13 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+
+const { TextArea } = AntInput;
 
 export const CopiesBooks = () => {
   const t = useTranslations();
@@ -49,7 +53,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const checkInventoryNumber = useCheckInventoryNumber();
@@ -88,7 +92,9 @@ export const CopiesBooks = () => {
   const [open2, setOpen2] = useState<boolean>(false);
   const form = useForm();
 
-  const fields = useMemo<FormField[]>(
+  const [antdForm] = Form.useForm();
+
+  const fields = useMemo<any[]>(
     () => [
       {
         label: t("Base Book"),
@@ -99,7 +105,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          }),
+          })
         ),
       },
       {
@@ -127,7 +133,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks],
+    [t, baseBooks]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -222,7 +228,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, pageNum, pageSize],
+    [t, deleteCategory, pageNum, pageSize]
   );
 
   useEffect(() => {
@@ -234,18 +240,21 @@ export const CopiesBooks = () => {
         baseBookId: "",
         epc: "",
       });
+      antdForm.resetFields();
     }
-  }, [editingBook, open, form, actionType]);
+  }, [editingBook, open, form, actionType, antdForm]);
 
   useEffect(() => {
     if (editingBook) {
-      form.reset({
-        ...bookDetail,
+      const formData = {
+        ...bookDetail?.data,
         ...editingBook,
-      });
-      form.setValue("baseBookId", bookDetail?.data?.baseBookId);
+        baseBookId: bookDetail?.data?.baseBookId,
+      };
+      form.reset(formData);
+      antdForm.setFieldsValue(formData);
     }
-  }, [bookDetail, form, editingBook]);
+  }, [bookDetail, form, editingBook, antdForm]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -272,8 +281,9 @@ export const CopiesBooks = () => {
               onSuccess: () => {
                 toast.success(t("Category updated successfully"));
                 setOpen(false);
+                antdForm.resetFields();
               },
-            },
+            }
           );
         } else {
           createCopiesBook.mutate(
@@ -282,15 +292,33 @@ export const CopiesBooks = () => {
               onSuccess: () => {
                 toast.success(t("Category created successfully"));
                 setOpen(false);
+                antdForm.resetFields();
               },
-            },
+            }
           );
         }
       },
       onError: () => {
-        toast.error(t("Server bilan bog‘lanishda xatolik"));
+        toast.error(t("Server bilan bog'lanishda xatolik"));
       },
     });
+  };
+
+  const renderFormField = (field: any) => {
+    switch (field.type) {
+      case "select":
+        return (
+          <Select
+            placeholder={`${t("Select")} ${field.label}`}
+            options={field.options}
+            allowClear
+          />
+        );
+      case "textarea":
+        return <TextArea placeholder={field.label} rows={4} />;
+      default:
+        return <AntInput placeholder={field.label} />;
+    }
   };
 
   return (
@@ -383,7 +411,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize,
+                  (copiesBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
@@ -410,115 +438,143 @@ export const CopiesBooks = () => {
 
       <Divider />
 
-      {/* Pagination */}
-
-      {/* Add/Edit Sheet */}
+      {/* Add/Edit Modal - CHANGED from Sheet to antd Modal */}
       {(actionType === "add" || actionType === "edit") && (
-        <Sheet
+        <Modal
+          title={
+            actionType === "add"
+              ? t("Add Book Copy")
+              : actionType === "edit"
+                ? t("Edit Book Copy")
+                : ""
+          }
           open={open}
-          onOpenChange={(v) => {
-            setOpen(v);
-            if (!v) {
-              setOpen(false);
-              setActionType("add");
-              setEditingBook(null);
-            }
+          onCancel={() => {
+            setOpen(false);
+            setActionType("add");
+            setEditingBook(null);
+            antdForm.resetFields();
           }}
+          footer={null}
+          width={600}
+          destroyOnClose
         >
-          <SheetContent className="hide-scroll bg-white dark:bg-background">
-            <SheetHeader>
-              <SheetTitle>
-                {actionType === "add"
-                  ? t("Add Book Copy")
-                  : actionType === "edit"
-                    ? t("Edit Book Copy")
-                    : ""}
-              </SheetTitle>
-            </SheetHeader>
-            <div className="p-3">
-              <AutoForm
-                className="p-0 border-none bg-transparent"
-                submitText={
-                  editingBook ? t("Edit book copy") : t("Add book copy")
-                }
-                onSubmit={onSubmit}
-                form={form}
-                fields={fields}
-                showResetButton={false}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
+          <Form
+            form={antdForm}
+            layout="vertical"
+            onFinish={onSubmit}
+            className="mt-4"
+          >
+            {fields.map((field) => (
+              <Form.Item
+                key={field.name}
+                label={field.label}
+                name={field.name}
+                rules={[
+                  {
+                    required: field.required,
+                    message: `${field.label} ${t("is required")}`,
+                  },
+                ]}
+              >
+                {renderFormField(field)}
+              </Form.Item>
+            ))}
+
+            <Form.Item className="mb-0 mt-6">
+              <div className="flex gap-2 justify-end">
+                <AntButton
+                  onClick={() => {
+                    setOpen(false);
+                    setActionType("add");
+                    setEditingBook(null);
+                    antdForm.resetFields();
+                  }}
+                >
+                  {t("Cancel")}
+                </AntButton>
+                <AntButton
+                  type="primary"
+                  htmlType="submit"
+                  loading={createCopiesBook.isPending || updateBook.isPending}
+                >
+                  {editingBook ? t("Edit book copy") : t("Add book copy")}
+                </AntButton>
+              </div>
+            </Form.Item>
+          </Form>
+        </Modal>
       )}
 
-      {/* View Sheet */}
+      {/* View Modal - CHANGED from Sheet to antd Modal */}
       {actionType === "view" && (
-        <Sheet
+        <Modal
+          title={t("Book Copy Detail")}
           open={open2}
-          onOpenChange={(v) => {
-            setOpen2(v);
-            if (!v) {
-              setOpen(false);
-              setOpen2(false);
-              setActionType("add");
-              setEditingBook(null);
-            }
+          onCancel={() => {
+            setOpen2(false);
+            setActionType("add");
+            setEditingBook(null);
           }}
-        >
-          <SheetContent>
-            <SheetHeader
-              className={"flex justify-center items-center text-[20px]"}
+          footer={[
+            <AntButton
+              key="close"
+              onClick={() => {
+                setOpen2(false);
+                setActionType("add");
+                setEditingBook(null);
+              }}
             >
-              <SheetTitle>{t("Book Copy Detail")}</SheetTitle>
-            </SheetHeader>
-            <div className="p-3">
-              <div className="space-y-4">
-                <p className={"flex justify-between items-center"}>
-                  <strong>{t("Inventory Number")}:</strong>{" "}
-                  {!isDetailLoading ? (
-                    bookDetail.data?.inventoryNumber
-                  ) : (
-                    <Skeleton className="w-1/2 h-5" />
-                  )}
-                </p>
-                <p className={"flex justify-between items-center"}>
-                  <strong>{t("Shelf Location")}:</strong>{" "}
-                  {!isDetailLoading ? (
-                    bookDetail.data?.shelfLocation
-                  ) : (
-                    <Skeleton className="w-1/2 h-5" />
-                  )}
-                </p>
-                <p className={"flex justify-between items-center"}>
-                  <strong>{t("Notes")}:</strong>{" "}
-                  {!isDetailLoading ? (
-                    bookDetail.data?.notes
-                  ) : (
-                    <Skeleton className="w-1/2 h-5" />
-                  )}
-                </p>
-                <p className={"flex justify-between items-center"}>
-                  <strong>{t("Base Book")}:</strong>{" "}
-                  {!isDetailLoading ? (
-                    bookDetail.data?.baseBookId
-                  ) : (
-                    <Skeleton className="w-1/2 h-5" />
-                  )}
-                </p>
-                <p className="flex justify-between items-center">
-                  <strong>{t("Is Taken")}:</strong>{" "}
-                  {isDetailLoading ? (
-                    <Skeleton className="w-1/2 h-5" />
-                  ) : bookDetail?.data?.isTaken ? (
-                    <BookOpenCheck className="text-green-600 w-5 h-5" />
-                  ) : (
-                    <BookMinus className="text-red-500 w-5 h-5" />
-                  )}
-                </p>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+              {t("Close")}
+            </AntButton>,
+          ]}
+          width={500}
+        >
+          <div className="space-y-4 mt-4">
+            <p className={"flex justify-between items-center"}>
+              <strong>{t("Inventory Number")}:</strong>{" "}
+              {!isDetailLoading ? (
+                bookDetail?.data?.inventoryNumber
+              ) : (
+                <Skeleton className="w-1/2 h-5" />
+              )}
+            </p>
+            <p className={"flex justify-between items-center"}>
+              <strong>{t("Shelf Location")}:</strong>{" "}
+              {!isDetailLoading ? (
+                bookDetail?.data?.shelfLocation
+              ) : (
+                <Skeleton className="w-1/2 h-5" />
+              )}
+            </p>
+            <p className={"flex justify-between items-center"}>
+              <strong>{t("Notes")}:</strong>{" "}
+              {!isDetailLoading ? (
+                bookDetail?.data?.notes
+              ) : (
+                <Skeleton className="w-1/2 h-5" />
+              )}
+            </p>
+            <p className={"flex justify-between items-center"}>
+              <strong>{t("Base Book")}:</strong>{" "}
+              {!isDetailLoading ? (
+                bookDetail?.data?.baseBookId
+              ) : (
+                <Skeleton className="w-1/2 h-5" />
+              )}
+            </p>
+            <p className="flex justify-between items-center">
+              <strong>{t("Is Taken")}:</strong>{" "}
+              {isDetailLoading ? (
+                <Skeleton className="w-1/2 h-5" />
+              ) : bookDetail?.data?.isTaken ? (
+                <BookOpenCheck className="text-green-600 w-5 h-5" />
+              ) : (
+                <BookMinus className="text-red-500 w-5 h-5" />
+              )}
+            </p>
+          </div>
+        </Modal>
       )}
     </div>
   );
