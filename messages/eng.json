@@ -323,5 +323,7 @@
   "Enter ISBN": "Enter ISBN",
   "Enter page count": "Enter page count",
   "Full Info (Author/Title)": "Full Info (Author/Title)",
-  "Filter value": "Filter value"
+  "Filter value": "Filter value",
+  "Full name": "Full name",
+  "OVERDUE": "Overdue"
 }

@@ -24,14 +24,51 @@ import {
   Undo2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // 🔹 API orqali bookinglarni olish
-async function fetchBookings(pageNum: number, pageSize: number) {
-  const res = await api.get(`/admin/booking?pageNum=${pageNum}&pageSize=10`);
+// 🔹 API orqali bookinglarni olish
+async function fetchBookings({
+  pageNum,
+  pageSize,
+  filter,
+  field,
+  query,
+  sortDirection,
+}: {
+  pageNum: number;
+  pageSize: number;
+  filter: "all" | "APPROVED" | "OVERDUE";
+  field?:
+    | "studentId"
+    | "cardNumber"
+    | "fullName"
+    | "bookEpc"
+    | "invetoryNumber";
+  query?: string | number;
+  sortDirection?: "asc" | "desc";
+}) {
+  const res = await api.get("/admin/booking", {
+    params: {
+      pageNum,
+      pageSize,
+      filter,
+      field,
+      query,
+      sortDirection,
+    },
+  });
   return res.data;
 }
 
@@ -43,15 +80,33 @@ export default function ActiveBookingsPage() {
   const [isExtendOpen, setIsExtendOpen] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"list" | "new-booking">("list"); // 🔹 tab state
 
+  const [searchField, setSearchField] = useState<
+    "studentId" | "cardNumber" | "fullName" | "bookEpc" | "invetoryNumber"
+  >("fullName");
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  // 🔹 Filter
+  const [filter, setFilter] = useState<"all" | "APPROVED" | "OVERDUE">("all");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize] = useState<number>(10);
-  const {
-    data: bookings,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ["bookings", pageNumber, pageSize],
-    queryFn: () => fetchBookings(pageNumber, pageSize),
+  const { data: bookings, isLoading } = useQuery({
+    queryKey: [
+      "bookings",
+      pageNumber,
+      pageSize,
+      filter,
+      searchField,
+      searchValue,
+    ],
+    queryFn: () =>
+      fetchBookings({
+        pageNum: pageNumber,
+        pageSize,
+        filter,
+        field: searchValue ? searchField : undefined,
+        query: searchValue || undefined,
+        sortDirection: "desc",
+      }),
   });
 
   const extendReservation = useMutation({
@@ -194,15 +249,72 @@ export default function ActiveBookingsPage() {
             isLoading={isLoading}
             pagination={false}
             header={
-              <TabsList>
-                {activeTab !== "list" && (
-                  <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
-                )}
-                <TabsTrigger value="new-booking">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t("bron qilish")}
-                </TabsTrigger>
-              </TabsList>
+              <>
+                <div className="flex gap-2 items-center">
+                  <Select
+                    value={searchField}
+                    onValueChange={(val: any) => setSearchField(val)}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder={t("Search by")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cardNumber">
+                        {t("Card number")}
+                      </SelectItem>
+                      <SelectItem value="fullName">{t("Full name")}</SelectItem>
+                      <SelectItem value="bookEpc">{t("Book EPC")}</SelectItem>
+                      <SelectItem value="inventoryNumber">
+                        {t("Inventory number")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Input
+                    placeholder={t("Search")}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                </div>
+                <Tabs
+                  value={filter}
+                  onValueChange={(val: string) => {
+                    setFilter(val as any);
+                    setPageNumber(1); // filter o‘zgarsa 1-sahifaga qaytadi
+                  }}
+                >
+                  <TabsList className="flex gap-2">
+                    <TabsTrigger
+                      value="all"
+                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                    >
+                      {t("All")}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="APPROVED"
+                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                    >
+                      {t("APPROVED")}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="OVERDUE"
+                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                    >
+                      {t("OVERDUE")}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+
+                <TabsList>
+                  {activeTab !== "list" && (
+                    <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
+                  )}
+                  <TabsTrigger value="new-booking">
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t("bron qilish")}
+                  </TabsTrigger>
+                </TabsList>
+              </>
             }
             footer={
               <div

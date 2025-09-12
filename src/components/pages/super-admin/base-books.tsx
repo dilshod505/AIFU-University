@@ -207,7 +207,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   useEffect(() => {
@@ -236,7 +236,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        }
+        },
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -270,9 +270,6 @@ const BaseBooks = () => {
                 }}
               >
                 <Option value="id">{t("id")}</Option>
-                {/* <Option value="category">{t("Category")}</Option> */}
-                <Option value="title">{t("Title")}</Option>
-                <Option value="author">{t("Author")}</Option>
                 <Option value="fullInfo">
                   {t("Full Info (Author/Title)")}
                 </Option>
@@ -372,7 +369,7 @@ const BaseBooks = () => {
                   }}
                   pageRangeDisplayed={10}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / 10
+                    (baseBooks?.data?.totalElements || 0) / 10,
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>

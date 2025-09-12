@@ -323,5 +323,7 @@
   "Enter ISBN": "ISBN kiriting",
   "Enter page count": "Sahifalar sonini kiriting",
   "Full Info (Author/Title)": "To'liq ma'lumot (Muallif/Sarlavha)",
-  "Filter value": "Filtrlash qiymati"
+  "Filter value": "Filtrlash qiymati",
+  "Full name": "Toʻliq ism",
+  "OVERDUE": "Kechiktirilgan"
 }

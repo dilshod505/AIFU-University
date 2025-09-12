@@ -42,16 +42,18 @@ import {
   GraduationCap,
   PenSquareIcon,
   Plus,
+  Search,
   User,
   UserRoundCheck,
   UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -61,12 +63,20 @@ const Users = () => {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchField, setSearchField] = useState<
+    "id" | "cardNumber" | "fullName"
+  >("fullName");
+
   const { data: students, isLoading } = useStudents({
     filter,
     pageNumber,
     size,
     sortDirection,
+    field: searchValue ? searchField : undefined,
+    query: searchValue || undefined,
   });
+
   const createStudent = useCreateStudents();
   const detail = useGetById();
   const updating = useUpdateStudents();
@@ -207,7 +217,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t]
+    [deleteStudent, detail, form, t],
   );
 
   const fields = useMemo<any[]>(
@@ -310,7 +320,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const onSubmit = (data: any) => {
@@ -342,7 +352,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -357,7 +367,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -377,27 +387,33 @@ const Users = () => {
           striped
           header={
             <div className={"flex justify-start items-center gap-2 flex-wrap"}>
-              <Select
-                value={size.toString()}
-                onValueChange={(a: string) => setSize(Number(a) as any)}
-              >
-                <SelectTrigger suppressHydrationWarning>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <SelectValue placeholder={size} />
-                    </TooltipTrigger>
-                    <TooltipContent sideOffset={5}>
-                      {t("select data size")}
-                    </TooltipContent>
-                  </Tooltip>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={"10"}>10</SelectItem>
-                  <SelectItem value={"25"}>25</SelectItem>
-                  <SelectItem value={"50"}>50</SelectItem>
-                  <SelectItem value={"100"}>100</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={searchField}
+                  onValueChange={(val: any) => setSearchField(val)}
+                >
+                  <SelectTrigger className="w-[110px]">
+                    <SelectValue placeholder={t("Search by")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fullName">{t("Name")}</SelectItem>
+                    <SelectItem value="cardNumber">
+                      {t("Card number")}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
+                  <Input
+                    className="pl-8"
+                    placeholder={t("Search")}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                </div>
+              </div>
+
               {sortDirection === "asc" ? (
                 <Button size={"sm"} onClick={() => setSortDirection("desc")}>
                   <ArrowUpWideNarrow />

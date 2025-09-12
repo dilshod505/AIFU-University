@@ -7,18 +7,37 @@ export const useStudents = ({
   pageNumber,
   size,
   sortDirection,
+  field,
+  query,
 }: {
   filter: FilterType;
   pageNumber: number;
   size: number;
   sortDirection: "asc" | "desc";
+  field?: "id" | "cardNumber" | "fullName";
+  query?: string | number;
 }) =>
   useQuery({
-    queryKey: ["students", filter, pageNumber, size, sortDirection],
+    queryKey: [
+      "students",
+      filter,
+      pageNumber,
+      size,
+      sortDirection,
+      field,
+      query,
+    ],
     queryFn: async () => {
-      const res = await api.get(
-        `/admin/students?status=${filter}&pageNumber=${pageNumber}&pageSize=${size}&sortDirection=${sortDirection}`,
-      );
+      const res = await api.get("/admin/students", {
+        params: {
+          status: filter,
+          pageNumber,
+          pageSize: size,
+          sortDirection,
+          field,
+          query,
+        },
+      });
       return res.data;
     },
     select: (data: Record<string, any>) => data?.data,
