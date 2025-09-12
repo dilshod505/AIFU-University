@@ -76,12 +76,13 @@ const BaseBooks = () => {
       let query = "";
 
       if (fullInfoTitle.trim()) {
-        query = `title:${fullInfoTitle.trim()}`;
+        query = `~${fullInfoTitle.trim()}`;
       }
       if (fullInfoAuthor.trim()) {
-        query = query
-          ? `${query},author:${fullInfoAuthor.trim()}`
-          : `author:${fullInfoAuthor.trim()}`;
+        query = `${fullInfoAuthor.trim()}`;
+      }
+      if (fullInfoAuthor.trim() && fullInfoAuthor.trim()) {
+        query = `${fullInfoAuthor.trim()}~${fullInfoTitle.trim()}`;
       }
 
       return { field: "fullInfo", query };
@@ -257,7 +258,7 @@ const BaseBooks = () => {
           isLoading={isLoading}
           pagination={false}
           header={
-            <div className="flex justify-start items-center gap-2">
+            <div className="flex flex-wrap justify-start items-center gap-2">
               <Select
                 defaultValue="id"
                 style={{ width: 150 }}
@@ -294,13 +295,6 @@ const BaseBooks = () => {
                     value={fullInfoAuthor}
                     onChange={(e) => setFullInfoAuthor(e.target.value)}
                   />
-                  <div className="text-xs text-gray-500 self-center whitespace-nowrap">
-                    {fullInfoTitle.trim()
-                      ? `Searching by title: "${fullInfoTitle}"`
-                      : fullInfoAuthor.trim()
-                        ? `Searching by author: "${fullInfoAuthor}"`
-                        : "Enter title or author"}
-                  </div>
                 </div>
               ) : (
                 <Input
