@@ -171,7 +171,7 @@ export default function ActiveBookingsPage() {
       pageNumber,
       pageSize,
       extendForm,
-    ]
+    ],
   );
 
   return (
@@ -195,7 +195,9 @@ export default function ActiveBookingsPage() {
             pagination={false}
             header={
               <TabsList>
-                <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
+                {activeTab !== "list" && (
+                  <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
+                )}
                 <TabsTrigger value="new-booking">
                   <Plus className="h-4 w-4 mr-2" />
                   {t("bron qilish")}
@@ -306,7 +308,7 @@ export default function ActiveBookingsPage() {
                       extendForm.resetFields();
                       setIsExtendOpen(null); // ✅ Modal yopiladi
                     },
-                  }
+                  },
                 );
 
                 extendForm.resetFields();

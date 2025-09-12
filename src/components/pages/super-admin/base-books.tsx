@@ -68,11 +68,34 @@ const BaseBooks = () => {
   const [filterOperator, setFilterOperator] = useState<string>("contains");
   const [filterValue, setFilterValue] = useState<string>("");
 
+  const [fullInfoTitle, setFullInfoTitle] = useState<string>("");
+  const [fullInfoAuthor, setFullInfoAuthor] = useState<string>("");
+
+  const getSearchParams = () => {
+    if (filterColumn === "fullInfo") {
+      let query = "";
+
+      if (fullInfoTitle.trim()) {
+        query = `title:${fullInfoTitle.trim()}`;
+      }
+      if (fullInfoAuthor.trim()) {
+        query = query
+          ? `${query},author:${fullInfoAuthor.trim()}`
+          : `author:${fullInfoAuthor.trim()}`;
+      }
+
+      return { field: "fullInfo", query };
+    }
+    return { field: filterColumn, query: filterValue };
+  };
+
+  const searchParams = getSearchParams();
+
   const { data: baseBooks, isLoading } = useBaseBook({
     pageNum,
     sortDirection,
-    field: filterColumn,
-    query: filterValue,
+    field: searchParams.field,
+    query: searchParams.query,
   });
 
   const createBaseBook = useCreateBaseBook();
@@ -115,6 +138,15 @@ const BaseBooks = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, [searchTitle, debouncedSearchTitle]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (filterColumn === "fullInfo") {
+        setPageNum(1);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [fullInfoTitle, fullInfoAuthor, filterColumn]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -231,10 +263,17 @@ const BaseBooks = () => {
               <Select
                 defaultValue="id"
                 style={{ width: 150 }}
-                onChange={(val: any) => setFilterColumn(val)}
+                onChange={(val: any) => {
+                  setFilterColumn(val);
+                  setFilterValue("");
+                  setFullInfoTitle("");
+                  setFullInfoAuthor("");
+                }}
               >
                 <Option value="id">{t("id")}</Option>
                 <Option value="category">{t("Category")}</Option>
+                <Option value="title">{t("Title")}</Option>
+                <Option value="author">{t("Author")}</Option>
                 <Option value="fullInfo">
                   {t("Full Info (Author/Title)")}
                 </Option>
@@ -243,12 +282,37 @@ const BaseBooks = () => {
                 <Option value="series">{t("Series")}</Option>
               </Select>
 
-              {/* Value Input */}
-              <Input
-                placeholder={t("Filter value")}
-                style={{ width: 200 }}
-                onChange={(e) => setFilterValue(e.target.value)}
-              />
+              {filterColumn === "fullInfo" ? (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder={t("Title")}
+                    style={{ width: 150 }}
+                    value={fullInfoTitle}
+                    onChange={(e) => setFullInfoTitle(e.target.value)}
+                  />
+                  <Input
+                    placeholder={t("Author")}
+                    style={{ width: 150 }}
+                    value={fullInfoAuthor}
+                    onChange={(e) => setFullInfoAuthor(e.target.value)}
+                  />
+                  <div className="text-xs text-gray-500 self-center whitespace-nowrap">
+                    {fullInfoTitle.trim()
+                      ? `Searching by title: "${fullInfoTitle}"`
+                      : fullInfoAuthor.trim()
+                        ? `Searching by author: "${fullInfoAuthor}"`
+                        : "Enter title or author"}
+                  </div>
+                </div>
+              ) : (
+                <Input
+                  placeholder={t("Filter value")}
+                  style={{ width: 200 }}
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                />
+              )}
+
               {sortDirection === "asc" ? (
                 <Button size={"sm"} onClick={() => setSortDirection("desc")}>
                   <ArrowUpWideNarrow />

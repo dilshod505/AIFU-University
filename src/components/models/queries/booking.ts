@@ -19,20 +19,12 @@ export const useBookingId = () =>
     },
   });
 
-export const useBookingStudentId = () =>
+export const useBookingByStudentId = (studentId: number | null) =>
   useQuery({
-    queryKey: ["bookings-student-id"],
-    queryFn: async (id: string | any) => {
-      const res = await api.get(`/admin/booking/student/${id}`);
+    queryKey: ["bookings-student-id", studentId],
+    queryFn: async () => {
+      const res = await api.get(`/admin/booking/student/${studentId}`);
       return res.data;
     },
-  });
-
-export const useBookingFilter = () =>
-  useQuery({
-    queryKey: ["bookings-filter"],
-    queryFn: async (id: string | any) => {
-      const res = await api.get(`/admin/booking/filter`);
-      return res.data;
-    },
+    enabled: !!studentId, // studentId bo‘lmasa request yubormaydi
   });
