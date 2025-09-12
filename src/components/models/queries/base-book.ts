@@ -18,7 +18,7 @@ export const useBaseBook = ({
       const res = await api.get(
         `/admin/base-books?pageSize=10&pageNumber=${pageNum}&sortDirection=${sortDirection}${
           query ? `&field=${field}&query=${query}` : ""
-        }`,
+        }`
       );
       return res.data;
     },

@@ -206,12 +206,10 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, t]
   );
 
   useEffect(() => {
-    console.log(baseBookDetail.data);
-
     if (editingBook) {
       form.setFieldsValue({
         ...baseBookDetail.data,
@@ -237,7 +235,7 @@ const BaseBooks = () => {
             setOpen(false);
             toast.success(t("Book updated successfully"));
           },
-        },
+        }
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -271,7 +269,7 @@ const BaseBooks = () => {
                 }}
               >
                 <Option value="id">{t("id")}</Option>
-                <Option value="category">{t("Category")}</Option>
+                {/* <Option value="category">{t("Category")}</Option> */}
                 <Option value="title">{t("Title")}</Option>
                 <Option value="author">{t("Author")}</Option>
                 <Option value="fullInfo">
@@ -380,7 +378,7 @@ const BaseBooks = () => {
                   }}
                   pageRangeDisplayed={10}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / 10,
+                    (baseBooks?.data?.totalElements || 0) / 10
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
@@ -395,7 +393,7 @@ const BaseBooks = () => {
                   }
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
-                  forcePage={pageNum - 1}
+                  // forcePage={pageNum === 1 ? 1 : pageNum - 1}
                   pageClassName="list-none"
                   pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                   activeLinkClassName="bg-green-600 text-white rounded-full"
@@ -493,7 +491,7 @@ const BaseBooks = () => {
           </h1>
           <div className="grid md:grid-cols-2 gap-3">
             <Form.Item label={t("Isbn")} name="isbn">
-              <Input placeholder={t("ISBN")} />
+              <Input placeholder={t("Isbn")} />
             </Form.Item>
             <Form.Item
               label={t("Page Count")}

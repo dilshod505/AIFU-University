@@ -321,5 +321,7 @@
   "Please enter publication year": "Пожалуйста, введите год публикации",
   "Enter publication year": "Введите год публикации",
   "Enter ISBN": "Введите ISBN",
-  "Enter page count": "Введите количество страниц"
+  "Enter page count": "Введите количество страниц",
+  "Full Info (Author/Title)": "Полная информация (Автор/Название)",
+  "Filter value": "Значение фильтра"
 }

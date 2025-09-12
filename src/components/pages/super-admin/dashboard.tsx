@@ -51,7 +51,7 @@ const Dashboard = () => {
   // -------------------- Monthly (kunlik) --------------------
   const perDayData = bookingPerDay.data?.data || [];
   const dayCategories = perDayData.map((item: any) =>
-    new Date(item.date).getDate(),
+    new Date(item.date).getDate()
   );
   const takenPerDay = perDayData.map((item: any) => item.taken);
   const returnedPerDay = perDayData.map((item: any) => item.returned);
@@ -86,7 +86,7 @@ const Dashboard = () => {
     "Dec",
   ];
   const yearlyCategories = yearlyData.map(
-    (item: any) => monthNames[item.month - 1],
+    (item: any) => monthNames[item.month - 1]
   );
   const takenYearly = yearlyData.map((item: any) => item.taken);
   const returnedYearly = yearlyData.map((item: any) => item.returned);
@@ -196,7 +196,9 @@ const Dashboard = () => {
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground w-full o">
                 {bookingToday?.data?.data?.map((b: any, idx: number) => (
                   <li key={idx} className="border-b pb-2">
-                    <p className="text-[18px] font-bold">{b.studentFullName}</p>
+                    <p className="text-[18px] font-bold">
+                      {b?.studentFullName}
+                    </p>
                     <p className="text-[16px]">
                       <span className="font-bold">{t("Book")}:</span> {b.title}{" "}
                       ({b.author})
@@ -365,7 +367,7 @@ const Dashboard = () => {
                             {booking.dueDate || booking.due_date || "No Date"}
                           </div>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>
