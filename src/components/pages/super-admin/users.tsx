@@ -139,7 +139,7 @@ const Users = () => {
         title: t("status"),
         dataIndex: "status",
         render: (value: boolean) => (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-start">
             {value ? (
               <UserRoundCheck className="text-green-600 w-5 h-5" />
             ) : (
