@@ -627,17 +627,6 @@ const Users = () => {
                       {viewingDetail.graduationTime}
                     </div>
                   </div>
-                  <div className="space-y-2.5 h-full">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {t("status")}
-                    </label>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md flex items-center gap-2">
-                      <div
-                        className={`w-4 h-4 rounded ${viewingDetail.status ? "bg-green-500" : "bg-red-400"}`}
-                      />
-                      {viewingDetail.status ? t("Active") : t("Inactive")}
-                    </div>
-                  </div>
                 </div>
               </div>
             )}

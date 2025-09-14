@@ -81,9 +81,21 @@ export const useCreateAdministrator = () => {
 
 export const useExcelExport = () => {
   return useMutation({
-    mutationFn: async (data: Record<string, any>) => {
-      const res = await api.get("/admin/backup/student", data);
+    mutationFn: async (params: Record<string, any>) => {
+      const res = await api.get("/super-admin/students/import/template", {
+        params, // ✅ query params
+        responseType: "blob", // ✅ fayl olish
+      });
       return res.data;
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "students.xlsx"); // fayl nomi
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
   });
 };
