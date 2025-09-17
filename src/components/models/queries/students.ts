@@ -82,7 +82,7 @@ export const useCreateAdministrator = () => {
 export const useExcelExport = () => {
   return useMutation({
     mutationFn: async (params: Record<string, any>) => {
-      const res = await api.get("/admin/backup/students", {
+      const res = await api.get("/admin/backup/student", {
         params, // ✅ query params
         responseType: "blob", // ✅ fayl olish
       });

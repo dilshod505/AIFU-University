@@ -19,6 +19,7 @@ import { Form, InputNumber, Tag } from "antd";
 import {
   ChevronLeft,
   ChevronRight,
+  FileDown,
   Plus,
   TimerReset,
   Undo2,
@@ -138,6 +139,23 @@ export default function ActiveBookingsPage() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast.success(t("ijara muvaffaqiyatli yakunlandi"));
+    },
+  });
+
+  const exportExcel = useMutation({
+    mutationFn: async () => {
+      const res = await api.get("/admin/backup/booking", {
+        responseType: "blob", // Excel blob fayl sifatida keladi
+      });
+
+      // Faylni browserda yuklab olish
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "booking.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
   });
 
@@ -304,6 +322,15 @@ export default function ActiveBookingsPage() {
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
+
+                <TooltipBtn
+                  title={t("Excelga yuklab olish")}
+                  onClick={() => exportExcel.mutate()}
+                  disabled={exportExcel.isPending}
+                >
+                  <FileDown className="w-4 h-4" />
+                  {exportExcel.isPending ? t("Yuklanmoqda...") : t("")}
+                </TooltipBtn>
 
                 <TabsList>
                   {activeTab !== "list" && (

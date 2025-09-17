@@ -26,6 +26,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  FileDown,
   PenSquareIcon,
   Plus,
   Search,
@@ -68,7 +69,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
@@ -96,7 +97,7 @@ const EBaseBooks = () => {
     queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
@@ -159,6 +160,23 @@ const EBaseBooks = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
+    },
+  });
+
+  const exportToExcelBook = useMutation({
+    mutationFn: async () => {
+      const res = await api.get("/admin/backup/book", {
+        responseType: "blob", // Excel blob fayl sifatida keladi
+      });
+
+      // Faylni browserda yuklab olish
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "books.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
   });
 
@@ -363,7 +381,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, t]
+    [deleteBook, t],
   );
 
   return (
@@ -406,6 +424,14 @@ const EBaseBooks = () => {
                 <ArrowDownWideNarrow />
               </Button>
             )}
+            <TooltipBtn
+              title={t("Excelga yuklab olish")}
+              onClick={() => exportToExcelBook.mutate()}
+              disabled={exportToExcelBook.isPending}
+            >
+              <FileDown className="w-4 h-4" />
+              {exportToExcelBook.isPending ? t("Yuklanmoqda...") : t("")}
+            </TooltipBtn>
             <div>
               <TooltipBtn
                 size={"sm"}
@@ -454,7 +480,7 @@ const EBaseBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize
+                  (books?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -601,7 +627,7 @@ const EBaseBooks = () => {
                       </h3>
                       <p>
                         {dayjs(getById.data.data.createdDate).format(
-                          "DD-MM-YYYY"
+                          "DD-MM-YYYY",
                         )}
                       </p>
                     </div>

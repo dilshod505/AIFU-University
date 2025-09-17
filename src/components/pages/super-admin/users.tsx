@@ -55,6 +55,12 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -89,7 +95,7 @@ const Users = () => {
     "students",
   );
 
-  const [editingCategory, setEditingCategory] = useState<Record<
+  const [editingStudent, setEditingCategory] = useState<Record<
     string,
     any
   > | null>(null);
@@ -226,7 +232,7 @@ const Users = () => {
     [deleteStudent, detail, form, t],
   );
 
-  const fields = useMemo<any[]>(
+  const allFields = useMemo<any[]>(
     () => [
       {
         label: t("firstName"),
@@ -329,6 +335,8 @@ const Users = () => {
     [t],
   );
 
+  const fields = allFields;
+
   const onSubmit = (data: any) => {
     const payload = {
       name: String(data.name || ""),
@@ -338,7 +346,7 @@ const Users = () => {
       degree: String(data.degree || ""),
       passportSeries:
         data.passportSeries?.value || String(data.passportSeries || ""),
-      passportNumber: String(data.passportNumber || ""),
+      passportNumber: String(data.passportNumber),
       cardNumber: String(data.cardNumber || ""),
       admissionTime: new Date(data.admissionTime).getFullYear(),
       graduationTime: new Date(data.graduationTime).getFullYear(),
@@ -346,9 +354,9 @@ const Users = () => {
 
     console.log("📤 Yuborilayotgan payload:", payload);
 
-    if (editingCategory) {
+    if (editingStudent) {
       updating.mutate(
-        { id: editingCategory.id, ...payload },
+        { id: editingStudent.id, ...payload },
         {
           onSuccess: () => {
             toast.success(t("Student updated successfully"));
@@ -455,14 +463,23 @@ const Users = () => {
                 </TabsList>
               </Tabs>
 
-              <TooltipBtn
-                title={t("Export to Excel")}
-                onClick={() => {
-                  expertToExcel.mutate({});
-                }}
-              >
-                <RiFileExcel2Line />
-              </TooltipBtn>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Select type excel download")}>
+                    <RiFileExcel2Line />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => expertToExcel.mutate({})}>
+                    {t("Export Students")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => exportToExcelShablon.mutate({})}
+                  >
+                    {t("Export Template")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <TooltipBtn
                 variant={"default"}
                 title={t("Add Student")}
@@ -536,16 +553,23 @@ const Users = () => {
           <SheetContent className="bg-white dark:bg-background hide-scroll w-fit">
             <SheetHeader>
               <SheetTitle>
-                {editingCategory ? t("Edit users") : t("Add student")}
+                {editingStudent ? t("Edit users") : t("Add student")}
               </SheetTitle>
             </SheetHeader>
             <AutoForm
               className="bg-transparent mt-5 mx-5 border-none p-0"
-              submitText={editingCategory ? t("Edit users") : t("Add")}
+              submitText={editingStudent ? t("Edit users") : t("Add")}
               onSubmit={onSubmit}
               form={form}
-              fields={fields}
               showResetButton={false}
+              fields={
+                editingStudent
+                  ? fields.filter(
+                      (f) =>
+                        !["passportSeries", "passportNumber"].includes(f.name),
+                    ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
+                  : fields // 🔹 Create rejimida barcha fieldlar chiqadi
+              }
             />
           </SheetContent>
         </Sheet>

@@ -329,5 +329,8 @@
   "Add student": "Add student",
   "Add": "Add",
   "Sahifani yangilash": "Refresh page",
-  "Refresh": "Refresh"
+  "Refresh": "Refresh",
+  "Export Students": "Export Students",
+  "Export Template": "Export Template",
+  "Select type excel download": "Select Excel download type"
 }

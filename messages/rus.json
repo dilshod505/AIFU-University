@@ -329,5 +329,8 @@
   "Add student": "Добавить студента",
   "Add": "Добавить",
   "Sahifani yangilash": "Обновить страницу",
-  "Refresh": "Обновить"
+  "Refresh": "Обновить",
+  "Export Students": "Экспорт студентов",
+  "Export Template": "Экспорт шаблона",
+  "Select type excel download": "Выберите тип загрузки Excel"
 }

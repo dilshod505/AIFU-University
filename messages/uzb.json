@@ -329,5 +329,8 @@
   "Add student": "O'quvchini qo'shish",
   "Add": "Qo'shish",
   "Sahifani yangilash": "Sahifani yangilash",
-  "Refresh": "Yangilash"
+  "Refresh": "Yangilash",
+  "Export Students": "Talabalarni ro'yxatini olish",
+  "Export Template": "Shablonni yuklab olish",
+  "Select type excel download": "Excel yuklash turini tanlang"
 }
