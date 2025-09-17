@@ -156,3 +156,37 @@ export const useGetById = () => {
     },
   });
 };
+
+export const useImportStudents = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await api.post(
+        "/super-admin/students/import/import",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
+      return res.data;
+    },
+  });
+};
+
+export const useDeactivateGraduates = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await api.post(
+        "/super-admin/students/lifecycle/deactivate-graduates",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+      return res.data;
+    },
+  });
+};

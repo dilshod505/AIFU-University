@@ -332,5 +332,7 @@
   "Refresh": "Refresh",
   "Export Students": "Export Students",
   "Export Template": "Export Template",
-  "Select type excel download": "Select Excel download type"
+  "Select type excel download": "Select Excel download type",
+  "Import Students": "Import Students",
+  "Deactivate Graduates": "Deactivate Graduates"
 }

@@ -4,10 +4,12 @@ import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm } from "@/components/form/auto-form";
 import {
   useCreateStudents,
+  useDeactivateGraduates,
   useDeleteStudents,
   useExcelExport,
   useExcelExportShablon,
   useGetById,
+  useImportStudents,
   useStudents,
   useUpdateStudents,
 } from "@/components/models/queries/students";
@@ -91,9 +93,64 @@ const Users = () => {
   const expertToExcel = useExcelExport();
   const exportToExcelShablon = useExcelExportShablon();
 
-  const [selectedExport, setSelectedExport] = useState<"students" | "shablon">(
-    "students",
-  );
+  const importStudents = useImportStudents();
+  const [importResult, setImportResult] = useState<{
+    successCount?: number;
+    errorCount?: number;
+    downloadReportUrl?: string;
+  } | null>(null);
+
+  // Excel fayl tanlash
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      importStudents.mutate(file, {
+        onSuccess: (res) => {
+          toast.success(res.message || "Import completed");
+          setImportResult({
+            successCount: res.successCount,
+            errorCount: res.errorCount,
+            downloadReportUrl: res.downloadReportUrl,
+          });
+        },
+        onError: () => {
+          toast.error("Xatolik: import amalga oshmadi");
+        },
+      });
+    }
+  };
+
+  const deactivateGraduates = useDeactivateGraduates();
+  const [deactivateResult, setDeactivateResult] = useState<{
+    successCount?: number;
+    debtorCount?: number;
+    notFoundCount?: number;
+    jobId?: string;
+    downloadDebtorsReportUrl?: string;
+    downloadNotFoundReportUrl?: string;
+  } | null>(null);
+
+  const handleDeactivate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      deactivateGraduates.mutate(file, {
+        onSuccess: (res) => {
+          toast.success(res.message || "Deaktivatsiya jarayoni boshlandi");
+
+          // API javobida bo‘ladigan struktura (misol uchun)
+          setDeactivateResult({
+            successCount: res.data.successCount,
+            debtorCount: res.data.debtorCount,
+            notFoundCount: res.data.notFoundCount,
+            jobId: res.data.jobId,
+            downloadDebtorsReportUrl: `/api/super-admin/students/lifecycle/report/debtors/${res.data.jobId}`,
+            downloadNotFoundReportUrl: `/api/super-admin/students/lifecycle/report/not-found/${res.data.jobId}`,
+          });
+        },
+        onError: () => toast.error("❌ Deaktivatsiya xatolik bilan tugadi"),
+      });
+    }
+  };
 
   const [editingStudent, setEditingCategory] = useState<Record<
     string,
@@ -390,8 +447,9 @@ const Users = () => {
     <TooltipProvider>
       <div>
         <MyTable
+          className={"py-5"}
           title={
-            <h3 className={"text-2xl font-semibold py-5"}>{t("users")}</h3>
+            <h3 className={"text-2xl font-semibold py-2"}>{t("users")}</h3>
           }
           columns={columns}
           dataSource={students?.data || []}
@@ -463,6 +521,26 @@ const Users = () => {
                 </TabsList>
               </Tabs>
 
+              <label className="cursor-pointer bg-green-600 text-white px-3 py-2 rounded-xl">
+                {t("Import Students")}
+                <input
+                  type="file"
+                  accept=".xlsx"
+                  hidden
+                  onChange={handleImport}
+                />
+              </label>
+
+              <label className="cursor-pointer bg-red-600 text-white px-3 py-2 rounded-xl">
+                {t("Deactivate Graduates")}
+                <input
+                  type="file"
+                  accept=".xlsx"
+                  hidden
+                  onChange={handleDeactivate}
+                />
+              </label>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <TooltipBtn title={t("Select type excel download")}>
@@ -500,6 +578,78 @@ const Users = () => {
                 "flex flex-col lg:flex-row justify-between items-center gap-2"
               }
             >
+              <div>
+                {deactivateResult && (
+                  <div className="mt-3 space-y-2 border p-3 rounded bg-gray-50">
+                    <p className="text-sm text-green-700">
+                      Muvaffaqiyatli deaktivatsiya qilinganlar:{" "}
+                      {deactivateResult.successCount}
+                    </p>
+                    <p className="text-sm text-yellow-600">
+                      Qarzdorlar: {deactivateResult.debtorCount}
+                    </p>
+                    <p className="text-sm text-red-600">
+                      Topilmagan talabalar: {deactivateResult.notFoundCount}
+                    </p>
+
+                    <div className="flex gap-3 mt-2">
+                      {deactivateResult.debtorCount &&
+                        deactivateResult.debtorCount > 0 && (
+                          <Button
+                            onClick={() =>
+                              window.open(
+                                deactivateResult.downloadDebtorsReportUrl,
+                                "_blank",
+                              )
+                            }
+                            className="bg-yellow-600 text-white"
+                          >
+                            {t("Qarzdorlar hisobotini yuklab olish")}
+                          </Button>
+                        )}
+
+                      {deactivateResult.notFoundCount &&
+                        deactivateResult.notFoundCount > 0 && (
+                          <Button
+                            onClick={() =>
+                              window.open(
+                                deactivateResult.downloadNotFoundReportUrl,
+                                "_blank",
+                              )
+                            }
+                            className="bg-red-600 text-white"
+                          >
+                            {t("Topilmagan talabalar hisobotini yuklab olish")}
+                          </Button>
+                        )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div>
+                {importResult && (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-sm text-green-700">
+                      Muvaffaqiyatli qo‘shilganlar:{" "}
+                      {importResult.successCount || 0}
+                    </p>
+                    <p className="text-sm text-red-600">
+                      Qushilmaganlar: {importResult.errorCount || 0}
+                    </p>
+
+                    {importResult.errorCount && importResult.errorCount > 0 && (
+                      <Button
+                        onClick={() =>
+                          window.open(importResult.downloadReportUrl, "_blank")
+                        }
+                        className="bg-red-600 text-white"
+                      >
+                        {t("Qushilmagan talabalarni yuklab olish")}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
               <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
                 <p className="text-sm">
                   {t("Total Pages")}:{" "}
