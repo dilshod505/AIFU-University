@@ -334,5 +334,6 @@
   "Export Template": "Экспорт шаблона",
   "Select type excel download": "Выберите тип загрузки Excel",
   "Import Students": "Импорт студентов",
-  "Deactivate Graduates": "Отключить выпускников"
+  "Deactivate Graduates": "Отключить выпускников",
+  "Edit users": "Редактировать пользователей"
 }

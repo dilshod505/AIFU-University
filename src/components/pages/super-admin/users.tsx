@@ -2,6 +2,7 @@
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm } from "@/components/form/auto-form";
+import { api } from "@/components/models/axios";
 import {
   useCreateStudents,
   useDeactivateGraduates,
@@ -17,6 +18,13 @@ import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,12 +38,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -51,18 +55,11 @@ import {
   UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -164,6 +161,15 @@ const Users = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const form = useForm();
 
+  const editingStudentData = useQuery({
+    queryKey: ["editing-student", editingStudent?.id],
+    queryFn: async () => {
+      const res = await api.get(`/admin/students/${editingStudent?.id}`);
+      return res.data;
+    },
+    enabled: !!editingStudent,
+  });
+
   const columns = useMemo<IColumn[]>(
     () => [
       {
@@ -246,27 +252,8 @@ const Users = () => {
               size={"sm"}
               title={t("Edit category")}
               onClick={() => {
-                detail.mutate(record.id, {
-                  onSuccess: (res) => {
-                    form.reset({
-                      name: res.data.name,
-                      surname: res.data.surname,
-                      faculty: res.data.faculty,
-                      degree: res.data.degree,
-                      passportSeries: {
-                        label: res.data.passportSeries,
-                        value: res.data.passportSeries,
-                      },
-                      passportNumber: res.data.passportNumber,
-                      phoneNumber: res.data.phoneNumber,
-                      cardNumber: res.data.cardNumber,
-                      admissionTime: new Date(res.data.admissionTime, 0),
-                      graduationTime: new Date(res.data.graduationTime, 0),
-                    });
-                    setEditingCategory(res.data);
-                    setOpen(true);
-                  },
-                });
+                setEditingCategory(record);
+                setOpen(true);
               }}
             >
               <PenSquareIcon />
@@ -286,7 +273,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t],
+    [deleteStudent, detail, form, t]
   );
 
   const allFields = useMemo<any[]>(
@@ -389,7 +376,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const fields = allFields;
@@ -409,8 +396,6 @@ const Users = () => {
       graduationTime: new Date(data.graduationTime).getFullYear(),
     };
 
-    console.log("📤 Yuborilayotgan payload:", payload);
-
     if (editingStudent) {
       updating.mutate(
         { id: editingStudent.id, ...payload },
@@ -423,7 +408,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -438,10 +423,18 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
+
+  useEffect(() => {
+    if (editingStudent) {
+      form.reset({
+        ...editingStudentData.data?.data,
+      });
+    }
+  }, [editingStudent, editingStudentData.isLoading, form]);
 
   return (
     <TooltipProvider>
@@ -599,7 +592,7 @@ const Users = () => {
                             onClick={() =>
                               window.open(
                                 deactivateResult.downloadDebtorsReportUrl,
-                                "_blank",
+                                "_blank"
                               )
                             }
                             className="bg-yellow-600 text-white"
@@ -614,7 +607,7 @@ const Users = () => {
                             onClick={() =>
                               window.open(
                                 deactivateResult.downloadNotFoundReportUrl,
-                                "_blank",
+                                "_blank"
                               )
                             }
                             className="bg-red-600 text-white"
@@ -716,7 +709,7 @@ const Users = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name),
+                        !["passportSeries", "passportNumber"].includes(f.name)
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }
