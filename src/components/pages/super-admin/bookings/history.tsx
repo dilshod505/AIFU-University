@@ -20,25 +20,44 @@ import {
   ChevronLeft,
   ChevronRight,
   FileDown,
+  RefreshCw,
   Search,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
+import TooltipBtn from "@/components/tooltip-btn";
+import Link from "next/link";
+import { refreshReducer } from "next/dist/client/components/router-reducer/reducers/refresh-reducer";
+import { useRouter } from "next/navigation";
 
 export default function HistoryPage() {
   const t = useTranslations();
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [pageNum, setPageNum] = useState<number>(1);
-  const [debouncedSearchQuery, setDebouncedSearchQuery] =
-    useState<string>(searchQuery);
-  const [searchField, setSearchField] = useState<string>("userID");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+  const [searchField, setSearchField] = useState<
+    "userID" | "cardNumber" | "inventoryNumber"
+  >("userID"); // default qiymatni bitta qiling
+
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setIsSearching(searchQuery.length > 0);
+      setPageNum(1); // qidiruv o‘zgarsa 1-sahifaga qaytadi
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
   const { data: history, isLoading } = useHistory({
     searchField,
-    searchQuery,
+    searchQuery: debouncedSearchQuery,
+    pageNumber: pageNum,
+    pageSize: 10,
     sortDirection,
   });
 
@@ -112,7 +131,7 @@ export default function HistoryPage() {
         render: (returnedAt: string) => dayjs(returnedAt).format("DD.MM.YYYY"),
       },
     ],
-    [t]
+    [t],
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,40 +146,28 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t("arxivlangan ijaralar")}</h1>
-          <p className="text-muted-foreground mt-1">
-            {t("arxivlangan ijaralar royxati")} ({history?.length || 0})
-          </p>
-        </div>
-
-        {/* ✅ Excelga export tugmasi */}
-        <Button
-          variant="outline"
-          onClick={() => exportExcel.mutate()}
-          disabled={exportExcel.isPending}
-        >
-          <FileDown className="w-4 h-4 mr-2" />
-          {exportExcel.isPending
-            ? t("Yuklanmoqda...")
-            : t("Excelga yuklab olish")}
-        </Button>
-      </div>
-
+    <div className="p-2">
       {isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">{t("loading")}</p>
         </div>
-      ) : history?.length === 0 ? (
+      ) : history?.totalElements === 0 ? (
         <div className="text-center py-12">
           <Archive className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-lg font-medium text-muted-foreground mb-2">
             {isSearching
               ? t("Qidiruv natijasi topilmadi")
               : t("Arxivda yozuvlar mavjud emas")}
+            <p
+              className={"text-green-600 mt-3"}
+              onClick={() => window.location.reload()}
+            >
+              <TooltipBtn title={t("Refresh")}>
+                {t("Sahifani yangilash")}
+                <RefreshCw />
+              </TooltipBtn>
+            </p>
           </p>
           <p className="text-sm text-muted-foreground">
             {!isSearching &&
@@ -171,7 +178,19 @@ export default function HistoryPage() {
         <div>
           <MyTable
             columns={columns}
-            dataSource={history || []}
+            dataSource={history?.list || []}
+            pagination={false}
+            title={
+              <div>
+                <h1 className="text-3xl font-bold">
+                  {t("arxivlangan ijaralar")}
+                </h1>
+                <p className="text-muted-foreground mt-1">
+                  {t("arxivlangan ijaralar royxati")} (
+                  {history?.totalElements || 0})
+                </p>
+              </div>
+            }
             header={
               <div
                 className={"flex justify-between items-center gap-2 flex-wrap"}
@@ -179,14 +198,20 @@ export default function HistoryPage() {
                 <div className="relative max-w-[250px]">
                   <Select
                     value={searchField}
-                    onValueChange={(e: string) => setSearchField(searchField)}
+                    onValueChange={(
+                      e: "userID" | "cardNumber" | "inventoryNumber",
+                    ) => setSearchField(e)}
                     defaultValue="userID"
                   >
-                    <SelectTrigger value={"userID"}>
-                      {t("user ID")}
+                    <SelectTrigger value={searchField}>
+                      {searchField === "userID"
+                        ? t("user ID")
+                        : searchField === "cardNumber"
+                          ? t("Card number")
+                          : t("Inventory number")}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="userID">{t("user ID")}</SelectItem>
+                      <SelectItem value="userID">{t("ID")}</SelectItem>
                       <SelectItem value="cardNumber">
                         {t("Card number")}
                       </SelectItem>
@@ -224,37 +249,64 @@ export default function HistoryPage() {
                     <ArrowDownWideNarrow />
                   </Button>
                 )}
+                <TooltipBtn
+                  title={t("Excelga yuklab olish")}
+                  onClick={() => exportExcel.mutate()}
+                  disabled={exportExcel.isPending}
+                >
+                  <FileDown className="w-4 h-4" />
+                  {exportExcel.isPending ? t("Yuklanmoqda...") : t("")}
+                </TooltipBtn>
+              </div>
+            }
+            footer={
+              <div className={"flex items-center justify-between"}>
+                <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+                  <p className="text-sm whitespace-break-spaces">
+                    {t("Total Pages")}:{" "}
+                    <span className="text-green-600">
+                      {history?.totalPages}
+                    </span>
+                  </p>
+                  <p className="text-sm whitespace-break-spaces">
+                    {t("Current Page")}:{" "}
+                    <span className="text-green-600">
+                      {history?.currentPage}
+                    </span>
+                  </p>
+                  <p className="text-sm whitespace-break-spaces">
+                    {t("Total Elements")}:{" "}
+                    <span className="text-green-600">
+                      {history?.totalElements}
+                    </span>
+                  </p>
+                </div>
+                <ReactPaginate
+                  breakLabel="..."
+                  onPageChange={(e) => setPageNum(e.selected + 1)}
+                  pageRangeDisplayed={10}
+                  pageCount={history?.totalPages || 0}
+                  previousLabel={
+                    <Button className={"bg-white text-black"}>
+                      <ChevronLeft />
+                      {t("Return")}
+                    </Button>
+                  }
+                  nextLabel={
+                    <Button className={"bg-white text-black"}>
+                      {t("Next")} <ChevronRight />
+                    </Button>
+                  }
+                  className={"flex justify-center gap-2 items-center my-5"}
+                  renderOnZeroPageCount={null}
+                  forcePage={(history?.currentPage || 1) - 1}
+                  pageClassName="list-none"
+                  pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                  activeLinkClassName="bg-green-600 text-white rounded-full"
+                />
               </div>
             }
           />
-          <div>
-            <ReactPaginate
-              breakLabel="..."
-              onPageChange={(e) => {
-                const newPageNum = e.selected + 1;
-                setPageNum(newPageNum);
-              }}
-              pageRangeDisplayed={10}
-              pageCount={Math.ceil((history?.data?.totalElements || 0) / 10)}
-              previousLabel={
-                <Button className={"bg-white text-black"}>
-                  <ChevronLeft />
-                  {t("Return")}
-                </Button>
-              }
-              nextLabel={
-                <Button className={"bg-white text-black"}>
-                  {t("Next")} <ChevronRight />
-                </Button>
-              }
-              className={"flex justify-center gap-2 items-center my-5"}
-              renderOnZeroPageCount={null}
-              forcePage={pageNum - 1}
-              pageClassName="list-none"
-              pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
-              activeLinkClassName="bg-green-600 text-white rounded-full"
-            />
-          </div>
         </div>
       )}
     </div>

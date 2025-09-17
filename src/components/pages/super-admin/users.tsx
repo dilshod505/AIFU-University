@@ -6,6 +6,7 @@ import {
   useCreateStudents,
   useDeleteStudents,
   useExcelExport,
+  useExcelExportShablon,
   useGetById,
   useStudents,
   useUpdateStudents,
@@ -82,6 +83,11 @@ const Users = () => {
   const updating = useUpdateStudents();
   const deleteStudent = useDeleteStudents();
   const expertToExcel = useExcelExport();
+  const exportToExcelShablon = useExcelExportShablon();
+
+  const [selectedExport, setSelectedExport] = useState<"students" | "shablon">(
+    "students",
+  );
 
   const [editingCategory, setEditingCategory] = useState<Record<
     string,
@@ -452,12 +458,7 @@ const Users = () => {
               <TooltipBtn
                 title={t("Export to Excel")}
                 onClick={() => {
-                  expertToExcel.mutate({
-                    filter,
-                    pageNumber,
-                    size,
-                    sortDirection,
-                  });
+                  expertToExcel.mutate({});
                 }}
               >
                 <RiFileExcel2Line />
@@ -540,7 +541,7 @@ const Users = () => {
             </SheetHeader>
             <AutoForm
               className="bg-transparent mt-5 mx-5 border-none p-0"
-              submitText={editingCategory ? t("Edit users") : t("Add student")}
+              submitText={editingCategory ? t("Edit users") : t("Add")}
               onSubmit={onSubmit}
               form={form}
               fields={fields}

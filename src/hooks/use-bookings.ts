@@ -115,21 +115,56 @@ export function useExtendBooking() {
 export function useHistory({
   searchField,
   searchQuery,
-  sortDirection,
+  pageNumber = 1,
+  pageSize = 10,
+  sortDirection = "asc",
 }: {
-  searchField: string;
-  searchQuery: string;
-  sortDirection: "asc" | "desc";
+  searchField?: "userID" | "cardNumber" | "inventoryNumber";
+  searchQuery?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortDirection?: "asc" | "desc";
 }) {
   return useQuery({
-    queryKey: [historyKeys.lists(), searchField, searchQuery, sortDirection],
+    queryKey: [
+      "history",
+      searchField,
+      searchQuery,
+      pageNumber,
+      pageSize,
+      sortDirection,
+    ],
     queryFn: async () => {
-      const response = await api.get(
-        `/admin/history?pageSize=10${searchField && searchQuery.length > 0 ? `&field=${searchField}` : ""}${searchQuery.length > 0 && searchField ? `&query=${searchQuery}` : ""}${sortDirection ? `&sortDirection=${sortDirection}` : ""}`
-      );
+      const params: any = {
+        pageNumber,
+        pageSize,
+        sortDirection,
+      };
+
+      // ✅ faqat qidiruv bo‘lsa qo‘shamiz
+      if (searchField && searchQuery?.toString().trim()) {
+        // agar userID bo‘lsa raqam bo‘lishini tekshiramiz
+        if (searchField === "userID") {
+          const parsed = Number(searchQuery);
+          if (!isNaN(parsed)) {
+            params.field = searchField;
+            params.query = parsed;
+          }
+        } else {
+          params.field = searchField;
+          params.query = searchQuery;
+        }
+      }
+
+      const response = await api.get("/admin/history", { params });
       return response.data;
     },
-    select: (data) => data?.data?.data || [],
+    select: (data) => ({
+      list: data?.data?.data || [],
+      totalElements: data?.data?.totalElements || 0,
+      totalPages: data?.data?.totalPages || 0,
+      currentPage: data?.data?.currentPage || 1,
+    }),
   });
 }
 

@@ -53,7 +53,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
 
   const checkInventoryNumber = useCheckInventoryNumber();
@@ -105,7 +105,7 @@ export const CopiesBooks = () => {
           (book: Record<string, any>, i: number) => ({
             label: `${i + 1}. ${book.title}`,
             value: book.id,
-          })
+          }),
         ),
       },
       {
@@ -133,7 +133,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks]
+    [t, baseBooks],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -228,7 +228,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, deleteCategory, pageNum, pageSize]
+    [t, deleteCategory, pageNum, pageSize],
   );
 
   useEffect(() => {
@@ -274,27 +274,55 @@ export const CopiesBooks = () => {
           toast.error(t("Bu inventory raqam allaqachon mavjud!"));
           return;
         }
+
         if (editingBook) {
+          // ✏️ Update
           updateBook.mutate(
-            { id: editingBook.id, ...data },
+            {
+              id: editingBook.id,
+              inventoryNumber: data.inventoryNumber,
+              shelfLocation: data.shelfLocation,
+              notes: data.notes,
+              epc: data.epc,
+              book: data.baseBookId, // update uchun
+            },
             {
               onSuccess: () => {
-                toast.success(t("Category updated successfully"));
+                toast.success(t("Kitob nusxasi yangilandi"));
                 setOpen(false);
                 antdForm.resetFields();
               },
-            }
+              onError: (error: any) => {
+                toast.error(
+                  error?.response?.data?.message ||
+                    t("Server bilan bog'lanishda xatolik"),
+                );
+              },
+            },
           );
         } else {
+          // ➕ Create
           createCopiesBook.mutate(
-            { ...data },
+            {
+              inventoryNumber: data.inventoryNumber,
+              shelfLocation: data.shelfLocation,
+              notes: data.notes,
+              epc: data.epc,
+              baseBookId: data.baseBookId, // create uchun
+            },
             {
               onSuccess: () => {
-                toast.success(t("Category created successfully"));
+                toast.success(t("Kitob nusxasi yaratildi"));
                 setOpen(false);
                 antdForm.resetFields();
               },
-            }
+              onError: (error: any) => {
+                toast.error(
+                  error?.response?.data?.message ||
+                    t("Server bilan bog'lanishda xatolik"),
+                );
+              },
+            },
           );
         }
       },
@@ -411,7 +439,7 @@ export const CopiesBooks = () => {
                 }}
                 pageRangeDisplayed={pageSize}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize
+                  (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>

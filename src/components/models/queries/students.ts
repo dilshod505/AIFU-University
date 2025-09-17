@@ -82,7 +82,7 @@ export const useCreateAdministrator = () => {
 export const useExcelExport = () => {
   return useMutation({
     mutationFn: async (params: Record<string, any>) => {
-      const res = await api.get("/super-admin/students/import/template", {
+      const res = await api.get("/admin/backup/students", {
         params, // ✅ query params
         responseType: "blob", // ✅ fayl olish
       });
@@ -93,6 +93,27 @@ export const useExcelExport = () => {
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "students.xlsx"); // fayl nomi
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    },
+  });
+};
+
+export const useExcelExportShablon = () => {
+  return useMutation({
+    mutationFn: async (params: Record<string, any>) => {
+      const res = await api.get("/super-admin/students/import/template", {
+        params, // ✅ query params
+        responseType: "blob", // ✅ fayl olish
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "students-shablon.xlsx"); // fayl nomi
       document.body.appendChild(link);
       link.click();
       link.remove();
