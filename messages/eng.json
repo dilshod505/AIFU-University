@@ -340,5 +340,8 @@
   "Image": "Image",
   "Edit profile": "Edit profile",
   "Export Template Book": "Export Template Book",
-  "Export book": "Export book"
+  "Export book": "Export book",
+  "Bazadagi barcha excellarni yuklab olish": "Download All Excel Files from Database",
+  "Bazadagi Excellar muvaffaqiyatli yuklab olindi": "Excel files successfully uploaded to the database.",
+  "Import excel": "Upload Excel"
 }

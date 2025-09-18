@@ -55,7 +55,8 @@ import {
   UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
@@ -105,9 +106,10 @@ const Users = () => {
         onSuccess: (res) => {
           toast.success(res.message || "Import completed");
           setImportResult({
-            successCount: res.successCount,
-            errorCount: res.errorCount,
-            downloadReportUrl: res.downloadReportUrl,
+            successCount: res.data?.successCount || res.successCount,
+            errorCount: res.data?.errorCount || res.errorCount,
+            downloadReportUrl:
+              res.data?.downloadReportUrl || res.downloadReportUrl,
           });
         },
         onError: () => {
@@ -134,14 +136,17 @@ const Users = () => {
         onSuccess: (res) => {
           toast.success(res.message || "Deaktivatsiya jarayoni boshlandi");
 
-          // API javobida bo‘ladigan struktura (misol uchun)
           setDeactivateResult({
-            successCount: res.data.successCount,
-            debtorCount: res.data.debtorCount,
-            notFoundCount: res.data.notFoundCount,
-            jobId: res.data.jobId,
-            downloadDebtorsReportUrl: `/api/super-admin/students/lifecycle/report/debtors/${res.data.jobId}`,
-            downloadNotFoundReportUrl: `/api/super-admin/students/lifecycle/report/not-found/${res.data.jobId}`,
+            successCount: res.data?.successCount || res.successCount,
+            debtorCount: res.data?.debtorCount || res.debtorCount,
+            notFoundCount: res.data?.notFoundCount || res.notFoundCount,
+            jobId: res.data?.jobId || res.jobId,
+            downloadDebtorsReportUrl:
+              res.data?.downloadDebtorsReportUrl ||
+              `/api/super-admin/students/lifecycle/report/debtors/${res.data?.jobId || res.jobId}`,
+            downloadNotFoundReportUrl:
+              res.data?.downloadNotFoundReportUrl ||
+              `/api/super-admin/students/lifecycle/report/not-found/${res.data?.jobId || res.jobId}`,
           });
         },
         onError: () => toast.error("❌ Deaktivatsiya xatolik bilan tugadi"),
@@ -149,7 +154,7 @@ const Users = () => {
     }
   };
 
-  const [editingStudent, setEditingCategory] = useState<Record<
+  const [editingStudent, setEditingStudent] = useState<Record<
     string,
     any
   > | null>(null);
@@ -252,7 +257,7 @@ const Users = () => {
               size={"sm"}
               title={t("Edit category")}
               onClick={() => {
-                setEditingCategory(record);
+                setEditingStudent(record);
                 setOpen(true);
               }}
             >
@@ -273,7 +278,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t]
+    [deleteStudent, detail, form, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -376,7 +381,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const fields = allFields;
@@ -408,7 +413,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -423,7 +428,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -555,7 +560,7 @@ const Users = () => {
                 variant={"default"}
                 title={t("Add Student")}
                 onClick={() => {
-                  setEditingCategory(null);
+                  setEditingStudent(null);
                   form.reset({ name: "" });
                   setOpen(true);
                 }}
@@ -568,82 +573,102 @@ const Users = () => {
           footer={
             <div
               className={
-                "flex flex-col lg:flex-row justify-between items-center gap-2"
+                "flex flex-col lg:flex-row justify-between items-center gap-4"
               }
             >
-              <div>
-                {deactivateResult && (
-                  <div className="mt-3 space-y-2 border p-3 rounded bg-gray-50">
-                    <p className="text-sm text-green-700">
-                      Muvaffaqiyatli deaktivatsiya qilinganlar:{" "}
-                      {deactivateResult.successCount}
-                    </p>
-                    <p className="text-sm text-yellow-600">
-                      Qarzdorlar: {deactivateResult.debtorCount}
-                    </p>
-                    <p className="text-sm text-red-600">
-                      Topilmagan talabalar: {deactivateResult.notFoundCount}
-                    </p>
+              {/* Import natijalari faqat mavjud bo‘lsa chiqsin */}
+              {importResult && (
+                <div className="space-y-2 border p-3 rounded bg-gray-50">
+                  <p className="text-sm text-green-700">
+                    Muvaffaqiyatli qo'shilganlar:{" "}
+                    <span className="font-semibold">
+                      {importResult.successCount ?? 0}
+                    </span>
+                  </p>
+                  <p className="text-sm text-red-600">
+                    Qo'shilmaganlar:{" "}
+                    <span className="font-semibold">
+                      {importResult.errorCount ?? 0}
+                    </span>
+                  </p>
 
-                    <div className="flex gap-3 mt-2">
-                      {deactivateResult.debtorCount &&
-                        deactivateResult.debtorCount > 0 && (
-                          <Button
-                            onClick={() =>
-                              window.open(
-                                deactivateResult.downloadDebtorsReportUrl,
-                                "_blank"
-                              )
-                            }
-                            className="bg-yellow-600 text-white"
-                          >
-                            {t("Qarzdorlar hisobotini yuklab olish")}
-                          </Button>
-                        )}
+                  {importResult.errorCount && importResult.errorCount > 0 && (
+                    <Button
+                      onClick={() =>
+                        window.open(
+                          importResult.downloadReportUrl ?? "#",
+                          "_blank",
+                        )
+                      }
+                      className="bg-red-600 text-white mt-2"
+                      size="sm"
+                    >
+                      {t("Qo'shilmagan talabalar hisobotini yuklab olish")}
+                    </Button>
+                  )}
+                </div>
+              )}
 
-                      {deactivateResult.notFoundCount &&
-                        deactivateResult.notFoundCount > 0 && (
-                          <Button
-                            onClick={() =>
-                              window.open(
-                                deactivateResult.downloadNotFoundReportUrl,
-                                "_blank"
-                              )
-                            }
-                            className="bg-red-600 text-white"
-                          >
-                            {t("Topilmagan talabalar hisobotini yuklab olish")}
-                          </Button>
-                        )}
-                    </div>
+              {/* Deactivate natijalari faqat mavjud bo‘lsa chiqsin */}
+              {deactivateResult && (
+                <div className="border p-2 rounded bg-gray-50">
+                  <p className="text-sm text-green-700">
+                    Muvaffaqiyatli deaktivatsiya qilinganlar:{" "}
+                    <span className="font-semibold">
+                      {deactivateResult.successCount ?? 0}
+                    </span>
+                  </p>
+                  <p className="text-sm text-yellow-600">
+                    Qarzdorlar:{" "}
+                    <span className="font-semibold">
+                      {deactivateResult.debtorCount ?? 0}
+                    </span>
+                  </p>
+                  <p className="text-sm text-red-600">
+                    Topilmagan talabalar:{" "}
+                    <span className="font-semibold">
+                      {deactivateResult.notFoundCount ?? 0}
+                    </span>
+                  </p>
+
+                  <div className="flex gap-3 mt-2">
+                    {deactivateResult.debtorCount &&
+                      deactivateResult.debtorCount > 0 && (
+                        <Button
+                          onClick={() =>
+                            window.open(
+                              deactivateResult.downloadDebtorsReportUrl,
+                              "_blank",
+                            )
+                          }
+                          className="bg-yellow-600 text-white"
+                          size="sm"
+                        >
+                          {t("Qarzdorlar hisobotini yuklab olish")}
+                        </Button>
+                      )}
+
+                    {deactivateResult.notFoundCount &&
+                      deactivateResult.notFoundCount > 0 && (
+                        <Button
+                          onClick={() =>
+                            window.open(
+                              deactivateResult.downloadNotFoundReportUrl,
+                              "_blank",
+                            )
+                          }
+                          className="bg-red-600 text-white"
+                          size="sm"
+                        >
+                          {t("Topilmagan talabalar hisobotini yuklab olish")}
+                        </Button>
+                      )}
                   </div>
-                )}
-              </div>
-              <div>
-                {importResult && (
-                  <div className="mt-3 space-y-2">
-                    <p className="text-sm text-green-700">
-                      Muvaffaqiyatli qo‘shilganlar:{" "}
-                      {importResult.successCount || 0}
-                    </p>
-                    <p className="text-sm text-red-600">
-                      Qushilmaganlar: {importResult.errorCount || 0}
-                    </p>
+                </div>
+              )}
 
-                    {importResult.errorCount && importResult.errorCount > 0 && (
-                      <Button
-                        onClick={() =>
-                          window.open(importResult.downloadReportUrl, "_blank")
-                        }
-                        className="bg-red-600 text-white"
-                      >
-                        {t("Qushilmagan talabalarni yuklab olish")}
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+              {/* Sahifa statistikasi */}
+              <div className="font-bold text-[20px] flex flex-col lg:flex-row gap-5">
                 <p className="text-sm">
                   {t("Total Pages")}:{" "}
                   <span className="text-green-600">{students?.totalPages}</span>
@@ -661,6 +686,8 @@ const Users = () => {
                   </span>
                 </p>
               </div>
+
+              {/* Pagination */}
               <div>
                 <ReactPaginate
                   breakLabel="..."
@@ -668,8 +695,8 @@ const Users = () => {
                     const newPageNum = e.selected + 1;
                     setPageNumber(newPageNum);
                   }}
-                  pageRangeDisplayed={3} // bu yerda nechta sahifa bir paytda ko‘rinsinligini belgilang
-                  pageCount={Math.ceil((students?.totalElements || 1) / size)} // ✅ tuzatildi
+                  pageRangeDisplayed={3}
+                  pageCount={Math.ceil((students?.totalElements || 1) / size)}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
                       <ChevronLeft />
@@ -709,7 +736,7 @@ const Users = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name)
+                        !["passportSeries", "passportNumber"].includes(f.name),
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }

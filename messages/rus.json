@@ -340,5 +340,8 @@
   "Image": "Изображение",
   "Edit profile": "Редактировать профиль",
   "Export Template Book": "Экспорт книги шаблонов",
-  "Export book": "Экспорт книги"
+  "Export book": "Экспорт книги",
+  "Bazadagi barcha excellarni yuklab olish": "Скачать все Excel файлы из базы данных",
+  "Bazadagi Excellar muvaffaqiyatli yuklab olindi": "Excel файлы успешно загружены в базу данных.",
+  "Import excel": "Импорт Excel"
 }
