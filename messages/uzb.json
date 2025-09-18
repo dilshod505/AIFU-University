@@ -335,5 +335,8 @@
   "Select type excel download": "Excel yuklash turini tanlang",
   "Import Students": "Talabalarni import qilish",
   "Deactivate Graduates": "Bitiruvchilarni o'chirish",
-  "Edit users": "Foydalanuvchilarni tahrirlash"
+  "Edit users": "Foydalanuvchilarni tahrirlash",
+  "Upload": "Yuklash",
+  "Image": "Rasm",
+  "Edit profile": "Profilni tahrirlash"
 }

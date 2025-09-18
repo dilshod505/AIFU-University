@@ -192,24 +192,28 @@ const Profile = () => {
       </div>
 
       <Modal
-        title="Edit Profile"
+        title={t("Edit Profile")}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={onSubmit}
         confirmLoading={updateProfile.isPending}
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
           <Form.Item
-            name="surname"
-            label="Surname"
+            name={t("name")}
+            label={t("Name")}
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Image">
+          <Form.Item
+            name={t("surname")}
+            label={t("Surname")}
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label={t("Image")}>
             <Upload
               listType="picture-card"
               fileList={fileList}
@@ -219,7 +223,7 @@ const Profile = () => {
               accept="image/*"
             >
               {fileList.length >= 1 ? null : (
-                <Button icon={<UploadOutlined />}>Upload</Button>
+                <Button icon={<UploadOutlined />}>{t("Upload")}</Button>
               )}
             </Upload>
           </Form.Item>

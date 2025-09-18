@@ -202,39 +202,50 @@ const EBaseBooks = () => {
 
   const onSubmit = async (values: any) => {
     try {
+      let imageUrl = values.imageUrl;
+      let pdfUrl = values.pdfUrl;
+      let size = values.size;
+
+      // 📌 Agar rasm fayl qo‘yilgan bo‘lsa - qo‘lda yuklaymiz
+      if (values.imageUrl?.file) {
+        const formData = new FormData();
+        formData.append("file", values.imageUrl.file);
+        const res = await api.post("/admin/upload/image", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        imageUrl = res.data?.data?.url;
+      }
+
+      // 📌 Agar PDF fayl qo‘yilgan bo‘lsa - qo‘lda yuklaymiz
+      if (values.pdfUrl?.file) {
+        const formData = new FormData();
+        formData.append("file", values.pdfUrl.file);
+        const res = await api.post("/admin/upload/pdf", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        pdfUrl = res.data?.data?.url;
+        size = res.data?.data?.sizeMB;
+      }
+
       if (editingBook) {
         updateBook.mutate({
           id: editingBook.id,
           data: {
             ...values,
-            imageUrl:
-              typeof values.imageUrl === "string"
-                ? values.imageUrl
-                : values.imageUrl?.file?.response?.url || values.imageUrl,
-            pdfUrl:
-              typeof values.pdfUrl === "string"
-                ? values.pdfUrl
-                : values.pdfUrl?.file?.response?.url || values.pdfUrl,
-            size:
-              typeof values.size === "number"
-                ? values.size
-                : values.pdfUrl?.sizeMB,
+            imageUrl,
+            pdfUrl,
+            size,
           },
         });
       } else {
         createBook.mutate({
           ...values,
-          imageUrl:
-            typeof values.imageUrl === "string"
-              ? values.imageUrl
-              : values.imageUrl?.file?.response?.url,
-          pdfUrl:
-            typeof values.pdfUrl === "string"
-              ? values.pdfUrl
-              : values.pdfUrl?.file?.response?.url,
-          size: values.pdfUrl?.sizeMB,
+          imageUrl,
+          pdfUrl,
+          size,
         });
       }
+
       setOpen(false);
       setEditingBook(null);
       setActionType("add");
@@ -242,7 +253,8 @@ const EBaseBooks = () => {
       setUploadedImage(null);
       setUploadedPdf(null);
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      message.error("Uploadda xatolik yuz berdi");
     }
   };
 
@@ -664,21 +676,12 @@ const EBaseBooks = () => {
               className="space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item
-                  label={t("kitob muqovasi")}
-                  name="imageUrl"
-                  rules={[
-                    {
-                      validator: validateImageUpload,
-                    },
-                  ]}
-                >
+                <Form.Item label={t("kitob muqovasi")} name="imageUrl">
                   <Upload
-                    name="image"
+                    beforeUpload={() => false} // ✅ avtomatik yubormaydi
                     listType="picture"
                     maxCount={1}
                     accept="image/png,image/jpeg,image/jpg,image/webp"
-                    onChange={(info) => handleUpload(info, "imageUrl")}
                   >
                     <AntButton icon={<UploadOutlined />}>
                       {t("Upload Image")}
@@ -689,17 +692,12 @@ const EBaseBooks = () => {
                 <Form.Item
                   label={t("elektron kitob fayli")}
                   name="pdfUrl"
-                  rules={[
-                    {
-                      validator: validatePdfUpload,
-                    },
-                  ]}
+                  rules={[{ validator: validatePdfUpload }]}
                 >
                   <Upload
-                    name="pdf"
+                    beforeUpload={() => false} // ✅ avtomatik yubormaydi
                     maxCount={1}
                     accept="application/pdf"
-                    onChange={(info) => handleUpload(info, "pdfUrl")}
                   >
                     <AntButton icon={<UploadOutlined />}>
                       {t("Upload PDF")}

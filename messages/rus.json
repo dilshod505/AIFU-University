@@ -335,5 +335,8 @@
   "Select type excel download": "Выберите тип загрузки Excel",
   "Import Students": "Импорт студентов",
   "Deactivate Graduates": "Отключить выпускников",
-  "Edit users": "Редактировать пользователей"
+  "Edit users": "Редактировать пользователей",
+  "Upload": "Загрузить",
+  "Image": "Изображение",
+  "Edit profile": "Редактировать профиль"
 }
