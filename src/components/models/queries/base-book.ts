@@ -18,7 +18,7 @@ export const useBaseBook = ({
       const res = await api.get(
         `/admin/base-books?pageSize=10&pageNumber=${pageNum}&sortDirection=${sortDirection}${
           query ? `&field=${field}&query=${query}` : ""
-        }`
+        }`,
       );
       return res.data;
     },
@@ -109,6 +109,62 @@ export const useDeleteBaseBook = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["base-book"] });
+    },
+  });
+};
+
+export const useUploadExcelBook = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await api.post("/super-admin/book/import/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
+    },
+  });
+};
+
+export const useImportExcelBook = () => {
+  return useMutation({
+    mutationFn: async (params: Record<string, any>) => {
+      const res = await api.get("/admin/backup/book", {
+        params, // ✅ query params
+        responseType: "blob", // ✅ fayl olish
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "book.xlsx"); // fayl nomi
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    },
+  });
+};
+
+export const useAllExcelImport = () => {
+  return useMutation({
+    mutationFn: async (params: Record<string, any>) => {
+      const res = await api.get("/super-admin/book/import/template", {
+        params, // ✅ query params
+        responseType: "blob", // ✅ fayl olish
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "book.xlsx"); // fayl nomi
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     },
   });
 };

@@ -3,11 +3,14 @@
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import { api } from "@/components/models/axios";
 import {
+  useAllExcelImport,
   useBaseBook,
   useBaseBookId,
   useCreateBaseBook,
   useDeleteBaseBook,
+  useImportExcelBook,
   useUpdateBaseBook,
+  useUploadExcelBook,
 } from "@/components/models/queries/base-book";
 import { useBaseBooksCategory } from "@/components/models/queries/base-books-category";
 import MyTable, { type IColumn } from "@/components/my-table";
@@ -42,10 +45,17 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 const { Option } = AntdSelect;
 
@@ -104,6 +114,10 @@ const BaseBooks = () => {
   const deleteBook = useDeleteBaseBook();
   const updateBook = useUpdateBaseBook();
   const [editingBook, setEditingBook] = useState<string | null>(null);
+  const uploadExcel = useUploadExcelBook();
+  const allExcelImport = useAllExcelImport();
+  const importExcel = useImportExcelBook();
+
   const baseBookDetail = useQuery({
     queryKey: ["base-book-detail", editingBook],
     queryFn: async () => {
@@ -311,6 +325,84 @@ const BaseBooks = () => {
                   <ArrowDownWideNarrow />
                 </Button>
               )}
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Select type excel download")}>
+                    <RiFileExcel2Line />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {/* Excel yuklash */}
+                  <DropdownMenuItem
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept =
+                        ".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                      input.onchange = (e: any) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          uploadExcel.mutate(file, {
+                            onSuccess: () => {
+                              toast.success(t("Excel muvaffaqiyatli yuklandi"));
+                            },
+                            onError: () => {
+                              toast.error(t("Excel yuklashda xatolik"));
+                            },
+                          });
+                        }
+                      };
+                      input.click();
+                    }}
+                  >
+                    {t("Import Excel")}
+                  </DropdownMenuItem>
+
+                  {/* Excel export */}
+                  <DropdownMenuItem
+                    onClick={() =>
+                      importExcel.mutate(
+                        {},
+                        {
+                          onSuccess: () => {
+                            toast.success(
+                              t("Excel muvaffaqiyatli yuklab olindi"),
+                            );
+                          },
+                          onError: () => {
+                            toast.error(t("Excel yuklashda xatolik"));
+                          },
+                        },
+                      )
+                    }
+                  >
+                    {t("Export Template Book")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      allExcelImport.mutate(
+                        {},
+                        {
+                          onSuccess: () => {
+                            toast.success(
+                              t(
+                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi",
+                              ),
+                            );
+                          },
+                          onError: () => {
+                            toast.error(t("Excel yuklashda xatolik"));
+                          },
+                        },
+                      )
+                    }
+                  >
+                    {t("Bazadagi barcha excellarni yuklab olish")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <TooltipBtn
                 size="sm"
                 title={t("Add Book")}

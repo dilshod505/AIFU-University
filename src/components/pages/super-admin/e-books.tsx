@@ -163,23 +163,6 @@ const EBaseBooks = () => {
     },
   });
 
-  const exportToExcelBook = useMutation({
-    mutationFn: async () => {
-      const res = await api.get("/admin/backup/book", {
-        responseType: "blob", // Excel blob fayl sifatida keladi
-      });
-
-      // Faylni browserda yuklab olish
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "books.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    },
-  });
-
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -436,14 +419,6 @@ const EBaseBooks = () => {
                 <ArrowDownWideNarrow />
               </Button>
             )}
-            <TooltipBtn
-              title={t("Excelga yuklab olish")}
-              onClick={() => exportToExcelBook.mutate()}
-              disabled={exportToExcelBook.isPending}
-            >
-              <FileDown className="w-4 h-4" />
-              {exportToExcelBook.isPending ? t("Yuklanmoqda...") : t("")}
-            </TooltipBtn>
             <div>
               <TooltipBtn
                 size={"sm"}
