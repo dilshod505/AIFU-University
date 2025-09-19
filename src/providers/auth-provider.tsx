@@ -1,10 +1,10 @@
 "use client";
 
-import { type ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { api } from "@/components/models/axios";
-import { useTranslations } from "next-intl";
 import useLayoutStore from "@/store/layout-store";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { type ReactNode, useEffect, useState } from "react";
 
 const AuthProvider = ({
   children,
@@ -19,10 +19,13 @@ const AuthProvider = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const check = async () => {
-      setIsLoading(true);
       try {
         const res = await api.post("/admin/auth/me");
+        if (!isMounted) return;
+
         if (res.status === 200 || res.status === 201) {
           const userData = res.data.data;
           setUser(userData);
@@ -31,26 +34,31 @@ const AuthProvider = ({
             role &&
             userData.role.toString().toUpperCase() !== role.toUpperCase()
           ) {
-            router.push(
-              `/${userData.role.toLowerCase().replace("_", "-")}/dashboard`,
+            router.replace(
+              `/${userData.role.toLowerCase().replace("_", "-")}/dashboard`
             );
+            return; // 🔑 redirect bo'lsa isLoading false qilmaslik
           }
+          setIsLoading(false); // ✅ Faqat to‘g‘ri foydalanuvchi bo‘lsa ochamiz
         } else {
-          router.push("/login");
+          router.replace("/login");
         }
-        setIsLoading(false);
-      } catch (e: any) {
-        router.push("/login");
-        setIsLoading(false);
+      } catch {
+        router.replace("/login");
       }
     };
 
     check();
+
+    return () => {
+      isMounted = false;
+    };
   }, [role, router, setUser]);
 
-  if (isLoading) {
+  // ✅ loading bo‘lsa yoki user hali kelmagan bo‘lsa faqat spinner
+  if (isLoading || !user) {
     return (
-      <div className="absolute bg-white top-0 left-0 z-50 flex justify-center items-center h-screen w-full gap-3  ">
+      <div className="absolute bg-white top-0 left-0 z-50 flex justify-center items-center h-screen w-full gap-3">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900" />
         <p className="ml-2 text-black">{t("loading")}...</p>
       </div>
