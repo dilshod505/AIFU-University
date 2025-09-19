@@ -44,7 +44,7 @@ const BaseBooks = () => {
   const filteredCategories = useMemo(() => {
     if (!data?.data) return [];
     return data.data.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item.name.toLowerCase().includes(search.toLowerCase()),
     );
   }, [data, search]);
 
@@ -95,7 +95,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteCategory, t]
+    [deleteCategory, t],
   );
 
   const fields = useMemo<FormField[]>(
@@ -107,11 +107,21 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const handleSubmit = async (values: Record<string, any>) => {
     try {
+      const isDuplicate = data?.data?.some(
+        (item: any) =>
+          item.name.toLowerCase() === values.name.toLowerCase() &&
+          item.id !== editingCategory?.id,
+      );
+      if (isDuplicate) {
+        toast.error(t("This category name already exists"));
+        return;
+      }
+
       if (editingCategory) {
         updateCategory.mutate({
           id: editingCategory.id,
@@ -149,12 +159,13 @@ const BaseBooks = () => {
     <div>
       <MyTable
         title={
-          <h1 className={"text-2xl font-semibold py-5"}>
+          <h1 className={"text-2xl font-semibold"}>
             {t("Categories of Base Books")}
           </h1>
         }
         columns={columns}
         searchable={false}
+        className={"p-2"}
         header={
           <div className={"flex items-center justify-center gap-2"}>
             <div>

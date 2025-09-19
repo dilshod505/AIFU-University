@@ -154,8 +154,9 @@ const EBookCategories = () => {
   return (
     <div>
       <MyTable
+        className={"p-2"}
         title={
-          <h1 className="text-2xl font-semibold py-5">
+          <h1 className="text-2xl font-semibold">
             {t("Categories of E-Base Books")}
           </h1>
         }
