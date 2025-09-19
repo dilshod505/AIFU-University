@@ -21,15 +21,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response.status === 401) {
-//       Cookies.remove("aifu-token");
-//       localStorage.removeItem("ar-base-base-books.tsx");
-//
-//       window.location.href = "/login";
-//     }
-//     return Promise.reject(error);
-//   },
-// );
+export const makeFullUrl = (path?: string | null): string | null => {
+  if (!path) return null;
+
+  // Allaqachon to‘liq URL bo‘lsa
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  // Nisbiy bo‘lsa, bazaviy domenni qo‘shib yuboramiz
+  return `https://aifu-library.duckdns.org${path}`;
+};

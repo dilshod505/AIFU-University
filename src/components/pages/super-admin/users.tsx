@@ -2,7 +2,7 @@
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm } from "@/components/form/auto-form";
-import { api } from "@/components/models/axios";
+import { api, makeFullUrl } from "@/components/models/axios";
 import {
   useCreateStudents,
   useDeactivateGraduates,
@@ -91,6 +91,28 @@ const Users = () => {
   const expertToExcel = useExcelExport();
   const exportToExcelShablon = useExcelExportShablon();
 
+  const downloadFile = async (url: string, filename: string) => {
+    try {
+      const fullUrl = makeFullUrl(url)!; // nisbiy bo‘lsa ham to‘liq qilib beradi
+
+      const res = await api.get(fullUrl, {
+        responseType: "blob", // fayl bo‘lishi uchun
+      });
+
+      const blob = new Blob([res.data]);
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Yuklab olishda xatolik:", err);
+    }
+  };
+
   const importStudents = useImportStudents();
   const [importResult, setImportResult] = useState<{
     successCount?: number;
@@ -105,11 +127,13 @@ const Users = () => {
       importStudents.mutate(file, {
         onSuccess: (res) => {
           toast.success(res.message || "Import completed");
+          // Import students natijasi
           setImportResult({
             successCount: res.data?.successCount || res.successCount,
             errorCount: res.data?.errorCount || res.errorCount,
-            downloadReportUrl:
+            downloadReportUrl: makeFullUrl(
               res.data?.downloadReportUrl || res.downloadReportUrl,
+            ),
           });
         },
         onError: () => {
@@ -278,7 +302,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, form, t],
+    [deleteStudent, detail, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -439,7 +463,12 @@ const Users = () => {
         ...editingStudentData.data?.data,
       });
     }
-  }, [editingStudent, editingStudentData.isLoading, form]);
+  }, [
+    editingStudent,
+    editingStudentData.data?.data,
+    editingStudentData.isLoading,
+    form,
+  ]);
 
   return (
     <TooltipProvider>
@@ -519,7 +548,7 @@ const Users = () => {
                 </TabsList>
               </Tabs>
 
-              <label className="cursor-pointer bg-green-600 text-white px-3 py-2 rounded-xl">
+              <label className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded-xl">
                 {t("Import Students")}
                 <input
                   type="file"
@@ -529,7 +558,7 @@ const Users = () => {
                 />
               </label>
 
-              <label className="cursor-pointer bg-red-600 text-white px-3 py-2 rounded-xl">
+              <label className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded-xl">
                 {t("Deactivate Graduates")}
                 <input
                   type="file"
@@ -595,9 +624,9 @@ const Users = () => {
                   {importResult.errorCount && importResult.errorCount > 0 && (
                     <Button
                       onClick={() =>
-                        window.open(
-                          importResult.downloadReportUrl ?? "#",
-                          "_blank",
+                        downloadFile(
+                          importResult.downloadReportUrl!,
+                          "import-errors.xlsx",
                         )
                       }
                       className="bg-red-600 text-white mt-2"
@@ -636,15 +665,15 @@ const Users = () => {
                       deactivateResult.debtorCount > 0 && (
                         <Button
                           onClick={() =>
-                            window.open(
-                              deactivateResult.downloadDebtorsReportUrl,
-                              "_blank",
+                            downloadFile(
+                              deactivateResult.downloadDebtorsReportUrl!,
+                              "qarzdor-talabalar.xlsx",
                             )
                           }
-                          className="bg-yellow-600 text-white"
+                          className="bg-yellow-600 text-white mt-2"
                           size="sm"
                         >
-                          {t("Qarzdorlar hisobotini yuklab olish")}
+                          {t("Qarzdor talabalar hisobotini yuklab olish")}
                         </Button>
                       )}
 
@@ -652,12 +681,12 @@ const Users = () => {
                       deactivateResult.notFoundCount > 0 && (
                         <Button
                           onClick={() =>
-                            window.open(
-                              deactivateResult.downloadNotFoundReportUrl,
-                              "_blank",
+                            downloadFile(
+                              deactivateResult.downloadNotFoundReportUrl!,
+                              "topilmagan-talabalar.xlsx",
                             )
                           }
-                          className="bg-red-600 text-white"
+                          className="bg-gray-600 text-white mt-2"
                           size="sm"
                         >
                           {t("Topilmagan talabalar hisobotini yuklab olish")}
