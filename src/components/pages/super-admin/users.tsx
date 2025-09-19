@@ -131,9 +131,10 @@ const Users = () => {
           setImportResult({
             successCount: res.data?.successCount || res.successCount,
             errorCount: res.data?.errorCount || res.errorCount,
-            downloadReportUrl: makeFullUrl(
-              res.data?.downloadReportUrl || res.downloadReportUrl,
-            ),
+            downloadReportUrl:
+              makeFullUrl(
+                res.data?.downloadReportUrl || res.downloadReportUrl
+              ) || "",
           });
         },
         onError: () => {
@@ -302,7 +303,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, t],
+    [deleteStudent, detail, t]
   );
 
   const allFields = useMemo<any[]>(
@@ -405,7 +406,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const fields = allFields;
@@ -437,7 +438,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -452,7 +453,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
@@ -626,7 +627,7 @@ const Users = () => {
                       onClick={() =>
                         downloadFile(
                           importResult.downloadReportUrl!,
-                          "import-errors.xlsx",
+                          "import-errors.xlsx"
                         )
                       }
                       className="bg-red-600 text-white mt-2"
@@ -667,7 +668,7 @@ const Users = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadDebtorsReportUrl!,
-                              "qarzdor-talabalar.xlsx",
+                              "qarzdor-talabalar.xlsx"
                             )
                           }
                           className="bg-yellow-600 text-white mt-2"
@@ -683,7 +684,7 @@ const Users = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadNotFoundReportUrl!,
-                              "topilmagan-talabalar.xlsx",
+                              "topilmagan-talabalar.xlsx"
                             )
                           }
                           className="bg-gray-600 text-white mt-2"
@@ -765,7 +766,7 @@ const Users = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name),
+                        !["passportSeries", "passportNumber"].includes(f.name)
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }
