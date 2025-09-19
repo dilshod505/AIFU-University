@@ -343,5 +343,6 @@
   "Export book": "Export book",
   "Bazadagi barcha excellarni yuklab olish": "Download All Excel Files from Database",
   "Bazadagi Excellar muvaffaqiyatli yuklab olindi": "Excel files successfully uploaded to the database.",
-  "Import excel": "Upload Excel"
+  "Import excel": "Upload Excel",
+  "This category already exists": "This category already exists."
 }

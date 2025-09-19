@@ -139,6 +139,13 @@ const EBookCategories = () => {
             toast.success(t("Category created successfully"));
             setOpen(false);
           },
+          onError: (error: any) => {
+            if (error?.response?.status === 409) {
+              toast.error(t("This category already exists"));
+            } else {
+              toast.error(t("Error creating category"));
+            }
+          },
         },
       );
     }
@@ -209,4 +216,3 @@ const EBookCategories = () => {
 };
 
 export default EBookCategories;
-
