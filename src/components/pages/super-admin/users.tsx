@@ -47,6 +47,7 @@ import {
   ChevronRight,
   Eye,
   GraduationCap,
+  ImportIcon,
   PenSquareIcon,
   Plus,
   Search,
@@ -133,7 +134,7 @@ const Users = () => {
             errorCount: res.data?.errorCount || res.errorCount,
             downloadReportUrl:
               makeFullUrl(
-                res.data?.downloadReportUrl || res.downloadReportUrl
+                res.data?.downloadReportUrl || res.downloadReportUrl,
               ) || "",
           });
         },
@@ -303,7 +304,7 @@ const Users = () => {
         ),
       },
     ],
-    [deleteStudent, detail, t]
+    [deleteStudent, detail, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -406,7 +407,7 @@ const Users = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const fields = allFields;
@@ -438,7 +439,7 @@ const Users = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -453,7 +454,7 @@ const Users = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -549,26 +550,6 @@ const Users = () => {
                 </TabsList>
               </Tabs>
 
-              <label className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded-xl">
-                {t("Import Students")}
-                <input
-                  type="file"
-                  accept=".xlsx"
-                  hidden
-                  onChange={handleImport}
-                />
-              </label>
-
-              <label className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded-xl">
-                {t("Deactivate Graduates")}
-                <input
-                  type="file"
-                  accept=".xlsx"
-                  hidden
-                  onChange={handleDeactivate}
-                />
-              </label>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <TooltipBtn title={t("Select type excel download")}>
@@ -586,6 +567,34 @@ const Users = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <TooltipBtn title={t("Import Students")}>
+                <label>
+                  <ImportIcon />
+                  <input
+                    type="file"
+                    accept=".xlsx"
+                    hidden
+                    onChange={handleImport}
+                  />
+                </label>
+              </TooltipBtn>
+
+              <TooltipBtn
+                title={t("Deactivate Graduates")}
+                variant={"destructive"}
+              >
+                <label>
+                  <ImportIcon />
+                  <input
+                    type="file"
+                    accept=".xlsx"
+                    hidden
+                    onChange={handleDeactivate}
+                  />
+                </label>
+              </TooltipBtn>
+
               <TooltipBtn
                 variant={"default"}
                 title={t("Add Student")}
@@ -627,7 +636,7 @@ const Users = () => {
                       onClick={() =>
                         downloadFile(
                           importResult.downloadReportUrl!,
-                          "import-errors.xlsx"
+                          "import-errors.xlsx",
                         )
                       }
                       className="bg-red-600 text-white mt-2"
@@ -668,7 +677,7 @@ const Users = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadDebtorsReportUrl!,
-                              "qarzdor-talabalar.xlsx"
+                              "qarzdor-talabalar.xlsx",
                             )
                           }
                           className="bg-yellow-600 text-white mt-2"
@@ -684,7 +693,7 @@ const Users = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadNotFoundReportUrl!,
-                              "topilmagan-talabalar.xlsx"
+                              "topilmagan-talabalar.xlsx",
                             )
                           }
                           className="bg-gray-600 text-white mt-2"
@@ -766,7 +775,7 @@ const Users = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name)
+                        !["passportSeries", "passportNumber"].includes(f.name),
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }

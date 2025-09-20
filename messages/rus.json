@@ -344,5 +344,6 @@
   "Bazadagi barcha excellarni yuklab olish": "Скачать все Excel файлы из базы данных",
   "Bazadagi Excellar muvaffaqiyatli yuklab olindi": "Excel файлы успешно загружены в базу данных.",
   "Import excel": "Импорт Excel",
-  "This category already exists": "Эта категория уже существует."
+  "This category already exists": "Эта категория уже существует.",
+  "This category name already exists": "Это название категории уже существует."
 }
