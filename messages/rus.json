@@ -367,5 +367,6 @@
   "Action": "Действие",
   "Details": "Подробности",
   "Analytics Status": "Статус аналитики",
-  "Delete admin": "Удалить администратора"
+  "Delete admin": "Удалить администратора",
+  "Account activity": "Действия по счету"
 }

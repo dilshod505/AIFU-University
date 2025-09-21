@@ -2,10 +2,11 @@
 
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import {
+  useActivateAccount,
   useAdminDelete,
   useAdministrators,
   useCreateAdministrator,
-} from "@/components/models/queries/students";
+} from "@/components/models/queries/admin";
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Divider } from "antd";
 import {
+  ActivityIcon,
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
   Ban,
@@ -24,18 +26,38 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
+  ShieldCheck,
+  ShieldX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import DeleteActionDialog from "@/components/delete-action-dialog";
+import { Input } from "@/components/ui/input"; // shadcn input
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 export type FilterType = "all" | "active" | "inactive";
 
 const Administrators = () => {
   const t = useTranslations();
+
+  const [activateOpen, setActivateOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [step, setStep] = useState<"email" | "code">("email");
+
+  const activateForm = useForm<{ email: string; code: string }>({
+    defaultValues: { email: "", code: "" },
+  });
+
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [open, setOpen] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -45,6 +67,7 @@ const Administrators = () => {
   });
   const deleteAdmin = useAdminDelete();
   const createAdmin = useCreateAdministrator();
+  const activate = useActivateAccount();
 
   const form = useForm();
   const fields = useMemo<FormField[]>(
@@ -83,7 +106,7 @@ const Administrators = () => {
         key: "index",
         title: "#",
         dataIndex: "index",
-        width: 350,
+        width: 250,
         render: (_: any, __: any, index: number) => index + 1,
       },
       {
@@ -95,19 +118,21 @@ const Administrators = () => {
         key: "surname",
         title: t("lastName"),
         dataIndex: "surname",
-        width: 500,
+        width: 400,
       },
       {
         key: "status",
         width: 300,
         title: t("status"),
-        dataIndex: "status",
-        render: (value: boolean) => (
-          <div
-            className={`w-7 h-6 rounded ${
-              value ? "bg-green-500" : "bg-red-400"
-            }`}
-          />
+        dataIndex: "isActive",
+        render: (isActive: boolean) => (
+          <div className="flex items-center justify-start">
+            {isActive ? (
+              <ShieldCheck className="text-green-600 w-5 h-5" />
+            ) : (
+              <ShieldX className="text-red-600 w-5 h-5" />
+            )}
+          </div>
         ),
       },
       {
@@ -118,15 +143,19 @@ const Administrators = () => {
         render: (_: any, record: Record<string, any>) => (
           <div className="flex items-center gap-3">
             <TooltipBtn
-              size="sm"
-              title={record.isActive ? t("Ban") : t("Unban")}
-              variant={record.isActive ? "destructive" : "default"}
+              title={t("Account activity")}
+              onClick={() => {
+                setEmail("");
+                setCode("");
+                setStep("email");
+                setActivateOpen(true);
+              }}
             >
-              {record.isActive ? <Ban /> : <Check />}
+              <Check />
             </TooltipBtn>
             <DeleteActionDialog
               onConfirm={() => deleteAdmin.mutate(record.id)}
-              title={t("Delete admin")}
+              title={t("Delete")}
             />
           </div>
         ),
@@ -157,9 +186,7 @@ const Administrators = () => {
     <div>
       <MyTable
         title={
-          <h3 className={"text-2xl font-semibold py-5"}>
-            {t("Administrators")}
-          </h3>
+          <h3 className={"text-2xl font-semibold"}>{t("Administrators")}</h3>
         }
         columns={columns}
         dataSource={admins?.data || []}
@@ -192,21 +219,15 @@ const Administrators = () => {
             <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
               <p className="text-sm whitespace-break-spaces">
                 {t("Total Pages")}:{" "}
-                <span className="text-green-600">
-                  {admins?.data?.totalPages}
-                </span>
+                <span className="text-green-600">{admins?.totalPages}</span>
               </p>
               <p className="text-sm whitespace-break-spaces">
                 {t("Current Page")}:{" "}
-                <span className="text-green-600">
-                  {admins?.data?.currentPage}
-                </span>
+                <span className="text-green-600">{admins?.currentPage}</span>
               </p>
               <p className="text-sm whitespace-break-spaces">
                 {t("Total Elements")}:{" "}
-                <span className="text-green-600">
-                  {admins?.data?.totalElements}
-                </span>
+                <span className="text-green-600">{admins?.totalElements}</span>
               </p>
             </div>
             <div>
@@ -252,6 +273,94 @@ const Administrators = () => {
               fields={fields}
               showResetButton={false}
             />
+          </div>
+        </SheetContent>
+      </Sheet>
+      <Sheet open={activateOpen} onOpenChange={setActivateOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>{t("Activate Administrator")}</SheetTitle>
+          </SheetHeader>
+
+          <div className="space-y-4 p-3">
+            {step === "email" && (
+              <>
+                <Label>{t("Email")}</Label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@example.com"
+                />
+                <Button
+                  className="w-full mt-3"
+                  onClick={() => {
+                    if (!email) return toast.error(t("Please enter email"));
+                    // Hozircha kod yuborish uchun faqat stepni o'zgartiramiz
+                    // Agar API bo'lsa shu yerda kod yuborish chaqiriladi
+                    toast.success(t("Verification code sent to email"));
+                    setStep("code");
+                  }}
+                >
+                  {t("Send Code")}
+                </Button>
+              </>
+            )}
+
+            {step === "code" && (
+              <>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">
+                    {t("Verification Code")}
+                  </Label>
+                  <div className="flex justify-center">
+                    <InputOTP
+                      maxLength={6}
+                      value={code}
+                      onChange={(value) => setCode(value)}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                      </InputOTPGroup>
+                      <InputOTPSeparator />
+                      <InputOTPGroup>
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                </div>
+
+                <Button
+                  className="w-full mt-3"
+                  onClick={() => {
+                    if (!email || !code) {
+                      return toast.error(t("Please fill all fields"));
+                    }
+                    activate.mutate(
+                      { email, code },
+                      {
+                        onSuccess: () => {
+                          toast.success(t("Account successfully activated"));
+                          setActivateOpen(false);
+                        },
+                        onError: (err: any) => {
+                          toast.error(
+                            err?.response?.data?.message ||
+                              t("Activation failed"),
+                          );
+                        },
+                      },
+                    );
+                  }}
+                >
+                  {t("Activate")}
+                </Button>
+              </>
+            )}
           </div>
         </SheetContent>
       </Sheet>
