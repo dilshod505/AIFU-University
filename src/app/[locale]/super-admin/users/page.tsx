@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import Users from "@/components/pages/super-admin/users";
+import Students from "@/components/pages/super-admin/students";
 
 export const generateMetadata = async ({
   params,
@@ -12,13 +12,13 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale });
 
   return {
-    title: t("System Users"),
-    description: t("AIFU - System Users"),
+    title: t("System Students"),
+    description: t("AIFU - System Students"),
   };
 };
 
 const Page = () => {
-  return <Users />;
+  return <Students />;
 };
 
 export default Page;

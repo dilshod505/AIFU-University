@@ -369,5 +369,7 @@
   "Analytics Status": "Статус аналитики",
   "Delete admin": "Удалить администратора",
   "Account activity": "Действия по счету",
-  "select type search": "Выберите тип поиска"
+  "select type search": "Выберите тип поиска",
+  "Close": "Закрыть",
+  "Students": "Студенты"
 }

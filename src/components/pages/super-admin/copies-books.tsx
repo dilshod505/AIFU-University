@@ -43,7 +43,7 @@ import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FilterType } from "@/components/pages/super-admin/users";
+import { FilterType } from "@/components/pages/super-admin/students";
 
 const { TextArea } = AntInput;
 

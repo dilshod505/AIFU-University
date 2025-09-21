@@ -65,7 +65,7 @@ import { toast } from "sonner";
 
 export type FilterType = "all" | "active" | "inactive";
 
-const Users = () => {
+const Students = () => {
   const t = useTranslations();
   const [filter, setFilter] = useState<FilterType>("all");
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -477,9 +477,7 @@ const Users = () => {
       <div>
         <MyTable
           className={"py-5"}
-          title={
-            <h3 className={"text-2xl font-semibold py-2"}>{t("users")}</h3>
-          }
+          title={<h3 className={"text-2xl font-semibold"}>{t("Students")}</h3>}
           columns={columns}
           dataSource={students?.data || []}
           isLoading={isLoading}
@@ -871,4 +869,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Students;

@@ -51,7 +51,7 @@ const Dashboard = () => {
   // -------------------- Monthly (kunlik) --------------------
   const perDayData = bookingPerDay.data?.data || [];
   const dayCategories = perDayData.map((item: any) =>
-    new Date(item.date).getDate()
+    new Date(item.date).getDate(),
   );
   const takenPerDay = perDayData.map((item: any) => item.taken);
   const returnedPerDay = perDayData.map((item: any) => item.returned);
@@ -86,7 +86,7 @@ const Dashboard = () => {
     "Dec",
   ];
   const yearlyCategories = yearlyData.map(
-    (item: any) => monthNames[item.month - 1]
+    (item: any) => monthNames[item.month - 1],
   );
   const takenYearly = yearlyData.map((item: any) => item.taken);
   const returnedYearly = yearlyData.map((item: any) => item.returned);
@@ -109,7 +109,7 @@ const Dashboard = () => {
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
         <StatCard
-          title={t("Total Users")}
+          title={t("Total Students")}
           value={studentsCount.isLoading ? null : studentsCount.data?.data}
           loading={studentsCount.isLoading}
           subtitle={t("Registered library members")}
@@ -367,7 +367,7 @@ const Dashboard = () => {
                             {booking.dueDate || booking.due_date || "No Date"}
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import { api } from "@/components/models/axios";
-import { FilterType } from "@/components/pages/super-admin/users";
+import { FilterType } from "@/components/pages/super-admin/students";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useStudents = ({

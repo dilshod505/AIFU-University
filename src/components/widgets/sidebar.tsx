@@ -216,7 +216,7 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         ],
       },
       {
-        title: t("Users"),
+        title: t("Students"),
         icon: <Users className="w-5 h-5" />,
         href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
         activePatterns: [
@@ -236,8 +236,12 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
         role: ["SUPER_ADMIN"],
         children: [
           {
-            title: t("Users"),
-            href: `/${user?.role?.toLowerCase().replace("_", "-")}/users`,
+            title: t("Students"),
+            href: `/${user?.role?.toLowerCase().replace("_", "-")}/users/students`,
+            activePatterns: [
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users/students`,
+              `/${user?.role?.toLowerCase().replace("_", "-")}/users/students/*`,
+            ],
           },
           {
             title: t("Administrators"),
