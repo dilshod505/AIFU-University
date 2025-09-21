@@ -465,11 +465,8 @@ export const CopiesBooks = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => {
-                  const newPageNum = e.selected + 1;
-                  setPageNum(newPageNum);
-                }}
-                pageRangeDisplayed={pageSize}
+                onPageChange={(e) => setPageNum(e.selected + 1)}
+                pageRangeDisplayed={5} // 5 ta raqam ko'rinadi
                 pageCount={Math.ceil(
                   (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
