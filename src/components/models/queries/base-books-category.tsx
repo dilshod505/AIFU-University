@@ -5,7 +5,7 @@ export const useBaseBooksCategory = () => {
   return useQuery({
     queryKey: ["base-book-category"],
     queryFn: async () => {
-      const res = await api("/admin/base-book/categories");
+      const res = await api("/admin/base-books/options");
       return res.data;
     },
   });

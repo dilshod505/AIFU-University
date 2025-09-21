@@ -274,7 +274,7 @@ const BaseBooks = () => {
           header={
             <div className="flex flex-wrap justify-start items-center gap-2">
               <Select
-                defaultValue="id"
+                defaultValue={t("select type search")}
                 style={{ width: 150 }}
                 onChange={(val: any) => {
                   setFilterColumn(val);
@@ -283,7 +283,6 @@ const BaseBooks = () => {
                   setFullInfoAuthor("");
                 }}
               >
-                <Option value="id">{t("id")}</Option>
                 <Option value="fullInfo">
                   {t("Full Info (Author/Title)")}
                 </Option>
@@ -529,15 +528,21 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <AntdSelect
+                showSearch
                 style={{ width: "100%" }}
                 placeholder={t("Select category")}
-              >
-                {categories?.data?.map((cat: Record<string, any>) => (
-                  <Option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </Option>
-                ))}
-              </AntdSelect>
+                optionFilterProp="label"
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toString()
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={categories?.data?.map((cat: Record<string, any>) => ({
+                  value: cat.id,
+                  label: `${cat.id}. ${cat.author} - ${cat.title}`,
+                }))}
+              />
             </Form.Item>
           </div>
 
@@ -574,7 +579,7 @@ const BaseBooks = () => {
           </h1>
           <div className="grid md:grid-cols-2 gap-3">
             <Form.Item label={t("Isbn")} name="isbn">
-              <Input placeholder={t("Isbn")} />
+              <Input placeholder={t("Isbn")} required />
             </Form.Item>
             <Form.Item
               label={t("Page Count")}
