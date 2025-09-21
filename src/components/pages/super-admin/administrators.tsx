@@ -26,7 +26,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -187,6 +187,57 @@ const Administrators = () => {
             </TooltipBtn>
           </div>
         }
+        footer={
+          <div className={"flex items-center justify-between"}>
+            <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+              <p className="text-sm whitespace-break-spaces">
+                {t("Total Pages")}:{" "}
+                <span className="text-green-600">
+                  {admins?.data?.totalPages}
+                </span>
+              </p>
+              <p className="text-sm whitespace-break-spaces">
+                {t("Current Page")}:{" "}
+                <span className="text-green-600">
+                  {admins?.data?.currentPage}
+                </span>
+              </p>
+              <p className="text-sm whitespace-break-spaces">
+                {t("Total Elements")}:{" "}
+                <span className="text-green-600">
+                  {admins?.data?.totalElements}
+                </span>
+              </p>
+            </div>
+            <div>
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => {
+                  setPageNumber(e.selected + 1);
+                }}
+                pageRangeDisplayed={10}
+                pageCount={Math.ceil(admins?.totalElements / 10) || 0}
+                previousLabel={
+                  <Button className={"bg-white text-black"}>
+                    <ChevronLeft />
+                    {t("Return")}
+                  </Button>
+                }
+                nextLabel={
+                  <Button className={"bg-white text-black"}>
+                    {t("Next")} <ChevronRight />
+                  </Button>
+                }
+                className={"flex justify-center gap-2 items-center my-5"}
+                pageClassName="list-none"
+                pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                activeLinkClassName="bg-green-600 text-white rounded-full"
+                renderOnZeroPageCount={null}
+                forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
+              />
+            </div>
+          </div>
+        }
       />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
@@ -204,32 +255,6 @@ const Administrators = () => {
           </div>
         </SheetContent>
       </Sheet>
-      <Divider />
-      <ReactPaginate
-        breakLabel="..."
-        onPageChange={(e) => {
-          setPageNumber(e.selected + 1);
-        }}
-        pageRangeDisplayed={10}
-        pageCount={Math.ceil(admins?.totalElements / 10) || 0}
-        previousLabel={
-          <Button className={"bg-white text-black"}>
-            <ChevronLeft />
-            {t("Return")}
-          </Button>
-        }
-        nextLabel={
-          <Button className={"bg-white text-black"}>
-            {t("Next")} <ChevronRight />
-          </Button>
-        }
-        className={"flex justify-center gap-2 items-center my-5"}
-        pageClassName="list-none"
-        pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
-        activeLinkClassName="bg-green-600 text-white rounded-full"
-        renderOnZeroPageCount={null}
-        forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
-      />
     </div>
   );
 };

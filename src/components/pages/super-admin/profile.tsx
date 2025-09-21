@@ -320,22 +320,22 @@ const Profile = () => {
       </div>
 
       {/* Contribution to global stats */}
-      <Card className="shadow-sm mt-6 mb-5">
-        <CardContent className="p-4">
-          <h3 className="text-xs font-medium  uppercase tracking-wide mb-2">
+      <Card className="shadow-sm mb-5">
+        <CardContent>
+          <h3 className="text-2xl font-bold tracking-wide mb-3">
             {t("Contribution to Global Statistics")}
           </h3>
-          <p className="text-sm">
+          <p className="text-[16px]">
             {t("Your issues this month")}:{" "}
-            <span className="font-semibold">
+            <span className="font-bold text-red-600">
               {activity?.data?.analytics?.issuedCount ?? 0}
             </span>{" "}
             &nbsp; {t("Total in library")}:{" "}
-            <span className="font-semibold">
+            <span className="font-bold text-green-600">
               {activity?.data?.analytics?.totalCount ?? 0}
             </span>
             &nbsp; {t("Share")}:{" "}
-            <span className="font-semibold">
+            <span className="font-bold text-blue-600">
               {activity?.data?.analytics?.totalCount}
             </span>
           </p>
@@ -547,64 +547,70 @@ const Profile = () => {
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-4">{t("Data")}</h3>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 text-left">{t("Image")}</th>
-                  <th className="px-4 py-2 text-left">{t("F.I.O")}</th>
-                  <th className="px-4 py-2 text-center">{t("Issued")}</th>
-                  <th className="px-4 py-2 text-center">{t("Extended")}</th>
-                  <th className="px-4 py-2 text-center">{t("Returned")}</th>
-                  <th className="px-4 py-2 text-center">{t("Total")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {me?.data?.length > 0 ? (
-                  me.data.map((admin: any, i: number) => (
-                    <tr
-                      key={i}
-                      className="border-b border-gray-100 hover:bg-gray-50"
-                    >
-                      <td className="px-4 py-3 font-medium">
-                        {admin.imageUrl ? (
-                          <Image
-                            width={36}
-                            height={36}
-                            src={admin.imageUrl}
-                            alt={`${admin.name} ${admin.surname}`}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        ) : (
-                          <CircleUserRound className="text-gray-400 w-8 h-8" />
-                        )}
-                      </td>
+            {/* Vertikal scroll qo‘yish uchun max-h va overflow-y qo‘shamiz */}
+            <div className="max-h-96 overflow-y-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead className="bg-gray-50 sticky top-0 z-10">
+                  <tr>
+                    <th className="px-4 py-2 text-left">{t("Image")}</th>
+                    <th className="px-4 py-2 text-left">{t("F.I.O")}</th>
+                    <th className="px-4 py-2 text-center">{t("Issued")}</th>
+                    <th className="px-4 py-2 text-center">{t("Extended")}</th>
+                    <th className="px-4 py-2 text-center">{t("Returned")}</th>
+                    <th className="px-4 py-2 text-center">{t("Total")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {me?.data?.length > 0 ? (
+                    me.data.map((admin: any, i: number) => (
+                      <tr
+                        key={i}
+                        className="border-b border-gray-100 hover:bg-gray-50"
+                      >
+                        <td className="px-4 py-3 font-medium">
+                          {admin.imageUrl ? (
+                            <Image
+                              width={36}
+                              height={36}
+                              src={admin.imageUrl}
+                              alt={`${admin.name} ${admin.surname}`}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <CircleUserRound className="text-gray-400 w-8 h-8" />
+                          )}
+                        </td>
 
-                      <td className="px-4 py-3 font-medium">
-                        {admin.name} {admin.surname}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {admin.analytics.issuedCount}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {admin.analytics.extendedCount}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {admin.analytics.returnedCount}
-                      </td>
-                      <td className="px-4 py-3 text-center font-semibold">
-                        {admin.analytics.totalCount}
+                        <td className="px-4 py-3 font-medium">
+                          {admin.name} {admin.surname}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {admin.analytics.issuedCount}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {admin.analytics.extendedCount}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {admin.analytics.returnedCount}
+                        </td>
+                        <td className="px-4 py-3 text-center font-semibold">
+                          {admin.analytics.totalCount}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="py-4 text-center text-gray-500"
+                      >
+                        {t("No data")}
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="py-4 text-center text-gray-500">
-                      {t("No data")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </CardContent>
       </Card>
