@@ -17,7 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import TooltipBtn from "@/components/tooltip-btn";
 import { CircleUserRound, UserRoundPen } from "lucide-react";
 import { ApexOptions } from "apexcharts";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Image, Select } from "antd";
 import { Modal, Form, Input, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -178,9 +178,10 @@ const Profile = () => {
             ) : (
               <CircleUserRound className="w-12 h-12 text-gray-400" />
             )}
-
             <div>
-              <p className="text-2xl font-bold">{profile?.data?.name}</p>
+              <p className="text-2xl font-bold">
+                {profile?.data?.name} {profile?.data?.surname}
+              </p>
               <p className="text-sm">{profile?.data?.email}</p>
               <h1 className="font-bold">{profile?.data?.role}</h1>
             </div>
@@ -199,11 +200,7 @@ const Profile = () => {
         confirmLoading={updateProfile.isPending}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name={t("name")}
-            label={t("Name")}
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="name" label={t("Name")} rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item

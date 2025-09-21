@@ -366,5 +366,6 @@
   "Invoice number\t": "Номер счета-фактуры",
   "Action": "Действие",
   "Details": "Подробности",
-  "Analytics Status": "Статус аналитики"
+  "Analytics Status": "Статус аналитики",
+  "Delete admin": "Удалить администратора"
 }

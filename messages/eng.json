@@ -366,5 +366,6 @@
   "Invoice number\t": "Invoice number",
   "Action": "Action",
   "Details": "Details",
-  "Analytics Status": "Analytics Status"
+  "Analytics Status": "Analytics Status",
+  "Delete admin": "Delete admin"
 }

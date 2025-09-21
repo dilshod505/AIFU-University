@@ -366,5 +366,6 @@
   "Invoice number\t": "Hisob-faktura raqami",
   "Action": "Harakat",
   "Details": "Tafsilotlar",
-  "Analytics Status": "Analitika holati"
+  "Analytics Status": "Analitika holati",
+  "Delete admin": "Adminni o'chirish"
 }
