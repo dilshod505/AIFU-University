@@ -1,6 +1,5 @@
 "use client";
 
-import { Marquee } from "@/components/magicui/marquee";
 import { api, baseBackendUrl } from "@/components/models/axios";
 import { usePdfBookId } from "@/components/models/queries/pdf-books";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +15,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
@@ -26,7 +27,7 @@ const PdfBookDetail = () => {
     queryKey: ["pdf-books", book],
     queryFn: async () => {
       const res = await api.get(
-        `/client/pdf-books?category=${book.categoryPreview.id}`
+        `/client/pdf-books?category=${book.categoryPreview.id}`,
       );
       return res.data;
     },
@@ -57,14 +58,6 @@ const PdfBookDetail = () => {
               <div className="flex flex-col gap-2">
                 {book.pdfUrl && (
                   <>
-                    {/* <Link
-                      href={baseBackendUrl + "/api/client/download/" + book.id}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full inline-flex items-center justify-center px-4 py-2 border rounded-lg font-semibold hover:shadow"
-                    >
-                      {t("read online")}
-                    </Link> */}
                     <Link
                       href={baseBackendUrl + "/api/client/download/" + book.id}
                       download
@@ -138,77 +131,86 @@ const PdfBookDetail = () => {
           </CardHeader>
 
           <div className="px-6">
-            <Marquee pauseOnHover className="gap-6 py-4">
-              {pdfBooks.data
+            <Swiper
+              spaceBetween={16}
+              slidesPerView={"auto"}
+              grabCursor={true}
+              className="py-4"
+            >
+              {pdfBooks?.data
                 ?.filter((b: Record<string, any>) => b.id !== book?.id)
-                ?.map((book: Record<string, any>, i: number) => (
-                  <Link href={`/books/${book?.id}`} key={i}>
-                    <div className="w-48 sm:w-56 overflow-hidden transition-all group">
-                      <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                        <Image
-                          src={book?.imageUrl || bookPlaceholder}
-                          alt={book?.title}
-                          width={400}
-                          height={200}
-                          priority
-                          quality={100}
-                          className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                        />
-                        <div className="absolute top-3 left-3">
-                          <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                            {book?.categoryPreviewDTO?.name}
-                          </Badge>
+                ?.map((b: Record<string, any>, i: number) => (
+                  <SwiperSlide key={i} className="!w-[192px] sm:!w-[224px]">
+                    <Link href={`/books/${b?.id}`}>
+                      <div className="flex-shrink-0 overflow-hidden transition-all group">
+                        <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                          <Image
+                            src={b?.imageUrl || bookPlaceholder}
+                            alt={b?.title}
+                            width={400}
+                            height={200}
+                            priority
+                            quality={100}
+                            className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+                          />
+                          <div className="absolute top-3 left-3">
+                            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                              {b?.categoryPreviewDTO?.name}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {b?.title}
+                          </h3>
+                          <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                            <span>{b?.author}</span>
+                            <span className="mx-2">•</span>
+                            <span>{b?.categoryPreviewDTO?.name}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {b?.description}
+                          </p>
                         </div>
                       </div>
-                      <div className="p-4">
-                        <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                          {book?.title}
-                        </h3>
-                        <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                          <span>{book?.author}</span>
-                          <span className="mx-2">•</span>
-                          <span>{book?.categoryPreviewDTO?.name}</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {book?.description}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </SwiperSlide>
                 ))}
 
               {/* All books */}
-              <Link href={`/books?category=${book?.categoryPreview?.id}`}>
-                <div className="w-48 sm:w-56 overflow-hidden transition-all group">
-                  <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                    <Image
-                      src={bookPlaceholder}
-                      alt={book?.title}
-                      width={400}
-                      height={200}
-                      priority
-                      quality={100}
-                      className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                    />
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                        {book?.categoryPreview?.name}
-                      </Badge>
+              <SwiperSlide className="!w-[192px] sm:!w-[224px]">
+                <Link href={`/books?category=${book?.categoryPreview?.id}`}>
+                  <div className="flex-shrink-0 overflow-hidden transition-all group">
+                    <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+                      <Image
+                        src={bookPlaceholder}
+                        alt={book?.title}
+                        width={400}
+                        height={200}
+                        priority
+                        quality={100}
+                        className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                          {book?.categoryPreview?.name}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        {t("All Books")}
+                      </h3>
+                      <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+                        <span>{t("category")}</span>
+                        <span className="mx-2">•</span>
+                        <span>{book?.categoryPreview?.name}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                      {t("All Books")}
-                    </h3>
-                    <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                      <span>{t("category")}</span>
-                      <span className="mx-2">•</span>
-                      <span>{book?.categoryPreview?.name}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </Marquee>
+                </Link>
+              </SwiperSlide>
+            </Swiper>
           </div>
         </Card>
       </section>
