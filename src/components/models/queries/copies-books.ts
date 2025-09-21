@@ -5,16 +5,29 @@ export const useCopiesBooks = ({
   pageSize,
   pageNumber,
   query,
+  filter = "all",
+  sortDirection = "desc",
 }: {
   pageSize: number;
   pageNumber: number;
   query?: string;
+  filter?: "all" | "active" | "inactive";
+  sortDirection?: "asc" | "desc";
 }) =>
   useQuery({
-    queryKey: ["copies-book", pageNumber, pageSize, query],
+    queryKey: [
+      "copies-book",
+      pageNumber,
+      pageSize,
+      query,
+      filter,
+      sortDirection,
+    ],
     queryFn: async () => {
       const res = await api.get(
-        `/admin/book-copies?pageSize=10&pageNumber=${pageNumber}${query ? `&query=${query}&field=inventoryNumber` : ""}`,
+        `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}&filter=${filter}&sortDirection=${sortDirection}${
+          query ? `&query=${query}&field=inventoryNumber` : ""
+        }`,
       );
       return res.data;
     },

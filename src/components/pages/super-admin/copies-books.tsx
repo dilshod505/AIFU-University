@@ -42,6 +42,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FilterType } from "@/components/pages/super-admin/users";
 
 const { TextArea } = AntInput;
 
@@ -76,10 +78,14 @@ export const CopiesBooks = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, debouncedSearchQuery]);
 
+  const [filter, setFilter] = useState<FilterType>("all");
+
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
     query: debouncedSearchQuery,
+    sortDirection,
+    filter,
   });
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
@@ -250,6 +256,7 @@ export const CopiesBooks = () => {
         ...bookDetail?.data,
         ...editingBook,
         baseBookId: bookDetail?.data?.baseBookId,
+        epc: editingBook?.epc ?? bookDetail?.data?.epc, // 🔑 qo‘shib qo‘yamiz
       };
       form.reset(formData);
       antdForm.setFieldsValue(formData);
@@ -353,7 +360,7 @@ export const CopiesBooks = () => {
     <div>
       <MyTable
         title={
-          <h1 className={"text-2xl font-semibold py-5"}>{t("Copies books")}</h1>
+          <h1 className={"text-2xl font-semibold"}>{t("Copies books")}</h1>
         }
         pagination={false}
         isLoading={isLoading}
@@ -389,6 +396,31 @@ export const CopiesBooks = () => {
                 <ArrowDownWideNarrow />
               </Button>
             )}
+            <Tabs
+              value={filter}
+              onValueChange={(a: string) => setFilter(a as any)}
+            >
+              <TabsList className="flex gap-2">
+                <TabsTrigger
+                  value="all"
+                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                >
+                  {t("All")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="active"
+                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                >
+                  {t("Active")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="inactive"
+                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                >
+                  {t("Inactive")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
             <div>
               <TooltipBtn
                 size={"sm"}
