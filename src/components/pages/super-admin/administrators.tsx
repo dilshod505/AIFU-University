@@ -50,9 +50,7 @@ const Administrators = () => {
   const t = useTranslations();
 
   const [activateOpen, setActivateOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
 
   const activateForm = useForm<{ email: string; code: string }>({
     defaultValues: { email: "", code: "" },
@@ -145,16 +143,22 @@ const Administrators = () => {
             <TooltipBtn
               title={t("Account activity")}
               onClick={() => {
-                setEmail("");
-                setCode("");
-                setStep("email");
+                setSelectedEmail(record.email); // tanlangan admin emailini saqlab olamiz
+                activateForm.reset({ email: record.email, code: "" });
                 setActivateOpen(true);
               }}
             >
               <Check />
             </TooltipBtn>
+
             <DeleteActionDialog
-              onConfirm={() => deleteAdmin.mutate(record.id)}
+              onConfirm={() => {
+                deleteAdmin.mutate(record.id, {
+                  onSuccess: () =>
+                    toast.success(t("Administrator deleted successfully")),
+                  onError: () => toast.error(t("Error deleting admin")),
+                });
+              }}
               title={t("Delete")}
             />
           </div>
@@ -282,86 +286,41 @@ const Administrators = () => {
             <SheetTitle>{t("Activate Administrator")}</SheetTitle>
           </SheetHeader>
 
-          <div className="space-y-4 p-3">
-            {step === "email" && (
-              <>
-                <Label>{t("Email")}</Label>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                />
-                <Button
-                  className="w-full mt-3"
-                  onClick={() => {
-                    if (!email) return toast.error(t("Please enter email"));
-                    // Hozircha kod yuborish uchun faqat stepni o'zgartiramiz
-                    // Agar API bo'lsa shu yerda kod yuborish chaqiriladi
-                    toast.success(t("Verification code sent to email"));
-                    setStep("code");
-                  }}
-                >
-                  {t("Send Code")}
-                </Button>
-              </>
-            )}
-
-            {step === "code" && (
-              <>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">
-                    {t("Verification Code")}
-                  </Label>
-                  <div className="flex justify-center">
-                    <InputOTP
-                      maxLength={6}
-                      value={code}
-                      onChange={(value) => setCode(value)}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                      </InputOTPGroup>
-                      <InputOTPSeparator />
-                      <InputOTPGroup>
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </div>
-                </div>
-
-                <Button
-                  className="w-full mt-3"
-                  onClick={() => {
-                    if (!email || !code) {
-                      return toast.error(t("Please fill all fields"));
-                    }
-                    activate.mutate(
-                      { email, code },
-                      {
-                        onSuccess: () => {
-                          toast.success(t("Account successfully activated"));
-                          setActivateOpen(false);
-                        },
-                        onError: (err: any) => {
-                          toast.error(
-                            err?.response?.data?.message ||
-                              t("Activation failed"),
-                          );
-                        },
-                      },
-                    );
-                  }}
-                >
-                  {t("Activate")}
-                </Button>
-              </>
-            )}
-          </div>
+          <form
+            className="space-y-4 p-3"
+            onSubmit={activateForm.handleSubmit((data) => {
+              activate.mutate(data, {
+                onSuccess: () => {
+                  toast.success(t("Account successfully activated"));
+                  setActivateOpen(false);
+                },
+                onError: (err: any) => {
+                  toast.error(
+                    err?.response?.data?.message || t("Activation failed"),
+                  );
+                },
+              });
+            })}
+          >
+            <div>
+              <Label className={"mb-3"}>{t("Email")}</Label>
+              <Input
+                {...activateForm.register("email", { required: true })}
+                type="email"
+                disabled={!!selectedEmail} // agar emailni recorddan olgan bo‘lsak, o‘zgartirib bo‘lmaydi
+              />
+            </div>
+            <div>
+              <Label className={"mb-3"}>{t("Confirmation Code")}</Label>
+              <Input
+                {...activateForm.register("code", { required: true })}
+                type="text"
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              {t("Activate")}
+            </Button>
+          </form>
         </SheetContent>
       </Sheet>
     </div>

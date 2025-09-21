@@ -371,5 +371,6 @@
   "Account activity": "Hisobni faollashtirish",
   "select type search": "Qidiruv turini tanlang",
   "Close": "Yopish",
-  "Students": "O'quvchilar"
+  "Students": "O'quvchilar",
+  "Error deleting admin": "Adminni oʻchirishda xatolik"
 }

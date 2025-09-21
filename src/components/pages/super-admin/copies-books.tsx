@@ -78,7 +78,7 @@ export const CopiesBooks = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, debouncedSearchQuery]);
 
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
 
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,

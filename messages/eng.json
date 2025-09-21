@@ -371,5 +371,6 @@
   "Account activity": "Account activity",
   "select type search": "Select search type",
   "Close": "Close",
-  "Students": "Students"
+  "Students": "Students",
+  "Error deleting admin": "Error deleting admin"
 }

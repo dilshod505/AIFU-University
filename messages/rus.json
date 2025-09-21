@@ -371,5 +371,6 @@
   "Account activity": "Действия по счету",
   "select type search": "Выберите тип поиска",
   "Close": "Закрыть",
-  "Students": "Студенты"
+  "Students": "Студенты",
+  "Error deleting admin": "Ошибка при удалении администратора"
 }

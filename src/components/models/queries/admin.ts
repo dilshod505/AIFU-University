@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { toast } from "sonner";
 
 export const useAdministrators = ({
   pageNumber,
@@ -20,20 +21,39 @@ export const useAdministrators = ({
     select: (data: Record<string, any>) => data?.data,
   });
 
+// export const useAdminDelete = () => {
+//   return useMutation({
+//     mutationFn: async (id: string | number) => {
+//       const res = await api.delete(`/super-admin/admins/${id}`);
+//       return res.data; // <-- natijani qaytaramiz
+//     },
+//   });
+// };
+
 export const useAdminDelete = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: async (id: string | number) => {
+    mutationFn: async (id: string) => {
       const res = await api.delete(`/super-admin/admins/${id}`);
-      return res.data; // <-- natijani qaytaramiz
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["administrators"] });
     },
   });
 };
 
 export const useCreateAdministrator = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const res = await api.post("/super-admin/admins", data);
       return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["administrators"] });
     },
   });
 };
