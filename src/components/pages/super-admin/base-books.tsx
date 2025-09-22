@@ -541,7 +541,7 @@ const BaseBooks = () => {
                 }
                 options={categories?.data?.map((cat: Record<string, any>) => ({
                   value: cat.id,
-                  label: `${cat.id}. ${cat.author} - ${cat.title}`,
+                  label: `${cat.id}. ${cat.name}`,
                 }))}
               />
             </Form.Item>

@@ -121,6 +121,16 @@ export const useDeleteCopiesBooks = () => {
   });
 };
 
+export const useCopiesSelectOptions = () => {
+  return useQuery({
+    queryKey: ["copies-book-select"],
+    queryFn: async () => {
+      const res = await api("/admin/base-books/options");
+      return res.data;
+    },
+  });
+};
+
 export const useCheckInventoryNumber = () => {
   return useMutation({
     mutationFn: async (inventoryNumber: string) => {

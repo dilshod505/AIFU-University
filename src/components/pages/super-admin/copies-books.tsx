@@ -6,6 +6,7 @@ import {
   useCheckInventoryNumber,
   useCopiesBooks,
   useCopiesBooksId,
+  useCopiesSelectOptions,
   useCreateCopiesBooks,
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
@@ -22,6 +23,7 @@ import {
   Form,
   Modal,
   Select,
+  Select as AntdSelect,
 } from "antd";
 import {
   ArrowDownWideNarrow,
@@ -48,6 +50,7 @@ const { TextArea } = AntInput;
 
 export const CopiesBooks = () => {
   const t = useTranslations();
+  const { data: categoriesOptions } = useCopiesSelectOptions();
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
@@ -99,19 +102,18 @@ export const CopiesBooks = () => {
 
   const [antdForm] = Form.useForm();
 
+  // 🔧 fields ichiga Category qo‘shamiz
   const fields = useMemo<any[]>(
     () => [
       {
-        label: t("Base Book"),
+        label: t("Category"),
         name: "baseBookId",
         type: "select",
         required: true,
-        options: baseBooks?.data?.data?.map(
-          (book: Record<string, any>, i: number) => ({
-            label: `${i + 1}. ${book.title}`,
-            value: book.id,
-          }),
-        ),
+        options: categoriesOptions?.data?.map((cat: Record<string, any>) => ({
+          value: cat.id,
+          label: `${cat.id}. ${cat.author} - ${cat.title}`,
+        })),
       },
       {
         label: t("Inventory Number"),
@@ -138,7 +140,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, baseBooks],
+    [t, categoriesOptions],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -342,10 +344,18 @@ export const CopiesBooks = () => {
     switch (field.type) {
       case "select":
         return (
-          <Select
-            placeholder={`${t("Select")} ${field.label}`}
-            options={field.options}
-            allowClear
+          <AntdSelect
+            showSearch
+            style={{ width: "100%" }}
+            placeholder={field.label}
+            optionFilterProp="label"
+            filterOption={(input, option) =>
+              (option?.label ?? "")
+                .toString()
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+            options={field.options || []}
           />
         );
       case "textarea":
