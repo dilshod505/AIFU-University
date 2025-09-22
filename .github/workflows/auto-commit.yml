@@ -7,20 +7,22 @@ on:
 
 jobs:
   re-commit:
+    # Agar commit egasi siz bo'lsa (masalan hikmatilla), workflow SKIP qilinsin
+    if: github.actor != 'lastforever457' # ← bu yerga GitHub username'ingizni yozing
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          persist-credentials: false # Biz o'z tokenimiz bilan push qilamiz
+          persist-credentials: false
 
       - name: Config Git
         run: |
-          git config --global user.name "lastforever457" # Sizning GitHub user nomingiz
-          git config --global user.email "lastforever457@gmail.com" # Sizning Git email
+          git config --global user.name "lastforever457"  # sizning nomingiz
+          git config --global user.email "lastforever457@gmail.com" # emailingiz
 
-      - name: Update README
+      - name: Update deploy file
         run: |
           echo "Last deploy: $(date)" > deploy.txt
           git add deploy.txt
