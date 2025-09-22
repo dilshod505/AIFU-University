@@ -17,6 +17,7 @@ import { useParams } from "next/navigation";
 import bookPlaceholder from "../../../../public/book-placeholder.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { Marquee } from "@/components/magicui/marquee";
 
 const PdfBookDetail = () => {
   const t = useTranslations();
@@ -34,17 +35,72 @@ const PdfBookDetail = () => {
     select: (data) => data.data?.data,
   });
 
+  const BookCard = ({
+    b,
+    isAllBooks = false,
+  }: {
+    b: any;
+    isAllBooks?: boolean;
+  }) => (
+    <Link
+      href={
+        isAllBooks
+          ? `/books?category=${book?.categoryPreview?.id}`
+          : `/books/${b?.id}`
+      }
+    >
+      <div className="w-48 sm:w-56 overflow-hidden transition-all group">
+        <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
+          <Image
+            src={isAllBooks ? bookPlaceholder : b?.imageUrl || bookPlaceholder}
+            alt={isAllBooks ? book?.title : b?.title}
+            width={400}
+            height={200}
+            priority
+            quality={100}
+            className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
+          />
+          <div className="absolute top-3 left-3">
+            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
+              {isAllBooks
+                ? book?.categoryPreview?.name
+                : b?.categoryPreviewDTO?.name}
+            </Badge>
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+            {isAllBooks ? t("All Books") : b?.title}
+          </h3>
+          <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
+            <span>{isAllBooks ? t("category") : b?.author}</span>
+            <span className="mx-2">•</span>
+            <span>
+              {isAllBooks
+                ? book?.categoryPreview?.name
+                : b?.categoryPreviewDTO?.name}
+            </span>
+          </div>
+          {!isAllBooks && (
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {b?.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+
   return book ? (
     <div className="max-w-6xl mx-auto p-6 space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Левый столбец: обложка и действия */}
         <aside className="md:col-span-1 flex flex-col items-center">
           <div className="w-full shadow-lg rounded-2xl overflow-hidden">
             <Image
               width={400}
               height={600}
               priority
-              src={book?.imageUrl}
+              src={book?.imageUrl || "/placeholder.svg"}
               alt={`Обложка книги ${book?.title} — ${book?.author}`}
               className="w-full h-96 object-cover"
             />
@@ -72,7 +128,6 @@ const PdfBookDetail = () => {
           </div>
         </aside>
 
-        {/* Правый столбец: информация о книге */}
         <main className="md:col-span-2 p-6 rounded-2xl shadow">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
@@ -123,6 +178,7 @@ const PdfBookDetail = () => {
           </section>
         </main>
       </div>
+
       <section>
         <Card className="shadow-lg">
           <CardHeader>
@@ -130,7 +186,7 @@ const PdfBookDetail = () => {
             <CardDescription className="hidden" />
           </CardHeader>
 
-          <div className="px-6">
+          <div className="px-6 md:hidden">
             <Swiper
               spaceBetween={16}
               slidesPerView={"auto"}
@@ -141,76 +197,25 @@ const PdfBookDetail = () => {
                 ?.filter((b: Record<string, any>) => b.id !== book?.id)
                 ?.map((b: Record<string, any>, i: number) => (
                   <SwiperSlide key={i} className="!w-[192px] sm:!w-[224px]">
-                    <Link href={`/books/${b?.id}`}>
-                      <div className="flex-shrink-0 overflow-hidden transition-all group">
-                        <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                          <Image
-                            src={b?.imageUrl || bookPlaceholder}
-                            alt={b?.title}
-                            width={400}
-                            height={200}
-                            priority
-                            quality={100}
-                            className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                          />
-                          <div className="absolute top-3 left-3">
-                            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                              {b?.categoryPreviewDTO?.name}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                            {b?.title}
-                          </h3>
-                          <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                            <span>{b?.author}</span>
-                            <span className="mx-2">•</span>
-                            <span>{b?.categoryPreviewDTO?.name}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {b?.description}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
+                    <BookCard key={i} b={b} />
                   </SwiperSlide>
                 ))}
 
-              {/* All books */}
               <SwiperSlide className="!w-[192px] sm:!w-[224px]">
-                <Link href={`/books?category=${book?.categoryPreview?.id}`}>
-                  <div className="flex-shrink-0 overflow-hidden transition-all group">
-                    <div className="relative rounded-xl overflow-hidden bg-white shadow-sm">
-                      <Image
-                        src={bookPlaceholder}
-                        alt={book?.title}
-                        width={400}
-                        height={200}
-                        priority
-                        quality={100}
-                        className="w-full h-48 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm">
-                          {book?.categoryPreview?.name}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-base font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                        {t("All Books")}
-                      </h3>
-                      <div className="flex items-center text-xs flex-wrap text-muted-foreground mb-3">
-                        <span>{t("category")}</span>
-                        <span className="mx-2">•</span>
-                        <span>{book?.categoryPreview?.name}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <BookCard b={book} isAllBooks={true} />
               </SwiperSlide>
             </Swiper>
+          </div>
+
+          <div className="hidden md:block px-6">
+            <Marquee pauseOnHover className="gap-6 py-4">
+              {pdfBooks?.data
+                ?.filter((b: Record<string, any>) => b.id !== book?.id)
+                ?.map((b: Record<string, any>, i: number) => (
+                  <BookCard key={i} b={b} />
+                ))}
+              <BookCard b={book} isAllBooks={true} />
+            </Marquee>
           </div>
         </Card>
       </section>
