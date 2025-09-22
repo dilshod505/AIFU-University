@@ -1,7 +1,6 @@
 "use client";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import { useBaseBook } from "@/components/models/queries/base-book";
 import {
   useCheckInventoryNumber,
   useCopiesBooks,
@@ -10,11 +9,10 @@ import {
   useCreateCopiesBooks,
   useDeleteCopiesBooks,
   useUpdateCopiesBooks,
-} from "@/components/models/queries/copies-books";
+} from "@/components/models/queries/copies-books"; // Import from our enhanced hook
 import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Button as AntButton,
@@ -24,6 +22,7 @@ import {
   Modal,
   Select,
   Select as AntdSelect,
+  Input,
 } from "antd";
 import {
   ArrowDownWideNarrow,
@@ -60,6 +59,8 @@ export const CopiesBooks = () => {
     null,
   );
 
+  // --- yangi state
+
   const checkInventoryNumber = useCheckInventoryNumber();
 
   const [pageSize, setPageSize] = useState<number>(10);
@@ -68,6 +69,10 @@ export const CopiesBooks = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
+
+  const [searchField, setSearchField] = useState<
+    "book" | "inventoryNumber" | "fullInfo" | "epc" | "fullName"
+  >("inventoryNumber");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -86,62 +91,34 @@ export const CopiesBooks = () => {
     pageSize,
     pageNumber: pageNum,
     query: debouncedSearchQuery,
+    searchField, // Added searchField parameter
     sortDirection,
     filter,
   });
 
-  const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
-    id: editingBook?.id,
-  });
+  const [firstQuery, setFirstQuery] = useState("");
+  const [secondQuery, setSecondQuery] = useState("");
 
-  const { data: baseBooks } = useBaseBook({ pageNum });
-
-  const [open, setOpen] = useState<boolean>(false);
-  const [open2, setOpen2] = useState<boolean>(false);
-  const form = useForm();
-
-  const [antdForm] = Form.useForm();
-
-  // 🔧 fields ichiga Category qo‘shamiz
-  const fields = useMemo<any[]>(
-    () => [
-      {
-        label: t("Category"),
-        name: "baseBookId",
-        type: "select",
-        required: true,
-        options: categoriesOptions?.data?.map((cat: Record<string, any>) => ({
-          value: cat.id,
-          label: `${cat.id}. ${cat.author} - ${cat.title}`,
-        })),
-      },
-      {
-        label: t("Inventory Number"),
-        name: "inventoryNumber",
-        type: "text",
-        required: true,
-      },
-      {
-        label: t("Shelf Location"),
-        name: "shelfLocation",
-        type: "text",
-        required: true,
-      },
-      {
-        label: t("epc"),
-        name: "epc",
-        type: "text",
-        required: true,
-      },
-      {
-        label: t("Notes"),
-        name: "notes",
-        type: "textarea",
-        required: false,
-      },
-    ],
-    [t, categoriesOptions],
-  );
+  // --- buildSearchParams ga yuborish uchun
+  useEffect(() => {
+    if (searchField === "fullInfo" || searchField === "fullName") {
+      if (firstQuery || secondQuery) {
+        setDebouncedSearchQuery(
+          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
+        );
+      } else {
+        setDebouncedSearchQuery("");
+      }
+    } else {
+      const timer = setTimeout(() => {
+        setDebouncedSearchQuery(searchQuery);
+        if (searchQuery !== debouncedSearchQuery) {
+          setPageNum(1);
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchQuery, firstQuery, secondQuery, searchField, debouncedSearchQuery]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -238,6 +215,56 @@ export const CopiesBooks = () => {
     [t, deleteCategory, pageNum, pageSize],
   );
 
+  const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
+    id: editingBook?.id,
+  });
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [open2, setOpen2] = useState<boolean>(false);
+  const form = useForm();
+
+  const [antdForm] = Form.useForm();
+
+  const fields = useMemo<any[]>(
+    () => [
+      {
+        label: t("Category"),
+        name: "baseBookId",
+        type: "select",
+        required: true,
+        options: categoriesOptions?.data?.map((cat: Record<string, any>) => ({
+          value: cat.id,
+          label: `${cat.id}. ${cat.author} - ${cat.title}`,
+        })),
+      },
+      {
+        label: t("Inventory Number"),
+        name: "inventoryNumber",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Shelf Location"),
+        name: "shelfLocation",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("epc"),
+        name: "epc",
+        type: "text",
+        required: true,
+      },
+      {
+        label: t("Notes"),
+        name: "notes",
+        type: "textarea",
+        required: false,
+      },
+    ],
+    [t, categoriesOptions],
+  );
+
   useEffect(() => {
     if (!editingBook && actionType === "add" && open) {
       form.reset({
@@ -257,7 +284,7 @@ export const CopiesBooks = () => {
         ...bookDetail?.data,
         ...editingBook,
         baseBookId: bookDetail?.data?.baseBookId,
-        epc: editingBook?.epc ?? bookDetail?.data?.epc, // 🔑 qo‘shib qo‘yamiz
+        epc: editingBook?.epc ?? bookDetail?.data?.epc,
       };
       form.reset(formData);
       antdForm.setFieldsValue(formData);
@@ -274,6 +301,14 @@ export const CopiesBooks = () => {
     setDebouncedSearchQuery("");
     setPageNum(1);
   };
+
+  const searchFieldOptions = [
+    { value: "inventoryNumber", label: t("Inventory Number") },
+    { value: "book", label: t("Book") },
+    { value: "fullInfo", label: t("Full Info (Author/Title)") },
+    { value: "epc", label: t("EPC") },
+    { value: "fullName", label: t("Full Name") },
+  ];
 
   const onSubmit = async (data: any) => {
     checkInventoryNumber.mutate(data.inventoryNumber, {
@@ -376,67 +411,117 @@ export const CopiesBooks = () => {
         columns={columns}
         dataSource={copiesBooks?.data?.list || []}
         header={
-          <div className={"flex justify-between items-center gap-2 flex-wrap"}>
-            <div className="relative max-w-[250px]">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="text-gray-400" size={16} />
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            {/* 🔎 Chap blok: Select + Search inputs */}
+            <AntdSelect
+              value={searchField}
+              onChange={(value) => {
+                setSearchField(value);
+                setPageNum(1);
+                setSearchQuery("");
+                setFirstQuery("");
+                setSecondQuery("");
+              }}
+              style={{ width: 200 }}
+              options={[
+                { value: "book", label: t("Book") },
+                { value: "inventoryNumber", label: t("Inventory Number") },
+                { value: "fullInfo", label: t("Full Info (Author/Title)") },
+                { value: "fullName", label: t("Full Name") },
+                { value: "epc", label: t("EPC") },
+              ]}
+            />
+
+            {searchField === "fullInfo" || searchField === "fullName" ? (
+              <div className="flex items-center justify-center gap-2">
+                <Input
+                  value={firstQuery}
+                  style={{ width: 200 }}
+                  onChange={(e) => setFirstQuery(e.target.value)}
+                  placeholder={
+                    searchField === "fullInfo" ? t("Author") : t("First Name")
+                  }
+                />
+                <Input
+                  value={secondQuery}
+                  style={{ width: 200 }}
+                  onChange={(e) => setSecondQuery(e.target.value)}
+                  placeholder={
+                    searchField === "fullInfo" ? t("Title") : t("Last Name")
+                  }
+                />
+                {(firstQuery || secondQuery) && (
+                  <button
+                    onClick={() => {
+                      setFirstQuery("");
+                      setSecondQuery("");
+                    }}
+                    className="flex items-center px-2"
+                  >
+                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
               </div>
-              <Input
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-10"
-                placeholder={t("Search")}
-              />
-              {searchQuery && (
-                <button
-                  onClick={clearSearch}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                </button>
-              )}
-            </div>
-            {sortDirection === "asc" ? (
-              <Button size={"sm"} onClick={() => setSortDirection("desc")}>
-                <ArrowUpWideNarrow />
-              </Button>
             ) : (
-              <Button size={"sm"} onClick={() => setSortDirection("asc")}>
-                <ArrowDownWideNarrow />
-              </Button>
+              <div className="relative">
+                <Input
+                  value={searchQuery}
+                  style={{ width: 200 }}
+                  onChange={handleSearchChange}
+                  placeholder={t("Search")}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+              </div>
             )}
-            <Tabs
-              value={filter}
-              onValueChange={(a: string) => setFilter(a as any)}
-            >
-              <TabsList className="flex gap-2">
-                <TabsTrigger
-                  value="all"
-                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                >
-                  {t("All")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="active"
-                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                >
-                  {t("Active")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="inactive"
-                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                >
-                  {t("Inactive")}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {sortDirection === "asc" ? (
+                <Button size="sm" onClick={() => setSortDirection("desc")}>
+                  <ArrowUpWideNarrow />
+                </Button>
+              ) : (
+                <Button size="sm" onClick={() => setSortDirection("asc")}>
+                  <ArrowDownWideNarrow />
+                </Button>
+              )}
+
+              <Tabs
+                value={filter}
+                onValueChange={(a: string) => setFilter(a as any)}
+              >
+                <TabsList className="flex gap-2">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("All")}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="active"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("Active")}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="inactive"
+                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  >
+                    {t("Inactive")}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
               <TooltipBtn
-                size={"sm"}
+                size="sm"
                 title={t("Add Book Copy")}
-                onClick={() => {
-                  setOpen(true);
-                }}
+                onClick={() => setOpen(true)}
               >
                 <Plus />
                 {t("Add Book Copy")}
@@ -475,8 +560,8 @@ export const CopiesBooks = () => {
               <ReactPaginate
                 breakLabel="..."
                 onPageChange={(e) => setPageNum(e.selected + 1)}
-                pageRangeDisplayed={3} // reduced from 5 to 3 to show only 5 total buttons (prev + 3 pages + next = 5)
-                marginPagesDisplayed={1} // added to control margin pages
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={1}
                 pageCount={Math.ceil(
                   (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
@@ -505,7 +590,7 @@ export const CopiesBooks = () => {
 
       <Divider />
 
-      {/* Add/Edit Modal - CHANGED from Sheet to antd Modal */}
+      {/* ... existing modal code remains the same ... */}
       {(actionType === "add" || actionType === "edit") && (
         <Modal
           title={
@@ -569,7 +654,6 @@ export const CopiesBooks = () => {
         </Modal>
       )}
 
-      {/* View Modal - CHANGED from Sheet to antd Modal */}
       {actionType === "view" && (
         <Modal
           title={t("Book Copy Detail")}
