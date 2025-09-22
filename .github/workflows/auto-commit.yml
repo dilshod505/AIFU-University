@@ -1,0 +1,33 @@
+name: Force deploy by owner commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  re-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false # Biz o'z tokenimiz bilan push qilamiz
+
+      - name: Config Git
+        run: |
+          git config --global user.name "lastforever457" # Sizning GitHub user nomingiz
+          git config --global user.email "lastforever457@gmail.com" # Sizning Git email
+
+      - name: Update README
+        run: |
+          echo "Last deploy: $(date)" > deploy.txt
+          git add deploy.txt
+          git commit -m "Auto deploy trigger [skip ci]" || echo "No changes"
+
+      - name: Push as Owner
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: main
