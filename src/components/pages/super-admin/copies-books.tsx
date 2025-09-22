@@ -43,7 +43,6 @@ import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FilterType } from "@/components/pages/super-admin/students";
 
 const { TextArea } = AntInput;
 
@@ -466,7 +465,8 @@ export const CopiesBooks = () => {
               <ReactPaginate
                 breakLabel="..."
                 onPageChange={(e) => setPageNum(e.selected + 1)}
-                pageRangeDisplayed={5} // 5 ta raqam ko'rinadi
+                pageRangeDisplayed={3} // reduced from 5 to 3 to show only 5 total buttons (prev + 3 pages + next = 5)
+                marginPagesDisplayed={1} // added to control margin pages
                 pageCount={Math.ceil(
                   (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
@@ -499,11 +499,7 @@ export const CopiesBooks = () => {
       {(actionType === "add" || actionType === "edit") && (
         <Modal
           title={
-            actionType === "add"
-              ? t("Add Book Copy")
-              : actionType === "edit"
-                ? t("Edit Book Copy")
-                : ""
+            actionType === "add" ? t("Add Book Copy") : t("Edit Book Copy")
           }
           open={open}
           onCancel={() => {

@@ -26,15 +26,6 @@ export default function Bookings() {
   } = useBookings({ pageNum: 1, pageSize: 100000 });
   const currentBookings = isSearching ? displayedBookings : bookings;
 
-  const useExcelToExport = () => {
-    return useMutation({
-      mutationFn: async (data: Record<string, any>) => {
-        const res = await api.get("/admin/backup/booking", data);
-        return res.data;
-      },
-    });
-  };
-
   const handleSearchResults = (results: Booking[]) => {
     setDisplayedBookings(results);
     setIsSearching(true);
@@ -57,12 +48,12 @@ export default function Bookings() {
   const stats = {
     total: bookings.length,
     borrowed: bookings.filter(
-      (b: Record<string, any>) => b.status === "borrowed"
+      (b: Record<string, any>) => b.status === "borrowed",
     ).length,
     overdue: bookings.filter((b: Record<string, any>) => b.status === "overdue")
       .length,
     returned: bookings.filter(
-      (b: Record<string, any>) => b.status === "returned"
+      (b: Record<string, any>) => b.status === "returned",
     ).length,
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/components/models/axios";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,12 +25,10 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import TooltipBtn from "@/components/tooltip-btn";
-import Link from "next/link";
-import { refreshReducer } from "next/dist/client/components/router-reducer/reducers/refresh-reducer";
-import { useRouter } from "next/navigation";
 
 export default function HistoryPage() {
   const t = useTranslations();
@@ -284,7 +282,8 @@ export default function HistoryPage() {
                 <ReactPaginate
                   breakLabel="..."
                   onPageChange={(e) => setPageNum(e.selected + 1)}
-                  pageRangeDisplayed={10}
+                  pageRangeDisplayed={3}
+                  marginPagesDisplayed={1}
                   pageCount={history?.totalPages || 0}
                   previousLabel={
                     <Button className={"bg-white text-black"}>

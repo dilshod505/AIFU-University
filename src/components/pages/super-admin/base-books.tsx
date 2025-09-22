@@ -45,7 +45,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -458,7 +458,8 @@ const BaseBooks = () => {
                     const newPageNum = e.selected + 1;
                     setPageNum(newPageNum);
                   }}
-                  pageRangeDisplayed={10}
+                  pageRangeDisplayed={3}
+                  marginPagesDisplayed={1}
                   pageCount={Math.ceil(
                     (baseBooks?.data?.totalElements || 0) / 10,
                   )}

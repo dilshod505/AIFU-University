@@ -25,7 +25,7 @@ import {
   Undo2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -377,6 +377,7 @@ export default function ActiveBookingsPage() {
                     setPageNumber(newPageNum);
                   }}
                   pageRangeDisplayed={3}
+                  marginPagesDisplayed={1}
                   pageCount={bookings?.data?.totalPages || 0}
                   previousLabel={
                     <Button className={"bg-white text-black"}>

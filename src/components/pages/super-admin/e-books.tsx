@@ -26,7 +26,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
-  FileDown,
   PenSquareIcon,
   Plus,
   Search,
@@ -465,7 +464,8 @@ const EBaseBooks = () => {
                   const newPageNum = e.selected + 1;
                   setPageNumber(newPageNum);
                 }}
-                pageRangeDisplayed={pageSize}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={1}
                 pageCount={Math.ceil(
                   (books?.data?.totalElements || 0) / pageSize,
                 )}
@@ -697,7 +697,10 @@ const EBaseBooks = () => {
                   label={t("Category")}
                   name="categoryId"
                   rules={[
-                    { required: true, message: t("Please select category") },
+                    {
+                      required: true,
+                      message: t("Please select category"),
+                    },
                   ]}
                 >
                   <Select
@@ -715,7 +718,12 @@ const EBaseBooks = () => {
                 <Form.Item
                   label={t("Title")}
                   name="title"
-                  rules={[{ required: true, message: t("Please enter title") }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please enter title"),
+                    },
+                  ]}
                 >
                   <Input placeholder={t("Enter book title")} />
                 </Form.Item>
@@ -741,7 +749,12 @@ const EBaseBooks = () => {
                 <Form.Item
                   label={t("Isbn")}
                   name="isbn"
-                  rules={[{ required: true, message: t("Please enter ISBN") }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("Please enter ISBN"),
+                    },
+                  ]}
                 >
                   <Input placeholder={t("Enter ISBN")} />
                 </Form.Item>
@@ -750,7 +763,10 @@ const EBaseBooks = () => {
                   label={t("Page Count")}
                   name="pageCount"
                   rules={[
-                    { required: true, message: t("Please enter page count") },
+                    {
+                      required: true,
+                      message: t("Please enter page count"),
+                    },
                   ]}
                 >
                   <InputNumber
@@ -764,7 +780,10 @@ const EBaseBooks = () => {
                   label={t("Publisher")}
                   name="publisher"
                   rules={[
-                    { required: true, message: t("Please enter publisher") },
+                    {
+                      required: true,
+                      message: t("Please enter publisher"),
+                    },
                   ]}
                 >
                   <Input placeholder={t("Enter publisher")} />
@@ -774,7 +793,10 @@ const EBaseBooks = () => {
                   label={t("Language")}
                   name="language"
                   rules={[
-                    { required: true, message: t("Please enter language") },
+                    {
+                      required: true,
+                      message: t("Please enter language"),
+                    },
                   ]}
                 >
                   <Input placeholder={t("Enter language")} />
@@ -784,7 +806,10 @@ const EBaseBooks = () => {
                   label={t("kitob qaysi tilda yozilgan")}
                   name="script"
                   rules={[
-                    { required: true, message: t("Please enter script") },
+                    {
+                      required: true,
+                      message: t("Please enter script"),
+                    },
                   ]}
                 >
                   <Input placeholder={t("Enter script")} />
