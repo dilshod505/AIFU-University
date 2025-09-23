@@ -248,7 +248,7 @@ export function BorrowBookForm() {
                       {t("Inventory number")}
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="epc">
+                  <TabsContent value={"epc"}>
                     <Input
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setBookCard(e.target.value as string)
@@ -258,8 +258,9 @@ export function BorrowBookForm() {
                   </TabsContent>
                   <TabsContent value="inventoryNumber">
                     <Input
+                      value={bookCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setBookCard(e.target.value as string)
+                        setBookCard(e.target.value.toUpperCase())
                       }
                       placeholder={t(
                         "ijaraga berilayotgan kitobning inventar raqamini kiriting",
