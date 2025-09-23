@@ -141,7 +141,7 @@ export default function ForgetPassword() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t("Enter your email address")}
                   className="h-11 border-gray-200 text-black bg-white"
                   required
                 />
@@ -215,7 +215,7 @@ export default function ForgetPassword() {
                 <Input
                   id="newPassword"
                   type="password"
-                  placeholder="Enter your new password"
+                  placeholder={t("Enter your new password")}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="h-11 border-gray-200 text-black bg-white"
@@ -233,7 +233,7 @@ export default function ForgetPassword() {
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Confirm your new password"
+                  placeholder={t("Confirm your new password")}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="h-11 border-gray-200 text-black bg-white"

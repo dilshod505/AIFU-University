@@ -372,5 +372,18 @@
   "select type search": "Select search type",
   "Close": "Close",
   "Students": "Students",
-  "Error deleting admin": "Error deleting admin"
+  "Error deleting admin": "Error deleting admin",
+  "Last Name": "Last Name",
+  "Email Adress": "Email Address",
+  "Reset Password": "Reset Password",
+  "Enter your email to receive a verification code": "Enter your email to receive a verification code",
+  "Enter the verification code and your new password": "Enter verification code and new password",
+  "Enter your email address": "Enter your email address",
+  "Verification Code": "Verification Code",
+  "New Password": "New Password",
+  "Enter your new password": "Enter your new password",
+  "Confirm New Password": "Confirm New Password",
+  "Confirm your new password": "Confirm your new password",
+  "Enter the password": "Enter the password",
+  "Administrator deleted successfully": "Administrator deleted successfully"
 }

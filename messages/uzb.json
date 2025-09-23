@@ -372,5 +372,18 @@
   "select type search": "Qidiruv turini tanlang",
   "Close": "Yopish",
   "Students": "O'quvchilar",
-  "Error deleting admin": "Adminni oʻchirishda xatolik"
+  "Error deleting admin": "Adminni oʻchirishda xatolik",
+  "Last Name": "Familiya",
+  "Email Adress": "Elektron pochta manzili",
+  "Reset Password": "Parolni qayta tiklash",
+  "Enter your email to receive a verification code": "Verifikatsiya kodi olish uchun emailingizni kiriting",
+  "Enter the verification code and your new password": "Verifikatsiya kodini va yangi parolingizni kiriting",
+  "Enter your email address": "Email manzilingizni kiriting",
+  "Verification Code": "Tekshirish kodi",
+  "New Password": "Yangi parol",
+  "Enter your new password": "Yangi parolingizni kiriting",
+  "Confirm New Password": "Yangi parolni tasdiqlang",
+  "Confirm your new password": "Yangi parolingizni tasdiqlang",
+  "Enter the password": "Parolni kiriting",
+  "Administrator deleted successfully": "Administrator muvaffaqiyatli o'chirildi"
 }

@@ -165,7 +165,7 @@ const Administrators = () => {
         ),
       },
     ],
-    [deleteAdmin, t],
+    [activateForm, deleteAdmin, t],
   );
 
   const onSubmit = (data: any) => {
@@ -307,7 +307,7 @@ const Administrators = () => {
               <Input
                 {...activateForm.register("email", { required: true })}
                 type="email"
-                disabled={!!selectedEmail} // agar emailni recorddan olgan bo‘lsak, o‘zgartirib bo‘lmaydi
+                disabled={!!selectedEmail}
               />
             </div>
             <div>

@@ -447,7 +447,7 @@ export const CopiesBooks = () => {
                   style={{ width: 200 }}
                   onChange={(e) => setSecondQuery(e.target.value)}
                   placeholder={
-                    searchField === "fullInfo" ? t("Title") : t("Last Name")
+                    searchField === "fullInfo" ? t("Last Name") : t("Last Name")
                   }
                 />
                 {(firstQuery || secondQuery) && (

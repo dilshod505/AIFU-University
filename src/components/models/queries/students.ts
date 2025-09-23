@@ -10,7 +10,7 @@ export const useStudents = ({
   field,
   query,
 }: {
-  filter: FilterType;
+  filter: "all" | "active" | "inactive";
   pageNumber: number;
   size: number;
   sortDirection: "asc" | "desc";
@@ -32,10 +32,9 @@ export const useStudents = ({
         params: {
           status: filter,
           pageNumber,
-          pageSize: size,
+          size,
           sortDirection,
-          field,
-          query,
+          ...(field && query ? { field, query } : {}),
         },
       });
       return res.data;

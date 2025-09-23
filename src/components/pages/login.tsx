@@ -73,7 +73,7 @@ export default function Login() {
                 id="email"
                 name="email"
                 type="text"
-                placeholder="Enter your email address"
+                placeholder={t("Enter your email address")}
                 className="h-11 border-gray-200 text-black bg-white"
                 required
               />
@@ -92,7 +92,7 @@ export default function Login() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder={t("Enter the password")}
                   className="h-11 border-gray-200 text-black bg-white pr-10"
                   required
                 />

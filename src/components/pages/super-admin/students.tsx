@@ -76,13 +76,20 @@ const Students = () => {
     "id" | "cardNumber" | "fullName"
   >("fullName");
 
-  const { data: students, isLoading } = useStudents({
+  const [firstQuery, setFirstQuery] = useState("");
+  const [secondQuery, setSecondQuery] = useState("");
+
+  const fullNameQuery = `${firstQuery}~${secondQuery}`;
+  const { data: students } = useStudents({
     filter,
     pageNumber,
     size,
     sortDirection,
-    field: searchValue ? searchField : undefined,
-    query: searchValue || undefined,
+    ...(searchField === "fullName" && (firstQuery || secondQuery)
+      ? { field: "fullName", query: fullNameQuery }
+      : searchValue
+        ? { field: searchField, query: searchValue }
+        : {}),
   });
 
   const createStudent = useCreateStudents();
@@ -480,7 +487,6 @@ const Students = () => {
           title={<h3 className={"text-2xl font-semibold"}>{t("Students")}</h3>}
           columns={columns}
           dataSource={students?.data || []}
-          isLoading={isLoading}
           pagination={false}
           size={"large"}
           striped
@@ -489,7 +495,12 @@ const Students = () => {
               <div className="flex items-center gap-2">
                 <Select
                   value={searchField}
-                  onValueChange={(val: any) => setSearchField(val)}
+                  onValueChange={(val: any) => {
+                    setSearchField(val);
+                    setSearchValue("");
+                    setFirstQuery("");
+                    setSecondQuery("");
+                  }}
                 >
                   <SelectTrigger className="w-[110px]">
                     <SelectValue placeholder={t("Search by")} />
@@ -502,15 +513,30 @@ const Students = () => {
                   </SelectContent>
                 </Select>
 
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
-                  <Input
-                    className="pl-8"
-                    placeholder={t("Search")}
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                </div>
+                {searchField === "fullName" ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder={t("First name")}
+                      value={firstQuery}
+                      onChange={(e) => setFirstQuery(e.target.value)}
+                    />
+                    <Input
+                      placeholder={t("Last name")}
+                      value={secondQuery}
+                      onChange={(e) => setSecondQuery(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
+                    <Input
+                      className="pl-8"
+                      placeholder={t("Search")}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                  </div>
+                )}
               </div>
 
               {sortDirection === "asc" ? (
@@ -522,6 +548,7 @@ const Students = () => {
                   <ArrowDownWideNarrow />
                 </Button>
               )}
+
               <Tabs
                 value={filter}
                 onValueChange={(a: string) => setFilter(a as any)}
@@ -724,7 +751,6 @@ const Students = () => {
                 </p>
               </div>
 
-              {/* Pagination */}
               <div>
                 <ReactPaginate
                   breakLabel="..."

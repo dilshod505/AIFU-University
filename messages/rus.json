@@ -372,5 +372,18 @@
   "select type search": "Выберите тип поиска",
   "Close": "Закрыть",
   "Students": "Студенты",
-  "Error deleting admin": "Ошибка при удалении администратора"
+  "Error deleting admin": "Ошибка при удалении администратора",
+  "Last Name": "Фамилия",
+  "Email Adress": "Электронная почта",
+  "Reset Password": "Сбросить пароль",
+  "Enter your email to receive a verification code": "Укажите свой email, чтобы получить код подтверждения",
+  "Enter the verification code and your new password": "Введите код подтверждения и новый пароль",
+  "Enter your email address": "Введите ваш адрес электронной почты",
+  "Verification Code": "Код подтверждения",
+  "New Password": "Новый пароль",
+  "Enter your new password": "Введите новый пароль",
+  "Confirm New Password": "Подтвердите новый пароль",
+  "Confirm your new password": "Подтвердите новый пароль",
+  "Enter the password": "Введите пароль",
+  "Administrator deleted successfully": "Администратор успешно удален"
 }

@@ -93,10 +93,16 @@ const EBaseBooks = () => {
   }, [searchQuery, debouncedSearchQuery]);
 
   const { data: books, isLoading } = useQuery({
-    queryKey: ["pdf-books", pageNumber, pageSize, searchQuery, sortDirection],
+    queryKey: [
+      "pdf-books",
+      pageNumber,
+      pageSize,
+      debouncedSearchQuery,
+      sortDirection,
+    ],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${searchQuery ? `&query=${searchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${debouncedSearchQuery ? `&query=${debouncedSearchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
