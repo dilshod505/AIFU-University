@@ -265,7 +265,7 @@ export const CopiesBooks = () => {
         label: t("Notes"),
         name: "notes",
         type: "textarea",
-        required: true,
+        required: false,
       },
     ],
     [t, categoriesOptions],
@@ -596,47 +596,68 @@ export const CopiesBooks = () => {
       <Divider />
 
       {/* ... existing modal code remains the same ... */}
-
       {(actionType === "add" || actionType === "edit") && (
         <Modal
-          open={open}
-          onCancel={() => setOpen(false)}
           title={
             actionType === "add" ? t("Add Book Copy") : t("Edit Book Copy")
           }
+          open={open}
+          onCancel={() => {
+            setOpen(false);
+            setActionType("add");
+            setEditingBook(null);
+            antdForm.resetFields();
+          }}
           footer={null}
           width={600}
+          destroyOnClose
         >
           <Form
             form={antdForm}
             layout="vertical"
             onFinish={onSubmit}
-            initialValues={editingBook || {}}
+            className="mt-4"
           >
             {fields.map((field) => (
               <Form.Item
                 key={field.name}
-                name={field.name}
                 label={field.label}
-                rules={field.required ? [{ required: true }] : []}
+                name={field.name}
+                rules={[
+                  {
+                    required: field.required,
+                    message: `${field.label} ${t("is required")}`,
+                  },
+                ]}
               >
                 {renderFormField(field)}
               </Form.Item>
             ))}
 
-            <div className="flex justify-end gap-2">
-              <AntButton onClick={() => setOpen(false)}>
-                {t("Cancel")}
-              </AntButton>
-              <AntButton type="primary" htmlType="submit">
-                {actionType === "add" ? t("Create") : t("Update")}
-              </AntButton>
-            </div>
+            <Form.Item className="mb-0 mt-6">
+              <div className="flex gap-2 justify-end">
+                <AntButton
+                  onClick={() => {
+                    setOpen(false);
+                    setActionType("add");
+                    setEditingBook(null);
+                    antdForm.resetFields();
+                  }}
+                >
+                  {t("Cancel")}
+                </AntButton>
+                <AntButton
+                  type="primary"
+                  htmlType="submit"
+                  loading={createCopiesBook.isPending || updateBook.isPending}
+                >
+                  {editingBook ? t("Edit book copy") : t("Add book copy")}
+                </AntButton>
+              </div>
+            </Form.Item>
           </Form>
         </Modal>
       )}
-
-      <Divider />
 
       {actionType === "view" && (
         <Sheet open={open2} onOpenChange={setOpen2}>
