@@ -188,6 +188,36 @@ const EBaseBooks = () => {
     }
   }, [editingBook, getById.data, getById.isLoading, form]);
 
+  useEffect(() => {
+    if (editingBook?.imageUrl) {
+      setFileList([
+        {
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: editingBook.imageUrl,
+        },
+      ]);
+    } else {
+      setFileList([]);
+    }
+  }, [editingBook]);
+
+  useEffect(() => {
+    if (editingBook?.pdfUrl) {
+      setPdfFileList([
+        {
+          uid: "-1",
+          name: editingBook.pdfUrl.split("/").pop() || "book.pdf",
+          status: "done",
+          url: editingBook.pdfUrl,
+        },
+      ]);
+    } else {
+      setPdfFileList([]);
+    }
+  }, [editingBook]);
+
   const onSubmit = async (values: any) => {
     try {
       let imageUrl = values.imageUrl;
@@ -243,34 +273,6 @@ const EBaseBooks = () => {
     } catch (e) {
       console.error(e);
       message.error("Uploadda xatolik yuz berdi");
-    }
-  };
-
-  const handleUpload = (info: any, fieldName: string) => {
-    if (info.file.status === "uploading") {
-      return;
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-      const uploadedUrl =
-        info.file.response?.data?.url || info.file.response?.data;
-
-      // Update form field
-      form.setFieldsValue({
-        [fieldName]: uploadedUrl,
-      });
-
-      // Update upload state for validation
-      if (fieldName === "imageUrl") {
-        setUploadedImage(info.file);
-      } else if (fieldName === "pdfUrl") {
-        setUploadedPdf(info.file);
-      }
-
-      // Trigger validation for the field
-      form.validateFields([fieldName]);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
     }
   };
 
@@ -383,6 +385,9 @@ const EBaseBooks = () => {
     ],
     [deleteBook, t],
   );
+
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [pdfFileList, setPdfFileList] = useState<any[]>([]);
 
   return (
     <div>
@@ -657,33 +662,61 @@ const EBaseBooks = () => {
               className="space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item label={t("kitob muqovasi")} name="imageUrl">
+                <Form.Item
+                  label={t("kitob muqovasi")}
+                  name="imageUrl"
+                  rules={[{ validator: validateImageUpload }]}
+                >
                   <Upload
-                    beforeUpload={() => false} // ✅ avtomatik yubormaydi
-                    listType="picture"
-                    maxCount={1}
+                    listType="picture-card"
+                    fileList={fileList}
+                    beforeUpload={() => false} // avtomatik yuklamaslik
                     accept="image/png,image/jpeg,image/jpg,image/webp"
+                    onChange={({ fileList }) => setFileList(fileList)}
                   >
-                    <AntButton icon={<UploadOutlined />}>
-                      {t("Upload Image")}
-                    </AntButton>
+                    {fileList.length >= 1 ? null : (
+                      <div>
+                        <UploadOutlined />
+                        <div style={{ marginTop: 8 }}>{t("Upload Image")}</div>
+                      </div>
+                    )}
                   </Upload>
                 </Form.Item>
 
                 <Form.Item
                   label={t("elektron kitob fayli")}
                   name="pdfUrl"
-                  rules={[{ validator: validatePdfUpload }]}
+                  rules={[
+                    { required: true, message: t("Please upload a PDF file!") },
+                  ]}
                 >
                   <Upload
-                    beforeUpload={() => false} // ✅ avtomatik yubormaydi
+                    beforeUpload={() => false} // avtomatik yubormasin
+                    fileList={pdfFileList}
                     maxCount={1}
                     accept="application/pdf"
+                    onChange={({ fileList }) => setPdfFileList(fileList)}
                   >
                     <AntButton icon={<UploadOutlined />}>
                       {t("Upload PDF")}
                     </AntButton>
                   </Upload>
+
+                  {/* ✅ Link chiqarish (yangi yuklangan yoki mavjud fayl) */}
+                  {pdfFileList.length > 0 && (
+                    <a
+                      href={
+                        pdfFileList[0].originFileObj
+                          ? URL.createObjectURL(pdfFileList[0].originFileObj)
+                          : pdfFileList[0].url
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline mt-2 block"
+                    >
+                      📄 {t("Open PDF")}
+                    </a>
+                  )}
                 </Form.Item>
 
                 <Form.Item
