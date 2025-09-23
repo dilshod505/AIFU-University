@@ -271,12 +271,12 @@ export function BorrowBookForm() {
                   <Card className={"p-3"}>
                     <CardContent className={"p-1 space-y-2"}>
                       <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Author")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.author}</h1>
-                      </div>
-                      <div className="flex justify-between">
                         <p className={"text-end"}>{t("Category")}:</p>
                         <h1 className={"capitalize"}>{bookData?.category}</h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Author")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.author}</h1>
                       </div>
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("Title")}:</p>
@@ -301,6 +301,10 @@ export function BorrowBookForm() {
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("notes")}:</p>
                         <h1 className={"capitalize"}>{bookData?.notes}</h1>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className={"text-end"}>{t("Epc")}:</p>
+                        <h1 className={"capitalize"}>{bookData?.epc || "-"}</h1>
                       </div>
                     </CardContent>
                   </Card>
@@ -327,12 +331,24 @@ export function BorrowBookForm() {
               </div>
 
               <div className="flex justify-between items-center gap-3">
+                <p className={"p-0 m-0 w-full"}>{t("Author")}:</p>
+                <Input defaultValue={bookData.author || "-"} disabled />
+              </div>
+              <div className="flex justify-between items-center gap-3">
+                <p className={"p-0 m-0 w-full"}>{t("Title")}:</p>
+                <Input defaultValue={bookData.title || "-"} disabled />
+              </div>
+              <div className="flex justify-between items-center gap-3">
                 <p className={"p-0 m-0 w-full"}>{t("Inventory Number")}:</p>
                 <Input defaultValue={bookData.inventoryNumber} disabled />
               </div>
               <div className="flex justify-between items-center gap-3">
                 <p className={"p-0 m-0 w-full"}>{t("shelfLocation")}:</p>
                 <Input defaultValue={bookData.shelfLocation} disabled />
+              </div>
+              <div className="flex justify-between items-center gap-3">
+                <p className={"p-0 m-0 w-full"}>{t("Epc")}:</p>
+                <Input defaultValue={bookData.epc || "-"} disabled />
               </div>
               <div className="flex justify-between items-center gap-3">
                 <p className={"p-0 m-0 w-full"}>

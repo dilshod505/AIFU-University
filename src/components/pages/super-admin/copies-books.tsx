@@ -44,6 +44,12 @@ import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const { TextArea } = AntInput;
 
@@ -412,7 +418,6 @@ export const CopiesBooks = () => {
         dataSource={copiesBooks?.data?.list || []}
         header={
           <div className="flex flex-wrap items-center justify-between gap-2">
-            {/* 🔎 Chap blok: Select + Search inputs */}
             <AntdSelect
               value={searchField}
               onChange={(value) => {
@@ -591,137 +596,119 @@ export const CopiesBooks = () => {
       <Divider />
 
       {/* ... existing modal code remains the same ... */}
+
       {(actionType === "add" || actionType === "edit") && (
         <Modal
+          open={open}
+          onCancel={() => setOpen(false)}
           title={
             actionType === "add" ? t("Add Book Copy") : t("Edit Book Copy")
           }
-          open={open}
-          onCancel={() => {
-            setOpen(false);
-            setActionType("add");
-            setEditingBook(null);
-            antdForm.resetFields();
-          }}
           footer={null}
           width={600}
-          destroyOnClose
         >
           <Form
             form={antdForm}
             layout="vertical"
             onFinish={onSubmit}
-            className="mt-4"
+            initialValues={editingBook || {}}
           >
             {fields.map((field) => (
               <Form.Item
                 key={field.name}
-                label={field.label}
                 name={field.name}
-                rules={[
-                  {
-                    required: field.required,
-                    message: `${field.label} ${t("is required")}`,
-                  },
-                ]}
+                label={field.label}
+                rules={field.required ? [{ required: true }] : []}
               >
                 {renderFormField(field)}
               </Form.Item>
             ))}
 
-            <Form.Item className="mb-0 mt-6">
-              <div className="flex gap-2 justify-end">
-                <AntButton
-                  onClick={() => {
-                    setOpen(false);
-                    setActionType("add");
-                    setEditingBook(null);
-                    antdForm.resetFields();
-                  }}
-                >
-                  {t("Cancel")}
-                </AntButton>
-                <AntButton
-                  type="primary"
-                  htmlType="submit"
-                  loading={createCopiesBook.isPending || updateBook.isPending}
-                >
-                  {editingBook ? t("Edit book copy") : t("Add book copy")}
-                </AntButton>
-              </div>
-            </Form.Item>
+            <div className="flex justify-end gap-2">
+              <AntButton onClick={() => setOpen(false)}>
+                {t("Cancel")}
+              </AntButton>
+              <AntButton type="primary" htmlType="submit">
+                {actionType === "add" ? t("Create") : t("Update")}
+              </AntButton>
+            </div>
           </Form>
         </Modal>
       )}
 
+      <Divider />
+
       {actionType === "view" && (
-        <Modal
-          title={t("Book Copy Detail")}
-          open={open2}
-          onCancel={() => {
-            setOpen2(false);
-            setActionType("add");
-            setEditingBook(null);
-          }}
-          footer={[
-            <AntButton
-              key="close"
-              onClick={() => {
-                setOpen2(false);
-                setActionType("add");
-                setEditingBook(null);
-              }}
-            >
-              {t("Close")}
-            </AntButton>,
-          ]}
-          width={500}
-        >
-          <div className="space-y-4 mt-4">
-            <p className={"flex justify-between items-center"}>
-              <strong>{t("Inventory Number")}:</strong>{" "}
-              {!isDetailLoading ? (
-                bookDetail?.data?.inventoryNumber
-              ) : (
-                <Skeleton className="w-1/2 h-5" />
-              )}
-            </p>
-            <p className={"flex justify-between items-center"}>
-              <strong>{t("Shelf Location")}:</strong>{" "}
-              {!isDetailLoading ? (
-                bookDetail?.data?.shelfLocation
-              ) : (
-                <Skeleton className="w-1/2 h-5" />
-              )}
-            </p>
-            <p className={"flex justify-between items-center"}>
-              <strong>{t("Notes")}:</strong>{" "}
-              {!isDetailLoading ? (
-                bookDetail?.data?.notes
-              ) : (
-                <Skeleton className="w-1/2 h-5" />
-              )}
-            </p>
-            <p className={"flex justify-between items-center"}>
-              <strong>{t("Base Book")}:</strong>{" "}
-              {!isDetailLoading ? (
-                bookDetail?.data?.baseBookId
-              ) : (
-                <Skeleton className="w-1/2 h-5" />
-              )}
-            </p>
-            <p className="flex justify-between items-center">
-              <strong>{t("Is Taken")}:</strong>{" "}
-              {isDetailLoading ? (
-                <Skeleton className="w-1/2 h-5" />
-              ) : bookDetail?.data?.isTaken ? (
-                <BookOpenCheck className="text-green-600 w-5 h-5" />
-              ) : (
-                <BookMinus className="text-red-500 w-5 h-5" />
-              )}
-            </p>
-          </div>
-        </Modal>
+        <Sheet open={open2} onOpenChange={setOpen2}>
+          <SheetContent className="hide-scroll">
+            <SheetHeader className="flex justify-center items-center text-[20px]">
+              <SheetTitle>{t("Copy Book Detail")}</SheetTitle>
+            </SheetHeader>
+
+            <div className="p-3">
+              <div className="space-y-4">
+                <p className="flex justify-between items-center">
+                  <strong>{t("Author")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.author ?? "-")
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("Title")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.title ?? "-")
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("Inventory Number")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.inventoryNumber ?? "-")
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("shelfLocation")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.shelfLocation ?? "-")
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("Notes")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.notes ?? "-")
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("Epc")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : bookDetail?.data?.epc?.trim() ? (
+                    bookDetail.data.epc
+                  ) : (
+                    "-"
+                  )}
+                </p>
+                <p className="flex justify-between items-center">
+                  <strong>{t("Status")}:</strong>{" "}
+                  {isDetailLoading ? (
+                    <Skeleton className="w-1/2 h-5" />
+                  ) : (
+                    (bookDetail?.data?.status ?? "-")
+                  )}
+                </p>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       )}
     </div>
   );
