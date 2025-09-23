@@ -389,6 +389,9 @@ export function BorrowBookForm() {
                           onSuccess: () => {
                             window.location.reload();
                           },
+                          onError: () => {
+                            t("Error");
+                          },
                         },
                       );
                     } catch (e) {

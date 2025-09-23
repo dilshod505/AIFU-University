@@ -214,7 +214,20 @@ const BaseBooks = () => {
               <PenSquareIcon />
             </TooltipBtn>
             <DeleteActionDialog
-              onConfirm={() => deleteBook.mutate(record.id)}
+              onConfirm={() =>
+                deleteBook.mutate(record.id, {
+                  onSuccess: (res: any) => {
+                    setOpen(false);
+                    toast.success(res?.message || t("Delete successfully"));
+                  },
+                  onError: (err: any) => {
+                    setOpen(true);
+                    toast.error(
+                      err?.response?.data?.message || t("Error occurred"),
+                    );
+                  },
+                })
+              }
               title={t("Delete")}
             />
           </div>
@@ -246,17 +259,23 @@ const BaseBooks = () => {
       updateBook.mutate(
         { id: editingBook, ...payload },
         {
-          onSuccess: () => {
+          onSuccess: (res: any) => {
             setOpen(false);
-            toast.success(t("Book updated successfully"));
+            toast.success(res?.message || t("Book updated successfully"));
+          },
+          onError: (err: any) => {
+            toast.error(err?.response?.data?.message || t("Error occurred"));
           },
         },
       );
     } else {
       createBaseBook.mutate(payload, {
-        onSuccess: () => {
+        onSuccess: (res: any) => {
           setOpen(false);
-          toast.success(t("Book created successfully"));
+          toast.success(res?.message || t("Book created successfully"));
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || t("Error occurred"));
         },
       });
     }
@@ -343,11 +362,17 @@ const BaseBooks = () => {
                         const file = e.target.files[0];
                         if (file) {
                           uploadExcel.mutate(file, {
-                            onSuccess: () => {
-                              toast.success(t("Excel muvaffaqiyatli yuklandi"));
+                            onSuccess: (res: any) => {
+                              toast.success(
+                                res?.message ||
+                                  t("Excel muvaffaqiyatli yuklandi"),
+                              );
                             },
-                            onError: () => {
-                              toast.error(t("Excel yuklashda xatolik"));
+                            onError: (err: any) => {
+                              toast.error(
+                                err?.response?.data?.message ||
+                                  t("Excel yuklashda xatolik"),
+                              );
                             },
                           });
                         }

@@ -386,5 +386,6 @@
   "Confirm your new password": "Подтвердите новый пароль",
   "Enter the password": "Введите пароль",
   "Administrator deleted successfully": "Администратор успешно удален",
-  "Copy Book Detail": "Скопировать данные книги"
+  "Copy Book Detail": "Скопировать данные книги",
+  "Delete successfully": "Успешно удалено"
 }
