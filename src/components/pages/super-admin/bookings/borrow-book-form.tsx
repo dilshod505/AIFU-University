@@ -30,9 +30,10 @@ export function BorrowBookForm() {
   const [bookCard, setBookCard] = useState<string | null>(null);
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
-  const [bookCopyType, setBookCopyType] = useState<"id" | "inventoryNumber">(
-    "id",
+  const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
+    "epc",
   );
+
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
     [ijaraMuddati],
