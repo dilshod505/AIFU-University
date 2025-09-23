@@ -265,7 +265,7 @@ export const CopiesBooks = () => {
         label: t("Notes"),
         name: "notes",
         type: "textarea",
-        required: false,
+        required: true,
       },
     ],
     [t, categoriesOptions],
