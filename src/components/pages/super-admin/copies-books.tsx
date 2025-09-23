@@ -234,7 +234,7 @@ export const CopiesBooks = () => {
   const fields = useMemo<any[]>(
     () => [
       {
-        label: t("Category"),
+        label: t("Book"),
         name: "baseBookId",
         type: "select",
         required: true,

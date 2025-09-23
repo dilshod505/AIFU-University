@@ -221,7 +221,6 @@ const BaseBooks = () => {
                     toast.success(res?.message || t("Delete successfully"));
                   },
                   onError: (err: any) => {
-                    setOpen(true);
                     toast.error(
                       err?.response?.data?.message || t("Error occurred"),
                     );
@@ -566,7 +565,7 @@ const BaseBooks = () => {
                 }
                 options={categories?.data?.map((cat: Record<string, any>) => ({
                   value: cat.id,
-                  label: `${cat.id}. ${cat.name}`,
+                  label: `${cat.name}`,
                 }))}
               />
             </Form.Item>

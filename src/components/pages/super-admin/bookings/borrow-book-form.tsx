@@ -357,12 +357,17 @@ export function BorrowBookForm() {
                 </p>
                 <Input
                   defaultValue={ijaraMuddati}
-                  type={"number"}
+                  type="number"
                   min={1}
-                  accept={"number"}
+                  onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "+") {
+                      e.preventDefault();
+                    }
+                  }}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.value) {
-                      setIjaraMuddati(Number(e.target.value));
+                    const value = Number(e.target.value);
+                    if (value >= 1) {
+                      setIjaraMuddati(value);
                     }
                   }}
                 />
