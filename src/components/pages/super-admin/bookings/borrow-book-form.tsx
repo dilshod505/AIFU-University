@@ -379,11 +379,18 @@ export function BorrowBookForm() {
                   variant={"default"}
                   onClick={async () => {
                     try {
-                      reservateBook.mutate({
-                        cardNumber: studentData?.cardNumber,
-                        id: bookData?.bookCopyId,
-                        days: ijaraMuddati,
-                      });
+                      reservateBook.mutate(
+                        {
+                          cardNumber: studentData?.cardNumber,
+                          id: bookData?.bookCopyId,
+                          days: ijaraMuddati,
+                        },
+                        {
+                          onSuccess: () => {
+                            window.location.reload();
+                          },
+                        },
+                      );
                     } catch (e) {
                       console.log(e);
                     }
