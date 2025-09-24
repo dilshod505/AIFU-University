@@ -156,7 +156,6 @@ const Notifications = () => {
           </Tabs>
         </div>
 
-        {/* RIGHT SIDE: DETAILS */}
         <div className="md:col-span-2 mt-16">
           {!selected || !detail ? (
             <div className="flex items-center justify-center h-full rounded-lg border p-10 text-center">

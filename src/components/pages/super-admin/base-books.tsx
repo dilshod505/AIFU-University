@@ -531,14 +531,14 @@ const BaseBooks = () => {
               name="title"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Title")} />
+              <Input placeholder={t("Title")} required />
             </Form.Item>
             <Form.Item
               label={t("Author")}
               name="author"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Author")} />
+              <Input placeholder={t("Author")} required />
             </Form.Item>
             <Form.Item
               rules={[{ required: true }]}
@@ -553,6 +553,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <AntdSelect
+                aria-required={true}
                 showSearch
                 style={{ width: "100%" }}
                 placeholder={t("Select category")}
@@ -582,6 +583,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
+                required={true}
                 style={{ width: "100%" }}
                 placeholder={t("Publication year enter")}
               />
@@ -591,10 +593,10 @@ const BaseBooks = () => {
               name="publisher"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Publication enter name")} />
+              <Input placeholder={t("Publication enter name")} required />
             </Form.Item>
             <Form.Item label={t("Publication City")} name="publicationCity">
-              <Input placeholder={t("Publication city")} />
+              <Input placeholder={t("Publication city")} required />
             </Form.Item>
           </div>
 
@@ -612,6 +614,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
+                required={true}
                 style={{ width: "100%" }}
                 min={1}
                 placeholder={t("Page Count")}
@@ -622,10 +625,10 @@ const BaseBooks = () => {
               name="language"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Language enter")} />
+              <Input placeholder={t("Language enter")} required />
             </Form.Item>
             <Form.Item label={t("UDC")} name="udc">
-              <Input placeholder={t("UDC Number")} />
+              <Input placeholder={t("UDC Number")} required />
             </Form.Item>
             <Form.Item
               label={t("Title details")}
