@@ -387,5 +387,6 @@
   "Enter the password": "Введите пароль",
   "Administrator deleted successfully": "Администратор успешно удален",
   "Copy Book Detail": "Скопировать данные книги",
-  "Delete successfully": "Успешно удалено"
+  "Delete successfully": "Успешно удалено",
+  "All Overdue Bookings": "Все Просроченные Бронирования"
 }
