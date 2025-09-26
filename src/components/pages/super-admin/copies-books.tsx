@@ -316,7 +316,10 @@ export const CopiesBooks = () => {
     { value: "fullName", label: t("Full Name") },
   ];
 
+  const [submitting, setSubmitting] = useState(false);
+
   const onSubmit = async (data: any) => {
+    setSubmitting(true);
     checkInventoryNumber.mutate(data.inventoryNumber, {
       onSuccess: (res) => {
         if (res?.data) {
@@ -338,6 +341,7 @@ export const CopiesBooks = () => {
             {
               onSuccess: () => {
                 toast.success(t("Kitob nusxasi yangilandi"));
+                setSubmitting(false);
                 setOpen(false);
                 antdForm.resetFields();
               },
@@ -346,6 +350,7 @@ export const CopiesBooks = () => {
                   error?.response?.data?.message ||
                     t("Server bilan bog'lanishda xatolik"),
                 );
+                setSubmitting(false);
               },
             },
           );
@@ -362,6 +367,7 @@ export const CopiesBooks = () => {
             {
               onSuccess: () => {
                 toast.success(t("Kitob nusxasi yaratildi"));
+                setSubmitting(false);
                 setOpen(false);
                 antdForm.resetFields();
               },
@@ -370,6 +376,7 @@ export const CopiesBooks = () => {
                   error?.response?.data?.message ||
                     t("Server bilan bog'lanishda xatolik"),
                 );
+                setSubmitting(false);
               },
             },
           );
@@ -609,8 +616,8 @@ export const CopiesBooks = () => {
             antdForm.resetFields();
           }}
           footer={null}
-          width={600}
-          destroyOnClose
+          width={700}
+          centered
         >
           <Form
             form={antdForm}
@@ -646,13 +653,15 @@ export const CopiesBooks = () => {
                 >
                   {t("Cancel")}
                 </AntButton>
-                <AntButton
-                  type="primary"
-                  htmlType="submit"
-                  loading={createCopiesBook.isPending || updateBook.isPending}
+                <Button
+                  loading={
+                    submitting ||
+                    createCopiesBook.isPending ||
+                    updateBook.isPending
+                  }
                 >
                   {editingBook ? t("Edit book copy") : t("Add book copy")}
-                </AntButton>
+                </Button>
               </div>
             </Form.Item>
           </Form>
