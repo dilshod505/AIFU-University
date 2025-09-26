@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Button as AntButton,
   Select as AntdSelect,
   Divider,
   Form,
@@ -45,7 +46,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -245,7 +246,10 @@ const BaseBooks = () => {
     }
   }, [editingBook, form, baseBookDetail.isLoading, baseBookDetail.data]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const onSubmit = async (formData: any) => {
+    setSubmitting(true);
     const payload = {
       ...formData,
       titleDetails: formData.titleDetails || "",
@@ -261,9 +265,11 @@ const BaseBooks = () => {
           onSuccess: (res: any) => {
             setOpen(false);
             toast.success(res?.message || t("Book updated successfully"));
+            setSubmitting(false);
           },
           onError: (err: any) => {
             toast.error(err?.response?.data?.message || t("Error occurred"));
+            setSubmitting(false);
           },
         },
       );
@@ -272,9 +278,11 @@ const BaseBooks = () => {
         onSuccess: (res: any) => {
           setOpen(false);
           toast.success(res?.message || t("Book created successfully"));
+          setSubmitting(false);
         },
         onError: (err: any) => {
           toast.error(err?.response?.data?.message || t("Error occurred"));
+          setSubmitting(false);
         },
       });
     }
@@ -523,6 +531,7 @@ const BaseBooks = () => {
         }}
         footer={null}
         width={800}
+        centered
       >
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <div className="grid md:grid-cols-2 gap-3">
@@ -639,8 +648,9 @@ const BaseBooks = () => {
             </Form.Item>
           </div>
 
-          <div className="flex justify-end mt-4">
-            <Button className="bg-green-600 text-white">
+          <div className="flex justify-end mt-4 gap-2">
+            <AntButton onClick={() => setOpen(false)}>{t("Cancel")}</AntButton>
+            <Button className="text-white" loading={submitting}>
               {editingBook ? t("Edit book") : t("Add book")}
             </Button>
           </div>
