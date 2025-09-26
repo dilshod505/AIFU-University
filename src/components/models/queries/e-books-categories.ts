@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { toast } from "sonner";
 
 export const useCategories = () =>
   useQuery({
@@ -45,8 +46,15 @@ export const useDeleteCategory = () => {
       const res = await api.delete(`/admin/categories/${id}`);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (success: any) => {
+      const seccessMessage =
+        success?.response?.data?.message || success.message;
+      toast.success(seccessMessage);
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (error: any) => {
+      const errMessage = error?.response?.data?.message || error.message;
+      toast.error(errMessage);
     },
   });
 };

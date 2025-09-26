@@ -31,6 +31,7 @@ const EBookCategories = () => {
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
 
+  const [submitting, setSubmitting] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Record<
     string,
     any
@@ -101,11 +102,7 @@ const EBookCategories = () => {
             <DeleteActionDialog
               title={t("Delete category")}
               onConfirm={() => {
-                deleteCategory.mutate(record.id, {
-                  onSuccess: () =>
-                    toast.success(t("Category deleted successfully")),
-                  onError: () => toast.error(t("Error deleting category")),
-                });
+                deleteCategory.mutate(record.id);
               }}
             />
           </div>
@@ -116,6 +113,7 @@ const EBookCategories = () => {
   );
 
   const onSubmit = async (data: any) => {
+    setSubmitting(true);
     if (editingCategory) {
       updateCategory.mutate(
         {
@@ -125,6 +123,7 @@ const EBookCategories = () => {
         {
           onSuccess: () => {
             toast.success(t("Category updated successfully"));
+            setSubmitting(false);
             setOpen(false);
           },
         },
@@ -137,13 +136,16 @@ const EBookCategories = () => {
         {
           onSuccess: () => {
             toast.success(t("Category created successfully"));
+            setSubmitting(false);
             setOpen(false);
           },
           onError: (error: any) => {
             if (error?.response?.status === 409) {
               toast.error(t("This category already exists"));
+              setSubmitting(false);
             } else {
               toast.error(t("Error creating category"));
+              setSubmitting(false);
             }
           },
         },
@@ -196,13 +198,17 @@ const EBookCategories = () => {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>
-              {editingCategory ? t("Edit Category") : t("Add Category")}
+              {submitting || editingCategory
+                ? t("Edit Category")
+                : t("Add Category")}
             </SheetTitle>
           </SheetHeader>
           <div className="p-3">
             <AutoForm
               submitText={
-                editingCategory ? t("Edit Category") : t("Add Category")
+                submitting || editingCategory
+                  ? t("Edit Category")
+                  : t("Add Category")
               }
               onSubmit={onSubmit}
               form={form}
