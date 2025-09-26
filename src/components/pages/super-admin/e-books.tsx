@@ -139,6 +139,8 @@ const EBaseBooks = () => {
     },
   });
 
+  const [submitting, setSubmitting] = useState(false);
+
   const updateBook = useMutation({
     mutationFn: async ({
       id,
@@ -219,6 +221,7 @@ const EBaseBooks = () => {
   }, [editingBook]);
 
   const onSubmit = async (values: any) => {
+    setSubmitting(true);
     try {
       let imageUrl = values.imageUrl;
       let pdfUrl = values.pdfUrl;
@@ -273,6 +276,8 @@ const EBaseBooks = () => {
     } catch (e) {
       console.error(e);
       message.error("Uploadda xatolik yuz berdi");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -504,6 +509,7 @@ const EBaseBooks = () => {
       />
       <Modal
         open={open}
+        centered
         onCancel={() => {
           setEditingBook(null);
           setActionType("add");
@@ -514,7 +520,7 @@ const EBaseBooks = () => {
         }}
         footer={null}
         width={800}
-        className="rounded-xl hide-scroll bg-white dark:bg-background"
+        className="rounded-xl hide-scroll dark:bg-background"
         title={
           <h1 className="text-xl font-bold">
             {actionType === "add"
@@ -879,7 +885,9 @@ const EBaseBooks = () => {
                 <AntButton
                   htmlType="submit"
                   type="primary"
-                  loading={createBook.isPending || updateBook.isPending}
+                  loading={
+                    submitting || createBook.isPending || updateBook.isPending
+                  }
                 >
                   {actionType === "add" ? t("Add e-book") : t("Edit")}
                 </AntButton>
