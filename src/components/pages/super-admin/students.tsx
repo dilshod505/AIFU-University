@@ -62,6 +62,7 @@ import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import useLayoutStore from "@/store/layout-store";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -78,6 +79,9 @@ const Students = () => {
 
   const [firstQuery, setFirstQuery] = useState("");
   const [secondQuery, setSecondQuery] = useState("");
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const fullNameQuery = `${firstQuery}~${secondQuery}`;
   const { data: students } = useStudents({
@@ -297,21 +301,23 @@ const Students = () => {
               <PenSquareIcon />
             </TooltipBtn>
 
-            <DeleteActionDialog
-              title={t("Delete")}
-              onConfirm={() => {
-                deleteStudent.mutate(record.id, {
-                  onSuccess: () =>
-                    toast.success(t("Category deleted successfully")),
-                  onError: () => toast.error(t("Error deleting category")),
-                });
-              }}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                title={t("Delete")}
+                onConfirm={() => {
+                  deleteStudent.mutate(record.id, {
+                    onSuccess: () =>
+                      toast.success(t("Category deleted successfully")),
+                    onError: () => toast.error(t("Error deleting category")),
+                  });
+                }}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteStudent, detail, t],
+    [deleteStudent, detail, role, t],
   );
 
   const allFields = useMemo<any[]>(

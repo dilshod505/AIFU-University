@@ -37,6 +37,7 @@ import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import imagePlaceholder from "../../../../public/book-placeholder.png";
+import useLayoutStore from "@/store/layout-store";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -72,6 +73,9 @@ const EBaseBooks = () => {
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -380,15 +384,17 @@ const EBaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <DeleteActionDialog
-              title={t("Delete")}
-              onConfirm={() => deleteBook.mutate(record.id)}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                title={t("Delete")}
+                onConfirm={() => deleteBook.mutate(record.id)}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, role, t],
   );
 
   const [fileList, setFileList] = useState<any[]>([]);

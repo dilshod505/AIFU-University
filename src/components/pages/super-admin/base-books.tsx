@@ -57,6 +57,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { RiFileExcel2Line } from "react-icons/ri";
+import useLayoutStore from "@/store/layout-store";
 
 const { Option } = AntdSelect;
 
@@ -71,6 +72,9 @@ const BaseBooks = () => {
   const [debouncedSearchTitle, setDebouncedSearchTitle] = useState(searchTitle);
   const [open, setOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -214,27 +218,29 @@ const BaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <DeleteActionDialog
-              onConfirm={() =>
-                deleteBook.mutate(record.id, {
-                  onSuccess: (res: any) => {
-                    setOpen(false);
-                    toast.success(res?.message || t("Delete successfully"));
-                  },
-                  onError: (err: any) => {
-                    toast.error(
-                      err?.response?.data?.message || t("Error occurred"),
-                    );
-                  },
-                })
-              }
-              title={t("Delete")}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                onConfirm={() =>
+                  deleteBook.mutate(record.id, {
+                    onSuccess: (res: any) => {
+                      setOpen(false);
+                      toast.success(res?.message || t("Delete successfully"));
+                    },
+                    onError: (err: any) => {
+                      toast.error(
+                        err?.response?.data?.message || t("Error occurred"),
+                      );
+                    },
+                  })
+                }
+                title={t("Delete")}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, role, t],
   );
 
   useEffect(() => {

@@ -50,6 +50,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import useLayoutStore from "@/store/layout-store";
 
 const { TextArea } = AntInput;
 
@@ -64,6 +65,9 @@ export const CopiesBooks = () => {
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null,
   );
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   // --- yangi state
 
@@ -204,21 +208,23 @@ export const CopiesBooks = () => {
               <PenSquareIcon />
             </TooltipBtn>
 
-            <DeleteActionDialog
-              onConfirm={() => {
-                deleteCategory.mutate(record.id, {
-                  onSuccess: () =>
-                    toast.success(t("Category deleted successfully")),
-                  onError: () => toast.error(t("Error deleting category")),
-                });
-              }}
-              title={t("Delete")}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                onConfirm={() => {
+                  deleteCategory.mutate(record.id, {
+                    onSuccess: () =>
+                      toast.success(t("Category deleted successfully")),
+                    onError: () => toast.error(t("Error deleting category")),
+                  });
+                }}
+                title={t("Delete")}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [t, deleteCategory, pageNum, pageSize],
+    [t, pageNum, pageSize, role, deleteCategory],
   );
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
