@@ -96,10 +96,12 @@ export default function StudentDetail() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">
-        {type === "archive" ? t("Archive bronlar") : t("Active bronlar")}
-      </h1>
       <MyTable
+        title={
+          <h1 className="text-xl font-bold">
+            {type === "archive" ? t("Archive bronlar") : t("Active bronlar")}
+          </h1>
+        }
         header={
           <>
             <div className={"flex items-center justify-start"}>
