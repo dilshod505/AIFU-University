@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import TooltipBtn from "@/components/tooltip-btn";
 import Link from "next/link";
 import { Undo2 } from "lucide-react";
+import useLayoutStore from "@/store/layout-store";
 
 export default function StudentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -90,6 +91,9 @@ export default function StudentDetail() {
     enabled: !!id,
   });
 
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">
@@ -99,11 +103,20 @@ export default function StudentDetail() {
         header={
           <>
             <div className={"flex items-center justify-start"}>
-              <Link href={"/admin/users"}>
-                <TooltipBtn title={t("Return")}>
-                  <Undo2 />
-                </TooltipBtn>
-              </Link>
+              {role === "admin" && (
+                <Link href={"/admin/users"}>
+                  <TooltipBtn title={t("Return")}>
+                    <Undo2 />
+                  </TooltipBtn>
+                </Link>
+              )}
+              {role === "super-admin" && (
+                <Link href={"/super-admin/users/students"}>
+                  <TooltipBtn title={t("Return")}>
+                    <Undo2 />
+                  </TooltipBtn>
+                </Link>
+              )}
             </div>
           </>
         }

@@ -122,14 +122,6 @@ const Students = () => {
   const expertToExcel = useExcelExport();
   const exportToExcelShablon = useExcelExportShablon();
 
-  const [viewingBookingsStudentId, setViewingBookingsStudentId] = useState<
-    number | null
-  >(null);
-  const [bookingsOpen, setBookingsOpen] = useState(false);
-
-  const { data: bookingsData, isLoading: bookingsLoading } =
-    useBookingsByStudent(viewingBookingsStudentId || undefined);
-
   const downloadFile = async (url: string, filename: string) => {
     try {
       const fullUrl = makeFullUrl(url)!; // nisbiy bo‘lsa ham to‘liq qilib beradi
@@ -327,18 +319,35 @@ const Students = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-
             {role === "super-admin" && (
-              <DeleteActionDialog
-                title={t("Delete")}
-                onConfirm={() => {
-                  deleteStudent.mutate(record.id, {
-                    onSuccess: () =>
-                      toast.success(t("Category deleted successfully")),
-                    onError: () => toast.error(t("Error deleting category")),
-                  });
-                }}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Type")}>
+                    <EllipsisVertical />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(
+                        `/super-admin/users/students/${record.id}?type=active`,
+                      );
+                    }}
+                  >
+                    {t("Active bronlar")}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(
+                        `/super-admin/users/students/${record.id}?type=archive`,
+                      );
+                    }}
+                  >
+                    {t("Archive bronlar")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             {role === "admin" && (
               <DropdownMenu>
@@ -365,6 +374,18 @@ const Students = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            )}
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                title={t("Delete")}
+                onConfirm={() => {
+                  deleteStudent.mutate(record.id, {
+                    onSuccess: () =>
+                      toast.success(t("Category deleted successfully")),
+                    onError: () => toast.error(t("Error deleting category")),
+                  });
+                }}
+              />
             )}
           </div>
         ),
@@ -943,37 +964,6 @@ const Students = () => {
                   </div>
                 </div>
               </div>
-            )}
-          </SheetContent>
-        </Sheet>
-        <Sheet open={bookingsOpen} onOpenChange={setBookingsOpen}>
-          <SheetContent className="bg-white dark:bg-background hide-scroll w-[600px]">
-            <SheetHeader>
-              <SheetTitle>{t("Student Bookings")}</SheetTitle>
-            </SheetHeader>
-
-            {bookingsLoading && <p>{t("Loading...")}</p>}
-            {bookingsData?.data?.length ? (
-              <div className="mt-4 space-y-3">
-                {bookingsData.data.map((b: any) => (
-                  <div key={b.id} className="p-3 border rounded-md bg-gray-50">
-                    <p className="font-semibold">{b.title}</p>
-                    <p>{b.author}</p>
-                    <p>
-                      {t("Given At")}: {b.givenAt}
-                    </p>
-                    <p>
-                      {t("Due Date")}: {b.dueDate}
-                    </p>
-                    <p>
-                      {t("Status")}:{" "}
-                      <span className="text-green-600">{b.status}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>{t("No bookings found")}</p>
             )}
           </SheetContent>
         </Sheet>
