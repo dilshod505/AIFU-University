@@ -63,13 +63,30 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export type FilterType = "all" | "active" | "inactive";
 
 const Students = () => {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNumber, setPageNumber] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const [filter, setFilter] = useState<FilterType>("all");
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -760,10 +777,7 @@ const Students = () => {
               <div>
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => {
-                    const newPageNum = e.selected + 1;
-                    setPageNumber(newPageNum);
-                  }}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
                   pageRangeDisplayed={3}
                   pageCount={Math.ceil((students?.totalElements || 1) / size)}
                   previousLabel={

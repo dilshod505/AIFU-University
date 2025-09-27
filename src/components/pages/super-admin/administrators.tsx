@@ -43,12 +43,28 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export type FilterType = "all" | "active" | "inactive";
 
 const Administrators = () => {
-  const t = useTranslations();
+  const router = useRouter();
+  const searchPagination = useSearchParams();
 
+  const [pageNumber, setPageNum] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
+  const t = useTranslations();
   const [activateOpen, setActivateOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
 
@@ -56,7 +72,7 @@ const Administrators = () => {
     defaultValues: { email: "", code: "" },
   });
 
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [open, setOpen] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const { data: admins, isLoading } = useAdministrators({
@@ -237,9 +253,7 @@ const Administrators = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => {
-                  setPageNumber(e.selected + 1);
-                }}
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
                 pageRangeDisplayed={10}
                 pageCount={Math.ceil(admins?.totalElements / 10) || 0}
                 previousLabel={
@@ -258,7 +272,7 @@ const Administrators = () => {
                 pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                 activeLinkClassName="bg-green-600 text-white rounded-full"
                 renderOnZeroPageCount={null}
-                forcePage={pageNumber > 0 ? pageNumber - 1 : 0}
+                forcePage={pageNumber - 1}
               />
             </div>
           </div>
