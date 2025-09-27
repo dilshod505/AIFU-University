@@ -51,10 +51,26 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = AntInput;
 
 export const CopiesBooks = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchParams.get("page")) || 1,
+  );
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const { data: categoriesOptions } = useCopiesSelectOptions();
   const createCopiesBook = useCreateCopiesBooks();
@@ -74,7 +90,7 @@ export const CopiesBooks = () => {
   const checkInventoryNumber = useCheckInventoryNumber();
 
   const [pageSize, setPageSize] = useState<number>(10);
-  const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageNum, setPageNum] = useState<number>(1);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
@@ -577,7 +593,7 @@ export const CopiesBooks = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => setPageNum(e.selected + 1)}
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(

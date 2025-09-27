@@ -58,12 +58,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RiFileExcel2Line } from "react-icons/ri";
 import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { Option } = AntdSelect;
 
 const BaseBooks = () => {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
-  const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageNum, setPageNum] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchTitle, setSearchTitle] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -492,10 +509,7 @@ const BaseBooks = () => {
               <div>
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => {
-                    const newPageNum = e.selected + 1;
-                    setPageNum(newPageNum);
-                  }}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
@@ -514,7 +528,7 @@ const BaseBooks = () => {
                   }
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
-                  // forcePage={pageNum === 1 ? 1 : pageNum - 1}
+                  forcePage={pageNum - 1}
                   pageClassName="list-none"
                   pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                   activeLinkClassName="bg-green-600 text-white rounded-full"

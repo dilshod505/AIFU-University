@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -74,6 +75,22 @@ async function fetchBookings({
 }
 
 export default function ActiveBookingsPage() {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const form = useForm();
   const queryClient = useQueryClient();
@@ -372,10 +389,8 @@ export default function ActiveBookingsPage() {
 
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => {
-                    const newPageNum = e.selected + 1;
-                    setPageNumber(newPageNum);
-                  }}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
+                  forcePage={pageNum - 1}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={bookings?.data?.totalPages || 0}
@@ -392,7 +407,6 @@ export default function ActiveBookingsPage() {
                   }
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
-                  forcePage={pageNumber - 1}
                   pageClassName="list-none"
                   pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                   activeLinkClassName="bg-green-600 text-white rounded-full"

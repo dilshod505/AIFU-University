@@ -38,6 +38,7 @@ import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import imagePlaceholder from "../../../../public/book-placeholder.png";
 import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -59,8 +60,20 @@ const initialValues: Record<string, any> = {
 };
 
 const EBaseBooks = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialPage = Number(searchParams.get("page") || "1");
+  const [pageNumber, setPageNumber] = useState(initialPage);
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.replace(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -482,10 +495,7 @@ const EBaseBooks = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => {
-                  const newPageNum = e.selected + 1;
-                  setPageNumber(newPageNum);
-                }}
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
