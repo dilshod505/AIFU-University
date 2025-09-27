@@ -58,7 +58,7 @@ const Administrators = () => {
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [open, setOpen] = useState<boolean>(false);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const { data: admins, isLoading } = useAdministrators({
     pageNumber,
     sortDirection,

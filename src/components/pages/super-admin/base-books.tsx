@@ -83,7 +83,7 @@ const BaseBooks = () => {
   // const [pageNum, setPageNum] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchTitle, setSearchTitle] = useState<string>("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [debouncedSearchAuthor, setDebouncedSearchAuthor] =
     useState(searchQuery);
   const [debouncedSearchTitle, setDebouncedSearchTitle] = useState(searchTitle);

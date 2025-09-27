@@ -76,7 +76,7 @@ export const CopiesBooks = () => {
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null,

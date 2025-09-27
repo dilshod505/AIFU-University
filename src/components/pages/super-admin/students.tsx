@@ -71,7 +71,7 @@ const Students = () => {
   const [filter, setFilter] = useState<FilterType>("all");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchField, setSearchField] = useState<
     "id" | "cardNumber" | "fullName"

@@ -75,7 +75,7 @@ const EBaseBooks = () => {
 
   const t = useTranslations();
   const [pageSize, setPageSize] = useState<number>(10);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
