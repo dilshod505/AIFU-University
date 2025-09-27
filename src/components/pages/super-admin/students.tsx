@@ -45,6 +45,7 @@ import {
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  EllipsisVertical,
   Eye,
   GraduationCap,
   ImportIcon,
@@ -64,6 +65,7 @@ import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import useLayoutStore from "@/store/layout-store";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useBookingsByStudent } from "@/components/models/queries/booking";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -119,6 +121,14 @@ const Students = () => {
   const deleteStudent = useDeleteStudents();
   const expertToExcel = useExcelExport();
   const exportToExcelShablon = useExcelExportShablon();
+
+  const [viewingBookingsStudentId, setViewingBookingsStudentId] = useState<
+    number | null
+  >(null);
+  const [bookingsOpen, setBookingsOpen] = useState(false);
+
+  const { data: bookingsData, isLoading: bookingsLoading } =
+    useBookingsByStudent(viewingBookingsStudentId || undefined);
 
   const downloadFile = async (url: string, filename: string) => {
     try {
@@ -330,11 +340,37 @@ const Students = () => {
                 }}
               />
             )}
+            {role === "admin" && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Type")}>
+                    <EllipsisVertical />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(`/admin/users/${record.id}?type=active`);
+                    }}
+                  >
+                    {t("Active bronlar")}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(`/admin/users/${record.id}?type=archive`);
+                    }}
+                  >
+                    {t("Archive bronlar")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         ),
       },
     ],
-    [deleteStudent, detail, role, t],
+    [deleteStudent, detail, role, router, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -907,6 +943,37 @@ const Students = () => {
                   </div>
                 </div>
               </div>
+            )}
+          </SheetContent>
+        </Sheet>
+        <Sheet open={bookingsOpen} onOpenChange={setBookingsOpen}>
+          <SheetContent className="bg-white dark:bg-background hide-scroll w-[600px]">
+            <SheetHeader>
+              <SheetTitle>{t("Student Bookings")}</SheetTitle>
+            </SheetHeader>
+
+            {bookingsLoading && <p>{t("Loading...")}</p>}
+            {bookingsData?.data?.length ? (
+              <div className="mt-4 space-y-3">
+                {bookingsData.data.map((b: any) => (
+                  <div key={b.id} className="p-3 border rounded-md bg-gray-50">
+                    <p className="font-semibold">{b.title}</p>
+                    <p>{b.author}</p>
+                    <p>
+                      {t("Given At")}: {b.givenAt}
+                    </p>
+                    <p>
+                      {t("Due Date")}: {b.dueDate}
+                    </p>
+                    <p>
+                      {t("Status")}:{" "}
+                      <span className="text-green-600">{b.status}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>{t("No bookings found")}</p>
             )}
           </SheetContent>
         </Sheet>
