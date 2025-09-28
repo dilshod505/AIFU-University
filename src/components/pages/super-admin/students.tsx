@@ -685,20 +685,22 @@ const Students = () => {
                 </label>
               </TooltipBtn>
 
-              <TooltipBtn
-                title={t("Deactivate Graduates")}
-                variant={"destructive"}
-              >
-                <label>
-                  <ImportIcon />
-                  <input
-                    type="file"
-                    accept=".xlsx"
-                    hidden
-                    onChange={handleDeactivate}
-                  />
-                </label>
-              </TooltipBtn>
+              {role === "super-admin" && (
+                <TooltipBtn
+                  title={t("Deactivate Graduates")}
+                  variant={"destructive"}
+                >
+                  <label>
+                    <ImportIcon />
+                    <input
+                      type="file"
+                      accept=".xlsx"
+                      hidden
+                      onChange={handleDeactivate}
+                    />
+                  </label>
+                </TooltipBtn>
+              )}
 
               <TooltipBtn
                 variant={"default"}
