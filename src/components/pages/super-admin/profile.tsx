@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/components/models/axios";
 import {
   useAdmin,
   useAdminActivity,
@@ -11,17 +12,15 @@ import {
   useProfile,
   useUpdateProfile,
 } from "@/components/models/queries/profile";
-import { useTranslations } from "next-intl";
-import Chart from "react-apexcharts";
-import { Card, CardContent } from "@/components/ui/card";
 import TooltipBtn from "@/components/tooltip-btn";
-import { CircleUserRound, UserRoundPen } from "lucide-react";
-import { ApexOptions } from "apexcharts";
-import { useEffect, useMemo, useState } from "react";
-import { Image, Select } from "antd";
-import { Modal, Form, Input, Upload, Button } from "antd";
+import { Card, CardContent } from "@/components/ui/card";
 import { UploadOutlined } from "@ant-design/icons";
-import { api } from "@/components/models/axios";
+import { Button, Form, Image, Input, Modal, Select, Upload } from "antd";
+import { ApexOptions } from "apexcharts";
+import { CircleUserRound, UserRoundPen } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
+import Chart from "react-apexcharts";
 
 const Profile = () => {
   const t = useTranslations();
@@ -90,7 +89,7 @@ const Profile = () => {
             setIsModalOpen(false);
             setFileList([]);
           },
-        },
+        }
       );
     } catch (err) {
       console.log("Validation failed:", err);
@@ -204,7 +203,7 @@ const Profile = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name={t("surname")}
+            name={t("Last Name")}
             label={t("Surname")}
             rules={[{ required: true }]}
           >
@@ -405,12 +404,12 @@ const Profile = () => {
                           <td className="py-3 text-sm">
                             "{item.bookTitle}" — {item.bookAuthor} <br />
                             <span className=" text-xs">
-                              {t("Student")}: {item.studentSurname}{" "}
+                              {t("student")}: {item.studentSurname}{" "}
                               {item.studentName}
                             </span>
                           </td>
                         </tr>
-                      ),
+                      )
                     )
                   ) : (
                     <tr>
@@ -508,7 +507,7 @@ const Profile = () => {
                         <td className="py-3 text-sm">
                           "{item.bookTitle}" — {item.bookAuthor} <br />
                           <span className=" text-xs">
-                            {t("Student")}: {item.studentSurname}{" "}
+                            {t("student")}: {item.studentSurname}{" "}
                             {item.studentName}
                           </span>
                         </td>
@@ -550,7 +549,7 @@ const Profile = () => {
                 <thead className="bg-gray-50 sticky top-0 z-10">
                   <tr>
                     <th className="px-4 py-2 text-left">{t("Image")}</th>
-                    <th className="px-4 py-2 text-left">{t("F.I.O")}</th>
+                    <th className="px-4 py-2 text-left">{t("fio")}</th>
                     <th className="px-4 py-2 text-center">{t("Issued")}</th>
                     <th className="px-4 py-2 text-center">{t("Extended")}</th>
                     <th className="px-4 py-2 text-center">{t("Returned")}</th>
