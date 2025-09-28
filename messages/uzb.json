@@ -444,5 +444,12 @@
   "Booking Active": "Faol band qilish",
   "AIFU - Booking Active": "AIFU - Faol bronlar",
   "Archived bookings": "Arxivlangan bronlar",
-  "AIFU - Archived bookings": "AIFU - Arxivlangan bandlar"
+  "AIFU - Archived bookings": "AIFU - Arxivlangan bandlar",
+  "AIFU - Students": "AIFU - Talabalar",
+  "Type": "Turi",
+  "Active bronlar": "Faol bronlar",
+  "Archive bronlar": "Arxivlangan bronlar",
+  "Activate Administrator": "Administratorni faollashtirish",
+  "Activate": "Faollashtirish",
+  "Confirmation Code": "Tasdiqlash kodi"
 }

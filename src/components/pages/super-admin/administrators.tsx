@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteActionDialog from "@/components/delete-action-dialog";
 import { AutoForm, FormField } from "@/components/form/auto-form";
 import {
   useActivateAccount,
@@ -10,18 +11,17 @@ import {
 import MyTable, { IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; // shadcn input
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Divider } from "antd";
 import {
-  ActivityIcon,
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
-  Ban,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -30,20 +30,11 @@ import {
   ShieldX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import DeleteActionDialog from "@/components/delete-action-dialog";
-import { Input } from "@/components/ui/input"; // shadcn input
-import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -52,7 +43,7 @@ const Administrators = () => {
   const searchPagination = useSearchParams();
 
   const [pageNumber, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1,
+    Number(searchPagination.get("page")) || 1
   );
 
   const handlePageChange = (newPage: number) => {
@@ -111,7 +102,7 @@ const Administrators = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const columns = useMemo<IColumn[]>(
@@ -181,7 +172,7 @@ const Administrators = () => {
         ),
       },
     ],
-    [activateForm, deleteAdmin, t],
+    [activateForm, deleteAdmin, t]
   );
 
   const onSubmit = (data: any) => {
@@ -198,7 +189,7 @@ const Administrators = () => {
           setOpen(false);
           form.reset();
         },
-      },
+      }
     );
   };
 
@@ -310,7 +301,7 @@ const Administrators = () => {
                 },
                 onError: (err: any) => {
                   toast.error(
-                    err?.response?.data?.message || t("Activation failed"),
+                    err?.response?.data?.message || t("Activation failed")
                   );
                 },
               });

@@ -444,5 +444,12 @@
   "Booking Active": "Активное бронирование",
   "AIFU - Booking Active": "AIFU - Активное бронирование",
   "Archived bookings": "Архивированные бронирования",
-  "AIFU - Archived bookings": "AIFU - Архивланган бронлар"
+  "AIFU - Archived bookings": "AIFU - Архивланган бронлар",
+  "AIFU - Students": "AIFU - Студенты",
+  "Type": "Тип",
+  "Active bronlar": "Активные брони",
+  "Archive bronlar": "Архив броней",
+  "Activate Administrator": "Активировать администратора",
+  "Activate": "Активировать",
+  "Confirmation Code": "Код подтверждения"
 }

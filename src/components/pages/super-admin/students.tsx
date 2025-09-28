@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import useLayoutStore from "@/store/layout-store";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDownWideNarrow,
@@ -57,15 +58,13 @@ import {
   UserRoundX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import useLayoutStore from "@/store/layout-store";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useBookingsByStudent } from "@/components/models/queries/booking";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -74,7 +73,7 @@ const Students = () => {
   const searchPagination = useSearchParams();
 
   const [pageNumber, setPageNumber] = useState<number>(
-    Number(searchPagination.get("page")) || 1,
+    Number(searchPagination.get("page")) || 1
   );
 
   const handlePageChange = (newPage: number) => {
@@ -164,7 +163,7 @@ const Students = () => {
             errorCount: res.data?.errorCount || res.errorCount,
             downloadReportUrl:
               makeFullUrl(
-                res.data?.downloadReportUrl || res.downloadReportUrl,
+                res.data?.downloadReportUrl || res.downloadReportUrl
               ) || "",
           });
         },
@@ -298,7 +297,6 @@ const Students = () => {
               onClick={() => {
                 detail.mutate(record.id, {
                   onSuccess: (res) => {
-                    console.log("🔍 Student detail:", res.data);
                     setViewingDetail(res.data);
                     setDetailOpen(true);
                   },
@@ -330,7 +328,7 @@ const Students = () => {
                   <DropdownMenuItem
                     onClick={() => {
                       router.push(
-                        `/super-admin/users/students/${record.id}?type=active`,
+                        `/super-admin/users/students/${record.id}?type=active`
                       );
                     }}
                   >
@@ -340,7 +338,7 @@ const Students = () => {
                   <DropdownMenuItem
                     onClick={() => {
                       router.push(
-                        `/super-admin/users/students/${record.id}?type=archive`,
+                        `/super-admin/users/students/${record.id}?type=archive`
                       );
                     }}
                   >
@@ -391,7 +389,7 @@ const Students = () => {
         ),
       },
     ],
-    [deleteStudent, detail, role, router, t],
+    [deleteStudent, detail, role, router, t]
   );
 
   const allFields = useMemo<any[]>(
@@ -494,7 +492,7 @@ const Students = () => {
         md: 6,
       },
     ],
-    [t],
+    [t]
   );
 
   const fields = allFields;
@@ -526,7 +524,7 @@ const Students = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        },
+        }
       );
     } else {
       createStudent.mutate(
@@ -541,7 +539,7 @@ const Students = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        },
+        }
       );
     }
   };
@@ -596,12 +594,12 @@ const Students = () => {
                 {searchField === "fullName" ? (
                   <div className="flex gap-2">
                     <Input
-                      placeholder={t("First name")}
+                      placeholder={t("firstName")}
                       value={firstQuery}
                       onChange={(e) => setFirstQuery(e.target.value)}
                     />
                     <Input
-                      placeholder={t("Last name")}
+                      placeholder={t("lastName")}
                       value={secondQuery}
                       onChange={(e) => setSecondQuery(e.target.value)}
                     />
@@ -719,7 +717,7 @@ const Students = () => {
           footer={
             <div
               className={
-                "flex flex-col lg:flex-row justify-between items-center gap-4"
+                "flex flex-wrap flex-col lg:flex-row justify-center lg:justify-between items-center gap-4"
               }
             >
               {/* Import natijalari faqat mavjud bo‘lsa chiqsin */}
@@ -743,7 +741,7 @@ const Students = () => {
                       onClick={() =>
                         downloadFile(
                           importResult.downloadReportUrl!,
-                          "import-errors.xlsx",
+                          "import-errors.xlsx"
                         )
                       }
                       className="bg-red-600 text-white mt-2"
@@ -754,7 +752,6 @@ const Students = () => {
                   )}
                 </div>
               )}
-
               {/* Deactivate natijalari faqat mavjud bo‘lsa chiqsin */}
               {deactivateResult && (
                 <div className="border p-2 rounded bg-gray-50">
@@ -784,7 +781,7 @@ const Students = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadDebtorsReportUrl!,
-                              "qarzdor-talabalar.xlsx",
+                              "qarzdor-talabalar.xlsx"
                             )
                           }
                           className="bg-yellow-600 text-white mt-2"
@@ -800,7 +797,7 @@ const Students = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadNotFoundReportUrl!,
-                              "topilmagan-talabalar.xlsx",
+                              "topilmagan-talabalar.xlsx"
                             )
                           }
                           className="bg-gray-600 text-white mt-2"
@@ -812,7 +809,6 @@ const Students = () => {
                   </div>
                 </div>
               )}
-
               {/* Sahifa statistikasi */}
               <div className="font-bold text-[20px] flex flex-col lg:flex-row gap-5">
                 <p className="text-sm">
@@ -832,7 +828,6 @@ const Students = () => {
                   </span>
                 </p>
               </div>
-
               <div>
                 <ReactPaginate
                   breakLabel="..."
@@ -878,7 +873,7 @@ const Students = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name),
+                        !["passportSeries", "passportNumber"].includes(f.name)
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }

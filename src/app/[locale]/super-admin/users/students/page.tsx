@@ -1,7 +1,6 @@
-import React from "react";
+import Students from "@/components/pages/super-admin/students";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import Students from "@/components/pages/super-admin/students";
 
 export const generateMetadata = async ({
   params,
@@ -12,8 +11,8 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale });
 
   return {
-    title: t("System Students"),
-    description: t("AIFU - System Students"),
+    title: t("Students"),
+    description: t("AIFU - Students"),
   };
 };
 
