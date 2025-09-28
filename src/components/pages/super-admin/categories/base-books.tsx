@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -44,7 +45,7 @@ const BaseBooks = () => {
   const filteredCategories = useMemo(() => {
     if (!data?.data) return [];
     return data.data.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase()),
+      item.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [data, search]);
 
@@ -95,7 +96,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteCategory, t],
+    [deleteCategory, t]
   );
 
   const fields = useMemo<FormField[]>(
@@ -107,7 +108,7 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t],
+    [t]
   );
 
   const [submitting, setSubmitting] = useState(false);
@@ -118,7 +119,7 @@ const BaseBooks = () => {
       const isDuplicate = data?.data?.some(
         (item: any) =>
           item.name.toLowerCase() === values.name.toLowerCase() &&
-          item.id !== editingCategory?.id,
+          item.id !== editingCategory?.id
       );
       if (isDuplicate) {
         toast.error(t("This category name already exists"));
@@ -197,7 +198,16 @@ const BaseBooks = () => {
         pagination={false}
       />
 
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet
+        open={isOpen}
+        onOpenChange={(r: boolean) => {
+          if (!r) {
+            setEditingCategory(null);
+            form.reset();
+          }
+          setIsOpen(false);
+        }}
+      >
         <SheetContent>
           <SheetHeader>
             <SheetTitle>
@@ -205,6 +215,7 @@ const BaseBooks = () => {
                 ? t("Edit Regular book category")
                 : t("Add Regular book category")}
             </SheetTitle>
+            <SheetDescription className="hidden" />
           </SheetHeader>
           <div className="px-3">
             <AutoForm
