@@ -6,7 +6,6 @@ const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(req: NextRequest) {
   const res = intlMiddleware(req);
-  res.headers.set("x-custom-header", "my-custom-value");
 
   res.headers.set("Cache-Control", "max-age=3600");
 

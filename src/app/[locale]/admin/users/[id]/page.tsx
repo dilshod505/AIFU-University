@@ -1,13 +1,13 @@
 import StudentDetail from "@/components/pages/super-admin/studentDetail";
-import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> => {
-  const { locale, id } = params;
+  const { locale, id } = await params;
   const t = await getTranslations({ locale });
 
   return {

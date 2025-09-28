@@ -5,16 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 
 import {
   Copy,
-  Download,
   Plus,
-  Redo2,
   RotateCcw,
   Save,
   Search,
   Sparkles,
   Trash2,
-  Undo2,
-  Upload,
   Wand2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -91,7 +87,7 @@ const TranslationEditor = ({
     setUnsavedChanges(hasChanges);
   }, [values, initialTranslations]);
 
-  // Add to archived when values change
+  // Add to history when values change
   const addToHistory = (newValues: TranslationData) => {
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push({ values: newValues, timestamp: Date.now() });
@@ -103,7 +99,7 @@ const TranslationEditor = ({
   const translateWithAI = async (
     key: string,
     sourceText?: string,
-    targetLanguage?: string,
+    targetLanguage?: string
   ) => {
     try {
       setIsTranslating(true);
@@ -141,7 +137,7 @@ const TranslationEditor = ({
         addToHistory(updatedValues);
         setValues(updatedValues);
         toast.success(
-          `Translation generated for ${targetLanguage.toUpperCase()}`,
+          `Translation generated for ${targetLanguage.toUpperCase()}`
         );
         return;
       }
@@ -155,7 +151,7 @@ const TranslationEditor = ({
         body: JSON.stringify({
           translationKey: key,
           languages: supportedLanguages.map(
-            (lng) => languageNames[lng as keyof typeof languageNames],
+            (lng) => languageNames[lng as keyof typeof languageNames]
           ),
         }),
       });
@@ -243,7 +239,7 @@ const TranslationEditor = ({
     let completed = 0;
     allKeys.forEach((key) => {
       const hasAllTranslations = supportedLanguages.every(
-        (lng) => values[lng]?.[key] && values[lng][key].trim() !== "",
+        (lng) => values[lng]?.[key] && values[lng][key].trim() !== ""
       );
       if (hasAllTranslations) completed++;
     });
@@ -265,7 +261,7 @@ const TranslationEditor = ({
           const searchLower = searchTerm.toLowerCase();
           const keyMatches = key.toLowerCase().includes(searchLower);
           const valueMatches = supportedLanguages.some((lng) =>
-            values[lng]?.[key]?.toLowerCase().includes(searchLower),
+            values[lng]?.[key]?.toLowerCase().includes(searchLower)
           );
           if (!keyMatches && !valueMatches) return false;
         }
@@ -281,7 +277,7 @@ const TranslationEditor = ({
         // Empty values filter
         if (showEmptyOnly) {
           const hasEmptyValue = supportedLanguages.some(
-            (lng) => !values[lng]?.[key] || values[lng][key].trim() === "",
+            (lng) => !values[lng]?.[key] || values[lng][key].trim() === ""
           );
           if (!hasEmptyValue) return false;
         }
@@ -296,7 +292,7 @@ const TranslationEditor = ({
             acc[lng] = values[lng]?.[key] || "";
             return acc;
           },
-          {} as { [key: string]: string },
+          {} as { [key: string]: string }
         ),
       }));
   }, [values, searchTerm, filterLanguage, showEmptyOnly]);
@@ -376,7 +372,7 @@ const TranslationEditor = ({
             body: JSON.stringify(values[lng]),
           });
           if (!res.ok) throw new Error(`Error saving ${lng} translations`);
-        }),
+        })
       );
       setUnsavedChanges(false);
       toast.success("Translations saved successfully");
@@ -499,7 +495,7 @@ const TranslationEditor = ({
           <Badge variant="outline" className="text-xs">
             {
               Object.keys(values[lng] || {}).filter((key) =>
-                values[lng][key]?.trim(),
+                values[lng][key]?.trim()
               ).length
             }
           </Badge>
@@ -585,7 +581,7 @@ const TranslationEditor = ({
   ];
 
   return (
-    <div className="cont py-5 mx-auto space-y-6">
+    <div className="container py-20 mx-auto space-y-6">
       {/* Header with stats */}
       <Card>
         <CardHeader>
@@ -690,43 +686,6 @@ const TranslationEditor = ({
                 <span className="text-sm">Compact view</span>
               </div>
             </div>
-
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleUndo}
-                disabled={historyIndex <= 0}
-              >
-                <Undo2 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRedo}
-                disabled={historyIndex >= history.length - 1}
-              >
-                <Redo2 className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4" />
-                Export
-              </Button>
-              <label>
-                <Button variant="outline" size="sm" asChild>
-                  <span>
-                    <Upload className="w-4 h-4" />
-                    Import
-                  </span>
-                </Button>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImport}
-                  className="hidden"
-                />
-              </label>
-            </div>
           </div>
 
           {selectedRows.size > 0 && (
@@ -748,7 +707,7 @@ const TranslationEditor = ({
           )}
         </CardContent>
       </Card>
-
+      {/* Add New Translation */}
       <Card>
         <CardHeader>
           <CardTitle className="flex gap-2 items-center">
@@ -814,18 +773,17 @@ const TranslationEditor = ({
       </Card>
 
       {/* Translation Table */}
-      <div className="max-h-[60vh] overflow-auto">
-        <MyTable
-          dataSource={filteredData}
-          columns={columns as any}
-          pagination={false}
-          bordered
-          striped
-          rowKey="key"
-        />
-      </div>
-
-      {/* Add New Translation */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="max-h-[60vh] overflow-auto">
+            <MyTable
+              dataSource={filteredData}
+              columns={columns as any}
+              rowKey="key"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Save Button */}
       <div className="flex justify-between items-center">

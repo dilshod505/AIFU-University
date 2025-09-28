@@ -13,16 +13,23 @@ import {
 import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useLayoutStore from "@/store/layout-store";
 import {
   Button as AntButton,
+  Select as AntdSelect,
   Input as AntInput,
   Divider,
   Form,
-  Modal,
-  Select,
-  Select as AntdSelect,
   Input,
+  Modal,
 } from "antd";
 import {
   ArrowDownWideNarrow,
@@ -34,24 +41,15 @@ import {
   Eye,
   PenSquareIcon,
   Plus,
-  Search,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import useLayoutStore from "@/store/layout-store";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = AntInput;
 
@@ -60,7 +58,7 @@ export const CopiesBooks = () => {
   const searchParams = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchParams.get("page")) || 1,
+    Number(searchParams.get("page")) || 1
   );
   const handlePageChange = (newPage: number) => {
     setPageNum(newPage);
@@ -79,7 +77,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
 
   const { user } = useLayoutStore();
@@ -130,7 +128,7 @@ export const CopiesBooks = () => {
     if (searchField === "fullInfo" || searchField === "fullName") {
       if (firstQuery || secondQuery) {
         setDebouncedSearchQuery(
-          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
+          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`
         );
       } else {
         setDebouncedSearchQuery("");
@@ -240,7 +238,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, pageNum, pageSize, role, deleteCategory],
+    [t, pageNum, pageSize, role, deleteCategory]
   );
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
@@ -290,7 +288,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, categoriesOptions],
+    [t, categoriesOptions]
   );
 
   useEffect(() => {
@@ -333,7 +331,7 @@ export const CopiesBooks = () => {
   const searchFieldOptions = [
     { value: "inventoryNumber", label: t("Inventory Number") },
     { value: "book", label: t("Book") },
-    { value: "fullInfo", label: t("Full Info (Author/Title)") },
+    { value: "fullInfo", label: t("Full Info") },
     { value: "epc", label: t("EPC") },
     { value: "fullName", label: t("Full Name") },
   ];
@@ -370,11 +368,11 @@ export const CopiesBooks = () => {
               onError: (error: any) => {
                 toast.error(
                   error?.response?.data?.message ||
-                    t("Server bilan bog'lanishda xatolik"),
+                    t("Server bilan bog'lanishda xatolik")
                 );
                 setSubmitting(false);
               },
-            },
+            }
           );
         } else {
           // ➕ Create
@@ -396,11 +394,11 @@ export const CopiesBooks = () => {
               onError: (error: any) => {
                 toast.error(
                   error?.response?.data?.message ||
-                    t("Server bilan bog'lanishda xatolik"),
+                    t("Server bilan bog'lanishda xatolik")
                 );
                 setSubmitting(false);
               },
-            },
+            }
           );
         }
       },
@@ -460,7 +458,7 @@ export const CopiesBooks = () => {
               options={[
                 { value: "book", label: t("Book") },
                 { value: "inventoryNumber", label: t("Inventory Number") },
-                { value: "fullInfo", label: t("Full Info (Author/Title)") },
+                { value: "fullInfo", label: t("Full Info") },
                 { value: "fullName", label: t("Full Name") },
                 { value: "epc", label: t("EPC") },
               ]}
@@ -597,7 +595,7 @@ export const CopiesBooks = () => {
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize,
+                  (copiesBooks?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>

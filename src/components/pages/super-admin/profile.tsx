@@ -363,7 +363,7 @@ const Profile = () => {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Date & Time")}
+                      {t("DateTime")}
                     </th>
                     <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
                       {t("Invoice number")}
@@ -463,7 +463,7 @@ const Profile = () => {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Date & Time")}
+                      {t("DateTime")}
                     </th>
                     <th
                       className={
