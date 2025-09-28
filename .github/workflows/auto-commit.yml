@@ -26,7 +26,7 @@ jobs:
         run: |
           echo "Last deploy: $(date)" > deploy.txt
           git add deploy.txt
-          git commit -m "Auto deploy trigger [skip ci]" || echo "No changes"
+          git commit -m "Auto deploy trigger" || echo "No changes"
 
       - name: Push as Owner
         uses: ad-m/github-push-action@v0.6.0
