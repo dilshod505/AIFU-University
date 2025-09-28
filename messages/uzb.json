@@ -451,5 +451,8 @@
   "Archive bronlar": "Arxivlangan bronlar",
   "Activate Administrator": "Administratorni faollashtirish",
   "Activate": "Faollashtirish",
-  "Confirmation Code": "Tasdiqlash kodi"
+  "Confirmation Code": "Tasdiqlash kodi",
+  "Notification": "Xabarnoma",
+  "AIFU - Notification": "AIFU - Bildirishnomalar",
+  "warning": "Ogohlantirish"
 }

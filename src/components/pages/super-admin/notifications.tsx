@@ -20,7 +20,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNotificationsSocket } from "@/hooks/webSocket";
 
 const Notifications = () => {
   const t = useTranslations();
@@ -31,11 +30,11 @@ const Notifications = () => {
     number | null
   >(null);
   const [selected, setSelected] = useState<{ id: number; type: string } | null>(
-    null,
+    null
   );
   const { data: detail } = useGetNotificationById(selected?.id || undefined);
 
-  useNotificationsSocket();
+  // useNotificationsSocket();
 
   const accept = useMutation({
     mutationFn: async ({
@@ -60,14 +59,15 @@ const Notifications = () => {
       return res.data;
     },
   });
-  const warning = useMutation({
-    mutationFn: async ({ notificationId }: { notificationId: number }) => {
-      const res = await api.post("/admin/actions/warning", {
-        notificationId,
-      });
-      return res.data;
-    },
-  });
+
+  // const warning = useMutation({
+  //   mutationFn: async ({ notificationId }: { notificationId: number }) => {
+  //     const res = await api.post("/admin/actions/warning", {
+  //       notificationId,
+  //     });
+  //     return res.data;
+  //   },
+  // });
 
   return (
     <div>
@@ -85,13 +85,13 @@ const Notifications = () => {
                 value="EXTEND"
                 className="flex-1 data-[state=active]:bg-green-100 data-[state=active]:text-green-700"
               >
-                Extend
+                {t("uzaytirish")}
               </TabsTrigger>
               <TabsTrigger
                 value="WARNING"
                 className="flex-1 data-[state=active]:bg-red-100 data-[state=active]:text-red-700"
               >
-                Warning
+                {t("warning")}
               </TabsTrigger>
             </TabsList>
 
@@ -116,7 +116,7 @@ const Notifications = () => {
                             <p className="text-xs text-gray-500">{n.date}</p>
                           </div>
                           <Badge className="bg-green-100 text-green-700">
-                            EXTEND
+                            {t("uzaytirish")}
                           </Badge>
                         </div>
                       </CardContent>
@@ -138,15 +138,15 @@ const Notifications = () => {
                       }`}
                       onClick={() => setSelected({ id: n.id, type: "WARNING" })}
                     >
-                      <CardContent className="p-3">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-medium">{n.bookTitle}</p>
-                            <p className="text-xs text-gray-500">{n.date}</p>
-                          </div>
-                          <Badge className="bg-red-100 text-red-700">
-                            WARNING
+                      <CardContent className="px-3">
+                        <div className="flex justify-end items-center">
+                          <Badge className="text-sm bg-red-100 text-red-700">
+                            {t("warning")}
                           </Badge>
+                        </div>
+                        <div className="mt-2">
+                          <p className="font-medium">{n.bookTitle}</p>
+                          <p className="text-xs text-gray-500">{n.date}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -181,12 +181,12 @@ const Notifications = () => {
                   <div>
                     {selected?.type === "EXTEND" && (
                       <Badge className="bg-green-100 text-green-700 text-lg">
-                        EXTEND
+                        {t("uzaytirish")}
                       </Badge>
                     )}
                     {selected?.type === "WARNING" && (
                       <Badge className="bg-red-100 text-red-700 text-lg">
-                        WARNING
+                        {t("warning")}
                       </Badge>
                     )}
                   </div>
