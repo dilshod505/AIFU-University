@@ -11,6 +11,13 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner"; // sonner'dan toast import qilindi
 
+interface HistoryParams {
+  studentId?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  sortDirection?: "asc" | "desc";
+}
+
 // Query keys
 export const bookingKeys = {
   all: ["bookings"] as const,
@@ -112,6 +119,32 @@ export function useExtendBooking() {
 }
 
 // History hooks
+
+export const useHistoryByStudent = ({
+  studentId,
+  pageNumber = 1,
+  pageSize = 10,
+  sortDirection = "desc",
+}: HistoryParams) => {
+  return useQuery({
+    queryKey: ["history", studentId, pageNumber, pageSize, sortDirection],
+    queryFn: async () => {
+      if (!studentId) return null;
+      const res = await api.get("/admin/history", {
+        params: {
+          field: "student",
+          query: studentId,
+          pageNumber,
+          pageSize,
+          sortDirection,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!studentId,
+  });
+};
+
 export function useHistory({
   searchField,
   searchQuery,

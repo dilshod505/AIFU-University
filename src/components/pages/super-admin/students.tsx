@@ -45,6 +45,7 @@ import {
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  EllipsisVertical,
   Eye,
   GraduationCap,
   ImportIcon,
@@ -62,15 +63,34 @@ import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useBookingsByStudent } from "@/components/models/queries/booking";
 
 export type FilterType = "all" | "active" | "inactive";
 
 const Students = () => {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNumber, setPageNumber] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const [filter, setFilter] = useState<FilterType>("all");
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState<string>("");
   const [searchField, setSearchField] = useState<
     "id" | "cardNumber" | "fullName"
@@ -78,6 +98,9 @@ const Students = () => {
 
   const [firstQuery, setFirstQuery] = useState("");
   const [secondQuery, setSecondQuery] = useState("");
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const fullNameQuery = `${firstQuery}~${secondQuery}`;
   const { data: students } = useStudents({
@@ -296,22 +319,79 @@ const Students = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
+            {role === "super-admin" && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Type")}>
+                    <EllipsisVertical />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(
+                        `/super-admin/users/students/${record.id}?type=active`,
+                      );
+                    }}
+                  >
+                    {t("Active bronlar")}
+                  </DropdownMenuItem>
 
-            <DeleteActionDialog
-              title={t("Delete")}
-              onConfirm={() => {
-                deleteStudent.mutate(record.id, {
-                  onSuccess: () =>
-                    toast.success(t("Category deleted successfully")),
-                  onError: () => toast.error(t("Error deleting category")),
-                });
-              }}
-            />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(
+                        `/super-admin/users/students/${record.id}?type=archive`,
+                      );
+                    }}
+                  >
+                    {t("Archive bronlar")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            {role === "admin" && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <TooltipBtn title={t("Type")}>
+                    <EllipsisVertical />
+                  </TooltipBtn>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(`/admin/users/${record.id}?type=active`);
+                    }}
+                  >
+                    {t("Active bronlar")}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      router.push(`/admin/users/${record.id}?type=archive`);
+                    }}
+                  >
+                    {t("Archive bronlar")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                title={t("Delete")}
+                onConfirm={() => {
+                  deleteStudent.mutate(record.id, {
+                    onSuccess: () =>
+                      toast.success(t("Category deleted successfully")),
+                    onError: () => toast.error(t("Error deleting category")),
+                  });
+                }}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteStudent, detail, t],
+    [deleteStudent, detail, role, router, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -754,10 +834,7 @@ const Students = () => {
               <div>
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => {
-                    const newPageNum = e.selected + 1;
-                    setPageNumber(newPageNum);
-                  }}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
                   pageRangeDisplayed={3}
                   pageCount={Math.ceil((students?.totalElements || 1) / size)}
                   previousLabel={

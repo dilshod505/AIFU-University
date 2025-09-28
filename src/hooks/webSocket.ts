@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export function useNotificationsSocket() {
   const queryClient = useQueryClient();
@@ -15,6 +16,7 @@ export function useNotificationsSocket() {
       try {
         const data = JSON.parse(event.data);
         console.log("🔔 New notification:", data);
+        toast.success("🔔 New notification");
 
         // react-query cache ni yangilash
         queryClient.invalidateQueries({ queryKey: ["notifications"] });

@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Button as AntButton,
   Select as AntdSelect,
   Divider,
   Form,
@@ -45,7 +46,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -56,20 +57,41 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { RiFileExcel2Line } from "react-icons/ri";
+import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { Option } = AntdSelect;
 
 const BaseBooks = () => {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
-  const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageNum, setPageNum] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchTitle, setSearchTitle] = useState<string>("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [debouncedSearchAuthor, setDebouncedSearchAuthor] =
     useState(searchQuery);
   const [debouncedSearchTitle, setDebouncedSearchTitle] = useState(searchTitle);
   const [open, setOpen] = useState<boolean>(false);
   const [form] = Form.useForm();
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -213,27 +235,29 @@ const BaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <DeleteActionDialog
-              onConfirm={() =>
-                deleteBook.mutate(record.id, {
-                  onSuccess: (res: any) => {
-                    setOpen(false);
-                    toast.success(res?.message || t("Delete successfully"));
-                  },
-                  onError: (err: any) => {
-                    toast.error(
-                      err?.response?.data?.message || t("Error occurred"),
-                    );
-                  },
-                })
-              }
-              title={t("Delete")}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                onConfirm={() =>
+                  deleteBook.mutate(record.id, {
+                    onSuccess: (res: any) => {
+                      setOpen(false);
+                      toast.success(res?.message || t("Delete successfully"));
+                    },
+                    onError: (err: any) => {
+                      toast.error(
+                        err?.response?.data?.message || t("Error occurred"),
+                      );
+                    },
+                  })
+                }
+                title={t("Delete")}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, role, t],
   );
 
   useEffect(() => {
@@ -245,7 +269,10 @@ const BaseBooks = () => {
     }
   }, [editingBook, form, baseBookDetail.isLoading, baseBookDetail.data]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const onSubmit = async (formData: any) => {
+    setSubmitting(true);
     const payload = {
       ...formData,
       titleDetails: formData.titleDetails || "",
@@ -261,9 +288,11 @@ const BaseBooks = () => {
           onSuccess: (res: any) => {
             setOpen(false);
             toast.success(res?.message || t("Book updated successfully"));
+            setSubmitting(false);
           },
           onError: (err: any) => {
             toast.error(err?.response?.data?.message || t("Error occurred"));
+            setSubmitting(false);
           },
         },
       );
@@ -272,9 +301,11 @@ const BaseBooks = () => {
         onSuccess: (res: any) => {
           setOpen(false);
           toast.success(res?.message || t("Book created successfully"));
+          setSubmitting(false);
         },
         onError: (err: any) => {
           toast.error(err?.response?.data?.message || t("Error occurred"));
+          setSubmitting(false);
         },
       });
     }
@@ -478,10 +509,7 @@ const BaseBooks = () => {
               <div>
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => {
-                    const newPageNum = e.selected + 1;
-                    setPageNum(newPageNum);
-                  }}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
@@ -500,7 +528,7 @@ const BaseBooks = () => {
                   }
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
-                  // forcePage={pageNum === 1 ? 1 : pageNum - 1}
+                  forcePage={pageNum - 1}
                   pageClassName="list-none"
                   pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                   activeLinkClassName="bg-green-600 text-white rounded-full"
@@ -523,6 +551,7 @@ const BaseBooks = () => {
         }}
         footer={null}
         width={800}
+        centered
       >
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <div className="grid md:grid-cols-2 gap-3">
@@ -531,14 +560,14 @@ const BaseBooks = () => {
               name="title"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Title")} />
+              <Input placeholder={t("Title")} required />
             </Form.Item>
             <Form.Item
               label={t("Author")}
               name="author"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Author")} />
+              <Input placeholder={t("Author")} required />
             </Form.Item>
             <Form.Item
               rules={[{ required: true }]}
@@ -553,6 +582,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <AntdSelect
+                aria-required={true}
                 showSearch
                 style={{ width: "100%" }}
                 placeholder={t("Select category")}
@@ -582,6 +612,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
+                required={true}
                 style={{ width: "100%" }}
                 placeholder={t("Publication year enter")}
               />
@@ -591,10 +622,10 @@ const BaseBooks = () => {
               name="publisher"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Publication enter name")} />
+              <Input placeholder={t("Publication enter name")} required />
             </Form.Item>
             <Form.Item label={t("Publication City")} name="publicationCity">
-              <Input placeholder={t("Publication city")} />
+              <Input placeholder={t("Publication city")} required />
             </Form.Item>
           </div>
 
@@ -612,6 +643,7 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
+                required={true}
                 style={{ width: "100%" }}
                 min={1}
                 placeholder={t("Page Count")}
@@ -622,10 +654,10 @@ const BaseBooks = () => {
               name="language"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Language enter")} />
+              <Input placeholder={t("Language enter")} required />
             </Form.Item>
             <Form.Item label={t("UDC")} name="udc">
-              <Input placeholder={t("UDC Number")} />
+              <Input placeholder={t("UDC Number")} required />
             </Form.Item>
             <Form.Item
               label={t("Title details")}
@@ -636,8 +668,9 @@ const BaseBooks = () => {
             </Form.Item>
           </div>
 
-          <div className="flex justify-end mt-4">
-            <Button className="bg-green-600 text-white">
+          <div className="flex justify-end mt-4 gap-2">
+            <AntButton onClick={() => setOpen(false)}>{t("Cancel")}</AntButton>
+            <Button className="text-white" loading={submitting}>
               {editingBook ? t("Edit book") : t("Add book")}
             </Button>
           </div>

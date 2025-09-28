@@ -50,27 +50,47 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = AntInput;
 
 export const CopiesBooks = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchParams.get("page")) || 1,
+  );
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const { data: categoriesOptions } = useCopiesSelectOptions();
   const createCopiesBook = useCreateCopiesBooks();
   const deleteCategory = useDeleteCopiesBooks();
   const updateBook = useUpdateCopiesBooks();
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
     null,
   );
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   // --- yangi state
 
   const checkInventoryNumber = useCheckInventoryNumber();
 
   const [pageSize, setPageSize] = useState<number>(10);
-  const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageNum, setPageNum] = useState<number>(1);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
@@ -204,21 +224,23 @@ export const CopiesBooks = () => {
               <PenSquareIcon />
             </TooltipBtn>
 
-            <DeleteActionDialog
-              onConfirm={() => {
-                deleteCategory.mutate(record.id, {
-                  onSuccess: () =>
-                    toast.success(t("Category deleted successfully")),
-                  onError: () => toast.error(t("Error deleting category")),
-                });
-              }}
-              title={t("Delete")}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                onConfirm={() => {
+                  deleteCategory.mutate(record.id, {
+                    onSuccess: () =>
+                      toast.success(t("Category deleted successfully")),
+                    onError: () => toast.error(t("Error deleting category")),
+                  });
+                }}
+                title={t("Delete")}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [t, deleteCategory, pageNum, pageSize],
+    [t, pageNum, pageSize, role, deleteCategory],
   );
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
@@ -316,7 +338,10 @@ export const CopiesBooks = () => {
     { value: "fullName", label: t("Full Name") },
   ];
 
+  const [submitting, setSubmitting] = useState(false);
+
   const onSubmit = async (data: any) => {
+    setSubmitting(true);
     checkInventoryNumber.mutate(data.inventoryNumber, {
       onSuccess: (res) => {
         if (res?.data) {
@@ -338,6 +363,7 @@ export const CopiesBooks = () => {
             {
               onSuccess: () => {
                 toast.success(t("Kitob nusxasi yangilandi"));
+                setSubmitting(false);
                 setOpen(false);
                 antdForm.resetFields();
               },
@@ -346,6 +372,7 @@ export const CopiesBooks = () => {
                   error?.response?.data?.message ||
                     t("Server bilan bog'lanishda xatolik"),
                 );
+                setSubmitting(false);
               },
             },
           );
@@ -362,6 +389,7 @@ export const CopiesBooks = () => {
             {
               onSuccess: () => {
                 toast.success(t("Kitob nusxasi yaratildi"));
+                setSubmitting(false);
                 setOpen(false);
                 antdForm.resetFields();
               },
@@ -370,6 +398,7 @@ export const CopiesBooks = () => {
                   error?.response?.data?.message ||
                     t("Server bilan bog'lanishda xatolik"),
                 );
+                setSubmitting(false);
               },
             },
           );
@@ -564,7 +593,7 @@ export const CopiesBooks = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => setPageNum(e.selected + 1)}
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
@@ -609,8 +638,8 @@ export const CopiesBooks = () => {
             antdForm.resetFields();
           }}
           footer={null}
-          width={600}
-          destroyOnClose
+          width={700}
+          centered
         >
           <Form
             form={antdForm}
@@ -646,13 +675,15 @@ export const CopiesBooks = () => {
                 >
                   {t("Cancel")}
                 </AntButton>
-                <AntButton
-                  type="primary"
-                  htmlType="submit"
-                  loading={createCopiesBook.isPending || updateBook.isPending}
+                <Button
+                  loading={
+                    submitting ||
+                    createCopiesBook.isPending ||
+                    updateBook.isPending
+                  }
                 >
                   {editingBook ? t("Edit book copy") : t("Add book copy")}
-                </AntButton>
+                </Button>
               </div>
             </Form.Item>
           </Form>

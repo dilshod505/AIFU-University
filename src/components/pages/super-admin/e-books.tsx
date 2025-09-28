@@ -37,6 +37,8 @@ import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import imagePlaceholder from "../../../../public/book-placeholder.png";
+import useLayoutStore from "@/store/layout-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -58,10 +60,22 @@ const initialValues: Record<string, any> = {
 };
 
 const EBaseBooks = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialPage = Number(searchParams.get("page") || "1");
+  const [pageNumber, setPageNumber] = useState(initialPage);
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.replace(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] =
     useState<string>(searchQuery);
@@ -72,6 +86,9 @@ const EBaseBooks = () => {
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -138,6 +155,8 @@ const EBaseBooks = () => {
       toast.success(t("E-book created successfully"));
     },
   });
+
+  const [submitting, setSubmitting] = useState(false);
 
   const updateBook = useMutation({
     mutationFn: async ({
@@ -219,6 +238,7 @@ const EBaseBooks = () => {
   }, [editingBook]);
 
   const onSubmit = async (values: any) => {
+    setSubmitting(true);
     try {
       let imageUrl = values.imageUrl;
       let pdfUrl = values.pdfUrl;
@@ -273,6 +293,8 @@ const EBaseBooks = () => {
     } catch (e) {
       console.error(e);
       message.error("Uploadda xatolik yuz berdi");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -375,15 +397,17 @@ const EBaseBooks = () => {
             >
               <PenSquareIcon />
             </TooltipBtn>
-            <DeleteActionDialog
-              title={t("Delete")}
-              onConfirm={() => deleteBook.mutate(record.id)}
-            />
+            {role === "super-admin" && (
+              <DeleteActionDialog
+                title={t("Delete")}
+                onConfirm={() => deleteBook.mutate(record.id)}
+              />
+            )}
           </div>
         ),
       },
     ],
-    [deleteBook, t],
+    [deleteBook, role, t],
   );
 
   const [fileList, setFileList] = useState<any[]>([]);
@@ -471,10 +495,7 @@ const EBaseBooks = () => {
             <div>
               <ReactPaginate
                 breakLabel="..."
-                onPageChange={(e) => {
-                  const newPageNum = e.selected + 1;
-                  setPageNumber(newPageNum);
-                }}
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
@@ -504,6 +525,7 @@ const EBaseBooks = () => {
       />
       <Modal
         open={open}
+        centered
         onCancel={() => {
           setEditingBook(null);
           setActionType("add");
@@ -514,7 +536,7 @@ const EBaseBooks = () => {
         }}
         footer={null}
         width={800}
-        className="rounded-xl hide-scroll bg-white dark:bg-background"
+        className="rounded-xl hide-scroll dark:bg-background"
         title={
           <h1 className="text-xl font-bold">
             {actionType === "add"
@@ -879,7 +901,9 @@ const EBaseBooks = () => {
                 <AntButton
                   htmlType="submit"
                   type="primary"
-                  loading={createBook.isPending || updateBook.isPending}
+                  loading={
+                    submitting || createBook.isPending || updateBook.isPending
+                  }
                 >
                   {actionType === "add" ? t("Add e-book") : t("Edit")}
                 </AntButton>

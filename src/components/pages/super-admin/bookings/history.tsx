@@ -29,16 +29,33 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import TooltipBtn from "@/components/tooltip-btn";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HistoryPage() {
+  const router = useRouter();
+  const searchPagination = useSearchParams();
+
+  const [pageNum, setPageNum] = useState<number>(
+    Number(searchPagination.get("page")) || 1,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage);
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", newPage.toString());
+
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageNum, setPageNum] = useState<number>(1);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
   const [searchField, setSearchField] = useState<
     "userID" | "cardNumber" | "inventoryNumber"
-  >("userID"); // default qiymatni bitta qiling
+  >("userID");
 
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -281,7 +298,8 @@ export default function HistoryPage() {
                 </div>
                 <ReactPaginate
                   breakLabel="..."
-                  onPageChange={(e) => setPageNum(e.selected + 1)}
+                  onPageChange={(e) => handlePageChange(e.selected + 1)}
+                  forcePage={pageNum - 1}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={history?.totalPages || 0}
@@ -298,7 +316,6 @@ export default function HistoryPage() {
                   }
                   className={"flex justify-center gap-2 items-center my-5"}
                   renderOnZeroPageCount={null}
-                  forcePage={(history?.currentPage || 1) - 1}
                   pageClassName="list-none"
                   pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
                   activeLinkClassName="bg-green-600 text-white rounded-full"

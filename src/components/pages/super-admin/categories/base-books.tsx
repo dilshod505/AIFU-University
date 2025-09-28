@@ -110,7 +110,10 @@ const BaseBooks = () => {
     [t],
   );
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = async (values: Record<string, any>) => {
+    setSubmitting(true);
     try {
       const isDuplicate = data?.data?.some(
         (item: any) =>
@@ -119,6 +122,7 @@ const BaseBooks = () => {
       );
       if (isDuplicate) {
         toast.error(t("This category name already exists"));
+        setSubmitting(false);
         return;
       }
 
@@ -129,12 +133,14 @@ const BaseBooks = () => {
         });
         if (updateCategory.isSuccess) {
           toast.success(t("Category updated successfullyy"));
+          setSubmitting(false);
           setIsOpen(false);
         }
       } else {
         createCategory.mutate(values);
         if (createCategory.isSuccess) {
           toast.success(t("Category created successfully"));
+          setSubmitting(false);
           setIsOpen(false);
         }
       }
@@ -146,6 +152,8 @@ const BaseBooks = () => {
       if (e instanceof Error) {
         toast.error(e.message);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -193,7 +201,7 @@ const BaseBooks = () => {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>
-              {editingCategory
+              {submitting || editingCategory
                 ? t("Edit Regular book category")
                 : t("Add Regular book category")}
             </SheetTitle>
@@ -202,6 +210,7 @@ const BaseBooks = () => {
             <AutoForm
               form={form}
               fields={fields}
+              loading={submitting}
               onSubmit={handleSubmit}
               submitText={t("Add Category")}
             />

@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useBaseBooksCategory = () => {
   return useQuery({
@@ -45,15 +47,23 @@ export const useCreateBaseBooksCategory = () => {
 
 export const useDeleteBaseBooksCategory = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations();
   return useMutation({
     mutationFn: async (id: string) => {
       const res = await api.delete(`/admin/base-book/categories/${id}`);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (success: any) => {
+      const seccessMessage =
+        success?.response?.data?.message || success.message;
+      toast.success(seccessMessage);
       queryClient.invalidateQueries({
         queryKey: ["base-book-category"],
       });
+    },
+    onError: (error: any) => {
+      const errMessage = error?.response?.data?.message || error.message;
+      toast.error(errMessage);
     },
   });
 };
