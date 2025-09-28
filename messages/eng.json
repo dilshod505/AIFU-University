@@ -419,5 +419,18 @@
   "October": "October",
   "November": "November",
   "December": "December",
-  "Average books per student": "Average books per student"
+  "Average books per student": "Average books per student",
+  "Categories of E-books": "Categories of E-books",
+  "AIFU - Categories of E-books": "E-book Categories",
+  "Please upload a PDF file": "Please upload a PDF file",
+  "Please enter ISBN": "Please enter ISBN",
+  "Please enter page count": "Please enter page count",
+  "Please enter publisher": "Please enter publisher",
+  "Enter publisher": "Enter publisher",
+  "Please enter language": "Please enter language",
+  "Enter language": "Enter language",
+  "Please enter script": "Please enter script",
+  "Enter script": "Enter script",
+  "Please enter description": "Please enter a description",
+  "Enter book description": "Enter book description"
 }

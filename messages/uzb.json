@@ -419,5 +419,18 @@
   "October": "Oktabr",
   "November": "Noyabr",
   "December": "Dekabr",
-  "Average books per student": "Talaba boshiga o'rtacha kitoblar soni"
+  "Average books per student": "Talaba boshiga o'rtacha kitoblar soni",
+  "Categories of E-books": "Elektron kitoblar turkumlari",
+  "AIFU - Categories of E-books": "E-kitoblar toifalari",
+  "Please upload a PDF file": "PDF faylni yuklang iltimos",
+  "Please enter ISBN": "ISBN kiriting",
+  "Please enter page count": "Sahifalar sonini kiriting",
+  "Please enter publisher": "Iltimos, nashriyotchini kiriting",
+  "Enter publisher": "Nashriyotni kiriting",
+  "Please enter language": "Iltimos, tilni kiriting",
+  "Enter language": "Tilni kiriting",
+  "Please enter script": "Iltimos, skriptni kiriting",
+  "Enter script": "Skriptni kiriting",
+  "Please enter description": "Iltimos, ta'rifni kiriting",
+  "Enter book description": "Kitob tavsifini kiriting"
 }

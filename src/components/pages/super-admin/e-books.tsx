@@ -6,6 +6,7 @@ import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input as ShadcnInput } from "@/components/ui/input";
+import useLayoutStore from "@/store/layout-store";
 import { UploadOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -32,13 +33,12 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import imagePlaceholder from "../../../../public/book-placeholder.png";
-import useLayoutStore from "@/store/layout-store";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -82,7 +82,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null,
+    null
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
@@ -119,7 +119,7 @@ const EBaseBooks = () => {
     ],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${debouncedSearchQuery ? `&query=${debouncedSearchQuery}&field=fullInfo` : ""}`,
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${debouncedSearchQuery ? `&query=${debouncedSearchQuery}&field=fullInfo` : ""}`
       );
       return data;
     },
@@ -407,7 +407,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, role, t],
+    [deleteBook, role, t]
   );
 
   const [fileList, setFileList] = useState<any[]>([]);
@@ -499,7 +499,7 @@ const EBaseBooks = () => {
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize,
+                  (books?.data?.totalElements || 0) / pageSize
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -647,7 +647,7 @@ const EBaseBooks = () => {
                       </h3>
                       <p>
                         {dayjs(getById.data.data.createdDate).format(
-                          "DD-MM-YYYY",
+                          "DD-MM-YYYY"
                         )}
                       </p>
                     </div>
@@ -709,7 +709,7 @@ const EBaseBooks = () => {
                   label={t("elektron kitob fayli")}
                   name="pdfUrl"
                   rules={[
-                    { required: true, message: t("Please upload a PDF file!") },
+                    { required: true, message: t("Please upload a PDF file")! },
                   ]}
                 >
                   <Upload
@@ -740,7 +740,6 @@ const EBaseBooks = () => {
                     </a>
                   )}
                 </Form.Item>
-
                 <Form.Item
                   label={t("Author")}
                   name="author"
@@ -753,7 +752,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter author name")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Category")}
                   name="categoryId"
@@ -775,7 +773,6 @@ const EBaseBooks = () => {
                     ))}
                   </Select>
                 </Form.Item>
-
                 <Form.Item
                   label={t("Title")}
                   name="title"
@@ -788,7 +785,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter book title")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Publication Year")}
                   name="publicationYear"
@@ -806,7 +802,6 @@ const EBaseBooks = () => {
                     className="w-full"
                   />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Isbn")}
                   name="isbn"
@@ -819,7 +814,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter ISBN")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Page Count")}
                   name="pageCount"
@@ -836,7 +830,6 @@ const EBaseBooks = () => {
                     className="w-full"
                   />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Publisher")}
                   name="publisher"
@@ -849,7 +842,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter publisher")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Language")}
                   name="language"
@@ -862,7 +854,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter language")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("kitob qaysi tilda yozilgan")}
                   name="script"
@@ -875,7 +866,6 @@ const EBaseBooks = () => {
                 >
                   <Input placeholder={t("Enter script")} />
                 </Form.Item>
-
                 <Form.Item
                   label={t("Description")}
                   name="description"

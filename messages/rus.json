@@ -419,5 +419,18 @@
   "October": "Октябрь",
   "November": "Ноябрь",
   "December": "Декабрь",
-  "Average books per student": "Среднее количество книг на студента"
+  "Average books per student": "Среднее количество книг на студента",
+  "Categories of E-books": "Категории электронных книг",
+  "AIFU - Categories of E-books": "Категории электронных книг",
+  "Please upload a PDF file": "Пожалуйста, загрузите PDF-файл",
+  "Please enter ISBN": "Пожалуйста, введите ISBN",
+  "Please enter page count": "Пожалуйста, введите количество страниц",
+  "Please enter publisher": "Пожалуйста, введите издателя",
+  "Enter publisher": "Введите издателя",
+  "Please enter language": "Пожалуйста, введите язык",
+  "Enter language": "Введите язык",
+  "Please enter script": "Пожалуйста, введите скрипт",
+  "Enter script": "Введите скрипт",
+  "Please enter description": "Пожалуйста, введите описание",
+  "Enter book description": "Введите описание книги"
 }
