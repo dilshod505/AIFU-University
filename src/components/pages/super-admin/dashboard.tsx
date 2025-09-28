@@ -29,6 +29,7 @@ import {
   Users,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import Chart from "react-apexcharts";
 
 const Dashboard = () => {
@@ -51,7 +52,7 @@ const Dashboard = () => {
   // -------------------- Monthly (kunlik) --------------------
   const perDayData = bookingPerDay.data?.data || [];
   const dayCategories = perDayData.map((item: any) =>
-    new Date(item.date).getDate(),
+    new Date(item.date).getDate()
   );
   const takenPerDay = perDayData.map((item: any) => item.taken);
   const returnedPerDay = perDayData.map((item: any) => item.returned);
@@ -59,34 +60,40 @@ const Dashboard = () => {
 
   const perDayOptions: ApexOptions = {
     chart: { type: "bar", toolbar: { show: true } },
-    xaxis: { categories: dayCategories, title: { text: "Days of Month" } },
+    xaxis: { categories: dayCategories, title: { text: t("Days of Month") } },
     tooltip: { shared: true, intersect: false },
   };
 
-  const perDaySeries = [
-    { name: "Taken", data: takenPerDay },
-    { name: "Returned", data: returnedPerDay },
-    { name: "Returned Late", data: returnedLatePerDay },
-  ];
+  const perDaySeries = useMemo(
+    () => [
+      { name: t("Taken"), data: takenPerDay },
+      { name: t("Returned"), data: returnedPerDay },
+      { name: t("Returned Late"), data: returnedLatePerDay },
+    ],
+    [takenPerDay, returnedPerDay, returnedLatePerDay, t]
+  );
 
   // -------------------- Yearly (oylik) --------------------
   const yearlyData = bookingPerMonth.data?.data || [];
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const monthNames = useMemo(
+    () => [
+      t("January").slice(0, 3),
+      t("February").slice(0, 3),
+      t("March").slice(0, 3),
+      t("April").slice(0, 3),
+      t("May").slice(0, 3),
+      t("June").slice(0, 3),
+      t("July").slice(0, 3),
+      t("August").slice(0, 3),
+      t("September").slice(0, 3),
+      t("October").slice(0, 3),
+      t("November").slice(0, 3),
+      t("December").slice(0, 3),
+    ],
+    [t]
+  );
   const yearlyCategories = yearlyData.map(
-    (item: any) => monthNames[item.month - 1],
+    (item: any) => monthNames[item.month - 1]
   );
   const takenYearly = yearlyData.map((item: any) => item.taken);
   const returnedYearly = yearlyData.map((item: any) => item.returned);
@@ -94,15 +101,21 @@ const Dashboard = () => {
 
   const yearlyOptions: ApexOptions = {
     chart: { type: "bar", toolbar: { show: true } },
-    xaxis: { categories: yearlyCategories, title: { text: "Months of Year" } },
+    xaxis: {
+      categories: yearlyCategories,
+      title: { text: t("Months of Year") },
+    },
     tooltip: { shared: true, intersect: false },
   };
 
-  const yearlySeries = [
-    { name: "Taken", data: takenYearly },
-    { name: "Returned", data: returnedYearly },
-    { name: "Returned Late", data: returnedLateYearly },
-  ];
+  const yearlySeries = useMemo(
+    () => [
+      { name: t("Taken"), data: takenYearly },
+      { name: t("Returned"), data: returnedYearly },
+      { name: t("Returned Late"), data: returnedLateYearly },
+    ],
+    [takenYearly, returnedYearly, returnedLateYearly, t]
+  );
 
   return (
     <div className="p-6 min-h-screen">
@@ -153,7 +166,7 @@ const Dashboard = () => {
               : averageStatic.data?.data?.averageDays
           }
           loading={averageStatic.isLoading}
-          subtitle={t("Avg. books per student")}
+          subtitle={t("Average books per student")}
           icon={<BookOpen />}
         />
       </div>
@@ -167,7 +180,7 @@ const Dashboard = () => {
               type="donut"
               height="300"
               options={{
-                labels: [t("Valid"), t("Overdue")],
+                labels: [t("valid"), t("overdue")],
                 legend: { position: "bottom" },
                 colors: ["#22c55e", "#ef4444"], // ✅ yashil, qizil
               }}
@@ -188,12 +201,15 @@ const Dashboard = () => {
                 <SquareCheckBig className="w-10 h-10" />
               </span>
               <p className="font-bold text-lg">
-                {bookingToday.data?.data?.length} {t("bookings today")}
+                {t("4 bookings today").replace(
+                  "4",
+                  bookingToday.data?.data?.length
+                )}
               </p>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-4 text-green-600 overflow-y-auto max-h-96">
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground w-full o">
+            <div className="flex flex-col items-center justify-center p-4 text-green-600 max-h-96">
+              <ul className="space-y-2 text-sm text-muted-foreground w-full overflow-y-auto hide-scroll">
                 {bookingToday?.data?.data?.map((b: any, idx: number) => (
                   <li key={idx} className="border-b pb-2">
                     <p className="text-[18px] font-bold">
@@ -223,7 +239,7 @@ const Dashboard = () => {
               <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
             ) : bookingsTodayOverdue?.data?.total === 0 ? (
               <p className="mt-2" suppressHydrationWarning>
-                No overdue books!
+                {"No overdue books"}!
               </p>
             ) : (
               <p className="mt-2" suppressHydrationWarning>
@@ -238,7 +254,7 @@ const Dashboard = () => {
             <div className="h-64">
               {bookingPerMonth.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
-                  Loading chart...
+                  {t("Loading chart")}...
                 </div>
               ) : (
                 <Chart
@@ -255,7 +271,7 @@ const Dashboard = () => {
               <div className="h-72">
                 {bookingDiagram.isLoading ? (
                   <div className="flex justify-center items-center h-full text-muted-foreground">
-                    Loading chart...
+                    {t("Loading chart")}...
                   </div>
                 ) : (
                   <Chart
@@ -276,7 +292,9 @@ const Dashboard = () => {
             {booksTop.isLoading ? (
               <Skeleton className="w-full h-32" />
             ) : booksTop.data?.data?.length === 0 ? (
-              <p className="text-muted-foreground">No book data available</p>
+              <p className="text-muted-foreground">
+                {t("No book data available")}
+              </p>
             ) : (
               <ul className="space-y-2">
                 {booksTop?.data?.data?.map((book: any, i: number) => (
@@ -300,7 +318,9 @@ const Dashboard = () => {
             {studentsTop.isLoading ? (
               <Skeleton className="w-full h-32" />
             ) : studentsTop.data?.data?.length === 0 ? (
-              <p className="text-muted-foreground">No student data available</p>
+              <p className="text-muted-foreground">
+                {t("No student data available")}
+              </p>
             ) : (
               <ul className="space-y-2">
                 {studentsTop?.data?.data?.map((student: any, i: number) => (
@@ -328,25 +348,25 @@ const Dashboard = () => {
             <div className="overflow-y-auto max-h-96">
               {bookingOverdue.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
-                  Loading overdue bookings...
+                  {t("Loading overdue bookings")}...
                 </div>
               ) : bookingOverdue.error ? (
                 <div className="flex justify-center items-center h-full text-red-500">
-                  Failed to load overdue bookings
+                  {t("Failed to load overdue bookings")}
                 </div>
               ) : bookingOverdue?.data?.length === 0 ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
-                  No overdue bookings
+                  {t("No overdue bookings")}
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
-                    <div>STUDENT</div>
-                    <div>SURNAME</div>
-                    <div>BOOK TITLE</div>
-                    <div>AUTHOR</div>
-                    <div>GIVEN At</div>
-                    <div>DUE DATE</div>
+                    <div>{t("firstName")}</div>
+                    <div>{t("Surname")}</div>
+                    <div>{t("book title")}</div>
+                    <div>{t("Author")}</div>
+                    <div>{t("Given At")}</div>
+                    <div>{t("Due Date")}</div>
                   </div>
                   <div className="space-y-3">
                     {bookingOverdue?.data?.data?.map(
@@ -367,7 +387,7 @@ const Dashboard = () => {
                             {booking.dueDate || booking.due_date || "No Date"}
                           </div>
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>
