@@ -2,6 +2,7 @@
 
 import { api } from "@/components/models/axios";
 import MyTable, { type IColumn } from "@/components/my-table";
+import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,18 +26,17 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
-import TooltipBtn from "@/components/tooltip-btn";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function HistoryPage() {
   const router = useRouter();
   const searchPagination = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1,
+    Number(searchPagination.get("page")) || 1
   );
 
   const handlePageChange = (newPage: number) => {
@@ -118,7 +118,7 @@ export default function HistoryPage() {
         dataIndex: "author",
       },
       {
-        title: t("Book title"),
+        title: t("book title"),
         key: "bookTitle",
         dataIndex: "bookTitle",
       },
@@ -128,25 +128,25 @@ export default function HistoryPage() {
         dataIndex: "inventoryNumber",
       },
       {
-        title: t("Given at"),
+        title: t("Given At"),
         key: "givenAt",
         dataIndex: "givenAt",
         render: (givenAt: string) => dayjs(givenAt).format("DD.MM.YYYY"),
       },
       {
-        title: t("Due date"),
+        title: t("Due Date"),
         key: "dueDate",
         dataIndex: "dueDate",
         render: (dueDate: string) => dayjs(dueDate).format("DD.MM.YYYY"),
       },
       {
-        title: t("Returned at"),
+        title: t("Returned At"),
         key: "returnedAt",
         dataIndex: "returnedAt",
         render: (returnedAt: string) => dayjs(returnedAt).format("DD.MM.YYYY"),
       },
     ],
-    [t],
+    [t]
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,7 +214,7 @@ export default function HistoryPage() {
                   <Select
                     value={searchField}
                     onValueChange={(
-                      e: "userID" | "cardNumber" | "inventoryNumber",
+                      e: "userID" | "cardNumber" | "inventoryNumber"
                     ) => setSearchField(e)}
                     defaultValue="userID"
                   >
@@ -226,7 +226,7 @@ export default function HistoryPage() {
                           : t("Inventory number")}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="userID">{t("ID")}</SelectItem>
+                      <SelectItem value="userID">{t("id")}</SelectItem>
                       <SelectItem value="cardNumber">
                         {t("Card number")}
                       </SelectItem>
@@ -270,12 +270,16 @@ export default function HistoryPage() {
                   disabled={exportExcel.isPending}
                 >
                   <FileDown className="w-4 h-4" />
-                  {exportExcel.isPending ? t("Yuklanmoqda...") : t("")}
+                  {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
                 </TooltipBtn>
               </div>
             }
             footer={
-              <div className={"flex items-center justify-between"}>
+              <div
+                className={
+                  "flex flex-wrap justify-center items-center lg:justify-between"
+                }
+              >
                 <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
                   <p className="text-sm whitespace-break-spaces">
                     {t("Total Pages")}:{" "}

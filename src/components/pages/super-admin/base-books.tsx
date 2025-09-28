@@ -17,6 +17,12 @@ import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -24,6 +30,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import useLayoutStore from "@/store/layout-store";
 import { useQuery } from "@tanstack/react-query";
 import {
   Button as AntButton,
@@ -46,19 +53,12 @@ import {
   Plus,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { RiFileExcel2Line } from "react-icons/ri";
-import useLayoutStore from "@/store/layout-store";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const { Option } = AntdSelect;
 
@@ -67,7 +67,7 @@ const BaseBooks = () => {
   const searchPagination = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1,
+    Number(searchPagination.get("page")) || 1
   );
 
   const handlePageChange = (newPage: number) => {
@@ -245,7 +245,7 @@ const BaseBooks = () => {
                     },
                     onError: (err: any) => {
                       toast.error(
-                        err?.response?.data?.message || t("Error occurred"),
+                        err?.response?.data?.message || t("Error occurred")
                       );
                     },
                   })
@@ -257,7 +257,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, role, t],
+    [deleteBook, role, t]
   );
 
   useEffect(() => {
@@ -294,7 +294,7 @@ const BaseBooks = () => {
             toast.error(err?.response?.data?.message || t("Error occurred"));
             setSubmitting(false);
           },
-        },
+        }
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -395,13 +395,13 @@ const BaseBooks = () => {
                             onSuccess: (res: any) => {
                               toast.success(
                                 res?.message ||
-                                  t("Excel muvaffaqiyatli yuklandi"),
+                                  t("Excel muvaffaqiyatli yuklandi")
                               );
                             },
                             onError: (err: any) => {
                               toast.error(
                                 err?.response?.data?.message ||
-                                  t("Excel yuklashda xatolik"),
+                                  t("Excel yuklashda xatolik")
                               );
                             },
                           });
@@ -421,13 +421,13 @@ const BaseBooks = () => {
                         {
                           onSuccess: () => {
                             toast.success(
-                              t("Excel muvaffaqiyatli yuklab olindi"),
+                              t("Excel muvaffaqiyatli yuklab olindi")
                             );
                           },
                           onError: () => {
                             toast.error(t("Excel yuklashda xatolik"));
                           },
-                        },
+                        }
                       )
                     }
                   >
@@ -441,14 +441,14 @@ const BaseBooks = () => {
                           onSuccess: () => {
                             toast.success(
                               t(
-                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi",
-                              ),
+                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi"
+                              )
                             );
                           },
                           onError: () => {
                             toast.error(t("Excel yuklashda xatolik"));
                           },
-                        },
+                        }
                       )
                     }
                   >
@@ -513,7 +513,7 @@ const BaseBooks = () => {
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / 10,
+                    (baseBooks?.data?.totalElements || 0) / 10
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
@@ -538,9 +538,7 @@ const BaseBooks = () => {
           }
         />
       </TooltipProvider>
-
       <Divider />
-
       {/* Add/Edit Modal */}
       <Modal
         title={editingBook ? t("Edit book") : t("Add book")}
@@ -676,7 +674,6 @@ const BaseBooks = () => {
           </div>
         </Form>
       </Modal>
-
       {/* Detail Sheet */}
       <Sheet
         open={detailOpen}

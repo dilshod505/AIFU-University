@@ -432,5 +432,17 @@
   "Please enter script": "Пожалуйста, введите скрипт",
   "Enter script": "Введите скрипт",
   "Please enter description": "Пожалуйста, введите описание",
-  "Enter book description": "Введите описание книги"
+  "Enter book description": "Введите описание книги",
+  "AIFU - Base Book": "Базавий китоб",
+  "Full Info (Author/Title)": "Полная информация (Автор/Название)",
+  "Import Excel": "Импорт Excel",
+  "Copies Books": "Копии книг",
+  "AIFU - Copies Books": "AIFU - Копии книги",
+  "is required": "обязательно",
+  "Search by": "Поиск по",
+  "Book EPC": "Забронировать EPC",
+  "Booking Active": "Активное бронирование",
+  "AIFU - Booking Active": "AIFU - Активное бронирование",
+  "Archived bookings": "Архивированные бронирования",
+  "AIFU - Archived bookings": "AIFU - Архивланган бронлар"
 }

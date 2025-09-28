@@ -328,13 +328,13 @@ export const CopiesBooks = () => {
     setPageNum(1);
   };
 
-  const searchFieldOptions = [
-    { value: "inventoryNumber", label: t("Inventory Number") },
-    { value: "book", label: t("Book") },
-    { value: "fullInfo", label: t("Full Info") },
-    { value: "epc", label: t("EPC") },
-    { value: "fullName", label: t("Full Name") },
-  ];
+  // const searchFieldOptions = [
+  //   { value: "inventoryNumber", label: t("Inventory Number") },
+  //   { value: "book", label: t("Book") },
+  //   { value: "fullInfo", label: t("Full Info") },
+  //   { value: "epc", label: t("epc") },
+  //   { value: "fullName", label: t("Full name") },
+  // ];
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -459,8 +459,8 @@ export const CopiesBooks = () => {
                 { value: "book", label: t("Book") },
                 { value: "inventoryNumber", label: t("Inventory Number") },
                 { value: "fullInfo", label: t("Full Info") },
-                { value: "fullName", label: t("Full Name") },
-                { value: "epc", label: t("EPC") },
+                { value: "fullName", label: t("Full name") },
+                { value: "epc", label: t("epc") },
               ]}
             />
 
@@ -619,9 +619,7 @@ export const CopiesBooks = () => {
           </div>
         }
       />
-
       <Divider />
-
       {/* ... existing modal code remains the same ... */}
       {(actionType === "add" || actionType === "edit") && (
         <Modal
@@ -687,7 +685,6 @@ export const CopiesBooks = () => {
           </Form>
         </Modal>
       )}
-
       {actionType === "view" && (
         <Sheet open={open2} onOpenChange={setOpen2}>
           <SheetContent className="hide-scroll">

@@ -432,5 +432,17 @@
   "Please enter script": "Iltimos, skriptni kiriting",
   "Enter script": "Skriptni kiriting",
   "Please enter description": "Iltimos, ta'rifni kiriting",
-  "Enter book description": "Kitob tavsifini kiriting"
+  "Enter book description": "Kitob tavsifini kiriting",
+  "AIFU - Base Book": "Asosiy kitob",
+  "Full Info (Author/Title)": "Toʻliq maʼlumot (Muallif/Sarlavha)",
+  "Import Excel": "Excel-ni import qilish",
+  "Copies Books": "Kitoblarni nusxalash",
+  "AIFU - Copies Books": "AIFU - Kitoblarni nusxalash",
+  "is required": "kerak",
+  "Search by": "Qidirish bo'yicha",
+  "Book EPC": "EPC kitobini bron qilish",
+  "Booking Active": "Faol band qilish",
+  "AIFU - Booking Active": "AIFU - Faol bronlar",
+  "Archived bookings": "Arxivlangan bronlar",
+  "AIFU - Archived bookings": "AIFU - Arxivlangan bandlar"
 }

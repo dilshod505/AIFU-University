@@ -1,4 +1,3 @@
-import React from "react";
 import HistoryPage from "@/components/pages/super-admin/bookings/history";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -12,8 +11,8 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale });
 
   return {
-    title: t("Booking Archived"),
-    description: t("AIFU - Booking Archived"),
+    title: t("Archived bookings"),
+    description: t("AIFU - Archived bookings"),
   };
 };
 

@@ -13,6 +13,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, InputNumber, Tag } from "antd";
@@ -25,19 +33,11 @@ import {
   Undo2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -79,7 +79,7 @@ export default function ActiveBookingsPage() {
   const searchPagination = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1,
+    Number(searchPagination.get("page")) || 1
   );
 
   const handlePageChange = (newPage: number) => {
@@ -261,7 +261,7 @@ export default function ActiveBookingsPage() {
       pageNumber,
       pageSize,
       extendForm,
-    ],
+    ]
   );
 
   return (
@@ -346,7 +346,7 @@ export default function ActiveBookingsPage() {
                   disabled={exportExcel.isPending}
                 >
                   <FileDown className="w-4 h-4" />
-                  {exportExcel.isPending ? t("Yuklanmoqda...") : t("")}
+                  {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
                 </TooltipBtn>
 
                 <TabsList>
@@ -462,7 +462,7 @@ export default function ActiveBookingsPage() {
                       extendForm.resetFields();
                       setIsExtendOpen(null); // ✅ Modal yopiladi
                     },
-                  },
+                  }
                 );
 
                 extendForm.resetFields();

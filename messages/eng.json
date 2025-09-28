@@ -432,5 +432,17 @@
   "Please enter script": "Please enter script",
   "Enter script": "Enter script",
   "Please enter description": "Please enter a description",
-  "Enter book description": "Enter book description"
+  "Enter book description": "Enter book description",
+  "AIFU - Base Book": "Base Book",
+  "Full Info (Author/Title)": "Full Info (Author/Title)",
+  "Import Excel": "Import Excel",
+  "Copies Books": "Copies Books",
+  "AIFU - Copies Books": "AIFU - Book copies",
+  "is required": "is required",
+  "Search by": "Search by",
+  "Book EPC": "Book EPC",
+  "Booking Active": "Booking Active",
+  "AIFU - Booking Active": "AIFU - Active Booking",
+  "Archived bookings": "Archived bookings",
+  "AIFU - Archived bookings": "AIFU - Archived bookings"
 }
