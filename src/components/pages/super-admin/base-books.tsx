@@ -67,7 +67,7 @@ const BaseBooks = () => {
   const searchPagination = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1
+    Number(searchPagination.get("page")) || 1,
   );
 
   const handlePageChange = (newPage: number) => {
@@ -245,7 +245,7 @@ const BaseBooks = () => {
                     },
                     onError: (err: any) => {
                       toast.error(
-                        err?.response?.data?.message || t("Error occurred")
+                        err?.response?.data?.message || t("Error occurred"),
                       );
                     },
                   })
@@ -257,7 +257,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, role, t]
+    [deleteBook, role, t],
   );
 
   useEffect(() => {
@@ -294,7 +294,7 @@ const BaseBooks = () => {
             toast.error(err?.response?.data?.message || t("Error occurred"));
             setSubmitting(false);
           },
-        }
+        },
       );
     } else {
       createBaseBook.mutate(payload, {
@@ -381,37 +381,38 @@ const BaseBooks = () => {
                   </TooltipBtn>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {/* Excel yuklash */}
-                  <DropdownMenuItem
-                    onClick={() => {
-                      const input = document.createElement("input");
-                      input.type = "file";
-                      input.accept =
-                        ".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                      input.onchange = (e: any) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          uploadExcel.mutate(file, {
-                            onSuccess: (res: any) => {
-                              toast.success(
-                                res?.message ||
-                                  t("Excel muvaffaqiyatli yuklandi")
-                              );
-                            },
-                            onError: (err: any) => {
-                              toast.error(
-                                err?.response?.data?.message ||
-                                  t("Excel yuklashda xatolik")
-                              );
-                            },
-                          });
-                        }
-                      };
-                      input.click();
-                    }}
-                  >
-                    {t("Import Excel")}
-                  </DropdownMenuItem>
+                  {role === "super-admin" && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const input = document.createElement("input");
+                        input.type = "file";
+                        input.accept =
+                          ".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        input.onchange = (e: any) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            uploadExcel.mutate(file, {
+                              onSuccess: (res: any) => {
+                                toast.success(
+                                  res?.message ||
+                                    t("Excel muvaffaqiyatli yuklandi"),
+                                );
+                              },
+                              onError: (err: any) => {
+                                toast.error(
+                                  err?.response?.data?.message ||
+                                    t("Excel yuklashda xatolik"),
+                                );
+                              },
+                            });
+                          }
+                        };
+                        input.click();
+                      }}
+                    >
+                      {t("Import Excel")}
+                    </DropdownMenuItem>
+                  )}
 
                   {/* Excel export */}
                   <DropdownMenuItem
@@ -421,13 +422,13 @@ const BaseBooks = () => {
                         {
                           onSuccess: () => {
                             toast.success(
-                              t("Excel muvaffaqiyatli yuklab olindi")
+                              t("Excel muvaffaqiyatli yuklab olindi"),
                             );
                           },
                           onError: () => {
                             toast.error(t("Excel yuklashda xatolik"));
                           },
-                        }
+                        },
                       )
                     }
                   >
@@ -441,14 +442,14 @@ const BaseBooks = () => {
                           onSuccess: () => {
                             toast.success(
                               t(
-                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi"
-                              )
+                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi",
+                              ),
                             );
                           },
                           onError: () => {
                             toast.error(t("Excel yuklashda xatolik"));
                           },
-                        }
+                        },
                       )
                     }
                   >
@@ -513,7 +514,7 @@ const BaseBooks = () => {
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
-                    (baseBooks?.data?.totalElements || 0) / 10
+                    (baseBooks?.data?.totalElements || 0) / 10,
                   )}
                   previousLabel={
                     <Button className={"bg-white text-black"}>
