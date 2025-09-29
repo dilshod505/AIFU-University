@@ -10,6 +10,7 @@ import TooltipBtn from "@/components/tooltip-btn";
 import Link from "next/link";
 import { Undo2 } from "lucide-react";
 import useLayoutStore from "@/store/layout-store";
+import { Tag } from "antd";
 
 export default function StudentDetail() {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +55,9 @@ export default function StudentDetail() {
         key: "status",
         title: t("Status"),
         dataIndex: "status",
+        render: (status: string) => (
+          <Tag color={status === "APPROVED" ? "green" : "red"}>{t(status)}</Tag>
+        ),
       });
     }
 
