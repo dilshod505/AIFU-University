@@ -64,8 +64,15 @@ export function BorrowBookForm() {
   useEffect(() => {
     const fetchStudent = async () => {
       if (studentCard && studentCard.toString().length === 10) {
-        const res = await api.get(`/admin/students/card/${studentCard}`);
-        setStudentData(res.data?.data);
+        try {
+          const res = await api.get(`/admin/students/card/${studentCard}`);
+          setStudentData(res.data?.data);
+        } catch (error) {
+          setStudentData(null);
+        }
+      } else {
+        // Agar 10 ta raqam bo‘lmasa student ma'lumotini o‘chiramiz
+        setStudentData(null);
       }
     };
 
