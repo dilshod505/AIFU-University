@@ -58,7 +58,7 @@ export const CopiesBooks = () => {
   const searchParams = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchParams.get("page")) || 1
+    Number(searchParams.get("page")) || 1,
   );
   const handlePageChange = (newPage: number) => {
     setPageNum(newPage);
@@ -77,7 +77,7 @@ export const CopiesBooks = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
 
   const { user } = useLayoutStore();
@@ -128,7 +128,7 @@ export const CopiesBooks = () => {
     if (searchField === "fullInfo" || searchField === "fullName") {
       if (firstQuery || secondQuery) {
         setDebouncedSearchQuery(
-          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`
+          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
         );
       } else {
         setDebouncedSearchQuery("");
@@ -238,7 +238,7 @@ export const CopiesBooks = () => {
         ),
       },
     ],
-    [t, pageNum, pageSize, role, deleteCategory]
+    [t, pageNum, pageSize, role, deleteCategory],
   );
 
   const { data: bookDetail, isLoading: isDetailLoading } = useCopiesBooksId({
@@ -288,7 +288,7 @@ export const CopiesBooks = () => {
         required: false,
       },
     ],
-    [t, categoriesOptions]
+    [t, categoriesOptions],
   );
 
   useEffect(() => {
@@ -340,49 +340,51 @@ export const CopiesBooks = () => {
 
   const onSubmit = async (data: any) => {
     setSubmitting(true);
-    checkInventoryNumber.mutate(data.inventoryNumber, {
-      onSuccess: (res) => {
-        if (res?.data) {
-          toast.error(t("Bu inventory raqam allaqachon mavjud!"));
-          return;
-        }
 
-        if (editingBook) {
-          // ✏️ Update
-          updateBook.mutate(
-            {
-              id: editingBook.id,
-              inventoryNumber: data.inventoryNumber,
-              shelfLocation: data.shelfLocation,
-              notes: data.notes,
-              epc: data.epc,
-              book: data.baseBookId, // update uchun
-            },
-            {
-              onSuccess: () => {
-                toast.success(t("Kitob nusxasi yangilandi"));
-                setSubmitting(false);
-                setOpen(false);
-                antdForm.resetFields();
-              },
-              onError: (error: any) => {
-                toast.error(
-                  error?.response?.data?.message ||
-                    t("Server bilan bog'lanishda xatolik")
-                );
-                setSubmitting(false);
-              },
-            }
-          );
-        } else {
-          // ➕ Create
+    if (editingBook) {
+      // ✏️ Update
+      updateBook.mutate(
+        {
+          id: editingBook.id,
+          inventoryNumber: data.inventoryNumber,
+          shelfLocation: data.shelfLocation,
+          notes: data.notes,
+          epc: data.epc,
+          book: data.baseBookId, // update uchun
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("Kitob nusxasi yangilandi"));
+            setSubmitting(false);
+            setOpen(false);
+            antdForm.resetFields();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message ||
+                t("Server bilan bog'lanishda xatolik"),
+            );
+            setSubmitting(false);
+          },
+        },
+      );
+    } else {
+      // ➕ Create
+      checkInventoryNumber.mutate(data.inventoryNumber, {
+        onSuccess: (res) => {
+          if (res?.data) {
+            toast.error(t("Bu inventory raqam allaqachon mavjud!"));
+            setSubmitting(false);
+            return;
+          }
+
           createCopiesBook.mutate(
             {
               inventoryNumber: data.inventoryNumber,
               shelfLocation: data.shelfLocation,
               notes: data.notes,
               epc: data.epc,
-              baseBookId: data.baseBookId, // create uchun
+              baseBookId: data.baseBookId,
             },
             {
               onSuccess: () => {
@@ -394,18 +396,19 @@ export const CopiesBooks = () => {
               onError: (error: any) => {
                 toast.error(
                   error?.response?.data?.message ||
-                    t("Server bilan bog'lanishda xatolik")
+                    t("Server bilan bog'lanishda xatolik"),
                 );
                 setSubmitting(false);
               },
-            }
+            },
           );
-        }
-      },
-      onError: () => {
-        toast.error(t("Server bilan bog'lanishda xatolik"));
-      },
-    });
+        },
+        onError: () => {
+          toast.error(t("Server bilan bog'lanishda xatolik"));
+          setSubmitting(false);
+        },
+      });
+    }
   };
 
   const renderFormField = (field: any) => {
@@ -595,7 +598,7 @@ export const CopiesBooks = () => {
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
-                  (copiesBooks?.data?.totalElements || 0) / pageSize
+                  (copiesBooks?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className={"bg-white text-black"}>
