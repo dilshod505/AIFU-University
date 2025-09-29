@@ -23,7 +23,7 @@ import { useBookingByStudentId } from "@/components/models/queries/booking";
 export function BorrowBookForm() {
   const t = useTranslations();
   const form = useForm();
-  const [studentCard, setStudentCard] = useState<number | null>(null);
+  const [studentCard, setStudentCard] = useState<string>("");
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
     null,
   );
@@ -66,12 +66,17 @@ export function BorrowBookForm() {
       if (studentCard && studentCard.toString().length === 10) {
         try {
           const res = await api.get(`/admin/students/card/${studentCard}`);
-          setStudentData(res.data?.data);
+          if (res.data?.data) {
+            setStudentData(res.data.data);
+          } else {
+            setStudentData(null);
+            toast.error("Bu ID bo‘yicha talaba topilmadi");
+          }
         } catch (error) {
           setStudentData(null);
+          toast.error("Bu ID bo‘yicha talaba topilmadi");
         }
       } else {
-        // Agar 10 ta raqam bo‘lmasa student ma'lumotini o‘chiramiz
         setStudentData(null);
       }
     };
@@ -102,12 +107,20 @@ export function BorrowBookForm() {
             <CardContent>
               <div className="w-full space-y-3">
                 <Input
-                  className={"w-full"}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setStudentCard(Number(e.target.value))
-                  }
+                  className="w-full"
+                  type="text"
+                  inputMode="numeric" // mobil qurilmada raqamli klaviatura chiqaradi
+                  maxLength={10} // ko‘pi bilan 10 ta belgigacha ruxsat
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    if (value.length <= 10) {
+                      setStudentCard(value);
+                    }
+                  }}
+                  value={studentCard ?? ""}
                   placeholder={t("enter student card number")}
                 />
+
                 {studentData && (
                   <Card className={"p-3"}>
                     <CardContent className={"p-1 space-y-2"}>
