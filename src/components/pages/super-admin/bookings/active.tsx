@@ -27,6 +27,7 @@ import { Form, InputNumber, Tag } from "antd";
 import {
   ChevronLeft,
   ChevronRight,
+  Eye,
   FileDown,
   Plus,
   TimerReset,
@@ -34,10 +35,22 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import {
+  useBookingByStudentId,
+  useByIdBookingDetail,
+} from "@/components/models/queries/booking";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { GiCancel } from "react-icons/gi";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -79,8 +92,14 @@ export default function ActiveBookingsPage() {
   const searchPagination = useSearchParams();
 
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1
+    Number(searchPagination.get("page")) || 1,
   );
+
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+    null,
+  );
+  const [open, setOpen] = useState(false);
+  const detail = useByIdBookingDetail(selectedBookingId);
 
   const handlePageChange = (newPage: number) => {
     setPageNum(newPage);
@@ -212,9 +231,19 @@ export default function ActiveBookingsPage() {
           <div className="flex gap-2">
             {/* Uzaytirish */}
             <TooltipBtn
+              title={"Detail"}
+              variant={"ampersand"}
+              onClick={() => {
+                setSelectedBookingId(r.id);
+                setOpen(true);
+              }}
+            >
+              <Eye />
+            </TooltipBtn>
+            <TooltipBtn
               onClick={() => setIsExtendOpen(r?.id)}
               title={t("ijara vaqtini uzaytirish")}
-              variant={"ampersand"}
+              variant={"view"}
               size={"sm"}
             >
               <TimerReset />
@@ -261,7 +290,7 @@ export default function ActiveBookingsPage() {
       pageNumber,
       pageSize,
       extendForm,
-    ]
+    ],
   );
 
   return (
@@ -462,7 +491,7 @@ export default function ActiveBookingsPage() {
                       extendForm.resetFields();
                       setIsExtendOpen(null); // ✅ Modal yopiladi
                     },
-                  }
+                  },
                 );
 
                 extendForm.resetFields();
@@ -504,6 +533,110 @@ export default function ActiveBookingsPage() {
           </div>
         </DialogContent>
       </Dialog>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent className="sm:max-w-xl overflow-y-auto">
+          <SheetHeader className="flex flex-row items-center justify-between">
+            <SheetTitle>{t("Booking detail")}</SheetTitle>
+          </SheetHeader>
+
+          <div className={"p-3"}>
+            <div className="space-y-3">
+              <p className="flex justify-between items-center">
+                <strong>{t("Name")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.name ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Surname")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.surname ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Card number")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.cardNumber ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Faculty")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.faculty ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Author")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.author ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Title")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.title ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Inventory number")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.inventoryNumber ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Given at")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.givenAt ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Due date")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.dueDate ?? "-")
+                )}
+              </p>
+              <p className="flex justify-between items-center">
+                <strong>{t("Status")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : detail?.data?.data?.status ? (
+                  <Tag
+                    color={
+                      detail.data.data.status === "APPROVED"
+                        ? "green"
+                        : detail.data.data.status === "OVERDUE"
+                          ? "red"
+                          : "default"
+                    }
+                  >
+                    {t(detail.data.data.status)}
+                  </Tag>
+                ) : (
+                  "-"
+                )}
+              </p>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

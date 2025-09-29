@@ -35,11 +35,7 @@ const BaseBooks = () => {
     id: string | number;
     name: string;
   } | null>(null);
-  const form = useForm({
-    defaultValues: {
-      name: "",
-    },
-  });
+  const form = useForm();
 
   const [search, setSearch] = useState("");
   const filteredCategories = useMemo(() => {
@@ -134,6 +130,7 @@ const BaseBooks = () => {
         });
         if (updateCategory.isSuccess) {
           toast.success(t("Category updated successfullyy"));
+          form.reset({ name: "" });
           setSubmitting(false);
           setIsOpen(false);
         }
@@ -141,6 +138,7 @@ const BaseBooks = () => {
         createCategory.mutate(values);
         if (createCategory.isSuccess) {
           toast.success(t("Category created successfully"));
+          form.reset({ name: "" });
           setSubmitting(false);
           setIsOpen(false);
         }
@@ -160,7 +158,9 @@ const BaseBooks = () => {
 
   useEffect(() => {
     if (editingCategory) {
-      form.setValue("name", editingCategory.name);
+      form.reset({ name: editingCategory.name }); // ✅ reset bilan setValue emas
+    } else {
+      form.reset({ name: "" }); // ✅ yangi qo‘shishda tozalanadi
     }
   }, [editingCategory, form]);
 

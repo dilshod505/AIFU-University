@@ -31,6 +31,18 @@ export const useBookingsByStudent = (studentId?: number, filter = "all") => {
   });
 };
 
+export const useByIdBookingDetail = (id: number | null) => {
+  return useQuery({
+    queryKey: ["booking-by-id", id],
+    queryFn: async () => {
+      if (!id) return null; // id yo'q bo'lsa, fetch qilmaydi
+      const res = await api.get(`/admin/booking/${id}`);
+      return res.data;
+    },
+    enabled: !!id, // faqat id mavjud bo'lsa ishlaydi
+  });
+};
+
 export const useBookingByStudentId = (studentId: number | null) =>
   useQuery({
     queryKey: ["bookings-student-id", studentId],
