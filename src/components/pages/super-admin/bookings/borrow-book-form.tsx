@@ -23,7 +23,7 @@ import { useBookingByStudentId } from "@/components/models/queries/booking";
 export function BorrowBookForm() {
   const t = useTranslations();
   const form = useForm();
-  const [studentCard, setStudentCard] = useState<string>("");
+  const [studentCard, setStudentCard] = useState<number | null>(null);
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
     null,
   );
@@ -107,17 +107,10 @@ export function BorrowBookForm() {
             <CardContent>
               <div className="w-full space-y-3">
                 <Input
-                  className="w-full"
-                  type="text"
-                  inputMode="numeric" // mobil qurilmada raqamli klaviatura chiqaradi
-                  maxLength={10} // ko‘pi bilan 10 ta belgigacha ruxsat
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value;
-                    if (value.length <= 10) {
-                      setStudentCard(value);
-                    }
-                  }}
-                  value={studentCard ?? ""}
+                  className={"w-full"}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setStudentCard(Number(e.target.value))
+                  }
                   placeholder={t("enter student card number")}
                 />
 
