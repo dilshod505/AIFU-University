@@ -273,13 +273,13 @@ export const CopiesBooks = () => {
         label: t("Shelf Location"),
         name: "shelfLocation",
         type: "text",
-        required: true,
+        required: false,
       },
       {
         label: t("epc"),
         name: "epc",
         type: "text",
-        required: true,
+        required: false,
       },
       {
         label: t("Notes"),
