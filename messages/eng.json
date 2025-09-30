@@ -460,5 +460,13 @@
   "No data": "No data",
   "Edit Regular book category": "Edit Regular Book Category",
   "Booking detail": "Booking detail",
-  "Given Date": "Given Date"
+  "Given Date": "Given Date",
+  "No Description": "No Description",
+  "Action Type": "Action Type",
+  "Time": "Time",
+  "Loading admins activity": "Loading admin activity",
+  "Failed to load admins activity": "Failed to load admins activity",
+  "No admins activity": "No admin activity",
+  "Admins Activity": "Admins Activity",
+  "Librarian": "Librarian"
 }

@@ -460,5 +460,13 @@
   "No data": "Нет данных",
   "Edit Regular book category": "Редактировать обычную категорию книг",
   "Booking detail": "Детали бронирования",
-  "Given Date": "Заданная дата"
+  "Given Date": "Заданная дата",
+  "No Description": "Нет описания",
+  "Action Type": "Тип действия",
+  "Time": "Время",
+  "Loading admins activity": "Загрузка активности администраторов",
+  "Failed to load admins activity": "Не удалось загрузить активность администраторов",
+  "No admins activity": "Отсутствует активность администраторов",
+  "Admins Activity": "Активность администраторов",
+  "Librarian": "Библиотекарь"
 }

@@ -122,3 +122,12 @@ export const useAverageUsage = () =>
       return res.data;
     },
   });
+
+export const useAdminbActivity = () =>
+  useQuery({
+    queryKey: ["adminbActivity"],
+    queryFn: async () => {
+      const res = await api.get("/admin/admin-statistics/admins-activity");
+      return res.data;
+    },
+  });

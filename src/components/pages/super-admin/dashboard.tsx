@@ -4,6 +4,7 @@ import type React from "react";
 
 import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
 import {
+  useAdminbActivity,
   useAverageUsage,
   useBookCopiesCount,
   useBookingOverdue,
@@ -31,9 +32,13 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
+import useLayoutStore from "@/store/layout-store";
 
 const Dashboard = () => {
   const t = useTranslations();
+
+  const { user } = useLayoutStore();
+  const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
   const studentsTop = useStudentsTop();
   const studentsCount = useStudentsCount();
@@ -48,11 +53,12 @@ const Dashboard = () => {
   const booksCount = useBooksCount();
   const bookCopiesCount = useBookCopiesCount();
   const averageStatic = useAverageUsage();
+  const adminsActivity = useAdminbActivity();
 
   // -------------------- Monthly (kunlik) --------------------
   const perDayData = bookingPerDay.data?.data || [];
   const dayCategories = perDayData.map((item: any) =>
-    new Date(item.date).getDate()
+    new Date(item.date).getDate(),
   );
   const takenPerDay = perDayData.map((item: any) => item.taken);
   const returnedPerDay = perDayData.map((item: any) => item.returned);
@@ -70,7 +76,7 @@ const Dashboard = () => {
       { name: t("Returned"), data: returnedPerDay },
       { name: t("Returned Late"), data: returnedLatePerDay },
     ],
-    [takenPerDay, returnedPerDay, returnedLatePerDay, t]
+    [takenPerDay, returnedPerDay, returnedLatePerDay, t],
   );
 
   // -------------------- Yearly (oylik) --------------------
@@ -90,10 +96,10 @@ const Dashboard = () => {
       t("November").slice(0, 3),
       t("December").slice(0, 3),
     ],
-    [t]
+    [t],
   );
   const yearlyCategories = yearlyData.map(
-    (item: any) => monthNames[item.month - 1]
+    (item: any) => monthNames[item.month - 1],
   );
   const takenYearly = yearlyData.map((item: any) => item.taken);
   const returnedYearly = yearlyData.map((item: any) => item.returned);
@@ -114,7 +120,7 @@ const Dashboard = () => {
       { name: t("Returned"), data: returnedYearly },
       { name: t("Returned Late"), data: returnedLateYearly },
     ],
-    [takenYearly, returnedYearly, returnedLateYearly, t]
+    [takenYearly, returnedYearly, returnedLateYearly, t],
   );
 
   return (
@@ -203,7 +209,7 @@ const Dashboard = () => {
               <p className="font-bold text-lg">
                 {t("4 bookings today").replace(
                   "4",
-                  bookingToday.data?.data?.length
+                  bookingToday.data?.data?.length,
                 )}
               </p>
             </div>
@@ -343,6 +349,58 @@ const Dashboard = () => {
           </Panel>
         </div>
 
+        {role === "super-admin" && (
+          <div className="lg:col-span-3 xl:col-span-6">
+            <Panel title={t("Admins Activity")}>
+              <div className="overflow-y-auto max-h-96">
+                {adminsActivity.isLoading ? (
+                  <div className="flex justify-center items-center h-full text-muted-foreground">
+                    {t("Loading admins activity")}...
+                  </div>
+                ) : adminsActivity.error ? (
+                  <div className="flex justify-center items-center h-full text-red-500">
+                    {t("Failed to load admins activity")}
+                  </div>
+                ) : adminsActivity?.data?.data?.length === 0 ? (
+                  <div className="flex justify-center items-center h-full text-muted-foreground">
+                    {t("No admins activity")}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
+                      <div>{t("Librarian")}</div>
+                      <div>{t("Action Type")}</div>
+                      <div>{t("Description")}</div>
+                      <div>{t("Time")}</div>
+                    </div>
+                    <div className="space-y-3">
+                      {adminsActivity?.data?.data?.map(
+                        (activity: any, i: number) => (
+                          <div
+                            key={i}
+                            className="grid grid-cols-4 gap-4 text-sm"
+                          >
+                            <div className="text-[16px]">
+                              {activity.librarianFullName || "Unknown"}
+                            </div>
+                            <div>{activity.actionType || "—"}</div>
+                            <div className="text-[16px]">
+                              {activity.description || "No Description"}
+                            </div>
+                            <div className="text-green-500 text-[16px]">
+                              {new Date(activity.time).toLocaleString()}
+                            </div>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Panel>
+          </div>
+        )}
+
         <div className="lg:col-span-3 xl:col-span-6">
           <Panel title={t("All Overdue Bookings")}>
             <div className="overflow-y-auto max-h-96">
@@ -387,7 +445,7 @@ const Dashboard = () => {
                             {booking.dueDate || booking.due_date || "No Date"}
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

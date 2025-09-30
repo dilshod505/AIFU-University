@@ -460,5 +460,13 @@
   "No data": "Ma'lumot yo'q",
   "Edit Regular book category": "Oddiy kitob kategoriyasini tahrirlash",
   "Booking detail": "Bron tafsiloti",
-  "Given Date": "Berilgan Sana"
+  "Given Date": "Berilgan Sana",
+  "No Description": "Tavsif yo'q",
+  "Action Type": "Amal turi",
+  "Time": "Vaqt",
+  "Loading admins activity": "Adminlarning faolligi yuklanmoqda",
+  "Failed to load admins activity": "Adminlarning faolligi yuklanmadi",
+  "No admins activity": "Adminlar faolligi yo'q",
+  "Admins Activity": "Administratorlar faoligi",
+  "Librarian": "Kitobxon"
 }
