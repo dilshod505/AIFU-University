@@ -261,13 +261,13 @@ const BaseBooks = () => {
   );
 
   useEffect(() => {
-    if (editingBook) {
+    if (editingBook && baseBookDetail.data) {
       form.setFieldsValue({
         ...baseBookDetail.data,
         categoryId: baseBookDetail?.data?.category?.id,
       });
     }
-  }, [editingBook, form, baseBookDetail.isLoading, baseBookDetail.data]);
+  }, [editingBook, form, baseBookDetail.data]);
 
   const [submitting, setSubmitting] = useState(false);
 
