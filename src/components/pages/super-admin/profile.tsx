@@ -89,7 +89,7 @@ const Profile = () => {
             setIsModalOpen(false);
             setFileList([]);
           },
-        }
+        },
       );
     } catch (err) {
       console.log("Validation failed:", err);
@@ -97,12 +97,13 @@ const Profile = () => {
   };
 
   const todayPieChartOptions: ApexOptions = {
-    labels: [t("Issued"), t("Returned"), t("Extended")],
+    labels: [t("Total count"), t("Issued"), t("Returned"), t("Extended")],
     colors: ["#22c55e", "#3b82f6", "#f59e0b"],
     legend: { position: "bottom" },
   };
 
   const todayPieChartSeries = [
+    activityToday?.data?.analytics?.totalCount ?? 0,
     activityToday?.data?.analytics?.issuedCount ?? 0,
     activityToday?.data?.analytics?.returnedCount ?? 0,
     activityToday?.data?.analytics?.extendedCount ?? 0,
@@ -151,11 +152,12 @@ const Profile = () => {
   ];
 
   const pieChartOptions: ApexOptions = {
-    labels: [t("Issued"), t("Returned"), t("Extended")],
+    labels: [t("Total count"), t("Issued"), t("Returned"), t("Extended")],
     colors: ["#22c55e", "#3b82f6", "#f59e0b"],
     legend: { position: "bottom" },
   };
   const pieChartSeries = [
+    activity?.data?.analytics?.totalCount ?? 0,
     activity?.data?.analytics?.issuedCount ?? 0,
     activity?.data?.analytics?.returnedCount ?? 0,
     activity?.data?.analytics?.extendedCount ?? 0,
@@ -361,17 +363,14 @@ const Profile = () => {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
                       {t("DateTime")}
                     </th>
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Invoice number")}
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                      {t("Action Type")}
                     </th>
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Action")}
-                    </th>
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Details")}
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                      {t("Description")}
                     </th>
                   </tr>
                 </thead>
@@ -391,29 +390,19 @@ const Profile = () => {
                             })}
                           </td>
 
-                          <td className="py-3 text-sm">
-                            <span>{item.bookInventoryNumber}</span>
-                          </td>
+                          {/* Action type */}
                           <td className="py-3 text-sm font-medium">
-                            {item.action === "ISSUED" && t("Issued")}
-                            {item.action === "RETURNED" && t("Returned")}
-                            {item.action === "EXTENDED" && t("Extended")}
+                            {item.actionType.replaceAll("_", " ")}
                           </td>
 
-                          {/* Details */}
-                          <td className="py-3 text-sm">
-                            "{item.bookTitle}" — {item.bookAuthor} <br />
-                            <span className=" text-xs">
-                              {t("student")}: {item.studentSurname}{" "}
-                              {item.studentName}
-                            </span>
-                          </td>
+                          {/* Description */}
+                          <td className="py-3 text-sm">{item.description}</td>
                         </tr>
-                      )
+                      ),
                     )
                   ) : (
                     <tr>
-                      <td colSpan={4} className="py-4 text-center ">
+                      <td colSpan={3} className="py-4 text-center">
                         {t("No activity yet")}
                       </td>
                     </tr>
@@ -461,24 +450,18 @@ const Profile = () => {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
                       {t("DateTime")}
                     </th>
-                    <th
-                      className={
-                        "pb-3 text-xs font-medium  uppercase tracking-wide"
-                      }
-                    >
-                      {t("Invoice number")}
-                    </th>
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
                       {t("Action")}
                     </th>
-                    <th className="pb-3 text-xs font-medium  uppercase tracking-wide">
-                      {t("Details")}
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                      {t("Description")}
                     </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {activity?.data?.activities?.length > 0 ? (
                     activity.data.activities.map((item: any, i: number) => (
@@ -494,28 +477,41 @@ const Profile = () => {
                           })}
                         </td>
 
-                        <td className="py-3 text-sm">
-                          <span>{item.bookInventoryNumber}</span>
-                        </td>
+                        {/* Action type */}
                         <td className="py-3 text-sm font-medium">
-                          {item.action === "ISSUED" && t("Issued")}
-                          {item.action === "RETURNED" && t("Returned")}
-                          {item.action === "EXTENDED" && t("Extended")}
+                          {item.actionType === "CREATE_BASE_BOOK_CATEGORY" &&
+                            t("Created book category")}
+                          {item.actionType === "DELETE_BASE_BOOK_CATEGORY" &&
+                            t("Deleted book category")}
+                          {item.actionType === "CREATE_BASE_BOOK" &&
+                            t("Created base book")}
+                          {item.actionType === "UPDATE_BASE_BOOK" &&
+                            t("Updated base book")}
+                          {item.actionType === "DELETE_BASE_BOOK" &&
+                            t("Deleted base book")}
+                          {item.actionType === "CRATE_BOOK_COPY" &&
+                            t("Created book copy")}
+                          {item.actionType === "UPDATE_BOOK_COPY" &&
+                            t("Updated book copy")}
+                          {/* Default fallback */}
+                          {![
+                            "CREATE_BASE_BOOK_CATEGORY",
+                            "DELETE_BASE_BOOK_CATEGORY",
+                            "CREATE_BASE_BOOK",
+                            "UPDATE_BASE_BOOK",
+                            "DELETE_BASE_BOOK",
+                            "CRATE_BOOK_COPY",
+                            "UPDATE_BOOK_COPY",
+                          ].includes(item.actionType) && t(item.actionType)}
                         </td>
 
-                        {/* Details */}
-                        <td className="py-3 text-sm">
-                          "{item.bookTitle}" — {item.bookAuthor} <br />
-                          <span className=" text-xs">
-                            {t("student")}: {item.studentSurname}{" "}
-                            {item.studentName}
-                          </span>
-                        </td>
+                        {/* Description */}
+                        <td className="py-3 text-sm">{item.description}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={3} className="py-4 text-center ">
+                      <td colSpan={3} className="py-4 text-center">
                         {t("No activity yet")}
                       </td>
                     </tr>
@@ -525,6 +521,8 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Right side chart */}
         <Card className="shadow-sm lg:col-span-1">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-4">{t("Books Status")}</h3>
