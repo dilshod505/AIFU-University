@@ -19,16 +19,27 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useBookingByStudentId } from "@/components/models/queries/booking";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export function BorrowBookForm() {
   const t = useTranslations();
   const form = useForm();
+
   const [studentCard, setStudentCard] = useState<number | null>(null);
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
     null,
   );
+
+  const [seriaCard, setSeriaCard] = useState<number | null>(null);
+  const [seriaData, setSeriaData] = useState<Record<string, any> | null>(null);
+
   const [bookCard, setBookCard] = useState<string | null>(null);
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
+
+  const debouncedStudentCard = useDebounce(studentCard, 600);
+  const debouncedSeriaCard = useDebounce(seriaCard, 600);
+  const debouncedBookCard = useDebounce(bookCard, 600);
+
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
   const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
     "epc",
@@ -67,16 +78,18 @@ export function BorrowBookForm() {
 
   useEffect(() => {
     const fetchStudent = async () => {
-      if (studentCard && studentCard.toString().length === 10) {
+      if (debouncedStudentCard && debouncedStudentCard.toString()) {
         try {
-          const res = await api.get(`/admin/students/card/${studentCard}`);
+          const res = await api.get(
+            `/admin/students/card/${debouncedStudentCard}`,
+          );
           if (res.data?.data) {
             setStudentData(res.data.data);
           } else {
             setStudentData(null);
             toast.error("Bu ID bo‘yicha talaba topilmadi");
           }
-        } catch (error) {
+        } catch {
           setStudentData(null);
           toast.error("Bu ID bo‘yicha talaba topilmadi");
         }
@@ -86,22 +99,54 @@ export function BorrowBookForm() {
     };
 
     fetchStudent();
-  }, [studentCard]);
+  }, [debouncedStudentCard]);
+
+  useEffect(() => {
+    const fetchSeriaNumber = async () => {
+      if (debouncedSeriaCard && debouncedSeriaCard.toString()) {
+        try {
+          const res = await api.get(
+            `/admin/students/passport/${debouncedSeriaCard}`,
+          );
+          if (res.data?.data) {
+            setSeriaData(res.data.data);
+          } else {
+            setSeriaData(null);
+            toast.error("Bu passport bo‘yicha talaba topilmadi");
+          }
+        } catch {
+          setSeriaData(null);
+          toast.error("Bu passport bo‘yicha talaba topilmadi");
+        }
+      } else {
+        setSeriaData(null);
+      }
+    };
+
+    fetchSeriaNumber();
+  }, [debouncedSeriaCard]);
 
   const studentBookings = useBookingByStudentId(seeingStudent);
 
   useEffect(() => {
     const fetchBook = async () => {
-      if (bookCard && bookCard.toString()) {
-        const res = await api.get(
-          `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`,
-        );
-        setBookData(res.data?.data);
+      if (debouncedBookCard && debouncedBookCard.toString()) {
+        try {
+          const res = await api.get(
+            `/admin/book-copies/get?query=${debouncedBookCard}&field=${bookCopyType}`,
+          );
+          setBookData(res.data?.data);
+        } catch {
+          setBookData(null);
+          toast.error("Kitob topilmadi");
+        }
+      } else {
+        setBookData(null);
       }
     };
 
     fetchBook();
-  }, [bookCard, bookCopyType]);
+  }, [debouncedBookCard, bookCopyType]);
 
   return (
     <div className="flex flex-col xl:flex-row w-full gap-3 h-full">
@@ -141,7 +186,7 @@ export function BorrowBookForm() {
                     <Input
                       className={"w-full"}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setStudentCard(Number(e.target.value))
+                        setSeriaCard(Number(e.target.value))
                       }
                       placeholder={t("enter student seria number")}
                     />
