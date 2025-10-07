@@ -25,6 +25,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  CircleUserRound,
   Plus,
   ShieldCheck,
   ShieldX,
@@ -43,7 +44,7 @@ const Administrators = () => {
   const searchPagination = useSearchParams();
 
   const [pageNumber, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1
+    Number(searchPagination.get("page")) || 1,
   );
 
   const handlePageChange = (newPage: number) => {
@@ -102,7 +103,7 @@ const Administrators = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -114,6 +115,26 @@ const Administrators = () => {
         width: 250,
         render: (_: any, __: any, index: number) => index + 1,
       },
+      // {
+      //   key: "imageUrl",
+      //   title: "Image",
+      //   dataIndex: "imageUrl",
+      //   render: (imageUrl: string | null) => {
+      //     return (
+      //       <div className="flex justify-start items-center">
+      //         {imageUrl ? (
+      //           <img
+      //             src={imageUrl}
+      //             alt="User"
+      //             className="w-6 h-6 rounded-full object-cover"
+      //           />
+      //         ) : (
+      //           <CircleUserRound className="w-8 h-8 text-gray-400" />
+      //         )}
+      //       </div>
+      //     );
+      //   },
+      // },
       {
         key: "name",
         title: t("firstName"),
@@ -172,7 +193,7 @@ const Administrators = () => {
         ),
       },
     ],
-    [activateForm, deleteAdmin, t]
+    [activateForm, deleteAdmin, t],
   );
 
   const onSubmit = (data: any) => {
@@ -189,7 +210,7 @@ const Administrators = () => {
           setOpen(false);
           form.reset();
         },
-      }
+      },
     );
   };
 
@@ -301,7 +322,7 @@ const Administrators = () => {
                 },
                 onError: (err: any) => {
                   toast.error(
-                    err?.response?.data?.message || t("Activation failed")
+                    err?.response?.data?.message || t("Activation failed"),
                   );
                 },
               });

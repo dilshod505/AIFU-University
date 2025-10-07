@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GiCancel } from "react-icons/gi";
+import { useLocationParams } from "@/hooks/use-location-params";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -91,6 +92,12 @@ export default function ActiveBookingsPage() {
   const router = useRouter();
   const searchPagination = useSearchParams();
 
+  const { query, push } = useLocationParams();
+
+  const [activeTab, setActiveTab] = useState<"list" | "new-booking">(
+    (query?.tab as "list" | "new-booking") ?? "list",
+  );
+
   const [pageNum, setPageNum] = useState<number>(
     Number(searchPagination.get("page")) || 1,
   );
@@ -115,7 +122,7 @@ export default function ActiveBookingsPage() {
   const queryClient = useQueryClient();
   const [extendForm] = Form.useForm();
   const [isExtendOpen, setIsExtendOpen] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"list" | "new-booking">("list"); // 🔹 tab state
+  // const [activeTab, setActiveTab] = useState<"list" | "new-booking">("list"); // 🔹 tab state
 
   const [searchField, setSearchField] = useState<
     "studentId" | "cardNumber" | "fullName" | "bookEpc" | "invetoryNumber"
@@ -296,10 +303,11 @@ export default function ActiveBookingsPage() {
   return (
     <div className="p-2">
       <Tabs
-        defaultValue="list"
-        className="space-y-4"
         value={activeTab}
-        onValueChange={(val) => setActiveTab(val as "list" | "new-booking")}
+        onValueChange={(val) => {
+          setActiveTab(val as "list" | "new-booking");
+          push({ tab: val }, { update: true });
+        }}
       >
         <TabsContent value="list" className="space-y-4">
           <MyTable
@@ -446,9 +454,12 @@ export default function ActiveBookingsPage() {
         </TabsContent>
 
         <TabsContent value="new-booking">
-          {/* 🔹 Orqaga qaytish tugmasi qo‘shib qo‘ysak ham bo‘ladi */}
           <div className="mb-4">
-            <Button onClick={() => setActiveTab("list")}>
+            <Button
+              onClick={() =>
+                (window.location.href = "/super-admin/bookings/active")
+              }
+            >
               <ChevronLeft className="mr-2" />
               {t("royxat")}
             </Button>

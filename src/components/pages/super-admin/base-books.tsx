@@ -463,20 +463,7 @@ const BaseBooks = () => {
                 title={t("Add Book")}
                 onClick={() => {
                   setEditingBook(null);
-                  reset({
-                    categoryId: "",
-                    author: "",
-                    series: "",
-                    title: "",
-                    publicationYear: "",
-                    publisher: "",
-                    publicationCity: "",
-                    isbn: "",
-                    pageCount: "",
-                    language: "",
-                    udc: "",
-                    titleDetails: "",
-                  });
+                  form.resetFields();
                   setOpen(true);
                 }}
               >

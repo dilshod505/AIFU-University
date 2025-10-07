@@ -59,10 +59,16 @@ export const useCreateAdministrator = () => {
 };
 
 export const useActivateAccount = () => {
+  const queryClient = useQueryClient(); // 👈 qo‘shamiz
+
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const res = await api.post(`/super-admin/admins/activate`, data);
       return res.data;
+    },
+    onSuccess: () => {
+      // ✅ jadvalni yangilaydi
+      queryClient.invalidateQueries({ queryKey: ["administrators"] });
     },
   });
 };

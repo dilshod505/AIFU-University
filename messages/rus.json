@@ -468,5 +468,6 @@
   "Failed to load admins activity": "Не удалось загрузить активность администраторов",
   "No admins activity": "Отсутствует активность администраторов",
   "Admins Activity": "Активность администраторов",
-  "Librarian": "Библиотекарь"
+  "Librarian": "Библиотекарь",
+  "Account successfully activated": "Аккаунт успешно активирован"
 }

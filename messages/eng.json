@@ -468,5 +468,6 @@
   "Failed to load admins activity": "Failed to load admins activity",
   "No admins activity": "No admin activity",
   "Admins Activity": "Admins Activity",
-  "Librarian": "Librarian"
+  "Librarian": "Librarian",
+  "Account successfully activated": "Account successfully activated"
 }
