@@ -469,5 +469,7 @@
   "No admins activity": "Отсутствует активность администраторов",
   "Admins Activity": "Активность администраторов",
   "Librarian": "Библиотекарь",
-  "Account successfully activated": "Аккаунт успешно активирован"
+  "Account successfully activated": "Аккаунт успешно активирован",
+  "enter student seria number": "Введите серию номера студента",
+  "Seria number": "Серийный номер"
 }

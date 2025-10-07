@@ -34,6 +34,10 @@ export function BorrowBookForm() {
     "epc",
   );
 
+  const [studentType, setStudentType] = useState<"cardNumber" | "seriaNumber">(
+    "cardNumber",
+  );
+
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
     [ijaraMuddati],
@@ -88,7 +92,7 @@ export function BorrowBookForm() {
 
   useEffect(() => {
     const fetchBook = async () => {
-      if (bookCard && bookCard.toString().length >= 8) {
+      if (bookCard && bookCard.toString()) {
         const res = await api.get(
           `/admin/book-copies/get?query=${bookCard}&field=${bookCopyType}`,
         );
@@ -105,136 +109,176 @@ export function BorrowBookForm() {
         <div className="w-full">
           <Card>
             <CardContent>
-              <div className="w-full space-y-3">
-                <Input
-                  className={"w-full"}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setStudentCard(Number(e.target.value))
-                  }
-                  placeholder={t("enter student card number")}
-                />
+              <div className="flex flex-col gap-3">
+                <Tabs
+                  defaultValue={studentType}
+                  onValueChange={(e: string) => setStudentType(e as any)}
+                >
+                  <TabsList>
+                    <TabsTrigger
+                      value="cardNumber"
+                      className="data-[state=active]:text-white data-[state=active]:bg-green-600"
+                    >
+                      {t("Card number")}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="seriaNumber"
+                      className="data-[state=active]:text-white data-[state=active]:bg-green-600"
+                    >
+                      {t("Seria number")}
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value={"cardNumber"}>
+                    <Input
+                      className={"w-full"}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setStudentCard(Number(e.target.value))
+                      }
+                      placeholder={t("enter student card number")}
+                    />
+                  </TabsContent>
+                  <TabsContent value="seriaNumber">
+                    <Input
+                      className={"w-full"}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setStudentCard(Number(e.target.value))
+                      }
+                      placeholder={t("enter student seria number")}
+                    />
+                  </TabsContent>
+                </Tabs>
 
-                {studentData && (
-                  <Card className={"p-3"}>
-                    <CardContent className={"p-1 space-y-2"}>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("fio")}:</p>
-                        <h1 className={"capitalize"}>
-                          {studentData?.name} {studentData?.surname}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("faculty")}:</p>
-                        <h1 className={"capitalize"}>{studentData?.faculty}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("degree")}:</p>
-                        <h1 className={"capitalize"}>{studentData?.degree}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Admission Time")}:</p>
-                        <h1 className={"capitalize"}>
-                          {studentData?.admissionTime}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Graduation Time")}:</p>
-                        <h1 className={"capitalize"}>
-                          {studentData?.graduationTime}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Card number")}:</p>
-                        <h1 className={"capitalize"}>
-                          {studentData?.cardNumber}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Phone number")}:</p>
-                        <h1 className={"capitalize"}>
-                          {studentData?.phoneNumber || (
-                            <p className={"text-red-600 text-2xl"}>-</p>
-                          )}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("talaba bronlari")}:</p>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              className="w-fit"
-                              size="sm"
-                              onClick={() => setSeeingStudent(studentData?.id)}
-                            >
-                              {t("see")}
-                            </Button>
-                          </DialogTrigger>
-
-                          <DialogContent className="sm:max-w-[600px]">
-                            <DialogHeader>
-                              <DialogTitle>{t("talaba bronlari")}</DialogTitle>
-                            </DialogHeader>
-
-                            {studentBookings.isLoading && (
-                              <p>{t("Yuklanmoqda...")}</p>
+                <div className="w-full space-y-3">
+                  {studentData && (
+                    <Card className={"p-3"}>
+                      <CardContent className={"p-1 space-y-2"}>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("fio")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.name} {studentData?.surname}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("faculty")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.faculty}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("degree")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.degree}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Admission Time")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.admissionTime}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Graduation Time")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.graduationTime}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Card number")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.cardNumber}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Phone number")}:</p>
+                          <h1 className={"capitalize"}>
+                            {studentData?.phoneNumber || (
+                              <p className={"text-red-600 text-2xl"}>-</p>
                             )}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("talaba bronlari")}:</p>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                className="w-fit"
+                                size="sm"
+                                onClick={() =>
+                                  setSeeingStudent(studentData?.id)
+                                }
+                              >
+                                {t("see")}
+                              </Button>
+                            </DialogTrigger>
 
-                            {studentBookings.data?.data?.length > 0 ? (
-                              <div className="space-y-3 max-h-[400px] overflow-y-auto">
-                                {studentBookings.data.data.map(
-                                  (booking: any) => (
-                                    <Card key={booking.id} className="p-2">
-                                      <CardContent className="space-y-1">
-                                        <div className="flex justify-between">
-                                          <span>{t("Kitob")}:</span>
-                                          <b>{booking.title}</b>
-                                        </div>
-                                        <div className="flex justify-between">
-                                          <span>{t("Muallif")}:</span>
-                                          <b>{booking.author}</b>
-                                        </div>
-                                        <div className="flex justify-between">
-                                          <span>{t("Berilgan sana")}:</span>
-                                          <b>
-                                            {dayjs(booking.givenAt).format(
-                                              "DD-MM-YYYY",
-                                            )}
-                                          </b>
-                                        </div>
-                                        <div className="flex justify-between">
-                                          <span>{t("Tugash muddati")}:</span>
-                                          <b>
-                                            {dayjs(booking.dueDate).format(
-                                              "DD-MM-YYYY",
-                                            )}
-                                          </b>
-                                        </div>
-                                        <div className="flex justify-between">
-                                          <span>{t("Status")}:</span>
-                                          <b
-                                            className={
-                                              booking.status === "OVERDUE"
-                                                ? "text-red-600"
-                                                : "text-green-600"
-                                            }
-                                          >
-                                            {booking.status}
-                                          </b>
-                                        </div>
-                                      </CardContent>
-                                    </Card>
-                                  ),
-                                )}
-                              </div>
-                            ) : (
-                              <p>{t("talaba bronlari mavjud emas")}</p>
-                            )}
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                            <DialogContent className="sm:max-w-[600px]">
+                              <DialogHeader>
+                                <DialogTitle>
+                                  {t("talaba bronlari")}
+                                </DialogTitle>
+                              </DialogHeader>
+
+                              {studentBookings.isLoading && (
+                                <p>{t("Yuklanmoqda...")}</p>
+                              )}
+
+                              {studentBookings.data?.data?.length > 0 ? (
+                                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                                  {studentBookings.data.data.map(
+                                    (booking: any) => (
+                                      <Card key={booking.id} className="p-2">
+                                        <CardContent className="space-y-1">
+                                          <div className="flex justify-between">
+                                            <span>{t("Kitob")}:</span>
+                                            <b>{booking.title}</b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Muallif")}:</span>
+                                            <b>{booking.author}</b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Berilgan sana")}:</span>
+                                            <b>
+                                              {dayjs(booking.givenAt).format(
+                                                "DD-MM-YYYY",
+                                              )}
+                                            </b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Tugash muddati")}:</span>
+                                            <b>
+                                              {dayjs(booking.dueDate).format(
+                                                "DD-MM-YYYY",
+                                              )}
+                                            </b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Status")}:</span>
+                                            <b
+                                              className={
+                                                booking.status === "OVERDUE"
+                                                  ? "text-red-600"
+                                                  : "text-green-600"
+                                              }
+                                            >
+                                              {booking.status}
+                                            </b>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    ),
+                                  )}
+                                </div>
+                              ) : (
+                                <p>{t("talaba bronlari mavjud emas")}</p>
+                              )}
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -273,7 +317,7 @@ export function BorrowBookForm() {
                     <Input
                       value={bookCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setBookCard(e.target.value.toUpperCase())
+                        setBookCard(e.target.value)
                       }
                       placeholder={t(
                         "ijaraga berilayotgan kitobning inventar raqamini kiriting",
