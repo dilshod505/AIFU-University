@@ -471,5 +471,8 @@
   "Librarian": "Librarian",
   "Account successfully activated": "Account successfully activated",
   "enter student seria number": "Enter student serial number",
-  "Seria number": "Serial number"
+  "Seria number": "Serial number",
+  "Barcha kitoblarni excelga yuklash": "Export All Books to Excel",
+  "Kitob qo'shish uchun excel shablon": "Excel template for adding books",
+  "Excel orqali kitob qo'shish": "Add Book from Excel"
 }

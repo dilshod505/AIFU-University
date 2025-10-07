@@ -410,7 +410,7 @@ const BaseBooks = () => {
                         input.click();
                       }}
                     >
-                      {t("Import Excel")}
+                      {t("Excel orqali kitob qo'shish")}
                     </DropdownMenuItem>
                   )}
 
@@ -432,7 +432,7 @@ const BaseBooks = () => {
                       )
                     }
                   >
-                    {t("Export Template Book")}
+                    {t("Kitob qo'shish uchun excel shablon")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>
@@ -441,9 +441,7 @@ const BaseBooks = () => {
                         {
                           onSuccess: () => {
                             toast.success(
-                              t(
-                                "Bazadagi Excellar muvaffaqiyatli yuklab olindi",
-                              ),
+                              t("Barcha kitoblar muvaffaqiyatli yuklab olindi"),
                             );
                           },
                           onError: () => {
@@ -453,7 +451,7 @@ const BaseBooks = () => {
                       )
                     }
                   >
-                    {t("Bazadagi barcha excellarni yuklab olish")}
+                    {t("Barcha kitoblarni excelga yuklash")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

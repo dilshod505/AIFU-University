@@ -471,5 +471,8 @@
   "Librarian": "Kitobxon",
   "Account successfully activated": "Akkount muvaffaqiyatli faollashtirildi",
   "enter student seria number": "Talaba seriya raqamini kiriting",
-  "Seria number": "Seriya raqami"
+  "Seria number": "Seriya raqami",
+  "Barcha kitoblarni excelga yuklash": "Barcha kitoblarni Excelga yuklab olish",
+  "Kitob qo'shish uchun excel shablon": "Excel shabloni kitob qo'shish uchun",
+  "Excel orqali kitob qo'shish": "Excel orqali kitob qoʻshish"
 }

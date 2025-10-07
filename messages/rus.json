@@ -471,5 +471,8 @@
   "Librarian": "Библиотекарь",
   "Account successfully activated": "Аккаунт успешно активирован",
   "enter student seria number": "Введите серию номера студента",
-  "Seria number": "Серийный номер"
+  "Seria number": "Серийный номер",
+  "Barcha kitoblarni excelga yuklash": "Выгрузить все книги в Excel",
+  "Kitob qo'shish uchun excel shablon": "Excel шаблон для добавления книг",
+  "Excel orqali kitob qo'shish": "Добавить книгу из Excel"
 }
