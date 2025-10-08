@@ -463,7 +463,7 @@ export function BorrowBookForm() {
                   type="number"
                   min={1}
                   onKeyDown={(e) => {
-                    if (e.key === "-" || e.key === "+") {
+                    if (e.key === "-" || e.key === "+" || e.key === "0") {
                       e.preventDefault();
                     }
                   }}
