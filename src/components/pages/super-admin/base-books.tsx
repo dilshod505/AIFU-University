@@ -29,7 +29,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import useLayoutStore from "@/store/layout-store";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -693,14 +698,26 @@ const BaseBooks = () => {
                   detail?.data?.book?.title
                 )}
               </p>
-              <p className="flex justify-between items-center">
-                <strong>{t("Author")}:</strong>{" "}
+              <p className="flex justify-between items-start gap-2">
+                <strong className="whitespace-nowrap">{t("Author")}:</strong>
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.author
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="max-w-[70%] truncate cursor-pointer">
+                          {detail?.data?.book?.author}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                        {detail?.data?.book?.author}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Category")}:</strong>{" "}
                 {detailLoading ? (
