@@ -123,11 +123,15 @@ export const useAverageUsage = () =>
     },
   });
 
-export const useAdminbActivity = () =>
+export const useAdminbActivity = (
+  period: "current-month" | "last-month" = "current-month",
+) =>
   useQuery({
-    queryKey: ["adminbActivity"],
+    queryKey: ["adminsActivity", period],
     queryFn: async () => {
-      const res = await api.get("/admin/admin-statistics/admins-activity");
+      const res = await api.get(
+        `/admin/admin-statistics/admins-activity?period=${period}`,
+      );
       return res.data;
     },
   });

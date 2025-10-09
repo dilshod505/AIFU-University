@@ -474,5 +474,11 @@
   "Seria number": "Seriya raqami",
   "Barcha kitoblarni excelga yuklash": "Barcha kitoblarni Excelga yuklab olish",
   "Kitob qo'shish uchun excel shablon": "Excel shabloni kitob qo'shish uchun",
-  "Excel orqali kitob qo'shish": "Excel orqali kitob qoʻshish"
+  "Excel orqali kitob qo'shish": "Excel orqali kitob qoʻshish",
+  "Settings": "Sozlamalar",
+  "Select period": "Davrni tanlang",
+  "Current month": "Joriy oy",
+  "Previous month": "Oʻtgan oy",
+  "Unknown": "Noma'lum",
+  "Last month": "O'tgan oy"
 }

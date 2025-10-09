@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React, { useState } from "react";
 
 import { NumberTicker } from "@/components/magicui/number-ticker"; // Magic UI import
 import {
@@ -33,6 +33,13 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import Chart from "react-apexcharts";
 import useLayoutStore from "@/store/layout-store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -53,7 +60,13 @@ const Dashboard = () => {
   const booksCount = useBooksCount();
   const bookCopiesCount = useBookCopiesCount();
   const averageStatic = useAverageUsage();
-  const adminsActivity = useAdminbActivity();
+
+  const [period, setPeriod] = useState<"current-month" | "last-month">(
+    "current-month",
+  );
+
+  // 🔍 query chaqiruvi
+  const adminsActivity = useAdminbActivity(period);
 
   // -------------------- Monthly (kunlik) --------------------
   const perDayData = bookingPerDay.data?.data || [];
@@ -351,7 +364,31 @@ const Dashboard = () => {
 
         {role === "super-admin" && (
           <div className="lg:col-span-3 xl:col-span-6">
-            <Panel title={t("Admins Activity")}>
+            <Panel
+              title={
+                <div className="flex items-center justify-between">
+                  <span>{t("Admins Activity")}</span>
+                  <Select
+                    value={period}
+                    onValueChange={(val: "current-month" | "last-month") =>
+                      setPeriod(val)
+                    }
+                  >
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder={t("Select period")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="current-month">
+                        {t("Current month")}
+                      </SelectItem>
+                      <SelectItem value="last-month">
+                        {t("Last month")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              }
+            >
               <div className="overflow-y-auto max-h-96">
                 {adminsActivity.isLoading ? (
                   <div className="flex justify-center items-center h-full text-muted-foreground">
@@ -381,7 +418,7 @@ const Dashboard = () => {
                             className="grid grid-cols-4 gap-4 text-sm"
                           >
                             <div className="text-[16px]">
-                              {activity.librarianFullName || "Unknown"}
+                              {activity.librarianFullName || `${t("Unknown")}`}
                             </div>
                             <div>{activity.actionType || "—"}</div>
                             <div className="text-[16px]">
@@ -496,7 +533,7 @@ const Panel = ({
   children,
   className,
 }: {
-  title: string;
+  title: React.ReactNode;
   className?: string;
   children: React.ReactNode;
 }) => (

@@ -474,5 +474,11 @@
   "Seria number": "Серийный номер",
   "Barcha kitoblarni excelga yuklash": "Выгрузить все книги в Excel",
   "Kitob qo'shish uchun excel shablon": "Excel шаблон для добавления книг",
-  "Excel orqali kitob qo'shish": "Добавить книгу из Excel"
+  "Excel orqali kitob qo'shish": "Добавить книгу из Excel",
+  "Settings": "Настройки",
+  "Select period": "Выберите период",
+  "Current month": "Текущий месяц",
+  "Previous month": "Предыдущий месяц",
+  "Unknown": "Неизвестно",
+  "Last month": "Прошлый месяц"
 }
