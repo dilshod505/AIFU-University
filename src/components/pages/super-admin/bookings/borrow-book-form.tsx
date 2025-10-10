@@ -12,42 +12,101 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useBookingByStudentId } from "@/components/models/queries/booking";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export function BorrowBookForm() {
   const t = useTranslations();
   const form = useForm();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [studentCard, setStudentCard] = useState<number | null>(null);
+  const [studentCard, setStudentCard] = useState<number | null>(
+    searchParams.get("studentCard")
+      ? Number(searchParams.get("studentCard"))
+      : null,
+  );
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
     null,
   );
 
-  const [seriaCard, setSeriaCard] = useState<number | null>(null);
+  const [seriaCard, setSeriaCard] = useState<number | null>(
+    searchParams.get("seriaCard")
+      ? Number(searchParams.get("seriaCard"))
+      : null,
+  );
   const [seriaData, setSeriaData] = useState<Record<string, any> | null>(null);
 
-  const [bookCard, setBookCard] = useState<string | null>(null);
+  const [bookCard, setBookCard] = useState<string | null>(
+    searchParams.get("bookCard") || null,
+  );
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
 
   const debouncedStudentCard = useDebounce(studentCard, 600);
   const debouncedSeriaCard = useDebounce(seriaCard, 600);
   const debouncedBookCard = useDebounce(bookCard, 600);
 
-  const [ijaraMuddati, setIjaraMuddati] = useState<number>(7);
+  const [ijaraMuddati, setIjaraMuddati] = useState<number>(
+    searchParams.get("ijaraMuddati")
+      ? Number(searchParams.get("ijaraMuddati"))
+      : 7,
+  );
   const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
-    "epc",
+    (searchParams.get("bookCopyType") as "epc" | "inventoryNumber") || "epc",
   );
 
   const [studentType, setStudentType] = useState<"cardNumber" | "seriaNumber">(
-    "cardNumber",
+    (searchParams.get("studentType") as "cardNumber" | "seriaNumber") ||
+      "cardNumber",
   );
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Update student parameters
+    if (studentCard) {
+      params.set("studentCard", studentCard.toString());
+    } else {
+      params.delete("studentCard");
+    }
+
+    if (seriaCard) {
+      params.set("seriaCard", seriaCard.toString());
+    } else {
+      params.delete("seriaCard");
+    }
+
+    // Update book parameters
+    if (bookCard) {
+      params.set("bookCard", bookCard);
+    } else {
+      params.delete("bookCard");
+    }
+
+    // Update type parameters
+    params.set("studentType", studentType);
+    params.set("bookCopyType", bookCopyType);
+    params.set("ijaraMuddati", ijaraMuddati.toString());
+
+    // Update URL without page reload
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [
+    studentCard,
+    seriaCard,
+    bookCard,
+    studentType,
+    bookCopyType,
+    ijaraMuddati,
+    router,
+    searchParams,
+  ]);
 
   const expirationDate = useMemo(
     () => dayjs(new Date()).add(ijaraMuddati, "day").format("DD-MM-YYYY"),
@@ -87,11 +146,11 @@ export function BorrowBookForm() {
             setStudentData(res.data.data);
           } else {
             setStudentData(null);
-            toast.error("Bu ID bo‘yicha talaba topilmadi");
+            toast.error("Bu ID bo'yicha talaba topilmadi");
           }
         } catch {
           setStudentData(null);
-          toast.error("Bu ID bo‘yicha talaba topilmadi");
+          toast.error("Bu ID bo'yicha talaba topilmadi");
         }
       } else {
         setStudentData(null);
@@ -112,11 +171,11 @@ export function BorrowBookForm() {
             setSeriaData(res.data.data);
           } else {
             setSeriaData(null);
-            toast.error("Bu passport bo‘yicha talaba topilmadi");
+            toast.error("Bu passport bo'yicha talaba topilmadi");
           }
         } catch {
           setSeriaData(null);
-          toast.error("Bu passport bo‘yicha talaba topilmadi");
+          toast.error("Bu passport bo'yicha talaba topilmadi");
         }
       } else {
         setSeriaData(null);
@@ -176,6 +235,7 @@ export function BorrowBookForm() {
                   <TabsContent value={"cardNumber"}>
                     <Input
                       className={"w-full"}
+                      value={studentCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setStudentCard(Number(e.target.value))
                       }
@@ -185,6 +245,7 @@ export function BorrowBookForm() {
                   <TabsContent value="seriaNumber">
                     <Input
                       className={"w-full"}
+                      value={seriaCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setSeriaCard(Number(e.target.value))
                       }
@@ -352,6 +413,7 @@ export function BorrowBookForm() {
                   </TabsList>
                   <TabsContent value={"epc"}>
                     <Input
+                      value={bookCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setBookCard(e.target.value as string)
                       }
@@ -495,7 +557,8 @@ export function BorrowBookForm() {
                         },
                         {
                           onSuccess: () => {
-                            window.location.reload();
+                            window.location.href =
+                              "/super-admin/bookings/active";
                           },
                           onError: () => {
                             t("Error");
