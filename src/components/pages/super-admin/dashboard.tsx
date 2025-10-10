@@ -203,7 +203,14 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 mb-6 space-y-5 space-x-2">
-        <Panel title={t("Bookings Per Day")}>
+        <Panel
+          title={
+            <span className="text-blue-700 dark:text-blue-400">
+              {t("Bookings Per Day")}
+            </span>
+          }
+          className="bg-blue-50 dark:bg-blue-900/40 border-blue-200 dark:border-blue-800"
+        >
           {bookingPerDay.isLoading ? (
             <Skeleton className="w-full h-48" />
           ) : (
@@ -223,7 +230,14 @@ const Dashboard = () => {
           )}
         </Panel>
 
-        <Panel title={t("Today's Bookings")}>
+        <Panel
+          title={
+            <span className="text-green-700 dark:text-green-400">
+              {t("Today's Bookings")}
+            </span>
+          }
+          className="bg-green-50 dark:bg-green-900/40 border-green-200 dark:border-green-800"
+        >
           {bookingToday.isLoading ? (
             <Skeleton className="w-full h-48" />
           ) : bookingToday.data?.data?.length === 0 ? (
@@ -261,7 +275,14 @@ const Dashboard = () => {
           )}
         </Panel>
 
-        <Panel title={t("Overdue Bookings")}>
+        <Panel
+          title={
+            <span className="text-red-700 dark:text-red-400">
+              {t("Overdue Bookings")}
+            </span>
+          }
+          className="bg-red-50 dark:bg-red-900/40 border-red-200 dark:border-red-800"
+        >
           <div className="flex flex-col items-center justify-center h-48 text-green-600">
             <span className="text-3xl">
               <SquareCheckBig className="w-10 h-10" />
@@ -281,7 +302,14 @@ const Dashboard = () => {
         </Panel>
 
         <div className="lg:col-span-1 xl:col-span-4">
-          <Panel title={t("Monthly Booking Statistics")}>
+          <Panel
+            title={
+              <span className="text-indigo-700 dark:text-indigo-400">
+                {t("Monthly Booking Statistics")}
+              </span>
+            }
+            className="bg-indigo-50 dark:bg-indigo-900/40 border-indigo-200 dark:border-indigo-800"
+          >
             <div className="h-64">
               {bookingPerMonth.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
@@ -298,7 +326,14 @@ const Dashboard = () => {
             </div>
           </Panel>
           <div className={"mt-3"}>
-            <Panel title={t("Year Statistic")}>
+            <Panel
+              title={
+                <span className="text-emerald-700 dark:text-emerald-400">
+                  {t("Yearly Booking Statistics")}
+                </span>
+              }
+              className="bg-emerald-50 dark:bg-emerald-900/40 border-emerald-200 dark:border-emerald-800"
+            >
               <div className="h-72">
                 {bookingDiagram.isLoading ? (
                   <div className="flex justify-center items-center h-full text-muted-foreground">
@@ -319,7 +354,14 @@ const Dashboard = () => {
 
         {/* Top Books va Top Students yonma yon */}
         <div className="lg:col-span-3 xl:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Panel title={t("Top Books")}>
+          <Panel
+            title={
+              <span className="text-purple-700 dark:text-purple-400">
+                {t("Top Books")}
+              </span>
+            }
+            className="bg-purple-50 dark:bg-purple-900/40 border-purple-200 dark:border-purple-800"
+          >
             {booksTop.isLoading ? (
               <Skeleton className="w-full h-32" />
             ) : booksTop.data?.data?.length === 0 ? (
@@ -345,7 +387,14 @@ const Dashboard = () => {
             )}
           </Panel>
 
-          <Panel title={t("Top Students")}>
+          <Panel
+            title={
+              <span className="text-pink-700 dark:text-pink-400">
+                {t("Top Students")}
+              </span>
+            }
+            className="bg-pink-50 dark:bg-pink-900/40 border-pink-200 dark:border-pink-800"
+          >
             {studentsTop.isLoading ? (
               <Skeleton className="w-full h-32" />
             ) : studentsTop.data?.data?.length === 0 ? (
@@ -377,9 +426,14 @@ const Dashboard = () => {
         {role === "super-admin" && (
           <div className="lg:col-span-3 xl:col-span-6">
             <Panel
+              className="bg-amber-50 dark:bg-amber-900/40 border-amber-200 dark:border-amber-800"
               title={
                 <div className="flex items-center justify-between">
-                  <span>{t("Admins Activity")}</span>
+                  <div>
+                    <span className="text-amber-700 dark:text-amber-400">
+                      {t("Admins Activity")}
+                    </span>
+                  </div>
                   <Select
                     value={period}
                     onValueChange={(val: "current-month" | "last-month") =>
@@ -451,7 +505,14 @@ const Dashboard = () => {
         )}
 
         <div className="lg:col-span-3 xl:col-span-6">
-          <Panel title={t("All Overdue Bookings")}>
+          <Panel
+            title={
+              <span className="text-rose-700 dark:text-rose-400">
+                {t("All Overdue Bookings")}
+              </span>
+            }
+            className="bg-rose-50 dark:bg-rose-900/40 border-rose-200 dark:border-rose-800"
+          >
             <div className="overflow-y-auto max-h-96">
               {bookingOverdue.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
@@ -558,12 +619,18 @@ const Panel = ({
   children: React.ReactNode;
 }) => (
   <Card
-    className={`transition-transform duration-300 hover:scale-102 hover:shadow-lg ${className || ""}`}
+    className={`
+      transition-transform duration-300 hover:scale-[1.01]
+      hover:shadow-md border rounded-xl overflow-hidden
+      ${className || ""}
+    `}
   >
-    <CardHeader>
-      <CardTitle className="text-md">{title}</CardTitle>
+    <CardHeader className="border-b border-border/40 pb-3">
+      <CardTitle className="text-lg font-semibold tracking-tight">
+        {title}
+      </CardTitle>
     </CardHeader>
-    <CardContent>{children}</CardContent>
+    <CardContent className="p-5">{children}</CardContent>
   </Card>
 );
 
