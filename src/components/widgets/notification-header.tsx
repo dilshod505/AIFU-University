@@ -264,10 +264,26 @@ const NotificationHeader = () => {
                             </h4>
                             <div className="space-y-1 text-sm text-muted-foreground">
                               <p>
-                                <span className="font-medium text-foreground">
+                                <span className="text-foreground text-[16px]">
                                   {t("Faculty")}:
                                 </span>{" "}
                                 {detail.data.student.faculty}
+                              </p>
+                            </div>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                              <p>
+                                <span className="text-foreground text-[16px]">
+                                  {t("Degree")}:
+                                </span>{" "}
+                                {detail.data.student.degree}
+                              </p>
+                            </div>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                              <p>
+                                <span className="text-foreground text-[16px]">
+                                  {t("Card number")}:
+                                </span>{" "}
+                                {detail.data.student.cardNumber}
                               </p>
                             </div>
                           </div>
@@ -279,24 +295,48 @@ const NotificationHeader = () => {
                   {detail?.data?.book && (
                     <Card className="bg-muted/50">
                       <CardContent className="p-4">
-                        <h4 className="font-semibold text-sm mb-3">
+                        <h4 className="font-bold text- mb-3">
                           {t("Book Information")}
                         </h4>
                         <div className="space-y-2 text-sm">
-                          <div className="flex gap-2">
-                            <span className="font-medium text-muted-foreground min-w-[80px]">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[16px] text-muted-foreground min-w-[80px]">
                               {t("Title")}:
                             </span>
                             <span className="text-foreground">
                               {detail.data.book.title}
                             </span>
                           </div>
-                          <div className="flex gap-2">
-                            <span className="font-medium text-muted-foreground min-w-[80px]">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[16px] text-muted-foreground min-w-[80px]">
                               {t("Author")}:
                             </span>
                             <span className="text-foreground">
                               {detail.data.book.author}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[16px] text-muted-foreground min-w-[80px]">
+                              {t("ISBN")}:
+                            </span>
+                            <span className="text-foreground">
+                              {detail.data.book.isbn}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[16px] text-muted-foreground min-w-[80px]">
+                              {t("Inventory Number")}:
+                            </span>
+                            <span className="text-foreground">
+                              {detail.data.book.inventoryNumber}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[16px] text-muted-foreground min-w-[80px]">
+                              {t("Epc")}:
+                            </span>
+                            <span className="text-foreground">
+                              {detail.data.book.epc || "-"}
                             </span>
                           </div>
                         </div>
