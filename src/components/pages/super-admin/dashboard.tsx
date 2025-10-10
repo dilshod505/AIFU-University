@@ -511,7 +511,7 @@ const Dashboard = () => {
                 {t("All Overdue Bookings")}
               </span>
             }
-            className="bg-rose-50 dark:bg-rose-900/40 border-rose-200 dark:border-rose-800"
+            className="bg-rose-50 dark:bg-rose-800/40 border-rose-200 dark:border-rose-600"
           >
             <div className="overflow-y-auto max-h-96">
               {bookingOverdue.isLoading ? (
