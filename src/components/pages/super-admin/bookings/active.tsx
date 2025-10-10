@@ -52,6 +52,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { GiCancel } from "react-icons/gi";
 import { useLocationParams } from "@/hooks/use-location-params";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -211,10 +217,90 @@ export default function ActiveBookingsPage() {
         render: (_t: any, __: any, index: number) =>
           (pageNumber - 1) * pageSize + (index + 1),
       },
-      { title: t("firstName"), dataIndex: "name", key: "name" },
-      { title: t("lastName"), dataIndex: "surname", key: "surname" },
-      { title: t("book name"), dataIndex: "title", key: "title" },
-      { title: t("book author"), dataIndex: "author", key: "author" },
+      {
+        title: t("firstName"),
+        dataIndex: "name",
+        key: "name",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+      {
+        title: t("lastName"),
+        dataIndex: "surname",
+        key: "surname",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+      {
+        title: t("book name"),
+        dataIndex: "title",
+        key: "title",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+      {
+        title: t("book author"),
+        dataIndex: "author",
+        key: "author",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
       {
         title: t("ijaraga berilgan sana"),
         dataIndex: "givenAt",
@@ -545,12 +631,12 @@ export default function ActiveBookingsPage() {
         </DialogContent>
       </Dialog>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent className="sm:max-w-xl overflow-y-auto" side={"center"}>
+        <SheetContent className=" overflow-y-auto" side={"center"}>
           <SheetHeader className="flex flex-row items-center justify-between">
             <SheetTitle>{t("Booking detail")}</SheetTitle>
           </SheetHeader>
 
-          <div className={"p-3"}>
+          <div className="p-3">
             <div className="space-y-3">
               <p className="flex justify-between items-center">
                 <strong>{t("Name")}:</strong>{" "}
@@ -560,6 +646,7 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.name ?? "-")
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Surname")}:</strong>{" "}
                 {isLoading ? (
@@ -568,6 +655,7 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.surname ?? "-")
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Card number")}:</strong>{" "}
                 {isLoading ? (
@@ -576,30 +664,70 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.cardNumber ?? "-")
                 )}
               </p>
-              <p className="flex justify-between items-center">
-                <strong>{t("Faculty")}:</strong>{" "}
+
+              {/* Fakultet */}
+              <p className="flex justify-between items-start gap-2">
+                <strong className="whitespace-nowrap">{t("Faculty")}:</strong>
                 {isLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  (detail?.data?.data?.faculty ?? "-")
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="max-w-[70%] truncate cursor-pointer">
+                          {detail?.data?.data?.faculty ?? "-"}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                        {detail?.data?.data?.faculty}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </p>
-              <p className="flex justify-between items-center">
-                <strong>{t("Author")}:</strong>{" "}
+
+              {/* Muallif */}
+              <p className="flex justify-between items-start gap-2">
+                <strong className="whitespace-nowrap">{t("Author")}:</strong>
                 {isLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  (detail?.data?.data?.author ?? "-")
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="max-w-[70%] truncate cursor-pointer">
+                          {detail?.data?.data?.author ?? "-"}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                        {detail?.data?.data?.author}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </p>
-              <p className="flex justify-between items-center">
-                <strong>{t("Title")}:</strong>{" "}
+
+              {/* Sarlavha */}
+              <p className="flex justify-between items-start gap-2">
+                <strong className="whitespace-nowrap">{t("Title")}:</strong>
                 {isLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  (detail?.data?.data?.title ?? "-")
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="max-w-[70%] truncate cursor-pointer">
+                          {detail?.data?.data?.title ?? "-"}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                        {detail?.data?.data?.title}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Inventory number")}:</strong>{" "}
                 {isLoading ? (
@@ -608,6 +736,7 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.inventoryNumber ?? "-")
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Given at")}:</strong>{" "}
                 {isLoading ? (
@@ -616,6 +745,7 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.givenAt ?? "-")
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Due date")}:</strong>{" "}
                 {isLoading ? (
@@ -624,6 +754,7 @@ export default function ActiveBookingsPage() {
                   (detail?.data?.data?.dueDate ?? "-")
                 )}
               </p>
+
               <p className="flex justify-between items-center">
                 <strong>{t("Status")}:</strong>{" "}
                 {isLoading ? (

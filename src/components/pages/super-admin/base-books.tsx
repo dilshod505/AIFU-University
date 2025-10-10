@@ -198,9 +198,70 @@ const BaseBooks = () => {
         title: "#",
         render: (_: any, __: any, index: number) => index + 1,
       },
-      { key: "title", dataIndex: "title", title: t("Title") },
-      { key: "author", dataIndex: "author", title: t("Author") },
-      { key: "isbn", dataIndex: "isbn", title: t("Isbn") },
+      {
+        key: "title",
+        dataIndex: "title",
+        title: t("Title"),
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[180px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+      {
+        key: "author",
+        dataIndex: "author",
+        title: t("Author"),
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
+
+      {
+        key: "isbn",
+        dataIndex: "isbn",
+        title: t("Isbn"),
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
       {
         key: "totalCopies",
         dataIndex: "totalCopies",
@@ -695,7 +756,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.title
+                  detail?.data?.book?.title || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-start gap-2">
@@ -707,11 +770,17 @@ const BaseBooks = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <span className="max-w-[70%] truncate cursor-pointer">
-                          {detail?.data?.book?.author}
+                          {detail?.data?.book?.author || (
+                            <span className={"text-red-600"}>
+                              {t("Unknown")}
+                            </span>
+                          )}
                         </span>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-sm whitespace-pre-wrap">
-                        {detail?.data?.book?.author}
+                        {detail?.data?.book?.author || (
+                          <span className={"text-red-600"}>{t("Unknown")}</span>
+                        )}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -723,7 +792,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.category?.name
+                  detail?.data?.book?.category?.name || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -731,7 +802,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.language
+                  detail?.data?.book?.language || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -739,7 +812,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.publisher
+                  detail?.data?.book?.publisher || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -747,7 +822,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.publicationCity
+                  detail?.data?.book?.publicationCity || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -755,7 +832,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.publicationYear
+                  detail?.data?.book?.publicationYear || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -763,7 +842,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.totalCount
+                  detail?.data?.totalCount || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -771,15 +852,34 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.isbn
+                  detail?.data?.book?.isbn || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
-              <p className="flex justify-between items-center">
-                <strong>{t("UDC")}:</strong>{" "}
+              <p className="flex justify-between items-start gap-2">
+                <strong className="whitespace-nowrap">{t("Udc")}:</strong>
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.udc
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="max-w-[70%] truncate cursor-pointer">
+                          {detail?.data?.book?.udc || (
+                            <span className={"text-red-600"}>
+                              {t("Unknown")}
+                            </span>
+                          )}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                        {detail?.data?.book?.udc || (
+                          <span className={"text-red-600"}>{t("Unknown")}</span>
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -788,7 +888,7 @@ const BaseBooks = () => {
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
                   detail?.data?.book?.series || (
-                    <span className={"text-red-600"}>--</span>
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
                   )
                 )}
               </p>
@@ -797,7 +897,9 @@ const BaseBooks = () => {
                 {detailLoading ? (
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
-                  detail?.data?.book?.pageCount
+                  detail?.data?.book?.pageCount || (
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
+                  )
                 )}
               </p>
               <p className="flex justify-between items-center">
@@ -806,7 +908,7 @@ const BaseBooks = () => {
                   <Skeleton className="w-1/2 h-5" />
                 ) : (
                   detail?.data?.book?.titleDetails || (
-                    <span className={"text-red-600"}>mavjud emas</span>
+                    <span className={"text-red-600"}>{t("Unknown")}</span>
                   )
                 )}
               </p>
