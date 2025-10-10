@@ -66,7 +66,7 @@ function SheetContent({
 
           // ✅ Drawer positions
           side === "right" &&
-            "inset-y-0 right-0 w-80 border-l data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
+            "inset-y-0 right-0 w-80 rounded-xl border-l data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
           side === "left" &&
             "inset-y-0 left-0 w-80 border-r data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
           side === "top" &&

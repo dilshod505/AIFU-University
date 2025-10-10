@@ -74,7 +74,7 @@ const NotificationHeader = () => {
             size="icon"
             className="relative"
           >
-            <IoNotificationsOutline size={20} />
+            <IoNotificationsOutline size={32} />
             {totalNotifications > 0 && (
               <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
                 {totalNotifications}
