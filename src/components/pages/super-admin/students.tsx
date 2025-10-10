@@ -73,7 +73,7 @@ const Students = () => {
   const searchPagination = useSearchParams();
 
   const [pageNumber, setPageNumber] = useState<number>(
-    Number(searchPagination.get("page")) || 1
+    Number(searchPagination.get("page")) || 1,
   );
 
   const handlePageChange = (newPage: number) => {
@@ -163,7 +163,7 @@ const Students = () => {
             errorCount: res.data?.errorCount || res.errorCount,
             downloadReportUrl:
               makeFullUrl(
-                res.data?.downloadReportUrl || res.downloadReportUrl
+                res.data?.downloadReportUrl || res.downloadReportUrl,
               ) || "",
           });
         },
@@ -328,7 +328,7 @@ const Students = () => {
                   <DropdownMenuItem
                     onClick={() => {
                       router.push(
-                        `/super-admin/users/students/${record.id}?type=active`
+                        `/super-admin/users/students/${record.id}?type=active`,
                       );
                     }}
                   >
@@ -338,7 +338,7 @@ const Students = () => {
                   <DropdownMenuItem
                     onClick={() => {
                       router.push(
-                        `/super-admin/users/students/${record.id}?type=archive`
+                        `/super-admin/users/students/${record.id}?type=archive`,
                       );
                     }}
                   >
@@ -389,7 +389,7 @@ const Students = () => {
         ),
       },
     ],
-    [deleteStudent, detail, role, router, t]
+    [deleteStudent, detail, role, router, t],
   );
 
   const allFields = useMemo<any[]>(
@@ -492,7 +492,7 @@ const Students = () => {
         md: 6,
       },
     ],
-    [t]
+    [t],
   );
 
   const fields = allFields;
@@ -524,7 +524,7 @@ const Students = () => {
             console.error("❌ Update error:", err);
             toast.error(t("Error updating student"));
           },
-        }
+        },
       );
     } else {
       createStudent.mutate(
@@ -539,7 +539,7 @@ const Students = () => {
             console.error("❌ Create error:", err);
             toast.error(t("Error creating student"));
           },
-        }
+        },
       );
     }
   };
@@ -741,7 +741,7 @@ const Students = () => {
                       onClick={() =>
                         downloadFile(
                           importResult.downloadReportUrl!,
-                          "import-errors.xlsx"
+                          "import-errors.xlsx",
                         )
                       }
                       className="bg-red-600 text-white mt-2"
@@ -781,7 +781,7 @@ const Students = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadDebtorsReportUrl!,
-                              "qarzdor-talabalar.xlsx"
+                              "qarzdor-talabalar.xlsx",
                             )
                           }
                           className="bg-yellow-600 text-white mt-2"
@@ -797,7 +797,7 @@ const Students = () => {
                           onClick={() =>
                             downloadFile(
                               deactivateResult.downloadNotFoundReportUrl!,
-                              "topilmagan-talabalar.xlsx"
+                              "topilmagan-talabalar.xlsx",
                             )
                           }
                           className="bg-gray-600 text-white mt-2"
@@ -857,7 +857,7 @@ const Students = () => {
           }
         />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent className="bg-white dark:bg-background hide-scroll w-fit">
+          <SheetContent side={"center"}>
             <SheetHeader>
               <SheetTitle>
                 {editingStudent ? t("Edit users") : t("Add student")}
@@ -873,7 +873,7 @@ const Students = () => {
                 editingStudent
                   ? fields.filter(
                       (f) =>
-                        !["passportSeries", "passportNumber"].includes(f.name)
+                        !["passportSeries", "passportNumber"].includes(f.name),
                     ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
                   : fields // 🔹 Create rejimida barcha fieldlar chiqadi
               }
@@ -881,7 +881,10 @@ const Students = () => {
           </SheetContent>
         </Sheet>
         <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
-          <SheetContent className="bg-white dark:bg-background hide-scroll w-fit">
+          <SheetContent
+            className="bg-white dark:bg-background hide-scroll w-fit"
+            side={"center"}
+          >
             <SheetHeader>
               <SheetTitle>{t("Student Details")}</SheetTitle>
             </SheetHeader>

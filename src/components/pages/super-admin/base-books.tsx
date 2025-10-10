@@ -675,7 +675,7 @@ const BaseBooks = () => {
           }
         }}
       >
-        <SheetContent className="hide-scroll">
+        <SheetContent className="hide-scroll" side={"center"}>
           <SheetHeader className="flex justify-center items-center text-[20px]">
             <SheetTitle>{t("book detail")}</SheetTitle>
           </SheetHeader>

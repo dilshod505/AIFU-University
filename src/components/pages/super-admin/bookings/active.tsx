@@ -545,7 +545,7 @@ export default function ActiveBookingsPage() {
         </DialogContent>
       </Dialog>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent className="sm:max-w-xl overflow-y-auto">
+        <SheetContent className="sm:max-w-xl overflow-y-auto" side={"center"}>
           <SheetHeader className="flex flex-row items-center justify-between">
             <SheetTitle>{t("Booking detail")}</SheetTitle>
           </SheetHeader>
