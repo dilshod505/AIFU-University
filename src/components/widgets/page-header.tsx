@@ -1,7 +1,7 @@
-import { Plus, RefreshCw } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { Dispatch, SetStateAction } from 'react'
-import { Button } from '../ui/button'
+import { Plus, RefreshCw } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Dispatch, SetStateAction } from "react";
+import { Button } from "../ui/button";
 
 const PageHeader = ({
   fetchFunction,
@@ -10,13 +10,13 @@ const PageHeader = ({
   hasAddButton = true,
   customAddButton,
 }: {
-  fetchFunction: () => void
-  setIsFormOpen?: Dispatch<SetStateAction<boolean>>
-  addTitle: string
-  hasAddButton?: boolean
-  customAddButton?: React.ReactNode
+  fetchFunction: () => void;
+  setIsFormOpen?: Dispatch<SetStateAction<boolean>>;
+  addTitle: string;
+  hasAddButton?: boolean;
+  customAddButton?: React.ReactNode;
 }) => {
-  const t = useTranslations()
+  const t = useTranslations();
   return (
     <>
       {/* Header */}
@@ -25,7 +25,7 @@ const PageHeader = ({
         <div className="flex items-center space-x-2">
           <Button variant="outline" onClick={fetchFunction}>
             <RefreshCw className="h-4 w-4 mr-2" />
-            {t('refresh')}
+            {t("refresh")}
           </Button>
           {hasAddButton && (
             <Button onClick={() => setIsFormOpen && setIsFormOpen(true)}>
@@ -37,7 +37,7 @@ const PageHeader = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PageHeader
+export default PageHeader;

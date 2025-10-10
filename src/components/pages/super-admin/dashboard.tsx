@@ -139,54 +139,66 @@ const Dashboard = () => {
   return (
     <div className="p-6 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">{t("Dashboard")}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         <StatCard
           title={t("Total Students")}
           value={studentsCount.isLoading ? null : studentsCount.data?.data}
-          loading={studentsCount.isLoading}
           subtitle={t("Registered library members")}
           icon={<Users />}
+          loading={studentsCount.isLoading}
+          valueClassName="text-blue-600 dark:text-blue-400"
+          iconBg="bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400"
         />
         <StatCard
           title={t("Total Books")}
           value={booksCount.isLoading ? null : booksCount.data?.data}
-          loading={booksCount.isLoading}
           subtitle={t("Books in collection")}
           icon={<BookCopy />}
+          loading={booksCount.isLoading}
+          valueClassName="text-indigo-600 dark:text-indigo-400"
+          iconBg="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400"
         />
         <StatCard
           title={t("Book Copies")}
-          value={bookCopiesCount.isLoading ? null : bookCopiesCount.data?.data}
-          loading={bookCopiesCount.isLoading}
           subtitle={t("Physical book copies")}
+          value={bookCopiesCount.isLoading ? null : bookCopiesCount.data?.data}
           icon={<BookOpen />}
+          loading={bookCopiesCount.isLoading}
+          valueClassName="text-purple-600 dark:text-purple-400"
+          iconBg="bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400"
         />
         <StatCard
           title={t("Total Bookings")}
-          value={bookingCount.isLoading ? null : bookingCount.data?.data}
-          loading={bookingCount.isLoading}
           subtitle={t("All time bookings")}
+          value={bookingCount.isLoading ? null : bookingCount.data?.data}
           icon={<CalendarDays />}
+          loading={bookingCount.isLoading}
+          valueClassName="text-green-600 dark:text-green-400"
+          iconBg="bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400"
         />
         <StatCard
           title={t("Overdue Total")}
+          subtitle={t("All overdue bookings")}
           value={
             bookingDiagram.isLoading ? null : bookingDiagram?.data?.overdue
           }
-          loading={bookingDiagram.isLoading}
-          subtitle={t("All overdue bookings")}
           icon={<SquareCheckBig />}
+          loading={bookingDiagram.isLoading}
+          valueClassName="text-red-600 dark:text-red-400"
+          iconBg="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400"
         />
         <StatCard
           title={t("Average Usage")}
+          subtitle={t("Average books per student")}
           value={
             averageStatic.isLoading
               ? null
               : averageStatic.data?.data?.averageDays
           }
-          loading={averageStatic.isLoading}
-          subtitle={t("Average books per student")}
           icon={<BookOpen />}
+          loading={averageStatic.isLoading}
+          valueClassName="text-yellow-600 dark:text-yellow-400"
+          iconBg="bg-yellow-100 dark:bg-yellow-900/40 text-yellow-600 dark:text-yellow-400"
         />
       </div>
 
@@ -501,29 +513,37 @@ const StatCard = ({
   subtitle,
   icon,
   loading,
+  valueClassName = "text-green-600",
+  iconBg = "bg-green-100 text-green-600",
+  borderColor = "border-green-600",
 }: {
   title: string;
   value: number | null;
   subtitle: string;
   icon: any;
   loading?: boolean;
+  valueClassName?: string;
+  iconBg?: string;
+  borderColor?: string;
 }) => (
-  <Card>
+  <Card className="rounded-2xl border bg-gradient-to-br from-background to-muted/30 shadow-sm transition hover:shadow-md hover:-translate-y-1">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <span className="text-2xl">{icon}</span>
+      <CardTitle className="text-sm font-medium text-muted-foreground">
+        {title}
+      </CardTitle>
+      <div className={`p-2 rounded-lg ${borderColor} ${iconBg}`}>{icon}</div>
     </CardHeader>
     <CardContent>
       {loading ? (
-        <Skeleton suppressHydrationWarning className="w-12 h-8" />
+        <Skeleton className="w-12 h-8" />
       ) : (
         <NumberTicker
           value={value || 0}
           decimalPlaces={0}
-          className="text-2xl font-bold"
+          className={`text-2xl font-bold ${valueClassName}`}
         />
       )}
-      <p className="text-xs text-muted-foreground">{subtitle}</p>
+      <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
     </CardContent>
   </Card>
 );

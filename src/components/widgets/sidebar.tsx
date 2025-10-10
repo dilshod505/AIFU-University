@@ -253,17 +253,17 @@ const OptimizedSidebar: React.FC<OptimizedSidebarProps> = ({
           },
         ],
       },
-      {
-        title: t("Notifications"),
-        icon: <Bell className="w-5 h-5" />,
-        href: `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
-        badge: notifications > 0 ? notifications : undefined,
-        activePatterns: [
-          `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
-          `/${user?.role?.toLowerCase().replace("_", "-")}/notifications/*`,
-        ],
-        role: ["ADMIN", "SUPER_ADMIN"],
-      },
+      // {
+      //   title: t("Notifications"),
+      //   icon: <Bell className="w-5 h-5" />,
+      //   href: `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
+      //   badge: notifications > 0 ? notifications : undefined,
+      //   activePatterns: [
+      //     `/${user?.role?.toLowerCase().replace("_", "-")}/notifications`,
+      //     `/${user?.role?.toLowerCase().replace("_", "-")}/notifications/*`,
+      //   ],
+      //   role: ["ADMIN", "SUPER_ADMIN"],
+      // },
       {
         title: t("Profile"),
         icon: <CircleUser className="w-5 h-5" />,

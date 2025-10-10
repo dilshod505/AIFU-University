@@ -11,6 +11,7 @@ import FullScreen from "@/components/widgets/full-screen";
 import ThemeSwitcher from "@/components/widgets/theme-switcher";
 import ChangeLanguage from "@/components/widgets/change-language";
 import OptimizedSidebar from "@/components/widgets/sidebar";
+import NotificationHeader from "@/components/widgets/notification-header";
 
 interface SidebarWrapperProps {
   children: React.ReactNode;
@@ -37,6 +38,7 @@ export default function SidebarWrapper({
             <FullScreen />
             <ThemeSwitcher />
             <ChangeLanguage />
+            <NotificationHeader />
           </div>
         </header>
         <main className="flex-1 overflow-auto px-5">{children}</main>
