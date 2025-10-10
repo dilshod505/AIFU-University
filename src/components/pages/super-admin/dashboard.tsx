@@ -253,7 +253,7 @@ const Dashboard = () => {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-4 text-green-600 max-h-96">
+            <div className="flex flex-col items-center justify-center p-1 text-green-600 max-h-96">
               <ul className="space-y-2 text-sm text-muted-foreground w-full overflow-y-auto hide-scroll">
                 {bookingToday?.data?.data?.map((b: any, idx: number) => (
                   <li key={idx} className="border-b pb-2">
