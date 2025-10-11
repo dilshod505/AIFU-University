@@ -381,6 +381,133 @@ export function BorrowBookForm() {
                     </Card>
                   )}
                 </div>
+                <div className="w-full space-y-3">
+                  {seriaData && (
+                    <Card className={"p-3"}>
+                      <CardContent className={"p-1 space-y-2"}>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("fio")}:</p>
+                          <h1 className={"capitalize"}>
+                            {seriaData?.name} {seriaData?.surname}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("faculty")}:</p>
+                          <h1 className={"capitalize"}>{seriaData?.faculty}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("degree")}:</p>
+                          <h1 className={"capitalize"}>{seriaData?.degree}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Admission Time")}:</p>
+                          <h1 className={"capitalize"}>
+                            {seriaData?.admissionTime}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Graduation Time")}:</p>
+                          <h1 className={"capitalize"}>
+                            {seriaData?.graduationTime}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Card number")}:</p>
+                          <h1 className={"capitalize"}>
+                            {seriaData?.cardNumber}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Phone number")}:</p>
+                          <h1 className={"capitalize"}>
+                            {seriaData?.phoneNumber || (
+                              <p className={"text-red-600 text-2xl"}>-</p>
+                            )}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("talaba bronlari")}:</p>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                className="w-fit"
+                                size="sm"
+                                onClick={() =>
+                                  setSeeingStudent(studentData?.id)
+                                }
+                              >
+                                {t("see")}
+                              </Button>
+                            </DialogTrigger>
+
+                            <DialogContent className="sm:max-w-[600px]">
+                              <DialogHeader>
+                                <DialogTitle>
+                                  {t("talaba bronlari")}
+                                </DialogTitle>
+                              </DialogHeader>
+
+                              {studentBookings.isLoading && (
+                                <p>{t("Yuklanmoqda...")}</p>
+                              )}
+
+                              {studentBookings.data?.data?.length > 0 ? (
+                                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                                  {studentBookings.data.data.map(
+                                    (booking: any) => (
+                                      <Card key={booking.id} className="p-2">
+                                        <CardContent className="space-y-1">
+                                          <div className="flex justify-between">
+                                            <span>{t("Kitob")}:</span>
+                                            <b>{booking.title}</b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Muallif")}:</span>
+                                            <b>{booking.author}</b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Berilgan sana")}:</span>
+                                            <b>
+                                              {dayjs(booking.givenAt).format(
+                                                "DD-MM-YYYY",
+                                              )}
+                                            </b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Tugash muddati")}:</span>
+                                            <b>
+                                              {dayjs(booking.dueDate).format(
+                                                "DD-MM-YYYY",
+                                              )}
+                                            </b>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span>{t("Status")}:</span>
+                                            <b
+                                              className={
+                                                booking.status === "OVERDUE"
+                                                  ? "text-red-600"
+                                                  : "text-green-600"
+                                              }
+                                            >
+                                              {booking.status}
+                                            </b>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    ),
+                                  )}
+                                </div>
+                              ) : (
+                                <p>{t("talaba bronlari mavjud emas")}</p>
+                              )}
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
