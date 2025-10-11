@@ -28,19 +28,15 @@ export function BorrowBookForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [studentCard, setStudentCard] = useState<number | null>(
-    searchParams.get("studentCard")
-      ? Number(searchParams.get("studentCard"))
-      : null,
+  const [studentCard, setStudentCard] = useState<string | null>(
+    searchParams.get("studentCard") || null,
   );
   const [studentData, setStudentData] = useState<Record<string, any> | null>(
     null,
   );
 
-  const [seriaCard, setSeriaCard] = useState<number | null>(
-    searchParams.get("seriaCard")
-      ? Number(searchParams.get("seriaCard"))
-      : null,
+  const [seriaCard, setSeriaCard] = useState<string | null>(
+    searchParams.get("seriaCard") || null,
   );
   const [seriaData, setSeriaData] = useState<Record<string, any> | null>(null);
 
@@ -237,7 +233,7 @@ export function BorrowBookForm() {
                       className={"w-full"}
                       value={studentCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setStudentCard(Number(e.target.value))
+                        setStudentCard(e.target.value)
                       }
                       placeholder={t("enter student card number")}
                     />
@@ -247,7 +243,7 @@ export function BorrowBookForm() {
                       className={"w-full"}
                       value={seriaCard ?? ""}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        setSeriaCard(Number(e.target.value))
+                        setSeriaCard(e.target.value)
                       }
                       placeholder={t("enter student seria number")}
                     />
