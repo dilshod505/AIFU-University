@@ -27,6 +27,7 @@ import TooltipBtn from "@/components/tooltip-btn";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Bell } from "lucide-react";
 
 const NotificationHeader = () => {
   const t = useTranslations();
@@ -103,9 +104,9 @@ const NotificationHeader = () => {
           variant={"ghost"}
           title={t("Notification")}
           size="icon"
-          className="relative"
+          className="relative" //
         >
-          <IoNotificationsOutline width={200} />
+          <Bell size={32} />
           {totalNotifications > 0 && (
             <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
               {totalNotifications}

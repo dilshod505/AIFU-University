@@ -481,5 +481,8 @@
   "Previous month": "Oʻtgan oy",
   "Unknown": "Noma'lum",
   "Last month": "O'tgan oy",
-  "Book Information": "Kitob haqida ma'lumot"
+  "Book Information": "Kitob haqida ma'lumot",
+  "Admin name": "Admin ismi",
+  "Book title": "Kitob nomi",
+  "Overdue Today Bookings": "Bugungi o'tkazib yuborilgan bronlar"
 }

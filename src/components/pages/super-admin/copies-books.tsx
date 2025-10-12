@@ -50,6 +50,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const { TextArea } = AntInput;
 
@@ -173,6 +179,22 @@ export const CopiesBooks = () => {
         title: t("Shelf Location"),
         key: "shelfLocation",
         dataIndex: "shelfLocation",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("status"),

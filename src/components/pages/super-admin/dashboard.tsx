@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -278,27 +279,61 @@ const Dashboard = () => {
         <Panel
           title={
             <span className="text-red-700 dark:text-red-400">
-              {t("Overdue Bookings")}
+              {t("Overdue Today Bookings")}
             </span>
           }
           className="bg-red-50 dark:bg-red-900/40 border-red-200 dark:border-red-800"
         >
-          <div className="flex flex-col items-center justify-center h-48 text-green-600">
-            <span className="text-3xl">
-              <SquareCheckBig className="w-10 h-10" />
-            </span>
-            {bookingsTodayOverdue?.isLoading ? (
-              <Skeleton suppressHydrationWarning className={"w-56 h-7"} />
-            ) : bookingsTodayOverdue?.data?.total === 0 ? (
-              <p className="mt-2" suppressHydrationWarning>
-                {"No overdue books"}!
+          {bookingsTodayOverdue?.isLoading ? (
+            <Skeleton className="w-full h-48" />
+          ) : bookingsTodayOverdue?.data?.data?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
+              <span className="text-3xl mb-2">
+                <SquareCheckBig className="w-10 h-10" />
+              </span>
+              <p className="font-bold text-lg">
+                {t("0 overdue bookings today")}
               </p>
-            ) : (
-              <p className="mt-2" suppressHydrationWarning>
-                {bookingsTodayOverdue?.data?.total} {t("Today's booking list")}
-              </p>
-            )}
-          </div>
+            </div>
+          ) : (
+            // ❌ justify-center olib tashlandi
+            <div className="flex flex-col text-red-700 max-h-96 mt-[-40px]">
+              <ScrollArea className="w-full h-96 pr-2">
+                <ul className="space-y-2 text-sm text-muted-foreground w-full">
+                  {bookingsTodayOverdue?.data?.data?.map(
+                    (b: any, idx: number) => (
+                      <li
+                        key={idx}
+                        className="border-b pb-2 border-red-200 dark:border-red-800"
+                      >
+                        <p className="text-[18px] font-bold text-red-800 dark:text-red-300">
+                          {b?.studentFullName}
+                        </p>
+                        <p className="text-[16px]">
+                          <span className="font-bold">{t("Admin name")}:</span>{" "}
+                          {b.adminFullName}
+                        </p>
+                        <p className="text-[16px]">
+                          <span className="font-bold">{t("Author")}:</span>{" "}
+                          {b.author}
+                        </p>
+                        <p className="text-[16px]">
+                          <span className="font-bold">{t("Book title")}:</span>{" "}
+                          {b.title}
+                        </p>
+                        <p className="text-[15px] text-green-600">
+                          <span className="font-semibold">
+                            {t("Due Date")}:
+                          </span>{" "}
+                          {new Date(b.dueDate).toLocaleDateString()}
+                        </p>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </ScrollArea>
+            </div>
+          )}
         </Panel>
 
         <div className="lg:col-span-1 xl:col-span-4">

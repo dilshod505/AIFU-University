@@ -481,5 +481,8 @@
   "Previous month": "Предыдущий месяц",
   "Unknown": "Неизвестно",
   "Last month": "Прошлый месяц",
-  "Book Information": "Информация о книге"
+  "Book Information": "Информация о книге",
+  "Admin name": "Имя администратора",
+  "Book title": "Название книги",
+  "Overdue Today Bookings": "Просроченные бронирования на сегодня"
 }
