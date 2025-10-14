@@ -1,9 +1,5 @@
 "use client";
-import {
-  IoNotificationsOutline,
-  IoChevronBack,
-  IoPersonCircleOutline,
-} from "react-icons/io5";
+import { IoChevronBack, IoPersonCircleOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { api } from "@/components/models/axios";
 import {
+  useDeleteNotification,
   useGetNotificationById,
   useGetNotifications,
 } from "@/components/models/queries/notification";
@@ -33,6 +30,7 @@ const NotificationHeader = () => {
   const t = useTranslations();
   const queryClient = useQueryClient();
   const { data: notifications } = useGetNotifications();
+  const deleteNotification = useDeleteNotification();
   const [showExtendForm, setShowExtendForm] = useState(false);
   const [extendDays, setExtendDays] = useState("");
   const [selected, setSelected] = useState<{ id: number; type: string } | null>(
@@ -40,6 +38,18 @@ const NotificationHeader = () => {
   );
   const { data: detail } = useGetNotificationById(selected?.id || undefined);
   const [open, setOpen] = useState(false);
+
+  const markAsRead = useMutation({
+    mutationFn: async (notificationId: number) => {
+      const res = await api.post("/admin/notifications/read", {
+        notificationId,
+      });
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
 
   const accept = useMutation({
     mutationFn: async ({
@@ -150,9 +160,10 @@ const NotificationHeader = () => {
                         <Card
                           key={n.id}
                           className="cursor-pointer transition hover:shadow-md hover:border-green-500"
-                          onClick={() =>
-                            setSelected({ id: n.id, type: "EXTEND" })
-                          }
+                          onClick={() => {
+                            setSelected({ id: n.id, type: "EXTEND" });
+                            markAsRead.mutate(n.id); // ✅ Mark as read
+                          }}
                         >
                           <CardContent className="p-4">
                             <div className="flex items-start gap-3">
@@ -187,9 +198,10 @@ const NotificationHeader = () => {
                         <Card
                           key={n.id}
                           className="cursor-pointer transition hover:shadow-md hover:border-red-500"
-                          onClick={() =>
-                            setSelected({ id: n.id, type: "WARNING" })
-                          }
+                          onClick={() => {
+                            setSelected({ id: n.id, type: "WARNING" });
+                            markAsRead.mutate(n.id); // ✅ Mark as read
+                          }}
                         >
                           <CardContent className="p-4">
                             <div className="flex items-start gap-3">
@@ -412,6 +424,33 @@ const NotificationHeader = () => {
                         </div>
                       </CardContent>
                     </Card>
+                  )}
+
+                  {selected.type === "WARNING" && (
+                    <div className="flex gap-3 pt-2">
+                      <Button
+                        onClick={() => {
+                          if (selected.id) {
+                            deleteNotification.mutate(selected.id, {
+                              onSuccess: async () => {
+                                await queryClient.invalidateQueries({
+                                  queryKey: ["notifications"],
+                                });
+                                setSelected(null);
+                                setOpen(false);
+                              },
+                            });
+                          }
+                        }}
+                        variant="destructive"
+                        className="flex-1"
+                        disabled={deleteNotification.isPending}
+                      >
+                        {deleteNotification.isPending
+                          ? t("Loading...")
+                          : t("Delete")}
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}

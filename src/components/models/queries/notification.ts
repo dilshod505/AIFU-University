@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/components/models/axios";
 
 export const useGetNotifications = () =>
@@ -21,11 +21,17 @@ export const useGetNotificationById = (id?: number) =>
     enabled: !!id,
   });
 
-export const useDeleteNotification = () =>
-  useQuery({
-    queryKey: ["delete-notification"],
-    queryFn: async (id: number | any) => {
+export const useDeleteNotification = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
       const res = await api.delete(`/admin/notification/${id}`);
       return res.data;
     },
+    onSuccess: async () => {
+      // O'chirilgandan keyin bildirishnomalar ro'yxatini yangilaydi
+      await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
   });
+};
