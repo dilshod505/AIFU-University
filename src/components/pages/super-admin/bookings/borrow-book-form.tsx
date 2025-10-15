@@ -432,9 +432,7 @@ export function BorrowBookForm() {
                               <Button
                                 className="w-fit"
                                 size="sm"
-                                onClick={() =>
-                                  setSeeingStudent(studentData?.id)
-                                }
+                                onClick={() => setSeeingStudent(seriaData?.id)}
                               >
                                 {t("see")}
                               </Button>
@@ -540,7 +538,7 @@ export function BorrowBookForm() {
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setBookCard(e.target.value as string)
                       }
-                      placeholder={t("ijaraga  berilayotgan kitobni kiriting")}
+                      placeholder={t("ijaraga berilayotgan kitobni kiriting")}
                     />
                   </TabsContent>
                   <TabsContent value="inventoryNumber">
@@ -603,20 +601,23 @@ export function BorrowBookForm() {
           </Card>
         </div>
       </div>
-      {bookData && studentData && (
+      {bookData && (studentData || seriaData) && (
         <Card className={"w-full xl:w-1/2"}>
           <CardContent>
             <div className="space-y-8">
               <div className="flex justify-between items-center gap-3">
                 <p className={"p-0 m-0 w-full"}>{t("student")}:</p>
                 <Input
-                  defaultValue={`${studentData?.name} ${studentData?.surname} (${studentData.cardNumber})`}
+                  defaultValue={`${(studentData || seriaData)?.name} ${(studentData || seriaData)?.surname} (${(studentData || seriaData)?.cardNumber})`}
                   disabled
                 />
               </div>
               <div className="flex justify-between items-center gap-3">
                 <p className={"p-0 m-0 w-full"}>{t("faculty")}:</p>
-                <Input defaultValue={studentData?.faculty} disabled />
+                <Input
+                  defaultValue={(studentData || seriaData)?.faculty}
+                  disabled
+                />
               </div>
 
               <div className="flex justify-between items-center gap-3">
@@ -672,9 +673,10 @@ export function BorrowBookForm() {
                   variant={"default"}
                   onClick={async () => {
                     try {
+                      const activeStudentData = studentData || seriaData;
                       reservateBook.mutate(
                         {
-                          cardNumber: studentData?.cardNumber,
+                          cardNumber: activeStudentData?.cardNumber,
                           id: bookData?.bookCopyId,
                           days: ijaraMuddati,
                         },
