@@ -668,8 +668,17 @@ export function BorrowBookForm() {
                 <Input value={expirationDate} disabled />
               </div>
               <div className="flex justify-end items-center gap-3">
-                <Button variant={"secondary"}>{t("Cancel")}</Button>
                 <Button
+                  className={"cursor-pointer"}
+                  variant={"secondary"}
+                  onClick={() =>
+                    (window.location.href = "/super-admin/bookings/active")
+                  }
+                >
+                  {t("Cancel")}
+                </Button>
+                <Button
+                  className={"cursor-pointer"}
                   variant={"default"}
                   onClick={async () => {
                     try {
