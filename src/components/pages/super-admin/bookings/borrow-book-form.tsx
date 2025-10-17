@@ -649,7 +649,14 @@ export function BorrowBookForm() {
                   type="number"
                   min={1}
                   onKeyDown={(e) => {
-                    if (e.key === "-" || e.key === "+" || e.key === "0") {
+                    // Faqat boshida kiritilayotgan 0 ni taqiqlash
+                    const target = e.target as HTMLInputElement;
+                    if (e.key === "-" || e.key === "+") {
+                      e.preventDefault();
+                    }
+
+                    // Agar input bo'sh bo'lsa va foydalanuvchi "0" bossa — blokla
+                    if (e.key === "0" && target.value === "") {
                       e.preventDefault();
                     }
                   }}
