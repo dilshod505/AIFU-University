@@ -205,7 +205,7 @@ const Profile = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name={t("Last Name")}
+            name="surname"
             label={t("Surname")}
             rules={[{ required: true }]}
           >

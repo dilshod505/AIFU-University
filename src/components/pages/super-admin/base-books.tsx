@@ -101,7 +101,7 @@ const BaseBooks = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const [filterColumn, setFilterColumn] = useState<string>("id");
+  const [filterColumn, setFilterColumn] = useState<string>("fullInfo");
   const [filterOperator, setFilterOperator] = useState<string>("contains");
   const [filterValue, setFilterValue] = useState<string>("");
 
@@ -389,7 +389,8 @@ const BaseBooks = () => {
           header={
             <div className="flex flex-wrap justify-start items-center gap-2">
               <Select
-                defaultValue={t("select type search")}
+                defaultValue="fullInfo"
+                placeholder={t("select type search")}
                 style={{ width: 150 }}
                 onChange={(val: any) => {
                   setFilterColumn(val);
