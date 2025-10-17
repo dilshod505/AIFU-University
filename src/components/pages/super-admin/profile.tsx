@@ -544,7 +544,7 @@ const Profile = () => {
             {/* Vertikal scroll qo‘yish uchun max-h va overflow-y qo‘shamiz */}
             <div className="max-h-96 overflow-y-auto">
               <table className="w-full border-collapse text-sm">
-                <thead className="bg-gray-50 sticky top-0 z-10">
+                <thead className="sticky top-0 z-10">
                   <tr>
                     <th className="px-4 py-2 text-left">{t("Image")}</th>
                     <th className="px-4 py-2 text-left">{t("fio")}</th>
@@ -557,10 +557,7 @@ const Profile = () => {
                 <tbody>
                   {me?.data?.length > 0 ? (
                     me.data.map((admin: any, i: number) => (
-                      <tr
-                        key={i}
-                        className="border-b border-gray-100 hover:bg-gray-50"
-                      >
+                      <tr key={i}>
                         <td className="px-4 py-3 font-medium">
                           {admin.imageUrl ? (
                             <Image
