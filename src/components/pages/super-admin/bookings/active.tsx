@@ -104,7 +104,7 @@ export default function ActiveBookingsPage() {
     (query?.tab as "list" | "new-booking") ?? "list",
   );
 
-  const [pageNum, setPageNum] = useState<number>(
+  const [pageNumber, setPageNum] = useState<number>(
     Number(searchPagination.get("page")) || 1,
   );
 
@@ -137,7 +137,7 @@ export default function ActiveBookingsPage() {
 
   // 🔹 Filter
   const [filter, setFilter] = useState<"all" | "APPROVED" | "OVERDUE">("all");
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize] = useState<number>(10);
   const { data: bookings, isLoading } = useQuery({
     queryKey: [
@@ -438,7 +438,7 @@ export default function ActiveBookingsPage() {
                   value={filter}
                   onValueChange={(val: string) => {
                     setFilter(val as any);
-                    setPageNumber(1); // filter o‘zgarsa 1-sahifaga qaytadi
+                    setPageNum(1); // filter o‘zgarsa 1-sahifaga qaytadi
                   }}
                 >
                   <TabsList className="flex gap-2">
@@ -513,7 +513,7 @@ export default function ActiveBookingsPage() {
                 <ReactPaginate
                   breakLabel="..."
                   onPageChange={(e) => handlePageChange(e.selected + 1)}
-                  forcePage={pageNum - 1}
+                  forcePage={pageNumber - 1}
                   pageRangeDisplayed={3}
                   marginPagesDisplayed={1}
                   pageCount={bookings?.data?.totalPages || 0}
