@@ -689,6 +689,7 @@ const EBaseBooks = () => {
               className="space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 🖼 Kitob muqovasi */}
                 <Form.Item
                   label={t("kitob muqovasi")}
                   name="imageUrl"
@@ -697,7 +698,7 @@ const EBaseBooks = () => {
                   <Upload
                     listType="picture-card"
                     fileList={fileList}
-                    beforeUpload={() => false} // avtomatik yuklamaslik
+                    beforeUpload={() => false}
                     accept="image/png,image/jpeg,image/jpg,image/webp"
                     onChange={({ fileList }) => setFileList(fileList)}
                   >
@@ -710,6 +711,7 @@ const EBaseBooks = () => {
                   </Upload>
                 </Form.Item>
 
+                {/* 📘 PDF yuklash */}
                 <Form.Item
                   label={t("elektron kitob fayli")}
                   name="pdfUrl"
@@ -718,7 +720,7 @@ const EBaseBooks = () => {
                   ]}
                 >
                   <Upload
-                    beforeUpload={() => false} // avtomatik yubormasin
+                    beforeUpload={() => false}
                     fileList={pdfFileList}
                     maxCount={1}
                     accept="application/pdf"
@@ -729,7 +731,6 @@ const EBaseBooks = () => {
                     </AntButton>
                   </Upload>
 
-                  {/* ✅ Link chiqarish (yangi yuklangan yoki mavjud fayl) */}
                   {pdfFileList.length > 0 && (
                     <a
                       href={
@@ -745,18 +746,8 @@ const EBaseBooks = () => {
                     </a>
                   )}
                 </Form.Item>
-                <Form.Item
-                  label={t("Author")}
-                  name="author"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter author name"),
-                    },
-                  ]}
-                >
-                  <Input placeholder={t("Enter author name")} />
-                </Form.Item>
+
+                {/* 🏷 Category (majburiy) */}
                 <Form.Item
                   label={t("Category")}
                   name="categoryId"
@@ -778,28 +769,17 @@ const EBaseBooks = () => {
                     ))}
                   </Select>
                 </Form.Item>
-                <Form.Item
-                  label={t("Title")}
-                  name="title"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter title"),
-                    },
-                  ]}
-                >
+
+                {/* Quyidagilar majburiy emas */}
+                <Form.Item label={t("Author")} name="author">
+                  <Input placeholder={t("Enter author name")} />
+                </Form.Item>
+
+                <Form.Item label={t("Title")} name="title">
                   <Input placeholder={t("Enter book title")} />
                 </Form.Item>
-                <Form.Item
-                  label={t("Publication Year")}
-                  name="publicationYear"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter publication year"),
-                    },
-                  ]}
-                >
+
+                <Form.Item label={t("Publication Year")} name="publicationYear">
                   <InputNumber
                     placeholder={t("Enter publication year")}
                     max={new Date().getFullYear()}
@@ -807,79 +787,37 @@ const EBaseBooks = () => {
                     className="w-full"
                   />
                 </Form.Item>
-                <Form.Item
-                  label={t("Isbn")}
-                  name="isbn"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter ISBN"),
-                    },
-                  ]}
-                >
+
+                <Form.Item label={t("Isbn")} name="isbn">
                   <Input placeholder={t("Enter ISBN")} />
                 </Form.Item>
-                <Form.Item
-                  label={t("Page Count")}
-                  name="pageCount"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter page count"),
-                    },
-                  ]}
-                >
+
+                <Form.Item label={t("Page Count")} name="pageCount">
                   <InputNumber
                     placeholder={t("Enter page count")}
                     min={1}
                     className="w-full"
                   />
                 </Form.Item>
-                <Form.Item
-                  label={t("Publisher")}
-                  name="publisher"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter publisher"),
-                    },
-                  ]}
-                >
+
+                <Form.Item label={t("Publisher")} name="publisher">
                   <Input placeholder={t("Enter publisher")} />
                 </Form.Item>
-                <Form.Item
-                  label={t("Language")}
-                  name="language"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter language"),
-                    },
-                  ]}
-                >
+
+                <Form.Item label={t("Language")} name="language">
                   <Input placeholder={t("Enter language")} />
                 </Form.Item>
+
                 <Form.Item
                   label={t("kitob qaysi tilda yozilgan")}
                   name="script"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter script"),
-                    },
-                  ]}
                 >
                   <Input placeholder={t("Enter script")} />
                 </Form.Item>
+
                 <Form.Item
                   label={t("Description")}
                   name="description"
-                  rules={[
-                    {
-                      required: true,
-                      message: t("Please enter description"),
-                    },
-                  ]}
                   className="md:col-span-2"
                 >
                   <TextArea
