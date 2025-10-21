@@ -484,5 +484,6 @@
   "Book Information": "Информация о книге",
   "Admin name": "Имя администратора",
   "Book title": "Название книги",
-  "Overdue Today Bookings": "Просроченные бронирования на сегодня"
+  "Overdue Today Bookings": "Просроченные бронирования на сегодня",
+  "0 overdue bookings today": "0 просроченных заказов сегодня"
 }

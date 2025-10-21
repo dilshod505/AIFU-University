@@ -82,7 +82,7 @@ const EBaseBooks = () => {
   const [actionType, setActionType] = useState<"add" | "edit" | "view">("add");
   const [form] = Form.useForm();
   const [editingBook, setEditingBook] = useState<Record<string, any> | null>(
-    null
+    null,
   );
   const [uploadedImage, setUploadedImage] = useState<any>(null);
   const [uploadedPdf, setUploadedPdf] = useState<any>(null);
@@ -119,7 +119,7 @@ const EBaseBooks = () => {
     ],
     queryFn: async () => {
       const { data } = await api.get(
-        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${debouncedSearchQuery ? `&query=${debouncedSearchQuery}&field=fullInfo` : ""}`
+        `/admin/pdf-books?pageNumber=${pageNumber}&pageSize=10&sortDirection=${sortDirection}${debouncedSearchQuery ? `&query=${debouncedSearchQuery}&field=fullInfo` : ""}`,
       );
       return data;
     },
@@ -407,7 +407,7 @@ const EBaseBooks = () => {
         ),
       },
     ],
-    [deleteBook, role, t]
+    [deleteBook, role, t],
   );
 
   const [fileList, setFileList] = useState<any[]>([]);
@@ -458,9 +458,14 @@ const EBaseBooks = () => {
                 size={"sm"}
                 title={t("Add e-book")}
                 onClick={() => {
-                  setOpen(true);
+                  setActionType("add");
+                  setEditingBook(null); // 🔧 eski kitob ma’lumotlarini o‘chiradi
+                  form.resetFields(); // 🔧 formani tozalaydi
                   setUploadedImage(null);
                   setUploadedPdf(null);
+                  setFileList([]);
+                  setPdfFileList([]);
+                  setOpen(true);
                 }}
               >
                 <Plus />
@@ -499,7 +504,7 @@ const EBaseBooks = () => {
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
                 pageCount={Math.ceil(
-                  (books?.data?.totalElements || 0) / pageSize
+                  (books?.data?.totalElements || 0) / pageSize,
                 )}
                 previousLabel={
                   <Button className="bg-white text-black">
@@ -647,7 +652,7 @@ const EBaseBooks = () => {
                       </h3>
                       <p>
                         {dayjs(getById.data.data.createdDate).format(
-                          "DD-MM-YYYY"
+                          "DD-MM-YYYY",
                         )}
                       </p>
                     </div>

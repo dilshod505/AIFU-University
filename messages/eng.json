@@ -484,5 +484,6 @@
   "Book Information": "Book Information",
   "Admin name": "Admin name",
   "Book title": "Book title",
-  "Overdue Today Bookings": "Overdue Bookings Today"
+  "Overdue Today Bookings": "Overdue Bookings Today",
+  "0 overdue bookings today": "0 overdue bookings today"
 }

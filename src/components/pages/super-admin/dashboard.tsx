@@ -243,35 +243,39 @@ const Dashboard = () => {
             <Skeleton className="w-full h-48" />
           ) : bookingToday.data?.data?.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
-              <span className="text-3xl mb-2">
-                <SquareCheckBig className="w-10 h-10" />
-              </span>
-              <p className="font-bold text-lg">
-                {t("4 bookings today").replace(
-                  "4",
-                  bookingToday.data?.data?.length,
-                )}
-              </p>
+              <SquareCheckBig className="w-10 h-10 mb-2" />
+              <p className="font-bold text-lg">{t("0 bookings today")}</p>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-1 text-green-600 max-h-96">
-              <ul className="space-y-2 text-sm text-muted-foreground w-full overflow-y-auto hide-scroll">
-                {bookingToday?.data?.data?.map((b: any, idx: number) => (
-                  <li key={idx} className="border-b pb-2">
-                    <p className="text-[18px] font-bold">
-                      {b?.studentFullName}
-                    </p>
-                    <p className="text-[16px]">
-                      <span className="font-bold">{t("Book")}:</span> {b.title}{" "}
-                      ({b.author})
-                    </p>
-                    <p className="text-[15px] text-green-600">
-                      <span className="font-semibold">{t("Due Date")}:</span>{" "}
-                      {new Date(b.dueDate).toLocaleDateString()}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+            <div className="max-h-96 overflow-y-auto space-y-3 p-2 hide-scroll mt-[-50px]">
+              {bookingToday.data.data.map((b: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-green-100 dark:border-green-800"
+                >
+                  <p className="font-bold text-[18px] text-gray-900 dark:text-gray-100 mb-1">
+                    {b?.studentFullName}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Book title")}:</span>{" "}
+                    {b.title}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Author")}:</span>{" "}
+                    {b.author}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Admin")}:</span>{" "}
+                    {b.adminFullName}
+                  </p>
+                  <p className="text-[14px] font-semibold text-green-600 mt-1 flex items-center justify-between">
+                    <span>{t("Due Date")}:</span>
+                    <span>
+                      {new Date(b.dueDate).toISOString().split("T")[0]}
+                    </span>
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </Panel>
@@ -288,50 +292,38 @@ const Dashboard = () => {
             <Skeleton className="w-full h-48" />
           ) : bookingsTodayOverdue?.data?.data?.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
-              <span className="text-3xl mb-2">
-                <SquareCheckBig className="w-10 h-10" />
-              </span>
+              <SquareCheckBig className="w-10 h-10 mb-2" />
               <p className="font-bold text-lg">
                 {t("0 overdue bookings today")}
               </p>
             </div>
           ) : (
-            // ❌ justify-center olib tashlandi
-            <div className="flex flex-col text-red-700 max-h-96 mt-[-40px]">
-              <ScrollArea className="w-full h-96 pr-2">
-                <ul className="space-y-2 text-sm text-muted-foreground w-full">
-                  {bookingsTodayOverdue?.data?.data?.map(
-                    (b: any, idx: number) => (
-                      <li
-                        key={idx}
-                        className="border-b pb-2 border-red-200 dark:border-red-800"
-                      >
-                        <p className="text-[18px] font-bold text-red-800 dark:text-red-300">
-                          {b?.studentFullName}
-                        </p>
-                        <p className="text-[16px]">
-                          <span className="font-bold">{t("Admin name")}:</span>{" "}
-                          {b.adminFullName}
-                        </p>
-                        <p className="text-[16px]">
-                          <span className="font-bold">{t("Author")}:</span>{" "}
-                          {b.author}
-                        </p>
-                        <p className="text-[16px]">
-                          <span className="font-bold">{t("Book title")}:</span>{" "}
-                          {b.title}
-                        </p>
-                        <p className="text-[15px] text-green-600">
-                          <span className="font-semibold">
-                            {t("Due Date")}:
-                          </span>{" "}
-                          {new Date(b.dueDate).toLocaleDateString()}
-                        </p>
-                      </li>
-                    ),
-                  )}
-                </ul>
-              </ScrollArea>
+            <div className="max-h-96 overflow-y-auto space-y-3 p-2 hide-scroll mt-[-50px]">
+              {bookingsTodayOverdue.data.data.map((b: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-red-100 dark:border-red-800"
+                >
+                  <p className="font-bold text-[18px] text-gray-900 dark:text-gray-100 mb-1">
+                    {b?.studentFullName}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Book title")}:</span>{" "}
+                    {b.title}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Author")}:</span>{" "}
+                    {b.author}
+                  </p>
+                  <p className="text-[15px] text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold">{t("Admin name")}:</span>{" "}
+                    {b.adminFullName}
+                  </p>
+                  <p className="text-[14px] font-semibold text-red-600 mt-2">
+                    {new Date(b.dueDate).toISOString().split("T")[0]}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </Panel>
@@ -437,22 +429,36 @@ const Dashboard = () => {
                 {t("No student data available")}
               </p>
             ) : (
-              <ul className="space-y-2">
-                {studentsTop?.data?.data?.map((student: any, i: number) => (
-                  <li key={i} className="flex justify-between text-sm">
-                    <div className="flex flex-col">
-                      <span className="text-[18px]">
-                        {student.name} {student.surname}
-                      </span>
-                      <span className="text-[16px] text-muted-foreground">
-                        {student.degree} • {student.faculty}
-                      </span>
-                    </div>
-                    <span className="font-bold text-[16px] text-green-600">
-                      {student.usageCount}
-                    </span>
-                  </li>
-                ))}
+              <ul className="divide-y divide-gray-200 dark:divide-gray-800 mt-[-50px]">
+                {studentsTop.data.data.map((student: any, i: number) => {
+                  const initials = student.name?.[0]?.toUpperCase() || "?";
+                  return (
+                    <li
+                      key={i}
+                      className="flex items-center justify-between py-3 px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition rounded-lg"
+                    >
+                      {/* Chap avatar + ism */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-700 text-purple-700 dark:text-white font-semibold">
+                          {initials}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-[16px] text-gray-900 dark:text-gray-100">
+                            {student.name} {student.surname}
+                          </span>
+                          <span className="text-[14px] text-gray-600 dark:text-gray-400">
+                            {student.degree} • {student.faculty}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Kitob soni badge */}
+                      <div className="flex items-center justify-center bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 text-[13px] font-bold rounded-xl px-3 py-1 min-w-[50px] text-center">
+                        {student.usageCount} {t("Book")}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </Panel>
@@ -506,7 +512,7 @@ const Dashboard = () => {
                 ) : (
                   <div className="space-y-4">
                     <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
-                      <div>{t("Librarian")}</div>
+                      <div>{t("Admin")}</div>
                       <div>{t("Action Type")}</div>
                       <div>{t("Description")}</div>
                       <div>{t("Time")}</div>

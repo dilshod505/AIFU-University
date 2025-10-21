@@ -156,6 +156,7 @@ const Profile = () => {
     colors: ["#22c55e", "#3b82f6", "#f59e0b"],
     legend: { position: "bottom" },
   };
+
   const pieChartSeries = [
     activity?.data?.analytics?.totalCount ?? 0,
     activity?.data?.analytics?.issuedCount ?? 0,
@@ -216,7 +217,7 @@ const Profile = () => {
               listType="picture-card"
               fileList={fileList}
               onChange={({ fileList }) => setFileList(fileList)}
-              beforeUpload={() => false} // avtomatik yubormasin
+              beforeUpload={() => false}
               maxCount={1}
               accept="image/*"
             >
