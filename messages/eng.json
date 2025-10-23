@@ -489,5 +489,12 @@
   "Author/Title search": "Author/Title Search",
   "Isbn search": "ISBN Search",
   "UDC search": "UDC Search",
-  "Series search": "Series search"
+  "Series search": "Series search",
+  "Deleted book category": "Deleted book category",
+  "Created book category": "Created book category",
+  "Created base book": "Created base book",
+  "Updated base book": "",
+  "Deleted base book": "Deleted base book",
+  "Created book copy": "Created book copy",
+  "Updated book copy": "Updated book copy"
 }

@@ -489,5 +489,12 @@
   "Author/Title search": "Muallif/Sarlavha boʻyicha qidiruv",
   "Isbn search": "ISBN bo'yicha qidiruv",
   "UDC search": "UDK qidiruvi",
-  "Series search": "Seriallarni qidirish"
+  "Series search": "Seriallarni qidirish",
+  "Deleted book category": "O'chirilgan kitob kategoriyasi",
+  "Created book category": "Kitob toifasi yaratildi",
+  "Created base book": "Asosiy kitob yaratildi",
+  "Updated base book": "",
+  "Deleted base book": "Asosiy kitob o'chirildi",
+  "Created book copy": "Kitob nusxasi yaratildi",
+  "Updated book copy": "Kitobning yangilangan nusxasi"
 }

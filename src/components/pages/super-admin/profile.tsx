@@ -21,6 +21,12 @@ import { CircleUserRound, UserRoundPen } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import Chart from "react-apexcharts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Profile = () => {
   const t = useTranslations();
@@ -439,23 +445,25 @@ const Profile = () => {
         </Card>
       </div>
 
+      {/* Recent Activity section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
         <Card className="shadow-sm lg:col-span-2">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-4">
               {t("Recent Activity")}
             </h3>
-            <div className="overflow-y-auto max-h-96">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+
+            <div className="overflow-y-auto max-h-96 rounded-lg">
+              <table className="w-full text-left border-collapse">
+                <thead className="sticky top-0 z-10">
+                  <tr className="border-b border-gray-200 bg-gray-100 dark:bg-gray-700">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("DateTime")}
                     </th>
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("Action")}
                     </th>
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("Description")}
                     </th>
                   </tr>
@@ -464,9 +472,9 @@ const Profile = () => {
                 <tbody>
                   {activity?.data?.activities?.length > 0 ? (
                     activity.data.activities.map((item: any, i: number) => (
-                      <tr key={i} className="border-b border-gray-100">
+                      <tr key={i}>
                         {/* Time */}
-                        <td className="py-3 text-sm">
+                        <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {new Date(item.time).toLocaleString("ru-RU", {
                             day: "2-digit",
                             month: "2-digit",
@@ -477,7 +485,7 @@ const Profile = () => {
                         </td>
 
                         {/* Action type */}
-                        <td className="py-3 text-sm font-medium">
+                        <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
                           {item.actionType === "CREATE_BASE_BOOK_CATEGORY" &&
                             t("Created book category")}
                           {item.actionType === "DELETE_BASE_BOOK_CATEGORY" &&
@@ -492,7 +500,6 @@ const Profile = () => {
                             t("Created book copy")}
                           {item.actionType === "UPDATE_BOOK_COPY" &&
                             t("Updated book copy")}
-                          {/* Default fallback */}
                           {![
                             "CREATE_BASE_BOOK_CATEGORY",
                             "DELETE_BASE_BOOK_CATEGORY",
@@ -504,13 +511,32 @@ const Profile = () => {
                           ].includes(item.actionType) && t(item.actionType)}
                         </td>
 
-                        {/* Description */}
-                        <td className="py-3 text-sm">{item.description}</td>
+                        {/* Description with Tooltip */}
+                        <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
+                          <TooltipProvider delayDuration={200}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-pointer block truncate">
+                                  {item.description || t("No description")}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="top"
+                                className="max-w-sm text-sm leading-relaxed"
+                              >
+                                {item.description}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={3} className="py-4 text-center">
+                      <td
+                        colSpan={3}
+                        className="py-6 text-center text-gray-500 dark:text-gray-400"
+                      >
                         {t("No activity yet")}
                       </td>
                     </tr>

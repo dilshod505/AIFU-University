@@ -489,5 +489,12 @@
   "Author/Title search": "Поиск по автору/названию",
   "Isbn search": "Поиск по ISBN",
   "UDC search": "УДК поиск",
-  "Series search": "Серии поиска"
+  "Series search": "Серии поиска",
+  "Deleted book category": "Удаленная категория книги",
+  "Created book category": "Создана категория книги",
+  "Created base book": "Создана базовая книга",
+  "Updated base book": "",
+  "Deleted base book": "Основная книга удалена",
+  "Created book copy": "Создана копия книги",
+  "Updated book copy": "Обновленная копия книги"
 }
