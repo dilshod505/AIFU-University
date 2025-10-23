@@ -41,6 +41,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -528,9 +534,25 @@ const Dashboard = () => {
                               {activity.librarianFullName || `${t("Unknown")}`}
                             </div>
                             <div>{activity.actionType || "—"}</div>
-                            <div className="text-[16px]">
-                              {activity.description || "No Description"}
-                            </div>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="text-[16px] max-w-[250px] truncate cursor-pointer text-muted-foreground hover:text-foreground">
+                                    {activity.description || (
+                                      <span className="text-red-500">
+                                        No Description
+                                      </span>
+                                    )}
+                                  </div>
+                                </TooltipTrigger>
+
+                                {activity.description && (
+                                  <TooltipContent className="max-w-sm whitespace-pre-wrap break-words">
+                                    {activity.description}
+                                  </TooltipContent>
+                                )}
+                              </Tooltip>
+                            </TooltipProvider>
                             <div className="text-green-500 text-[16px]">
                               {new Date(activity.time).toLocaleString()}
                             </div>
