@@ -731,9 +731,11 @@ const BaseBooks = () => {
       <Sheet
         open={detailOpen}
         onOpenChange={(v) => {
-          setDetailOpen(v);
           if (!v) {
-            setSelectedId(null);
+            setDetailOpen(false);
+            setTimeout(() => setSelectedId(null), 500); // 300ms — yopilish animatsiyasidan so‘ng
+          } else {
+            setDetailOpen(true);
           }
         }}
       >
