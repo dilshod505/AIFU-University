@@ -169,8 +169,8 @@ const Profile = () => {
           <div className="flex items-center gap-4">
             {profile?.data?.imageUrl ? (
               <Image
-                width={55}
-                height={55}
+                width={90}
+                height={90}
                 src={profile?.data?.imageUrl}
                 alt={profile?.data?.name}
                 className="w-12 h-12 rounded-full object-cover"
