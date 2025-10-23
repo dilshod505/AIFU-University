@@ -485,5 +485,9 @@
   "Admin name": "Admin name",
   "Book title": "Book title",
   "Overdue Today Bookings": "Overdue Bookings Today",
-  "0 overdue bookings today": "0 overdue bookings today"
+  "0 overdue bookings today": "0 overdue bookings today",
+  "Author/Title search": "Author/Title Search",
+  "Isbn search": "ISBN Search",
+  "UDC search": "UDC Search",
+  "Series search": "Series search"
 }

@@ -485,5 +485,9 @@
   "Admin name": "Admin ismi",
   "Book title": "Kitob nomi",
   "Overdue Today Bookings": "Bugungi o'tkazib yuborilgan bronlar",
-  "0 overdue bookings today": "Bugungi kechiktirilgan bronlar yo'q"
+  "0 overdue bookings today": "Bugungi kechiktirilgan bronlar yo'q",
+  "Author/Title search": "Muallif/Sarlavha boʻyicha qidiruv",
+  "Isbn search": "ISBN bo'yicha qidiruv",
+  "UDC search": "UDK qidiruvi",
+  "Series search": "Seriallarni qidirish"
 }

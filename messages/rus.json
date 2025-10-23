@@ -485,5 +485,9 @@
   "Admin name": "Имя администратора",
   "Book title": "Название книги",
   "Overdue Today Bookings": "Просроченные бронирования на сегодня",
-  "0 overdue bookings today": "0 просроченных заказов сегодня"
+  "0 overdue bookings today": "0 просроченных заказов сегодня",
+  "Author/Title search": "Поиск по автору/названию",
+  "Isbn search": "Поиск по ISBN",
+  "UDC search": "УДК поиск",
+  "Series search": "Серии поиска"
 }

@@ -64,6 +64,7 @@ import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import { AutoResizeInput } from "@/components/ui/auto-resizeInput";
 
 const { Option } = AntdSelect;
 
@@ -387,11 +388,11 @@ const BaseBooks = () => {
           isLoading={isLoading}
           pagination={false}
           header={
-            <div className="flex flex-wrap justify-start items-center gap-2">
+            <div className="flex flex-wrap justify-start items-center gap-2 p-2 rounded-xl">
               <Select
                 defaultValue="fullInfo"
                 placeholder={t("select type search")}
-                style={{ width: 150 }}
+                style={{ width: 250 }}
                 onChange={(val: any) => {
                   setFilterColumn(val);
                   setFilterValue("");
@@ -399,48 +400,46 @@ const BaseBooks = () => {
                   setFullInfoAuthor("");
                 }}
               >
-                <Option value="fullInfo">
-                  {t("Full Info (Author/Title)")}
-                </Option>
-                <Option value="isbn">{t("Isbn")}</Option>
-                <Option value="udc">{t("UDC")}</Option>
-                <Option value="series">{t("Series")}</Option>
+                <Option value="fullInfo">{t("Author/Title search")}</Option>
+                <Option value="isbn">{t("Isbn search")}</Option>
+                <Option value="udc">{t("UDC search")}</Option>
+                <Option value="series">{t("Series search")}</Option>
               </Select>
 
+              {/* Dynamic Inputs */}
               {filterColumn === "fullInfo" ? (
-                <div className="flex gap-2">
-                  <Input
+                <div className="flex gap-2 items-center">
+                  <AutoResizeInput
                     placeholder={t("Title")}
-                    style={{ width: 150 }}
                     value={fullInfoTitle}
                     onChange={(e) => setFullInfoTitle(e.target.value)}
                   />
-                  <Input
+                  <AutoResizeInput
                     placeholder={t("Author")}
-                    style={{ width: 150 }}
                     value={fullInfoAuthor}
                     onChange={(e) => setFullInfoAuthor(e.target.value)}
                   />
                 </div>
               ) : (
-                <Input
+                <AutoResizeInput
                   placeholder={t("Filter value")}
-                  style={{ width: 200 }}
                   value={filterValue}
                   onChange={(e) => setFilterValue(e.target.value)}
                 />
               )}
 
+              {/* Sort Buttons */}
               {sortDirection === "asc" ? (
-                <Button size={"sm"} onClick={() => setSortDirection("desc")}>
+                <TooltipBtn size="sm" onClick={() => setSortDirection("desc")}>
                   <ArrowUpWideNarrow />
-                </Button>
+                </TooltipBtn>
               ) : (
-                <Button size={"sm"} onClick={() => setSortDirection("asc")}>
+                <TooltipBtn size="sm" onClick={() => setSortDirection("asc")}>
                   <ArrowDownWideNarrow />
-                </Button>
+                </TooltipBtn>
               )}
 
+              {/* Excel menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <TooltipBtn title={t("Select type excel download")}>
@@ -481,20 +480,17 @@ const BaseBooks = () => {
                     </DropdownMenuItem>
                   )}
 
-                  {/* Excel export */}
                   <DropdownMenuItem
                     onClick={() =>
                       importExcel.mutate(
                         {},
                         {
-                          onSuccess: () => {
+                          onSuccess: () =>
                             toast.success(
                               t("Excel muvaffaqiyatli yuklab olindi"),
-                            );
-                          },
-                          onError: () => {
-                            toast.error(t("Excel yuklashda xatolik"));
-                          },
+                            ),
+                          onError: () =>
+                            toast.error(t("Excel yuklashda xatolik")),
                         },
                       )
                     }
@@ -506,14 +502,12 @@ const BaseBooks = () => {
                       allExcelImport.mutate(
                         {},
                         {
-                          onSuccess: () => {
+                          onSuccess: () =>
                             toast.success(
                               t("Barcha kitoblar muvaffaqiyatli yuklab olindi"),
-                            );
-                          },
-                          onError: () => {
-                            toast.error(t("Excel yuklashda xatolik"));
-                          },
+                            ),
+                          onError: () =>
+                            toast.error(t("Excel yuklashda xatolik")),
                         },
                       )
                     }
@@ -523,9 +517,11 @@ const BaseBooks = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Add Book */}
               <TooltipBtn
                 size="sm"
                 title={t("Add Book")}
+                variant={""}
                 onClick={() => {
                   setEditingBook(null);
                   form.resetFields();
