@@ -97,13 +97,12 @@ const Profile = () => {
   };
 
   const todayPieChartOptions: ApexOptions = {
-    labels: [t("Total count"), t("Issued"), t("Returned"), t("Extended")],
+    labels: [t("Issued"), t("Returned"), t("Extended")],
     colors: ["#22c55e", "#3b82f6", "#f59e0b"],
     legend: { position: "bottom" },
   };
 
   const todayPieChartSeries = [
-    activityToday?.data?.analytics?.totalCount ?? 0,
     activityToday?.data?.analytics?.issuedCount ?? 0,
     activityToday?.data?.analytics?.returnedCount ?? 0,
     activityToday?.data?.analytics?.extendedCount ?? 0,
@@ -152,13 +151,12 @@ const Profile = () => {
   ];
 
   const pieChartOptions: ApexOptions = {
-    labels: [t("Total count"), t("Issued"), t("Returned"), t("Extended")],
+    labels: [t("Issued"), t("Returned"), t("Extended")],
     colors: ["#22c55e", "#3b82f6", "#f59e0b"],
     legend: { position: "bottom" },
   };
 
   const pieChartSeries = [
-    activity?.data?.analytics?.totalCount ?? 0,
     activity?.data?.analytics?.issuedCount ?? 0,
     activity?.data?.analytics?.returnedCount ?? 0,
     activity?.data?.analytics?.extendedCount ?? 0,
