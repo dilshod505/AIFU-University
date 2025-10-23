@@ -346,6 +346,7 @@ const Profile = () => {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left side chart */}
         <Card className="shadow-sm lg:col-span-1">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-4">
@@ -359,33 +360,37 @@ const Profile = () => {
             />
           </CardContent>
         </Card>
+
+        {/* Right side: Today Recent Activity */}
         <Card className="shadow-sm lg:col-span-2">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold mb-4">
               {t("Today Recent Activity")}
             </h3>
-            <div className="overflow-y-auto max-h-96">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+
+            <div className="overflow-y-auto max-h-96 rounded-lg border border-gray-100 dark:border-gray-800">
+              <table className="w-full text-left border-collapse">
+                <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800 z-10">
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("DateTime")}
                     </th>
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("Action Type")}
                     </th>
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wide">
+                    <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("Description")}
                     </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {activityToday?.data?.activities?.length > 0 ? (
                     activityToday.data.activities.map(
                       (item: any, i: number) => (
-                        <tr key={i} className="border-b border-gray-100">
+                        <tr key={i}>
                           {/* Time */}
-                          <td className="py-3 text-sm">
+                          <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
                             {new Date(item.time).toLocaleString("ru-RU", {
                               day: "2-digit",
                               month: "2-digit",
@@ -395,19 +400,38 @@ const Profile = () => {
                             })}
                           </td>
 
-                          {/* Action type */}
-                          <td className="py-3 text-sm font-medium">
+                          {/* Action Type */}
+                          <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
                             {item.actionType.replaceAll("_", " ")}
                           </td>
 
-                          {/* Description */}
-                          <td className="py-3 text-sm">{item.description}</td>
+                          {/* Description (with tooltip) */}
+                          <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
+                            <TooltipProvider delayDuration={200}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-pointer block truncate">
+                                    {item.description || t("No description")}
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent
+                                  side="top"
+                                  className="max-w-sm text-sm leading-relaxed"
+                                >
+                                  {item.description}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </td>
                         </tr>
                       ),
                     )
                   ) : (
                     <tr>
-                      <td colSpan={3} className="py-4 text-center">
+                      <td
+                        colSpan={3}
+                        className="py-6 text-center text-gray-500 dark:text-gray-400"
+                      >
                         {t("No activity yet")}
                       </td>
                     </tr>
