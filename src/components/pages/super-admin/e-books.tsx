@@ -244,29 +244,44 @@ const EBaseBooks = () => {
       let pdfUrl = values.pdfUrl;
       let size = values.size;
 
-      // 📌 Agar rasm fayl qo‘yilgan bo‘lsa - qo‘lda yuklaymiz
+      // 🖼 Rasmni yuklash
       if (values.imageUrl?.file) {
         const formData = new FormData();
         formData.append("file", values.imageUrl.file);
-        const res = await api.post("/admin/upload/image", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        imageUrl = res.data?.data?.url;
+
+        try {
+          const res = await api.post("/admin/upload/image", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          imageUrl = res.data?.data?.url;
+        } catch (err: any) {
+          console.error("Image upload error:", err);
+          toast.error(t("Image upload failed! Please try again"));
+          return; // ❌ davom etmasin
+        }
       }
 
-      // 📌 Agar PDF fayl qo‘yilgan bo‘lsa - qo‘lda yuklaymiz
+      // 📘 PDF faylni yuklash
       if (values.pdfUrl?.file) {
         const formData = new FormData();
         formData.append("file", values.pdfUrl.file);
-        const res = await api.post("/admin/upload/pdf", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        pdfUrl = res.data?.data?.url;
-        size = res.data?.data?.sizeMB;
+
+        try {
+          const res = await api.post("/admin/upload/pdf", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          pdfUrl = res.data?.data?.url;
+          size = res.data?.data?.sizeMB;
+        } catch (err: any) {
+          console.error("PDF upload error:", err);
+          toast.error(t("PDF upload failed! Please try again"));
+          return; // ❌ davom etmasin
+        }
       }
 
+      // 🔹 Yaratish yoki yangilash
       if (editingBook) {
-        updateBook.mutate({
+        await updateBook.mutateAsync({
           id: editingBook.id,
           data: {
             ...values,
@@ -275,24 +290,29 @@ const EBaseBooks = () => {
             size,
           },
         });
+        toast.success(t("E-book updated successfully"));
       } else {
-        createBook.mutate({
+        await createBook.mutateAsync({
           ...values,
           imageUrl,
           pdfUrl,
           size,
         });
+        toast.success(t("E-book created successfully"));
       }
 
+      // ✅ Tozalash
       setOpen(false);
       setEditingBook(null);
       setActionType("add");
       form.resetFields();
       setUploadedImage(null);
       setUploadedPdf(null);
-    } catch (e) {
-      console.error(e);
-      message.error("Uploadda xatolik yuz berdi");
+      setFileList([]);
+      setPdfFileList([]);
+    } catch (e: any) {
+      console.error("Book save error:", e);
+      message.error(t("Something went wrong while saving the book."));
     } finally {
       setSubmitting(false);
     }
