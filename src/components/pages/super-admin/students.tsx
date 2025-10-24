@@ -76,12 +76,10 @@ const Students = () => {
     Number(searchPagination.get("page")) || 1,
   );
 
-  const handlePageChange = (newPage: number) => {
-    setPageNumber(newPage);
-
+  const handlePageChange = (page: number) => {
+    setPageNumber(page);
     const params = new URLSearchParams(window.location.search);
-    params.set("page", newPage.toString());
-
+    params.set("page", String(page));
     router.push(`?${params.toString()}`);
   };
 
@@ -106,13 +104,20 @@ const Students = () => {
     filter,
     pageNumber,
     size,
-    sortDirection,
+    sortDirection: "asc",
     ...(searchField === "fullName" && (firstQuery || secondQuery)
       ? { field: "fullName", query: fullNameQuery }
       : searchValue
         ? { field: searchField, query: searchValue }
         : {}),
   });
+
+  useEffect(() => {
+    setPageNumber(1);
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  }, [searchValue, firstQuery, secondQuery, filter, searchField, router]);
 
   const createStudent = useCreateStudents();
   const detail = useGetById();
