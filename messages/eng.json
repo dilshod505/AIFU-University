@@ -499,5 +499,6 @@
   "Updated book copy": "Updated book copy",
   "PDF upload failed! Please try again.": "PDF upload failed! Please try again.",
   "Image upload failed! Please try again": "Image upload failed! Please try again.",
-  "Yearly Booking Statistics": "Yearly Booking Statistics"
+  "Yearly Booking Statistics": "Yearly Booking Statistics",
+  "usageCount": "Usage Count"
 }

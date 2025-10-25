@@ -466,20 +466,38 @@ const Dashboard = () => {
                 {t("No book data available")}
               </p>
             ) : (
-              <ul className="space-y-2">
-                {booksTop?.data?.data?.map((book: any, i: number) => (
-                  <li key={i} className="flex justify-between text-sm">
-                    <div className="flex flex-col">
-                      <span className="text-[18px]">{book.title}</span>
-                      <span className="text-[16px] text-muted-foreground">
-                        {book.author} • {book.category?.name}
-                      </span>
-                    </div>
-                    <span className="font-bold text-[16px] text-green-600">
-                      {book.usageCount}
-                    </span>
-                  </li>
-                ))}
+              <ul className="divide-y divide-gray-200 dark:divide-gray-800 mt-[-50px]">
+                {booksTop?.data?.data?.map((book: any, i: number) => {
+                  const initials = book.title?.[0]?.toUpperCase() || "?";
+                  return (
+                    <li
+                      key={i}
+                      className="flex items-center justify-between py-3 px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition rounded-lg"
+                    >
+                      {/* Chap avatar + kitob ma'lumotlari */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-700 text-purple-700 dark:text-white font-semibold">
+                          {initials}
+                        </div>
+
+                        <div className="flex flex-col max-w-[250px]">
+                          <span className="font-semibold text-[16px] text-gray-900 dark:text-gray-100 truncate">
+                            {book.title || t("Unknown Book")}
+                          </span>
+                          <span className="text-[14px] text-gray-600 dark:text-gray-400 truncate">
+                            {book.author || t("Unknown Author")} •{" "}
+                            {book.category?.name || t("Unknown Category")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* O'qilgan soni */}
+                      <div className="flex items-center justify-center bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 text-[13px] font-bold rounded-xl px-3 py-1 min-w-[50px] text-center">
+                        {book.usageCount} {t("usageCount")}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </Panel>
@@ -581,12 +599,15 @@ const Dashboard = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
+                    {/* Sticky Header */}
+                    <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-[16px] text-muted-foreground sticky top-0 bg-amber-50 z-10">
                       <div>{t("Admin")}</div>
                       <div>{t("Action Type")}</div>
                       <div>{t("Description")}</div>
                       <div>{t("Time")}</div>
                     </div>
+
+                    {/* Content */}
                     <div className="space-y-3">
                       {adminsActivity?.data?.data?.map(
                         (activity: any, i: number) => (
@@ -598,6 +619,7 @@ const Dashboard = () => {
                               {activity.librarianFullName || `${t("Unknown")}`}
                             </div>
                             <div>{activity.actionType || "—"}</div>
+
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -617,6 +639,7 @@ const Dashboard = () => {
                                 )}
                               </Tooltip>
                             </TooltipProvider>
+
                             <div className="text-green-500 text-[16px]">
                               {new Date(activity.time).toLocaleString()}
                             </div>
@@ -649,32 +672,66 @@ const Dashboard = () => {
                 <div className="flex justify-center items-center h-full text-red-500">
                   {t("Failed to load overdue bookings")}
                 </div>
-              ) : bookingOverdue?.data?.length === 0 ? (
+              ) : bookingOverdue?.data?.data?.length === 0 ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
                   {t("No overdue bookings")}
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-sm text-muted-foreground">
-                    <div>{t("firstName")}</div>
+                  {/* Sticky header */}
+                  <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-[16px] text-muted-foreground sticky top-0 bg-rose-50 dark:bg-rose-800/40 z-10">
+                    <div>{t("Name")}</div>
                     <div>{t("Surname")}</div>
-                    <div>{t("book title")}</div>
+                    <div>{t("Book Title")}</div>
                     <div>{t("Author")}</div>
                     <div>{t("Given At")}</div>
                     <div>{t("Due Date")}</div>
                   </div>
+
+                  {/* Content */}
                   <div className="space-y-3">
                     {bookingOverdue?.data?.data?.map(
                       (booking: any, i: number) => (
                         <div key={i} className="grid grid-cols-6 gap-4 text-sm">
-                          <div className="text-[16px]">
+                          <div className="text-[16px] truncate max-w-[150px]">
                             {booking.name || "Unknown Student"}
                           </div>
-                          <div>{booking.surname || "Unknown"}</div>
-                          <div className="text-[16px]">
-                            {booking.title || "Unknown Book"}
+                          <div className="truncate max-w-[150px]">
+                            {booking.surname || "Unknown"}
                           </div>
-                          <div>{booking.author || ""}</div>
+
+                          {/* Book title with tooltip */}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="text-[16px] max-w-[200px] truncate cursor-pointer text-muted-foreground hover:text-foreground">
+                                  {booking.title || "Unknown Book"}
+                                </div>
+                              </TooltipTrigger>
+                              {booking.title && (
+                                <TooltipContent className="max-w-sm whitespace-pre-wrap break-words">
+                                  {booking.title}
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          {/* Author with tooltip */}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="truncate max-w-[200px] cursor-pointer text-muted-foreground hover:text-foreground">
+                                  {booking.author || "—"}
+                                </div>
+                              </TooltipTrigger>
+                              {booking.author && (
+                                <TooltipContent className="max-w-sm whitespace-pre-wrap break-words">
+                                  {booking.author}
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+
                           <div className="text-green-500 text-[16px]">
                             {booking.givenAt || booking.due_date || "No Date"}
                           </div>
