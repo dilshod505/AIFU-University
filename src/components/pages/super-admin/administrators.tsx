@@ -98,6 +98,12 @@ const Administrators = () => {
         type: "email",
         required: true,
       },
+      {
+        label: t("Password"),
+        name: "password",
+        type: "password",
+        required: true,
+      },
     ],
     [t],
   );
@@ -237,6 +243,7 @@ const Administrators = () => {
         name: data.name,
         surname: data.surname,
         email: data.email,
+        password: data.password,
       },
       {
         onSuccess: () => {
