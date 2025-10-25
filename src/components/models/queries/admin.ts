@@ -59,7 +59,7 @@ export const useCreateAdministrator = () => {
 };
 
 export const useActivateAccount = () => {
-  const queryClient = useQueryClient(); // 👈 qo‘shamiz
+  const queryClient = useQueryClient(); // 👈 qo'shamiz
 
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
@@ -69,6 +69,24 @@ export const useActivateAccount = () => {
     onSuccess: () => {
       // ✅ jadvalni yangilaydi
       queryClient.invalidateQueries({ queryKey: ["administrators"] });
+    },
+  });
+};
+
+export const useResendActivationCode = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: { email: string }) => {
+      const res = await api.post(`/super-admin/admins/resend-code`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["administrators"] });
+      toast.success("Kod qayta yuborildi");
+    },
+    onError: () => {
+      toast.error("Kod yuborishda xatolik");
     },
   });
 };

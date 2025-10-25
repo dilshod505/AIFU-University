@@ -1,14 +1,15 @@
 "use client";
 
 import DeleteActionDialog from "@/components/delete-action-dialog";
-import { AutoForm, FormField } from "@/components/form/auto-form";
+import { AutoForm, type FormField } from "@/components/form/auto-form";
 import {
   useActivateAccount,
   useAdminDelete,
   useAdministrators,
   useCreateAdministrator,
+  useResendActivationCode,
 } from "@/components/models/queries/admin";
-import MyTable, { IColumn } from "@/components/my-table";
+import MyTable, { type IColumn } from "@/components/my-table";
 import TooltipBtn from "@/components/tooltip-btn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // shadcn input
@@ -25,14 +26,13 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  CircleUserRound,
   Plus,
   ShieldCheck,
   ShieldX,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -59,12 +59,13 @@ const Administrators = () => {
   const t = useTranslations();
   const [activateOpen, setActivateOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [canResend, setCanResend] = useState<boolean>(false);
 
   const activateForm = useForm<{ email: string; code: string }>({
     defaultValues: { email: "", code: "" },
   });
 
-  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [open, setOpen] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const { data: admins, isLoading } = useAdministrators({
@@ -74,6 +75,7 @@ const Administrators = () => {
   const deleteAdmin = useAdminDelete();
   const createAdmin = useCreateAdministrator();
   const activate = useActivateAccount();
+  const resendCode = useResendActivationCode();
 
   const form = useForm();
   const fields = useMemo<FormField[]>(
@@ -94,12 +96,6 @@ const Administrators = () => {
         label: t("Email"),
         name: "email",
         type: "email",
-        required: true,
-      },
-      {
-        label: t("Password"),
-        name: "password",
-        type: "password",
         required: true,
       },
     ],
@@ -124,7 +120,7 @@ const Administrators = () => {
       //       <div className="flex justify-start items-center">
       //         {imageUrl ? (
       //           <img
-      //             src={imageUrl}
+      //             src={imageUrl || "/placeholder.svg"}
       //             alt="User"
       //             className="w-6 h-6 rounded-full object-cover"
       //           />
@@ -174,6 +170,8 @@ const Administrators = () => {
                 setSelectedEmail(record.email); // tanlangan admin emailini saqlab olamiz
                 activateForm.reset({ email: record.email, code: "" });
                 setActivateOpen(true);
+                setTimeLeft(180);
+                setCanResend(false);
               }}
             >
               <Check />
@@ -196,19 +194,60 @@ const Administrators = () => {
     [activateForm, deleteAdmin, t],
   );
 
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setCanResend(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleResendCode = () => {
+    if (selectedEmail) {
+      resendCode.mutate(
+        { email: selectedEmail },
+        {
+          onSuccess: () => {
+            toast.success(t("Activation code sent to email"));
+            setTimeLeft(180);
+            setCanResend(false);
+          },
+          onError: () => {
+            toast.error(t("Failed to resend code"));
+          },
+        },
+      );
+    }
+  };
+
   const onSubmit = (data: any) => {
     createAdmin.mutate(
       {
         name: data.name,
         surname: data.surname,
         email: data.email,
-        password: data.password,
       },
       {
         onSuccess: () => {
           toast.success(t("Administrator created successfully"));
           setOpen(false);
           form.reset();
+          setSelectedEmail(data.email);
+          activateForm.reset({ email: data.email, code: "" });
+          setActivateOpen(true);
+          setTimeLeft(180);
+          setCanResend(false);
         },
       },
     );
@@ -291,7 +330,7 @@ const Administrators = () => {
         }
       />
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent>
+        <SheetContent side={"center"}>
           <SheetHeader>
             <SheetTitle>{t("Add admin")}</SheetTitle>
           </SheetHeader>
@@ -307,7 +346,7 @@ const Administrators = () => {
         </SheetContent>
       </Sheet>
       <Sheet open={activateOpen} onOpenChange={setActivateOpen}>
-        <SheetContent>
+        <SheetContent side={"center"}>
           <SheetHeader>
             <SheetTitle>{t("Activate Administrator")}</SheetTitle>
           </SheetHeader>
@@ -319,6 +358,8 @@ const Administrators = () => {
                 onSuccess: () => {
                   toast.success(t("Account successfully activated"));
                   setActivateOpen(false);
+                  setTimeLeft(0);
+                  setCanResend(false);
                 },
                 onError: (err: any) => {
                   toast.error(
@@ -335,6 +376,25 @@ const Administrators = () => {
                 type="email"
                 disabled={!!selectedEmail}
               />
+            </div>
+            <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center justify-between">
+                <Label className={"mb-0"}>{t("Time remaining")}</Label>
+                <span className="text-lg font-semibold text-blue-600">
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
+              {canResend && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full bg-transparent"
+                  onClick={handleResendCode}
+                  disabled={resendCode.isPending}
+                >
+                  {resendCode.isPending ? t("Sending...") : t("Resend Code")}
+                </Button>
+              )}
             </div>
             <div>
               <Label className={"mb-3"}>{t("Confirmation Code")}</Label>
