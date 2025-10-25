@@ -26,6 +26,7 @@ import {
   BookCopy,
   BookOpen,
   CalendarDays,
+  CalendarIcon,
   SquareCheckBig,
   Users,
 } from "lucide-react";
@@ -47,6 +48,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 const Dashboard = () => {
   const t = useTranslations();
@@ -54,19 +63,33 @@ const Dashboard = () => {
   const { user } = useLayoutStore();
   const role = user?.role?.toString().toLowerCase().replace("_", "-");
 
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date(),
+  );
+  const month = (selectedDate?.getMonth() ?? new Date().getMonth()) + 1;
+  const year = selectedDate?.getFullYear() ?? new Date().getFullYear();
+
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+
   const studentsTop = useStudentsTop();
   const studentsCount = useStudentsCount();
   const booksTop = useBooksTop();
   const bookingToday = useBookingsToday();
   const bookingsTodayOverdue = useBookingsTodayOverdue();
-  const bookingPerMonth = useBookingsPerMonth();
-  const bookingPerDay = useBookingsPerDay();
+  const bookingPerMonth = useBookingsPerMonth(selectedYear);
+  const bookingPerDay = useBookingsPerDay(year, month);
   const bookingOverdue = useBookingOverdue();
   const bookingDiagram = useBookingsDiagram();
   const bookingCount = useBookingsCount();
   const booksCount = useBooksCount();
   const bookCopiesCount = useBookCopiesCount();
   const averageStatic = useAverageUsage();
+
+  const data = bookingPerDay.data?.data || [];
+  const categories = data.map((d: any) => d.date.slice(-2)); // faqat kun qismi
+  const taken = data.map((d: any) => d.taken);
+  const returned = data.map((d: any) => d.returned);
+  const returnedLate = data.map((d: any) => d.returnedLate);
 
   const [period, setPeriod] = useState<"current-month" | "last-month">(
     "current-month",
@@ -85,19 +108,16 @@ const Dashboard = () => {
   const returnedLatePerDay = perDayData.map((item: any) => item.returnedLate);
 
   const perDayOptions: ApexOptions = {
-    chart: { type: "bar", toolbar: { show: true } },
-    xaxis: { categories: dayCategories, title: { text: t("Days of Month") } },
-    tooltip: { shared: true, intersect: false },
+    chart: { id: "perDay", toolbar: { show: false } },
+    xaxis: { categories, title: { text: "Kunlar" } },
+    legend: { position: "bottom" },
   };
 
-  const perDaySeries = useMemo(
-    () => [
-      { name: t("Taken"), data: takenPerDay },
-      { name: t("Returned"), data: returnedPerDay },
-      { name: t("Returned Late"), data: returnedLatePerDay },
-    ],
-    [takenPerDay, returnedPerDay, returnedLatePerDay, t],
-  );
+  const perDaySeries = [
+    { name: "Taken", data: taken },
+    { name: "Returned", data: returned },
+    { name: "Returned Late", data: returnedLate },
+  ];
 
   // -------------------- Yearly (oylik) --------------------
   const yearlyData = bookingPerMonth.data?.data || [];
@@ -337,14 +357,40 @@ const Dashboard = () => {
         <div className="lg:col-span-1 xl:col-span-4">
           <Panel
             title={
-              <span className="text-indigo-700 dark:text-indigo-400">
-                {t("Monthly Booking Statistics")}
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-indigo-700 dark:text-indigo-400">
+                  {t("Monthly Booking Statistics")}
+                </span>
+
+                {/* Oy / Yil tanlash tugmasi */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <CalendarIcon className="w-4 h-4" />
+                      {selectedDate
+                        ? format(selectedDate, "MMMM yyyy")
+                        : t("Select month")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0" align="end">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      hideWeekdays
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             }
             className="bg-indigo-50 dark:bg-indigo-900/40 border-indigo-200 dark:border-indigo-800"
           >
             <div className="h-64">
-              {bookingPerMonth.isLoading ? (
+              {bookingPerDay.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
                   {t("Loading chart")}...
                 </div>
@@ -361,9 +407,27 @@ const Dashboard = () => {
           <div className={"mt-3"}>
             <Panel
               title={
-                <span className="text-emerald-700 dark:text-emerald-400">
-                  {t("Yearly Booking Statistics")}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-700 dark:text-emerald-400">
+                    {t("Yearly Booking Statistics")}
+                  </span>
+
+                  <Select
+                    value={selectedYear.toString()}
+                    onValueChange={(val) => setSelectedYear(Number(val))}
+                  >
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue placeholder={t("Select Year")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[2023, 2024, 2025, 2026].map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               }
               className="bg-emerald-50 dark:bg-emerald-900/40 border-emerald-200 dark:border-emerald-800"
             >

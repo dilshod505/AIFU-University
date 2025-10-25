@@ -55,26 +55,28 @@ export const useBookingsTodayOverdue = () =>
     },
   });
 
-export const useBookingsPerMonth = () =>
+export const useBookingsPerMonth = (year: number = new Date().getFullYear()) =>
   useQuery({
-    queryKey: ["bookingsPerMonth"],
+    queryKey: ["bookingsPerMonth", year],
     queryFn: async () => {
       const res = await api.get(
-        "/admin/statistics/bookings/perMonth?year=2025",
+        `/admin/statistics/bookings/perMonth?year=${year}`,
       );
       return res.data;
     },
   });
 
-export const useBookingsPerDay = () =>
+// hooks/queries/dashboard.ts
+export const useBookingsPerDay = (year: number, month: number) =>
   useQuery({
-    queryKey: ["bookingsPerDay"],
+    queryKey: ["bookingsPerDay", year, month],
     queryFn: async () => {
       const res = await api.get(
-        "/admin/statistics/bookings/perDay?month=8&year=2025",
+        `/admin/statistics/bookings/perDay?year=${year}&month=${month}`,
       );
       return res.data;
     },
+    enabled: !!year && !!month, // faqat tanlangan bo‘lsa so‘rov yuboradi
   });
 
 export const useBookingOverdue = () => {
