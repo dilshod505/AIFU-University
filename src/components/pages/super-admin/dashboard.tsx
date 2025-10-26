@@ -504,11 +504,11 @@ const Dashboard = () => {
 
           <Panel
             title={
-              <span className="text-pink-700 dark:text-pink-400">
+              <span className="text-purple-700 dark:text-purple-400">
                 {t("Top Students")}
               </span>
             }
-            className="bg-pink-50 dark:bg-pink-900/40 border-pink-200 dark:border-pink-800"
+            className="bg-purple-50 dark:bg-purple-900/40 border-purple-200 dark:border-purple-800"
           >
             {studentsTop.isLoading ? (
               <Skeleton className="w-full h-32" />
@@ -555,11 +555,11 @@ const Dashboard = () => {
         {role === "super-admin" && (
           <div className="lg:col-span-3 xl:col-span-6">
             <Panel
-              className="bg-amber-50 dark:bg-amber-900/40 border-amber-200 dark:border-amber-800"
+              className="bg-green-50 dark:bg-green-900/40 border-green-300 dark:border-green-800"
               title={
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-amber-700 dark:text-amber-400">
+                    <span className="text-green-700 dark:text-green-400">
                       {t("Admins Activity")}
                     </span>
                   </div>
@@ -584,7 +584,7 @@ const Dashboard = () => {
                 </div>
               }
             >
-              <div className="overflow-y-auto max-h-96">
+              <div className="overflow-y-auto max-h-96 mt-[-50px]">
                 {adminsActivity.isLoading ? (
                   <div className="flex justify-center items-center h-full text-muted-foreground">
                     {t("Loading admins activity")}...
@@ -598,9 +598,9 @@ const Dashboard = () => {
                     {t("No admins activity")}
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-4 mt-[-10px]">
                     {/* Sticky Header */}
-                    <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-[16px] text-muted-foreground sticky top-0 bg-amber-50 z-10">
+                    <div className="grid grid-cols-4 gap-4 pb-2 border-b font-medium text-[20px] text-muted-foreground sticky top-[-3px] bg-green-50 z-10">
                       <div>{t("Admin")}</div>
                       <div>{t("Action Type")}</div>
                       <div>{t("Description")}</div>
@@ -663,7 +663,7 @@ const Dashboard = () => {
             }
             className="bg-rose-50 dark:bg-rose-800/40 border-rose-200 dark:border-rose-600"
           >
-            <div className="overflow-y-auto max-h-96">
+            <div className="overflow-y-auto max-h-96 mt-[-50px]">
               {bookingOverdue.isLoading ? (
                 <div className="flex justify-center items-center h-full text-muted-foreground">
                   {t("Loading overdue bookings")}...
@@ -679,10 +679,10 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {/* Sticky header */}
-                  <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-[16px] text-muted-foreground sticky top-0 bg-rose-50 dark:bg-rose-800/40 z-10">
+                  <div className="grid grid-cols-6 gap-4 pb-2 border-b font-medium text-[20px] text-muted-foreground sticky top-[-3px] bg-rose-50 dark:bg-rose-800/40 z-10">
                     <div>{t("Name")}</div>
                     <div>{t("Surname")}</div>
-                    <div>{t("Book Title")}</div>
+                    <div>{t("Book title")}</div>
                     <div>{t("Author")}</div>
                     <div>{t("Given At")}</div>
                     <div>{t("Due Date")}</div>
