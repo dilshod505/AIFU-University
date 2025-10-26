@@ -41,6 +41,8 @@ import {
   Eye,
   PenSquareIcon,
   Plus,
+  Search,
+  Settings2,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -56,6 +58,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const { TextArea } = AntInput;
 
@@ -469,120 +477,144 @@ export const CopiesBooks = () => {
         columns={columns}
         dataSource={copiesBooks?.data?.list || []}
         header={
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <AntdSelect
-              value={searchField}
-              onChange={(value) => {
-                setSearchField(value);
-                setPageNum(1);
-                setSearchQuery("");
-                setFirstQuery("");
-                setSecondQuery("");
-              }}
-              style={{ width: 200 }}
-              options={[
-                { value: "book", label: t("Book") },
-                { value: "inventoryNumber", label: t("Inventory Number") },
-                { value: "fullInfo", label: t("Full Info") },
-                { value: "fullName", label: t("Full name") },
-                { value: "epc", label: t("epc") },
-              ]}
-            />
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              {/* Search Bar Container */}
+              <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+                {/* Filter Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <TooltipBtn
+                      className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                      title={t("Filter")}
+                    >
+                      <Settings2 size={18} />
+                    </TooltipBtn>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="52">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSearchField("inventoryNumber");
+                        setSearchQuery("");
+                        setFirstQuery("");
+                        setSecondQuery("");
+                      }}
+                      className={
+                        searchField === "inventoryNumber" ? "bg-blue-50" : ""
+                      }
+                    >
+                      {t("Inventory Number search")}
+                    </DropdownMenuItem>
 
-            {searchField === "fullInfo" || searchField === "fullName" ? (
-              <div className="flex items-center justify-center gap-2">
-                <Input
-                  value={firstQuery}
-                  style={{ width: 200 }}
-                  onChange={(e) => setFirstQuery(e.target.value)}
-                  placeholder={
-                    searchField === "fullInfo" ? t("Author") : t("First Name")
-                  }
-                />
-                <Input
-                  value={secondQuery}
-                  style={{ width: 200 }}
-                  onChange={(e) => setSecondQuery(e.target.value)}
-                  placeholder={
-                    searchField === "fullInfo" ? t("Last Name") : t("Last Name")
-                  }
-                />
-                {(firstQuery || secondQuery) && (
-                  <button
-                    onClick={() => {
-                      setFirstQuery("");
-                      setSecondQuery("");
-                    }}
-                    className="flex items-center px-2"
-                  >
-                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  </button>
-                )}
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSearchField("fullInfo");
+                        setSearchQuery("");
+                        setFirstQuery("");
+                        setSecondQuery("");
+                      }}
+                      className={searchField === "fullInfo" ? "bg-blue-50" : ""}
+                    >
+                      {t("Author/Title search")}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSearchField("fullName");
+                        setSearchQuery("");
+                        setFirstQuery("");
+                        setSecondQuery("");
+                      }}
+                      className={searchField === "fullName" ? "bg-blue-50" : ""}
+                    >
+                      {t("Reader Full Name search")}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSearchField("epc");
+                        setSearchQuery("");
+                        setFirstQuery("");
+                        setSecondQuery("");
+                      }}
+                      className={searchField === "epc" ? "bg-blue-50" : ""}
+                    >
+                      {t("EPC search")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Input Fields */}
+                <div className="flex-1 flex items-center gap-3 px-2">
+                  {searchField === "fullInfo" || searchField === "fullName" ? (
+                    <>
+                      <input
+                        type="text"
+                        placeholder={
+                          searchField === "fullInfo"
+                            ? t("Author")
+                            : t("First Name")
+                        }
+                        value={firstQuery}
+                        onChange={(e) => setFirstQuery(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                      />
+                      <div className="w-px h-5 bg-gray-300"></div>
+                      <input
+                        type="text"
+                        placeholder={
+                          searchField === "fullInfo"
+                            ? t("Title")
+                            : t("Last Name")
+                        }
+                        value={secondQuery}
+                        onChange={(e) => setSecondQuery(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                      />
+                    </>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder={t("Search")}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm w-90 dark:text-white"
+                    />
+                  )}
+                </div>
+
+                {/* Search Button */}
+                <TooltipBtn
+                  className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                  title={t("Search")}
+                >
+                  <Search size={18} />
+                </TooltipBtn>
               </div>
-            ) : (
-              <div className="relative">
-                <Input
-                  value={searchQuery}
-                  style={{ width: 200 }}
-                  onChange={handleSearchChange}
-                  placeholder={t("Search")}
-                />
-                {searchQuery && (
-                  <button
-                    onClick={clearSearch}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+
+              {/* Sort + Add */}
+              <div className="flex gap-2">
+                {sortDirection === "asc" ? (
+                  <TooltipBtn
+                    size="sm"
+                    onClick={() => setSortDirection("desc")}
                   >
-                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  </button>
+                    <ArrowUpWideNarrow />
+                  </TooltipBtn>
+                ) : (
+                  <TooltipBtn size="sm" onClick={() => setSortDirection("asc")}>
+                    <ArrowDownWideNarrow />
+                  </TooltipBtn>
                 )}
+
+                <TooltipBtn
+                  size="sm"
+                  title={t("Add Book Copy")}
+                  onClick={() => setOpen(true)}
+                >
+                  <Plus /> {t("Add Book Copy")}
+                </TooltipBtn>
               </div>
-            )}
-
-            <div className="flex items-center gap-2 flex-wrap">
-              {sortDirection === "asc" ? (
-                <Button size="sm" onClick={() => setSortDirection("desc")}>
-                  <ArrowUpWideNarrow />
-                </Button>
-              ) : (
-                <Button size="sm" onClick={() => setSortDirection("asc")}>
-                  <ArrowDownWideNarrow />
-                </Button>
-              )}
-
-              <Tabs
-                value={filter}
-                onValueChange={(a: string) => setFilter(a as any)}
-              >
-                <TabsList className="flex gap-2">
-                  <TabsTrigger
-                    value="all"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("All")}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="active"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("Active")}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="inactive"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("Inactive")}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              <TooltipBtn
-                size="sm"
-                title={t("Add Book Copy")}
-                onClick={() => setOpen(true)}
-              >
-                <Plus />
-                {t("Add Book Copy")}
-              </TooltipBtn>
             </div>
           </div>
         }
