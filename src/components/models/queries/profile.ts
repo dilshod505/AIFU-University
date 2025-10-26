@@ -83,11 +83,16 @@ export const useAdminActivityToday = () =>
     },
   });
 
-export const useAdminActivityAnalytics = () =>
+// models/queries/profile.ts ichida
+export const useAdminActivityAnalytics = (
+  period: "current-month" | "last-month" = "current-month",
+) =>
   useQuery({
-    queryKey: ["admin-activity-analytics"],
+    queryKey: ["admin-activity-analytics", period],
     queryFn: async () => {
-      const res = await api.get("/admin/admin-statistics/activity/analytics");
+      const res = await api.get("/admin/admin-statistics/activity/analytics", {
+        params: { period },
+      });
       return res.data;
     },
   });

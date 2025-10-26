@@ -30,13 +30,16 @@ import {
 
 const Profile = () => {
   const t = useTranslations();
-  const [monthFilter, setMonthFilter] = useState("current");
   const currentMonth = new Date().getMonth(); // 0-11
   const currentYear = new Date().getFullYear();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
+
+  const [monthFilter, setMonthFilter] = useState<
+    "current-month" | "last-month"
+  >("current-month");
 
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -46,7 +49,7 @@ const Profile = () => {
   const { data: extendedBooks } = useAdminExtendedBooks();
   const { data: activity } = useAdminActivity();
   const { data: activityToday } = useAdminActivityToday();
-  const { data: analytics } = useAdminActivityAnalytics();
+  const { data: analytics } = useAdminActivityAnalytics(monthFilter);
 
   const editProfile = () => {
     form.setFieldsValue({
@@ -114,45 +117,24 @@ const Profile = () => {
     activityToday?.data?.analytics?.extendedCount ?? 0,
   ];
 
-  const filteredData = useMemo(() => {
-    return (
-      analytics?.data?.filter((item: any) => {
-        const date = new Date(item.day);
-        const month = date.getMonth();
-        const year = date.getFullYear();
-
-        if (monthFilter === "current") {
-          return month === currentMonth && year === currentYear;
-        }
-        if (monthFilter === "previous") {
-          return (
-            month === (currentMonth === 0 ? 11 : currentMonth - 1) &&
-            year === (currentMonth === 0 ? currentYear - 1 : currentYear)
-          );
-        }
-        return true;
-      }) ?? []
-    );
-  }, [analytics, monthFilter, currentMonth, currentYear]);
-
   const analyticsChartOptions: ApexOptions = {
     chart: { type: "line", toolbar: { show: false } },
     stroke: { curve: "smooth" },
-    xaxis: { categories: filteredData?.map((item: any) => item.day) },
+    xaxis: { categories: analytics?.data?.map((item: any) => item.day) ?? [] },
   };
 
   const analyticsChartSeries = [
     {
       name: t("Issued"),
-      data: filteredData.map((item: any) => item.issued),
+      data: analytics?.data?.map((item: any) => item.issued) ?? [],
     },
     {
       name: t("Returned"),
-      data: filteredData.map((item: any) => item.returned),
+      data: analytics?.data?.map((item: any) => item.returned) ?? [],
     },
     {
       name: t("Extended"),
-      data: filteredData.map((item: any) => item.extended),
+      data: analytics?.data?.map((item: any) => item.extended) ?? [],
     },
   ];
 
@@ -242,7 +224,7 @@ const Profile = () => {
             </div>
             <div className="flex items-end justify-between">
               <div className="text-2xl font-bold">
-                {issuedBooks?.data?.totalCount ?? 0}
+                {issuedBooks?.data?.count ?? 0}
               </div>
               <div className="flex items-center text-xs">
                 {issuedBooks?.data?.totalPercent > 0 ? (
@@ -300,7 +282,7 @@ const Profile = () => {
             </div>
             <div className="flex items-end justify-between">
               <div className="text-2xl font-bold">
-                {extendedBooks?.data?.count ?? 0}
+                {extendedBooks?.count ?? 0}
               </div>
               <div className="flex items-center text-xs">
                 {extendedBooks?.data?.percent > 0 ? (
@@ -323,27 +305,27 @@ const Profile = () => {
       </div>
 
       {/* Contribution to global stats */}
-      <Card className="shadow-sm mb-5">
-        <CardContent>
-          <h3 className="text-2xl font-bold tracking-wide mb-3">
-            {t("Contribution to Global Statistics")}
-          </h3>
-          <p className="text-[16px]">
-            {t("Your issues this month")}:{" "}
-            <span className="font-bold text-red-600">
-              {activity?.data?.analytics?.issuedCount ?? 0}
-            </span>{" "}
-            &nbsp; {t("Total in library")}:{" "}
-            <span className="font-bold text-green-600">
-              {activity?.data?.analytics?.totalCount ?? 0}
-            </span>
-            &nbsp; {t("Share")}:{" "}
-            <span className="font-bold text-blue-600">
-              {activity?.data?.analytics?.totalCount}
-            </span>
-          </p>
-        </CardContent>
-      </Card>
+      {/*<Card className="shadow-sm mb-5">*/}
+      {/*  <CardContent>*/}
+      {/*    <h3 className="text-2xl font-bold tracking-wide mb-3">*/}
+      {/*      {t("Contribution to Global Statistics")}*/}
+      {/*    </h3>*/}
+      {/*    <p className="text-[16px]">*/}
+      {/*      {t("Your issues this month")}:{" "}*/}
+      {/*      <span className="font-bold text-red-600">*/}
+      {/*        {activity?.data?.analytics?.issuedCount ?? 0}*/}
+      {/*      </span>{" "}*/}
+      {/*      &nbsp; {t("Total in library")}:{" "}*/}
+      {/*      <span className="font-bold text-green-600">*/}
+      {/*        {activity?.data?.analytics?.totalCount ?? 0}*/}
+      {/*      </span>*/}
+      {/*      &nbsp; {t("Share")}:{" "}*/}
+      {/*      <span className="font-bold text-blue-600">*/}
+      {/*        {activity?.data?.analytics?.totalCount}*/}
+      {/*      </span>*/}
+      {/*    </p>*/}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left side chart */}
@@ -453,10 +435,10 @@ const Profile = () => {
             <Select
               value={monthFilter}
               onChange={setMonthFilter}
-              style={{ width: 150 }}
+              style={{ width: 180 }}
               options={[
-                { value: "current", label: t("Current Month") },
-                { value: "previous", label: t("Previous Month") },
+                { value: "current-month", label: t("Current Month") },
+                { value: "last-month", label: t("Last month") },
               ]}
             />
             <Chart

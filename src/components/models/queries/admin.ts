@@ -78,7 +78,7 @@ export const useResendActivationCode = () => {
 
   return useMutation({
     mutationFn: async (data: { email: string }) => {
-      const res = await api.post(`/super-admin/admins/resend-code`, data);
+      const res = await api.post(`/super-admin/admins/activate`, data);
       return res.data;
     },
     onSuccess: () => {
