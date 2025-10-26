@@ -488,8 +488,8 @@
   "0 overdue bookings today": "Bugungi kechiktirilgan bronlar yo'q",
   "Author/Title search": "Muallif va Sarlavha boʻyicha qidiruv",
   "Isbn search": "ISBN bo'yicha qidiruv",
-  "UDC search": "UDK qidiruvi",
-  "Series search": "Seriallarni qidirish",
+  "UDC search": "UDK bo'yicha qidirish",
+  "Series search": "Seria bo'yicha qidirish",
   "Deleted book category": "O'chirilgan kitob kategoriyasi",
   "Created book category": "Kitob toifasi yaratildi",
   "Created base book": "Asosiy kitob yaratildi",
@@ -500,5 +500,10 @@
   "PDF upload failed! Please try again.": "PDF yuklashda xatolik! Iltimos, qayta urinib ko'ring.",
   "Image upload failed! Please try again": "Rasm yuklanmadi! Iltimos, qayta urinib ko'ring.",
   "Yearly Booking Statistics": "Yillik bron qilish statistikasi",
-  "usageCount": "Foydalanish soni"
+  "usageCount": "Foydalanish soni",
+  "Activation code sent to email": "Elektron pochtaga faollashtirish kodi yuborildi",
+  "Search by ISBN": "ISBN boʻyicha qidirish",
+  "Search by UDC": "UDK bo'yicha qidirish",
+  "Search by Series": "Serial bo'yicha qidirish",
+  "Search by Author/Title": "Muallif/Sarlavha boʻyicha qidirish"
 }

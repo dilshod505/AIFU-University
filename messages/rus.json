@@ -500,5 +500,10 @@
   "PDF upload failed! Please try again.": "Не удалось загрузить PDF! Пожалуйста, попробуйте еще раз.",
   "Image upload failed! Please try again": "Не удалось загрузить изображение! Пожалуйста, попробуйте еще раз.",
   "Yearly Booking Statistics": "Годовая статистика бронирований",
-  "usageCount": "Количество использований"
+  "usageCount": "Количество использований",
+  "Activation code sent to email": "Код активации отправлен на электронную почту",
+  "Search by ISBN": "Поиск по ISBN",
+  "Search by UDC": "Поиск по УДК",
+  "Search by Series": "Поиск по сериям",
+  "Search by Author/Title": "Поиск по автору/названию"
 }

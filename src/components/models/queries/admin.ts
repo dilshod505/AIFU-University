@@ -85,8 +85,5 @@ export const useResendActivationCode = () => {
       queryClient.invalidateQueries({ queryKey: ["administrators"] });
       toast.success("Kod qayta yuborildi");
     },
-    onError: () => {
-      toast.error("Kod yuborishda xatolik");
-    },
   });
 };

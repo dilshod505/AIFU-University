@@ -500,5 +500,10 @@
   "PDF upload failed! Please try again.": "PDF upload failed! Please try again.",
   "Image upload failed! Please try again": "Image upload failed! Please try again.",
   "Yearly Booking Statistics": "Yearly Booking Statistics",
-  "usageCount": "Usage Count"
+  "usageCount": "Usage Count",
+  "Activation code sent to email": "Activation code sent to email",
+  "Search by ISBN": "Search by ISBN",
+  "Search by UDC": "Search by UDC",
+  "Search by Series": "Search by Series",
+  "Search by Author/Title": "Search by Author/Title"
 }

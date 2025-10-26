@@ -54,8 +54,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  Filter,
   PenSquareIcon,
   Plus,
+  Search,
+  Settings2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -394,6 +397,19 @@ const BaseBooks = () => {
     }
   };
 
+  const placeholderText = useMemo(() => {
+    switch (filterColumn) {
+      case "isbn":
+        return t("Search by ISBN");
+      case "udc":
+        return t("Search by UDC");
+      case "series":
+        return t("Search by Series");
+      default:
+        return t("Search by Author/Title");
+    }
+  }, [filterColumn, t]);
+
   return (
     <div>
       <TooltipProvider>
@@ -404,148 +420,224 @@ const BaseBooks = () => {
           isLoading={isLoading}
           pagination={false}
           header={
-            <div className="flex flex-wrap justify-start items-center gap-2 p-2 rounded-xl">
-              <Select
-                defaultValue="fullInfo"
-                placeholder={t("select type search")}
-                style={{ width: 250 }}
-                onChange={(val: any) => {
-                  setFilterColumn(val);
-                  setFilterValue("");
-                  setFullInfoTitle("");
-                  setFullInfoAuthor("");
-                }}
-              >
-                <Option value="fullInfo">{t("Author/Title search")}</Option>
-                <Option value="isbn">{t("Isbn search")}</Option>
-                <Option value="udc">{t("UDC search")}</Option>
-                <Option value="series">{t("Series search")}</Option>
-              </Select>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                {/* Search Bar Container */}
+                <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <TooltipBtn
+                        className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                        title={t("Filter")}
+                      >
+                        <Settings2 size={18} />
+                      </TooltipBtn>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="52">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setFilterColumn("fullInfo");
+                          setFilterValue("");
+                          setFullInfoTitle("");
+                          setFullInfoAuthor("");
+                        }}
+                        className={
+                          filterColumn === "fullInfo" ? "bg-blue-50" : ""
+                        }
+                      >
+                        {t("Author/Title search")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setFilterColumn("isbn");
+                          setFilterValue("");
+                          setFullInfoTitle("");
+                          setFullInfoAuthor("");
+                        }}
+                        className={filterColumn === "isbn" ? "bg-blue-50" : ""}
+                      >
+                        {t("Isbn search")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setFilterColumn("udc");
+                          setFilterValue("");
+                          setFullInfoTitle("");
+                          setFullInfoAuthor("");
+                        }}
+                        className={filterColumn === "udc" ? "bg-blue-50" : ""}
+                      >
+                        {t("UDC search")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setFilterColumn("series");
+                          setFilterValue("");
+                          setFullInfoTitle("");
+                          setFullInfoAuthor("");
+                        }}
+                        className={
+                          filterColumn === "series" ? "bg-blue-50" : ""
+                        }
+                      >
+                        {t("Series search")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-              {/* Dynamic Inputs */}
-              {filterColumn === "fullInfo" ? (
-                <div className="flex gap-2 items-center">
-                  <AutoResizeInput
-                    placeholder={t("Title")}
-                    value={fullInfoTitle}
-                    onChange={(e) => setFullInfoTitle(e.target.value)}
-                  />
-                  <AutoResizeInput
-                    placeholder={t("Author")}
-                    value={fullInfoAuthor}
-                    onChange={(e) => setFullInfoAuthor(e.target.value)}
-                  />
-                </div>
-              ) : (
-                <AutoResizeInput
-                  placeholder={t("Filter value")}
-                  value={filterValue}
-                  onChange={(e) => setFilterValue(e.target.value)}
-                />
-              )}
+                  {/* Input Fields */}
+                  <div className="flex-1 flex items-center gap-3 px-2">
+                    {filterColumn === "fullInfo" ? (
+                      <>
+                        <input
+                          type="text"
+                          placeholder={t("Title")}
+                          value={fullInfoTitle}
+                          onChange={(e) => setFullInfoTitle(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                        />
+                        <div className="w-px h-5 bg-gray-300"></div>
+                        <input
+                          type="text"
+                          placeholder={t("Author")}
+                          value={fullInfoAuthor}
+                          onChange={(e) => setFullInfoAuthor(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
+                        />
+                      </>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={placeholderText}
+                        value={filterValue}
+                        onChange={(e) => setFilterValue(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm w-90 dark:text-white"
+                      />
+                    )}
+                  </div>
 
-              {/* Sort Buttons */}
-              {sortDirection === "asc" ? (
-                <TooltipBtn size="sm" onClick={() => setSortDirection("desc")}>
-                  <ArrowUpWideNarrow />
-                </TooltipBtn>
-              ) : (
-                <TooltipBtn size="sm" onClick={() => setSortDirection("asc")}>
-                  <ArrowDownWideNarrow />
-                </TooltipBtn>
-              )}
-
-              {/* Excel menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <TooltipBtn title={t("Select type excel download")}>
-                    <RiFileExcel2Line />
+                  {/*Search Button */}
+                  <TooltipBtn
+                    className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                    title={t("Search")}
+                  >
+                    <Search size={18} />
                   </TooltipBtn>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {role === "super-admin" && (
-                    <DropdownMenuItem
-                      onClick={() => {
-                        const input = document.createElement("input");
-                        input.type = "file";
-                        input.accept =
-                          ".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        input.onchange = (e: any) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            uploadExcel.mutate(file, {
-                              onSuccess: (res: any) => {
-                                toast.success(
-                                  res?.message ||
-                                    t("Excel muvaffaqiyatli yuklandi"),
-                                );
-                              },
-                              onError: (err: any) => {
-                                toast.error(
-                                  err?.response?.data?.message ||
-                                    t("Excel yuklashda xatolik"),
-                                );
-                              },
-                            });
-                          }
-                        };
-                        input.click();
-                      }}
+                </div>
+
+                {/* Sort Buttons */}
+                <div className="flex gap-2">
+                  {sortDirection === "asc" ? (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("desc")}
                     >
-                      {t("Excel orqali kitob qo'shish")}
-                    </DropdownMenuItem>
+                      <ArrowUpWideNarrow />
+                    </TooltipBtn>
+                  ) : (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("asc")}
+                    >
+                      <ArrowDownWideNarrow />
+                    </TooltipBtn>
                   )}
 
-                  <DropdownMenuItem
-                    onClick={() =>
-                      importExcel.mutate(
-                        {},
-                        {
-                          onSuccess: () =>
-                            toast.success(
-                              t("Excel muvaffaqiyatli yuklab olindi"),
-                            ),
-                          onError: () =>
-                            toast.error(t("Excel yuklashda xatolik")),
-                        },
-                      )
-                    }
-                  >
-                    {t("Kitob qo'shish uchun excel shablon")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      allExcelImport.mutate(
-                        {},
-                        {
-                          onSuccess: () =>
-                            toast.success(
-                              t("Barcha kitoblar muvaffaqiyatli yuklab olindi"),
-                            ),
-                          onError: () =>
-                            toast.error(t("Excel yuklashda xatolik")),
-                        },
-                      )
-                    }
-                  >
-                    {t("Barcha kitoblarni excelga yuklash")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  {/* Excel menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <TooltipBtn title={t("Select type excel download")}>
+                        <RiFileExcel2Line />
+                      </TooltipBtn>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {role === "super-admin" && (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            const input = document.createElement("input");
+                            input.type = "file";
+                            input.accept =
+                              ".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            input.onchange = (e: any) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                uploadExcel.mutate(file, {
+                                  onSuccess: (res: any) => {
+                                    toast.success(
+                                      res?.message ||
+                                        t("Excel muvaffaqiyatli yuklandi"),
+                                    );
+                                  },
+                                  onError: (err: any) => {
+                                    toast.error(
+                                      err?.response?.data?.message ||
+                                        t("Excel yuklashda xatolik"),
+                                    );
+                                  },
+                                });
+                              }
+                            };
+                            input.click();
+                          }}
+                        >
+                          {t("Excel orqali kitob qo'shish")}
+                        </DropdownMenuItem>
+                      )}
 
-              {/* Add Book */}
-              <TooltipBtn
-                size="sm"
-                title={t("Add Book")}
-                variant={""}
-                onClick={() => {
-                  setEditingBook(null);
-                  form.resetFields();
-                  setOpen(true);
-                }}
-              >
-                <Plus /> {t("Add Book")}
-              </TooltipBtn>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          importExcel.mutate(
+                            {},
+                            {
+                              onSuccess: () =>
+                                toast.success(
+                                  t("Excel muvaffaqiyatli yuklab olindi"),
+                                ),
+                              onError: () =>
+                                toast.error(t("Excel yuklashda xatolik")),
+                            },
+                          )
+                        }
+                      >
+                        {t("Kitob qo'shish uchun excel shablon")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          allExcelImport.mutate(
+                            {},
+                            {
+                              onSuccess: () =>
+                                toast.success(
+                                  t(
+                                    "Barcha kitoblar muvaffaqiyatli yuklab olindi",
+                                  ),
+                                ),
+                              onError: () =>
+                                toast.error(t("Excel yuklashda xatolik")),
+                            },
+                          )
+                        }
+                      >
+                        {t("Barcha kitoblarni excelga yuklash")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Add Book */}
+                  <TooltipBtn
+                    size="sm"
+                    title={t("Add Book")}
+                    variant={""}
+                    onClick={() => {
+                      setEditingBook(null);
+                      form.resetFields();
+                      setOpen(true);
+                    }}
+                  >
+                    <Plus /> {t("Add Book")}
+                  </TooltipBtn>
+                </div>
+              </div>
             </div>
           }
           footer={
