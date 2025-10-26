@@ -505,5 +505,8 @@
   "Search by ISBN": "ISBN boʻyicha qidirish",
   "Search by UDC": "UDK bo'yicha qidirish",
   "Search by Series": "Serial bo'yicha qidirish",
-  "Search by Author/Title": "Muallif/Sarlavha boʻyicha qidirish"
+  "Search by Author/Title": "Muallif/Sarlavha boʻyicha qidirish",
+  "name and lastName search": "Ism va familiya bo'yicha qidirish",
+  "Card number search": "Karta raqami bo'yicha qidirish",
+  "Search card number": "Karta raqam bo'yicha qidirish"
 }

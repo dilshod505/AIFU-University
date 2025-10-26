@@ -505,5 +505,8 @@
   "Search by ISBN": "Поиск по ISBN",
   "Search by UDC": "Поиск по УДК",
   "Search by Series": "Поиск по сериям",
-  "Search by Author/Title": "Поиск по автору/названию"
+  "Search by Author/Title": "Поиск по автору/названию",
+  "name and lastName search": "Поиск по имени и фамилии",
+  "Card number search": "Поиск по номеру карты",
+  "Search card number": "Поиск номера карты"
 }

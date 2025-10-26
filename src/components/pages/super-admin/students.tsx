@@ -23,14 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -49,10 +41,10 @@ import {
   EllipsisVertical,
   Eye,
   GraduationCap,
-  ImportIcon,
   PenSquareIcon,
   Plus,
   Search,
+  Settings2,
   User,
   UserRoundCheck,
   UserRoundX,
@@ -62,7 +54,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 
@@ -85,7 +76,6 @@ const Students = () => {
 
   const t = useTranslations();
   const [filter, setFilter] = useState<FilterType>("all");
-  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [size, setSize] = useState<10 | 25 | 50 | 100>(10);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [searchValue, setSearchValue] = useState<string>("");
@@ -128,10 +118,10 @@ const Students = () => {
 
   const downloadFile = async (url: string, filename: string) => {
     try {
-      const fullUrl = makeFullUrl(url)!; // nisbiy bo‘lsa ham to‘liq qilib beradi
+      const fullUrl = makeFullUrl(url)!;
 
       const res = await api.get(fullUrl, {
-        responseType: "blob", // fayl bo‘lishi uchun
+        responseType: "blob",
       });
 
       const blob = new Blob([res.data]);
@@ -155,14 +145,12 @@ const Students = () => {
     downloadReportUrl?: string;
   } | null>(null);
 
-  // Excel fayl tanlash
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       importStudents.mutate(file, {
         onSuccess: (res) => {
           toast.success(res.message || "Import completed");
-          // Import students natijasi
           setImportResult({
             successCount: res.data?.successCount || res.successCount,
             errorCount: res.data?.errorCount || res.errorCount,
@@ -574,149 +562,154 @@ const Students = () => {
           size={"large"}
           striped
           header={
-            <div className={"flex justify-start items-center gap-2 flex-wrap"}>
-              <div className="flex items-center gap-2">
-                <Select
-                  value={searchField}
-                  onValueChange={(val: any) => {
-                    setSearchField(val);
-                    setSearchValue("");
-                    setFirstQuery("");
-                    setSecondQuery("");
-                  }}
-                >
-                  <SelectTrigger className="w-[110px]">
-                    <SelectValue placeholder={t("Search by")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fullName">{t("Name")}</SelectItem>
-                    <SelectItem value="cardNumber">
-                      {t("Card number")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-3">
+                {/* Search Bar Container */}
+                <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2 bg-white dark:bg-gray-900">
+                  {/* Filter Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <TooltipBtn
+                        className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors dark:hover:bg-gray-800"
+                        title={t("Filter")}
+                      >
+                        <Settings2 size={18} />
+                      </TooltipBtn>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSearchField("fullName");
+                          setSearchValue("");
+                          setFirstQuery("");
+                          setSecondQuery("");
+                        }}
+                        className={
+                          searchField === "fullName"
+                            ? "bg-blue-50 dark:bg-blue-900"
+                            : ""
+                        }
+                      >
+                        {t("name and lastName search")}
+                      </DropdownMenuItem>
 
-                {searchField === "fullName" ? (
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder={t("firstName")}
-                      value={firstQuery}
-                      onChange={(e) => setFirstQuery(e.target.value)}
-                    />
-                    <Input
-                      placeholder={t("lastName")}
-                      value={secondQuery}
-                      onChange={(e) => setSecondQuery(e.target.value)}
-                    />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSearchField("cardNumber");
+                          setSearchValue("");
+                          setFirstQuery("");
+                          setSecondQuery("");
+                        }}
+                        className={
+                          searchField === "cardNumber"
+                            ? "bg-blue-50 dark:bg-blue-900"
+                            : ""
+                        }
+                      >
+                        {t("Card number search")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Input Fields */}
+                  <div className="flex-1 flex items-center gap-3 px-2">
+                    {searchField === "fullName" ? (
+                      <>
+                        <input
+                          type="text"
+                          placeholder={t("Name")}
+                          value={firstQuery}
+                          onChange={(e) => setFirstQuery(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-sm"
+                        />
+                        <div className="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
+                        <input
+                          type="text"
+                          placeholder={t("Last Name")}
+                          value={secondQuery}
+                          onChange={(e) => setSecondQuery(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-sm"
+                        />
+                      </>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={t("Search card number")}
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        className="w-90 flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-sm"
+                      />
+                    )}
                   </div>
-                ) : (
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
-                    <Input
-                      className="pl-8"
-                      placeholder={t("Search")}
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                  </div>
-                )}
+
+                  {/* Search Button */}
+                  <TooltipBtn
+                    className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                    title={t("Search")}
+                  >
+                    <Search size={18} />
+                  </TooltipBtn>
+                </div>
+
+                {/* Sort + Add */}
+                <div className="flex gap-2">
+                  {sortDirection === "asc" ? (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("desc")}
+                    >
+                      <ArrowUpWideNarrow />
+                    </TooltipBtn>
+                  ) : (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("asc")}
+                    >
+                      <ArrowDownWideNarrow />
+                    </TooltipBtn>
+                  )}
+
+                  <Tabs
+                    value={filter}
+                    onValueChange={(a: string) => setFilter(a as any)}
+                  >
+                    <TabsList className="flex gap-2">
+                      <TabsTrigger
+                        value="all"
+                        className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                      >
+                        {t("All")}
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="active"
+                        className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                      >
+                        {t("Active")}
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="inactive"
+                        className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                      >
+                        {t("Inactive")}
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  <TooltipBtn
+                    size="sm"
+                    title={t("Add Student")}
+                    onClick={() => {
+                      setEditingStudent(null);
+                      form.reset({ name: "" });
+                      setOpen(true);
+                    }}
+                  >
+                    <Plus /> {t("Add Student")}
+                  </TooltipBtn>
+                </div>
               </div>
 
-              {sortDirection === "asc" ? (
-                <Button size={"sm"} onClick={() => setSortDirection("desc")}>
-                  <ArrowUpWideNarrow />
-                </Button>
-              ) : (
-                <Button size={"sm"} onClick={() => setSortDirection("asc")}>
-                  <ArrowDownWideNarrow />
-                </Button>
-              )}
-
-              <Tabs
-                value={filter}
-                onValueChange={(a: string) => setFilter(a as any)}
-              >
-                <TabsList className="flex gap-2">
-                  <TabsTrigger
-                    value="all"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("All")}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="active"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("Active")}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="inactive"
-                    className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                  >
-                    {t("Inactive")}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <TooltipBtn title={t("Select type excel download")}>
-                    <RiFileExcel2Line />
-                  </TooltipBtn>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => expertToExcel.mutate({})}>
-                    {t("Export Students")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => exportToExcelShablon.mutate({})}
-                  >
-                    {t("Export Template")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <TooltipBtn title={t("Import Students")}>
-                <label>
-                  <ImportIcon />
-                  <input
-                    type="file"
-                    accept=".xlsx"
-                    hidden
-                    onChange={handleImport}
-                  />
-                </label>
-              </TooltipBtn>
-
-              {role === "super-admin" && (
-                <TooltipBtn
-                  title={t("Deactivate Graduates")}
-                  variant={"destructive"}
-                >
-                  <label>
-                    <ImportIcon />
-                    <input
-                      type="file"
-                      accept=".xlsx"
-                      hidden
-                      onChange={handleDeactivate}
-                    />
-                  </label>
-                </TooltipBtn>
-              )}
-
-              <TooltipBtn
-                variant={"default"}
-                title={t("Add Student")}
-                onClick={() => {
-                  setEditingStudent(null);
-                  form.reset({ name: "" });
-                  setOpen(true);
-                }}
-              >
-                <Plus />
-                {t("Add Student")}
-              </TooltipBtn>
+              {/* Filter Tabs */}
             </div>
           }
           footer={
@@ -725,16 +718,15 @@ const Students = () => {
                 "flex flex-wrap flex-col lg:flex-row justify-center lg:justify-between items-center gap-4"
               }
             >
-              {/* Import natijalari faqat mavjud bo‘lsa chiqsin */}
               {importResult && (
-                <div className="space-y-2 border p-3 rounded bg-gray-50">
-                  <p className="text-sm text-green-700">
+                <div className="space-y-2 border p-3 rounded bg-gray-50 dark:bg-gray-900">
+                  <p className="text-sm text-green-700 dark:text-green-400">
                     Muvaffaqiyatli qo'shilganlar:{" "}
                     <span className="font-semibold">
                       {importResult.successCount ?? 0}
                     </span>
                   </p>
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-red-600 dark:text-red-400">
                     Qo'shilmaganlar:{" "}
                     <span className="font-semibold">
                       {importResult.errorCount ?? 0}
@@ -757,22 +749,21 @@ const Students = () => {
                   )}
                 </div>
               )}
-              {/* Deactivate natijalari faqat mavjud bo‘lsa chiqsin */}
               {deactivateResult && (
-                <div className="border p-2 rounded bg-gray-50">
-                  <p className="text-sm text-green-700">
+                <div className="border p-2 rounded bg-gray-50 dark:bg-gray-900">
+                  <p className="text-sm text-green-700 dark:text-green-400">
                     Muvaffaqiyatli deaktivatsiya qilinganlar:{" "}
                     <span className="font-semibold">
                       {deactivateResult.successCount ?? 0}
                     </span>
                   </p>
-                  <p className="text-sm text-yellow-600">
+                  <p className="text-sm text-yellow-600 dark:text-yellow-400">
                     Qarzdorlar:{" "}
                     <span className="font-semibold">
                       {deactivateResult.debtorCount ?? 0}
                     </span>
                   </p>
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-red-600 dark:text-red-400">
                     Topilmagan talabalar:{" "}
                     <span className="font-semibold">
                       {deactivateResult.notFoundCount ?? 0}
@@ -814,7 +805,6 @@ const Students = () => {
                   </div>
                 </div>
               )}
-              {/* Sahifa statistikasi */}
               <div className="font-bold text-[20px] flex flex-col lg:flex-row gap-5">
                 <p className="text-sm">
                   {t("Total Pages")}:{" "}
@@ -840,13 +830,21 @@ const Students = () => {
                   pageRangeDisplayed={3}
                   pageCount={Math.ceil((students?.totalElements || 1) / size)}
                   previousLabel={
-                    <Button className={"bg-white text-black"}>
+                    <Button
+                      className={
+                        "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      }
+                    >
                       <ChevronLeft />
                       {t("Return")}
                     </Button>
                   }
                   nextLabel={
-                    <Button className={"bg-white text-black"}>
+                    <Button
+                      className={
+                        "bg-white text-black dark:bg-gray-800 dark:text-white"
+                      }
+                    >
                       {t("Next")} <ChevronRight />
                     </Button>
                   }
@@ -879,8 +877,8 @@ const Students = () => {
                   ? fields.filter(
                       (f) =>
                         !["passportSeries", "passportNumber"].includes(f.name),
-                    ) // 🔹 Edit rejimida passportSeries va passportNumber chiqmaydi
-                  : fields // 🔹 Create rejimida barcha fieldlar chiqadi
+                    )
+                  : fields
               }
             />
           </SheetContent>

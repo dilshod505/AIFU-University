@@ -505,5 +505,8 @@
   "Search by ISBN": "Search by ISBN",
   "Search by UDC": "Search by UDC",
   "Search by Series": "Search by Series",
-  "Search by Author/Title": "Search by Author/Title"
+  "Search by Author/Title": "Search by Author/Title",
+  "name and lastName search": "Name and Last Name Search",
+  "Card number search": "Card Number Search",
+  "Search card number": "Search card number"
 }
