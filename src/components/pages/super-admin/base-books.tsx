@@ -85,6 +85,13 @@ const BaseBooks = () => {
     router.push(`?${params.toString()}`);
   };
 
+  const resetPageToOne = () => {
+    setPageNum(1);
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
   const t = useTranslations();
   // const [pageNum, setPageNum] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -165,31 +172,40 @@ const BaseBooks = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchAuthor(searchQuery);
-      if (searchQuery !== debouncedSearchAuthor) {
-        setPageNum(1);
-      }
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchQuery, debouncedSearchAuthor]);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (searchQuery !== "") {
+      resetPageToOne();
+    }
+  }, [debouncedSearchAuthor]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTitle(searchTitle);
-      if (searchTitle !== debouncedSearchTitle) {
-        setPageNum(1);
-      }
     }, 500);
     return () => clearTimeout(timer);
-  }, [searchTitle, debouncedSearchTitle]);
+  }, [searchTitle]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (filterColumn === "fullInfo") {
-        setPageNum(1);
-      }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [fullInfoTitle, fullInfoAuthor, filterColumn]);
+    if (searchTitle !== "") {
+      resetPageToOne();
+    }
+  }, [debouncedSearchTitle]);
+
+  useEffect(() => {
+    if (fullInfoTitle !== "" || fullInfoAuthor !== "") {
+      resetPageToOne();
+    }
+  }, [fullInfoTitle, fullInfoAuthor]);
+
+  useEffect(() => {
+    if (filterValue !== "") {
+      resetPageToOne();
+    }
+  }, [filterValue]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -729,7 +745,7 @@ const BaseBooks = () => {
         onOpenChange={(v) => {
           if (!v) {
             setDetailOpen(false);
-            setTimeout(() => setSelectedId(null), 500); // 300ms — yopilish animatsiyasidan so‘ng
+            setTimeout(() => setSelectedId(null), 500); // 300ms — yopilish animatsiyasidan so'ng
           } else {
             setDetailOpen(true);
           }
