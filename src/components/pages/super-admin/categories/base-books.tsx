@@ -18,9 +18,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { PenSquareIcon, Plus } from "lucide-react";
+import { PenSquareIcon, Plus, Search, Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -41,7 +41,7 @@ const BaseBooks = () => {
   const filteredCategories = useMemo(() => {
     if (!data?.data) return [];
     return data.data.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item.name.toLowerCase().includes(search.toLowerCase()),
     );
   }, [data, search]);
 
@@ -92,7 +92,7 @@ const BaseBooks = () => {
         ),
       },
     ],
-    [deleteCategory, t]
+    [deleteCategory, t],
   );
 
   const fields = useMemo<FormField[]>(
@@ -104,7 +104,7 @@ const BaseBooks = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const [submitting, setSubmitting] = useState(false);
@@ -115,7 +115,7 @@ const BaseBooks = () => {
       const isDuplicate = data?.data?.some(
         (item: any) =>
           item.name.toLowerCase() === values.name.toLowerCase() &&
-          item.id !== editingCategory?.id
+          item.id !== editingCategory?.id,
       );
       if (isDuplicate) {
         toast.error(t("This category name already exists"));
@@ -176,21 +176,38 @@ const BaseBooks = () => {
         searchable={false}
         className={"p-2"}
         header={
-          <div className={"flex items-center justify-center gap-2"}>
-            <div>
-              <Input
-                placeholder={t("Search category")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-64"
-              />
-            </div>
-            <div>
-              <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>
-                <Plus />
-                {t("Add Regular book category")}
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Search Bar Container */}
+            <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+              {/* Filter Icon (inactive state) */}
+              <TooltipBtn
+                className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                title={t("Boshqa filter mavjud emas")}
+              >
+                <Settings2 size={18} />
+              </TooltipBtn>
+              {/* Search Input */}
+              <div className="flex-1 flex items-center">
+                <Input
+                  placeholder={t("Search category")}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                />
+              </div>
+              <TooltipBtn
+                title={t("Search")}
+                className="flex-shrink-0 mr-1 p-2.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
+              >
+                <Search size={18} />
               </TooltipBtn>
             </div>
+
+            {/* Add Button */}
+            <TooltipBtn size={"sm"} onClick={() => setIsOpen(true)}>
+              <Plus />
+              {t("Add Regular book category")}
+            </TooltipBtn>
           </div>
         }
         isLoading={isLoading}

@@ -30,6 +30,7 @@ import {
   PenSquareIcon,
   Plus,
   Search,
+  Settings2,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -433,6 +434,10 @@ const EBaseBooks = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [pdfFileList, setPdfFileList] = useState<any[]>([]);
 
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim() === "") return;
+  };
+
   return (
     <div>
       <MyTable
@@ -444,26 +449,41 @@ const EBaseBooks = () => {
         dataSource={books?.data?.data}
         pagination={false}
         header={
-          <div className={"flex justify-between items-center gap-2 flex-wrap"}>
-            <div className="relative max-w-[250px]">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="text-gray-400" size={16} />
-              </div>
-              <ShadcnInput
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-10"
-                placeholder={t("Search")}
-              />
-              {searchQuery && (
-                <button
-                  onClick={clearSearch}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          <div className={"flex justify-between items-center gap-2"}>
+            {/* Search bar */}
+            <div className="flex items-center gap-3 w-full max-w-md">
+              {/* Qidiruv konteyneri */}
+              <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2 bg-white dark:bg-gray-900">
+                {/* Chapdagi filter tugmasi */}
+                <TooltipBtn
+                  title={t("Boshqa filter mavjud emas!")}
+                  className="flex-shrink-0 mr-1 p-2.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
                 >
-                  <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                </button>
-              )}
+                  <Settings2 size={18} />
+                </TooltipBtn>
+
+                {/* Input */}
+                <div className="flex-1 flex items-center px-2">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder={t("Search author")}
+                    className="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 text-sm"
+                  />
+                </div>
+
+                {/* O‘ngdagi search tugmasi */}
+                <TooltipBtn
+                  title={t("Search")}
+                  className="flex-shrink-0 mr-1 p-2.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
+                  onClick={handleSearchSubmit}
+                >
+                  <Search size={18} />
+                </TooltipBtn>
+              </div>
             </div>
+
             {sortDirection === "asc" ? (
               <Button size={"sm"} onClick={() => setSortDirection("desc")}>
                 <ArrowUpWideNarrow />

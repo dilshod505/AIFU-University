@@ -20,9 +20,11 @@ import {
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  Eye,
   FileDown,
   RefreshCw,
   Search,
+  Settings2,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -30,13 +32,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import ReactPaginate from "react-paginate";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function HistoryPage() {
   const router = useRouter();
   const searchPagination = useSearchParams();
 
+  const [openDetail, setOpenDetail] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<any>(null);
+
   const [pageNum, setPageNum] = useState<number>(
-    Number(searchPagination.get("page")) || 1
+    Number(searchPagination.get("page")) || 1,
   );
 
   const handlePageChange = (newPage: number) => {
@@ -55,7 +72,7 @@ export default function HistoryPage() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
   const [searchField, setSearchField] = useState<
     "userID" | "cardNumber" | "inventoryNumber"
-  >("userID");
+  >("cardNumber");
 
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
@@ -74,6 +91,13 @@ export default function HistoryPage() {
     pageNumber: pageNum,
     pageSize: 10,
     sortDirection,
+  });
+
+  const detail = useMutation({
+    mutationFn: async (id: number | string) => {
+      const res = await api.get(`/admin/history/${id}`);
+      return res.data; // <-- bu juda muhim
+    },
   });
 
   const exportExcel = useMutation({
@@ -145,20 +169,27 @@ export default function HistoryPage() {
         dataIndex: "returnedAt",
         render: (returnedAt: string) => dayjs(returnedAt).format("DD.MM.YYYY"),
       },
+      {
+        title: t("action"),
+        key: "actions",
+        dataIndex: "actions",
+        render: (_: any, record: any) => (
+          <TooltipBtn
+            variant="ampersand"
+            title={t("See")}
+            onClick={async () => {
+              const res = await detail.mutateAsync(record.id);
+              setSelectedDetail(res.data);
+              setOpenDetail(true);
+            }}
+          >
+            <Eye />
+          </TooltipBtn>
+        ),
+      },
     ],
-    [t]
+    [detail, t],
   );
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-    setDebouncedSearchQuery("");
-    setPageNum(1);
-  };
 
   return (
     <div className="p-2">
@@ -207,71 +238,104 @@ export default function HistoryPage() {
               </div>
             }
             header={
-              <div
-                className={"flex justify-between items-center gap-2 flex-wrap"}
-              >
-                <div className="relative max-w-[250px]">
-                  <Select
-                    value={searchField}
-                    onValueChange={(
-                      e: "userID" | "cardNumber" | "inventoryNumber"
-                    ) => setSearchField(e)}
-                    defaultValue="userID"
-                  >
-                    <SelectTrigger value={searchField}>
-                      {searchField === "userID"
-                        ? t("user ID")
-                        : searchField === "cardNumber"
-                          ? t("Card number")
-                          : t("Inventory number")}
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="userID">{t("id")}</SelectItem>
-                      <SelectItem value="cardNumber">
-                        {t("Card number")}
-                      </SelectItem>
-                      <SelectItem value="inventoryNumber">
-                        {t("Inventory number")}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="relative max-w-[250px]">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="text-gray-400" size={16} />
-                  </div>
-                  <Input
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="pl-10 pr-10"
-                    placeholder={t("Search")}
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={clearSearch}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  {/* Search Bar Container */}
+                  <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+                    {/* Filter Dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <TooltipBtn
+                          className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                          title={t("Filter")}
+                        >
+                          <Settings2 size={18} />
+                        </TooltipBtn>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        {/*<DropdownMenuItem*/}
+                        {/*  onClick={() => setSearchField("userID")}*/}
+                        {/*  className={*/}
+                        {/*    searchField === "userID" ? "bg-blue-50" : ""*/}
+                        {/*  }*/}
+                        {/*>*/}
+                        {/*  {t("User ID bo'yicha qidirish")}*/}
+                        {/*</DropdownMenuItem>*/}
+                        <DropdownMenuItem
+                          onClick={() => setSearchField("cardNumber")}
+                          className={
+                            searchField === "cardNumber" ? "bg-blue-50" : ""
+                          }
+                        >
+                          {t("Card Number bo'yicha qidirish")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setSearchField("inventoryNumber")}
+                          className={
+                            searchField === "inventoryNumber"
+                              ? "bg-blue-50"
+                              : ""
+                          }
+                        >
+                          {t("Inventory Number bo'yicha qidirish")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Search Inputs */}
+                    <div className="flex-1 flex items-center gap-3 px-2">
+                      <input
+                        type="text"
+                        placeholder={
+                          searchField === "userID"
+                            ? t("Foydalanuvchi ID kiriting")
+                            : searchField === "cardNumber"
+                              ? t("Karta raqami")
+                              : t("Inventar raqami")
+                        }
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                      />
+                    </div>
+
+                    {/* Search Button */}
+                    <TooltipBtn
+                      className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                      title={t("Search")}
                     >
-                      <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    </button>
-                  )}
+                      <Search size={18} />
+                    </TooltipBtn>
+                  </div>
+
+                  {/* Sort & Export */}
+                  <div className="flex gap-2 items-center">
+                    {sortDirection === "asc" ? (
+                      <TooltipBtn
+                        size="sm"
+                        onClick={() => setSortDirection("desc")}
+                      >
+                        <ArrowUpWideNarrow />
+                      </TooltipBtn>
+                    ) : (
+                      <TooltipBtn
+                        size="sm"
+                        onClick={() => setSortDirection("asc")}
+                      >
+                        <ArrowDownWideNarrow />
+                      </TooltipBtn>
+                    )}
+
+                    <TooltipBtn
+                      title={t("Excelga yuklab olish")}
+                      onClick={() => exportExcel.mutate()}
+                      disabled={exportExcel.isPending}
+                    >
+                      <FileDown className="w-4 h-4" />
+                      {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
+                    </TooltipBtn>
+                  </div>
                 </div>
-                {sortDirection === "asc" ? (
-                  <Button size={"sm"} onClick={() => setSortDirection("desc")}>
-                    <ArrowUpWideNarrow />
-                  </Button>
-                ) : (
-                  <Button size={"sm"} onClick={() => setSortDirection("asc")}>
-                    <ArrowDownWideNarrow />
-                  </Button>
-                )}
-                <TooltipBtn
-                  title={t("Excelga yuklab olish")}
-                  onClick={() => exportExcel.mutate()}
-                  disabled={exportExcel.isPending}
-                >
-                  <FileDown className="w-4 h-4" />
-                  {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
-                </TooltipBtn>
               </div>
             }
             footer={
@@ -329,6 +393,130 @@ export default function HistoryPage() {
           />
         </div>
       )}
+      <Dialog open={openDetail} onOpenChange={setOpenDetail}>
+        <DialogContent className="max-w-lg rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-center">
+              {t("Ijara tafsilotlarini ko‘rish")}
+            </DialogTitle>
+          </DialogHeader>
+
+          {detail.isPending ? (
+            <div className="text-center py-6">
+              <div className="animate-spin h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+              <p>{t("Yuklanmoqda...")}</p>
+            </div>
+          ) : selectedDetail ? (
+            <div className="mt-2 space-y-3 text-sm">
+              {/* Student Info */}
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Talaba")}:
+                </span>
+                <span className="font-medium">
+                  {selectedDetail.student.name} {selectedDetail.student.surname}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Fakultet")}:
+                </span>
+                <span>{selectedDetail.student.faculty}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Daraja")}:
+                </span>
+                <span>{selectedDetail.student.degree}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Karta raqami")}:
+                </span>
+                <span>{selectedDetail.student.cardNumber}</span>
+              </div>
+
+              <hr className="my-2" />
+
+              {/* Book Info */}
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Kitob sarlavhasi")}:
+                </span>
+                <span>{selectedDetail.book.title}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Muallif")}:
+                </span>
+                <span>{selectedDetail.book.author}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Inventar raqami")}:
+                </span>
+                <span>{selectedDetail.book.inventoryNumber}</span>
+              </div>
+
+              <hr className="my-2" />
+
+              {/* Dates */}
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Berilgan sana")}:
+                </span>
+                <span>
+                  {dayjs(selectedDetail.givenAt).format("DD.MM.YYYY")}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Qaytarish muddati")}:
+                </span>
+                <span>
+                  {dayjs(selectedDetail.dueDate).format("DD.MM.YYYY")}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Qaytarilgan sana")}:
+                </span>
+                <span>
+                  {dayjs(selectedDetail.returnedAt).format("DD.MM.YYYY")}
+                </span>
+              </div>
+
+              <hr className="my-2" />
+
+              {/* Responsible Persons */}
+              <div className="flex justify-between">
+                <span className="font-medium text-muted-foreground">
+                  {t("Berilgan tomonidan")}:
+                </span>
+                <span className={"text-green-600"}>
+                  {selectedDetail.issuedBy.name}{" "}
+                  {selectedDetail.issuedBy.surname}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-muted-foreground">
+                  {t("Qabul qilgan tomonidan")}:
+                </span>
+                <div className="flex flex-col items-end">
+                  <span className={"text-green-600"}>
+                    {selectedDetail.returnedBy.name}{" "}
+                    {selectedDetail.returnedBy.surname}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-6">
+              {t("Ma'lumot topilmadi")}
+            </p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

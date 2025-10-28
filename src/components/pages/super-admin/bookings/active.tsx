@@ -30,6 +30,8 @@ import {
   Eye,
   FileDown,
   Plus,
+  Search,
+  Settings2,
   TimerReset,
   Undo2,
 } from "lucide-react";
@@ -58,6 +60,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // 🔹 API orqali bookinglarni olish
 // 🔹 API orqali bookinglarni olish
@@ -77,7 +85,7 @@ async function fetchBookings({
     | "cardNumber"
     | "fullName"
     | "bookEpc"
-    | "invetoryNumber";
+    | "inventoryNumber";
   query?: string | number;
   sortDirection?: "asc" | "desc";
 }) {
@@ -97,6 +105,9 @@ async function fetchBookings({
 export default function ActiveBookingsPage() {
   const router = useRouter();
   const searchPagination = useSearchParams();
+
+  const [firstQuery, setFirstQuery] = useState("");
+  const [secondQuery, setSecondQuery] = useState("");
 
   const { query, push } = useLocationParams();
 
@@ -131,8 +142,9 @@ export default function ActiveBookingsPage() {
   // const [activeTab, setActiveTab] = useState<"list" | "new-booking">("list"); // 🔹 tab state
 
   const [searchField, setSearchField] = useState<
-    "studentId" | "cardNumber" | "fullName" | "bookEpc" | "invetoryNumber"
+    "studentId" | "cardNumber" | "fullName" | "bookEpc" | "inventoryNumber"
   >("fullName");
+
   const [searchValue, setSearchValue] = useState<string>("");
 
   // 🔹 Filter
@@ -386,6 +398,17 @@ export default function ActiveBookingsPage() {
     ],
   );
 
+  const handleSearch = () => {
+    if (searchField === "fullName") {
+      const joined = [firstQuery, secondQuery].filter(Boolean).join("~");
+      setSearchValue(joined);
+    } else {
+      setSearchValue(searchValue.trim());
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["bookings"] });
+  };
+
   return (
     <div className="p-2">
       <Tabs
@@ -407,38 +430,140 @@ export default function ActiveBookingsPage() {
             isLoading={isLoading}
             pagination={false}
             header={
-              <>
-                <div className="flex gap-2 items-center">
-                  <Select
-                    value={searchField}
-                    onValueChange={(val: any) => setSearchField(val)}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder={t("Search by")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cardNumber">
-                        {t("Card number")}
-                      </SelectItem>
-                      <SelectItem value="fullName">{t("Full name")}</SelectItem>
-                      <SelectItem value="bookEpc">{t("Book EPC")}</SelectItem>
-                      <SelectItem value="inventoryNumber">
-                        {t("Inventory number")}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex gap-4 items-center">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2 bg-white dark:bg-gray-900">
+                    {/* Filter Dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <TooltipBtn
+                          className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                          title={t("Filter")}
+                        >
+                          <Settings2 size={18} />
+                        </TooltipBtn>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-56">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSearchField("cardNumber");
+                            setSearchValue("");
+                            setFirstQuery("");
+                            setSecondQuery("");
+                          }}
+                          className={
+                            searchField === "cardNumber" ? "bg-blue-50" : ""
+                          }
+                        >
+                          {t("Card number")}
+                        </DropdownMenuItem>
 
-                  <Input
-                    placeholder={t("Search")}
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSearchField("fullName");
+                            setSearchValue("");
+                            setFirstQuery("");
+                            setSecondQuery("");
+                          }}
+                          className={
+                            searchField === "fullName" ? "bg-blue-50" : ""
+                          }
+                        >
+                          {t("Name and last name search")}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSearchField("bookEpc");
+                            setSearchValue("");
+                            setFirstQuery("");
+                            setSecondQuery("");
+                          }}
+                          className={
+                            searchField === "bookEpc" ? "bg-blue-50" : ""
+                          }
+                        >
+                          {t("Book EPC")}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSearchField("inventoryNumber");
+                            setSearchValue("");
+                            setFirstQuery("");
+                            setSecondQuery("");
+                          }}
+                          className={
+                            searchField === "inventoryNumber"
+                              ? "bg-blue-50"
+                              : ""
+                          }
+                        >
+                          {t("Inventory number")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Search Inputs */}
+                    <div className="flex-1 flex items-center gap-3 px-2">
+                      {searchField === "fullName" ? (
+                        <>
+                          <input
+                            type="text"
+                            placeholder={t("Name")}
+                            value={firstQuery}
+                            onChange={(e) => setFirstQuery(e.target.value)}
+                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                          />
+                          <div className="w-px h-5 bg-gray-300 dark:bg-gray-700"></div>
+                          <input
+                            type="text"
+                            placeholder={t("Last Name")}
+                            value={secondQuery}
+                            onChange={(e) => setSecondQuery(e.target.value)}
+                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                          />
+                        </>
+                      ) : (
+                        <input
+                          type="text"
+                          placeholder={t("Search")}
+                          value={searchValue}
+                          onChange={(e) => setSearchValue(e.target.value)}
+                          className="w-90 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                        />
+                      )}
+                    </div>
+
+                    {/* Search Button */}
+                    <TooltipBtn
+                      className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                      title={t("Search")}
+                      onClick={handleSearch}
+                    >
+                      <Search size={18} />
+                    </TooltipBtn>
+                  </div>
+
+                  {/* Excel Export */}
+                  <TooltipBtn
+                    title={t("Excelga yuklab olish")}
+                    onClick={() => exportExcel.mutate()}
+                    disabled={exportExcel.isPending}
+                  >
+                    <FileDown className="w-4 h-4" />
+                    {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
+                  </TooltipBtn>
+
+                  {/* Add Booking */}
                 </div>
+
+                {/* Tabs Filter */}
                 <Tabs
                   value={filter}
                   onValueChange={(val: string) => {
                     setFilter(val as any);
-                    setPageNum(1); // filter o‘zgarsa 1-sahifaga qaytadi
+                    setPageNum(1);
                   }}
                 >
                   <TabsList className="flex gap-2">
@@ -462,26 +587,15 @@ export default function ActiveBookingsPage() {
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
-
                 <TooltipBtn
-                  title={t("Excelga yuklab olish")}
-                  onClick={() => exportExcel.mutate()}
-                  disabled={exportExcel.isPending}
+                  size="sm"
+                  title={t("bron qilish")}
+                  onClick={() => setActiveTab("new-booking")}
                 >
-                  <FileDown className="w-4 h-4" />
-                  {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t("bron qilish")}
                 </TooltipBtn>
-
-                <TabsList>
-                  {activeTab !== "list" && (
-                    <TabsTrigger value="list">{t("royxat")}</TabsTrigger>
-                  )}
-                  <TabsTrigger value="new-booking">
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t("bron qilish")}
-                  </TabsTrigger>
-                </TabsList>
-              </>
+              </div>
             }
             footer={
               <div

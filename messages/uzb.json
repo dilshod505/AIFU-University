@@ -508,5 +508,11 @@
   "Search by Author/Title": "Muallif/Sarlavha boʻyicha qidirish",
   "name and lastName search": "Ism va familiya bo'yicha qidirish",
   "Card number search": "Karta raqami bo'yicha qidirish",
-  "Search card number": "Karta raqam bo'yicha qidirish"
+  "Search card number": "Karta raqam bo'yicha qidirish",
+  "EPC search": "EPC bo'yicha qidirish",
+  "Search author": "Muallifni qidirish",
+  "Name and last name search": "Ism va familiya bo'yicha qidiruv",
+  "Card Number bo'yicha qidirish": "Karta raqami bo'yicha qidirish",
+  "Inventory Number bo'yicha qidirish": "Inventar raqami bo'yicha qidiruv",
+  "action": "Harakat"
 }

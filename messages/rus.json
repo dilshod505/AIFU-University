@@ -508,5 +508,11 @@
   "Search by Author/Title": "Поиск по автору/названию",
   "name and lastName search": "Поиск по имени и фамилии",
   "Card number search": "Поиск по номеру карты",
-  "Search card number": "Поиск номера карты"
+  "Search card number": "Поиск номера карты",
+  "EPC search": "EPC қидируви",
+  "Search author": "Поиск автора",
+  "Name and last name search": "Поиск по имени и фамилии",
+  "Card Number bo'yicha qidirish": "Поиск по номеру карты",
+  "Inventory Number bo'yicha qidirish": "Поиск по инвентарному номеру",
+  "action": "Действие"
 }

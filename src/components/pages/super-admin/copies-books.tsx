@@ -481,7 +481,6 @@ export const CopiesBooks = () => {
             <div className="flex items-center gap-3">
               {/* Search Bar Container */}
               <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
-                {/* Filter Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <TooltipBtn
@@ -518,17 +517,17 @@ export const CopiesBooks = () => {
                       {t("Author/Title search")}
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSearchField("fullName");
-                        setSearchQuery("");
-                        setFirstQuery("");
-                        setSecondQuery("");
-                      }}
-                      className={searchField === "fullName" ? "bg-blue-50" : ""}
-                    >
-                      {t("Reader Full Name search")}
-                    </DropdownMenuItem>
+                    {/*<DropdownMenuItem*/}
+                    {/*  onClick={() => {*/}
+                    {/*    setSearchField("fullName");*/}
+                    {/*    setSearchQuery("");*/}
+                    {/*    setFirstQuery("");*/}
+                    {/*    setSecondQuery("");*/}
+                    {/*  }}*/}
+                    {/*  className={searchField === "fullName" ? "bg-blue-50" : ""}*/}
+                    {/*>*/}
+                    {/*  {t("Reader Full Name search")}*/}
+                    {/*</DropdownMenuItem>*/}
 
                     <DropdownMenuItem
                       onClick={() => {
@@ -539,7 +538,7 @@ export const CopiesBooks = () => {
                       }}
                       className={searchField === "epc" ? "bg-blue-50" : ""}
                     >
-                      {t("EPC search")}
+                      {t("EPC bo'yicha qidirish")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

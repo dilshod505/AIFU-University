@@ -1,6 +1,6 @@
 "use client";
 
-import { PenSquareIcon, Plus } from "lucide-react";
+import { PenSquareIcon, Plus, Search, Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,7 +43,7 @@ const EBookCategories = () => {
   const filteredCategories = useMemo(() => {
     if (!categories?.data) return [];
     return categories.data.filter((item: any) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item.name.toLowerCase().includes(search.toLowerCase()),
     );
   }, [categories, search]);
 
@@ -56,7 +56,7 @@ const EBookCategories = () => {
         required: true,
       },
     ],
-    [t]
+    [t],
   );
 
   const columns = useMemo<IColumn[]>(
@@ -109,7 +109,7 @@ const EBookCategories = () => {
         ),
       },
     ],
-    [deleteCategory, form, t]
+    [deleteCategory, form, t],
   );
 
   const onSubmit = async (data: any) => {
@@ -126,7 +126,7 @@ const EBookCategories = () => {
             setSubmitting(false);
             setOpen(false);
           },
-        }
+        },
       );
     } else {
       createCategory.mutate(
@@ -148,7 +148,7 @@ const EBookCategories = () => {
               setSubmitting(false);
             }
           },
-        }
+        },
       );
     }
   };
@@ -167,29 +167,48 @@ const EBookCategories = () => {
         dataSource={filteredCategories}
         pagination={false}
         header={
-          <div className={"flex items-center justify-center gap-2"}>
-            <div>
-              <Input
-                placeholder={t("Search category")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-64"
-              />
-            </div>
-            <div>
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Search Bar Container */}
+            <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+              {/* Filter Icon (inactive state) */}
               <TooltipBtn
-                variant={"default"}
-                title={t("Add Category")}
-                onClick={() => {
-                  setEditingCategory(null);
-                  form.reset({ name: "" });
-                  setOpen(true);
-                }}
+                className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                title={t("Boshqa filter mavjud emas")}
               >
-                <Plus />
-                {t("Add Category")}
+                <Settings2 size={18} />
+              </TooltipBtn>
+
+              {/* Search Input */}
+              <div className="flex-1 flex items-center">
+                <Input
+                  placeholder={t("Search category")}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                />
+              </div>
+              <TooltipBtn
+                title={t("Search")}
+                className="flex-shrink-0 mr-1 p-2.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
+
+              >
+                <Search size={18} />
               </TooltipBtn>
             </div>
+
+            {/* Add Category Button */}
+            <TooltipBtn
+              variant={"default"}
+              title={t("Add Category")}
+              onClick={() => {
+                setEditingCategory(null);
+                form.reset({ name: "" });
+                setOpen(true);
+              }}
+            >
+              <Plus />
+              {t("Add Category")}
+            </TooltipBtn>
           </div>
         }
       />
