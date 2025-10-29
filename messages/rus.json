@@ -514,5 +514,6 @@
   "Name and last name search": "Поиск по имени и фамилии",
   "Card Number bo'yicha qidirish": "Поиск по номеру карты",
   "Inventory Number bo'yicha qidirish": "Поиск по инвентарному номеру",
-  "action": "Действие"
+  "action": "Действие",
+  "Error creating student": "Ошибка при создании студента"
 }

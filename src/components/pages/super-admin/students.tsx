@@ -41,6 +41,7 @@ import {
   EllipsisVertical,
   Eye,
   GraduationCap,
+  ImportIcon,
   PenSquareIcon,
   Plus,
   Search,
@@ -56,6 +57,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
+import { RiFileExcel2Line } from "react-icons/ri";
 
 export type FilterType = "all" | "active" | "inactive";
 
@@ -427,17 +429,7 @@ const Students = () => {
       {
         label: t("passportSeries"),
         name: "passportSeries",
-        type: "select",
-        options: [
-          { label: "AA", value: "AA" },
-          { label: "AB", value: "AB" },
-          { label: "AC", value: "AC" },
-          { label: "AD", value: "AD" },
-          { label: "AE", value: "AE" },
-          { label: "FA", value: "FA" },
-          { label: "FB", value: "FB" },
-          { label: "FC", value: "FC" },
-        ],
+        type: "text",
         required: true,
         maxLength: 2,
         sm: 12,
@@ -446,7 +438,7 @@ const Students = () => {
       {
         label: t("passportNumber"),
         name: "passportNumber",
-        type: "number",
+        type: "text",
         required: true,
         maxLength: 7,
         sm: 12,
@@ -695,6 +687,56 @@ const Students = () => {
                     </TabsList>
                   </Tabs>
 
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <TooltipBtn title={t("Select type excel download")}>
+                        <RiFileExcel2Line />
+                        <Plus /> {t("Add Student")}
+                      </TooltipBtn>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem
+                        onClick={() => expertToExcel.mutate({})}
+                      >
+                        {t("Export Students")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => exportToExcelShablon.mutate({})}
+                      >
+                        {t("Export Template")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <TooltipBtn title={t("Import Students")}>
+                    <label>
+                      <ImportIcon />
+                      <input
+                        type="file"
+                        accept=".xlsx"
+                        hidden
+                        onChange={handleImport}
+                      />
+                    </label>
+                  </TooltipBtn>
+
+                  {role === "super-admin" && (
+                    <TooltipBtn
+                      title={t("Deactivate Graduates")}
+                      variant={"destructive"}
+                    >
+                      <label>
+                        <ImportIcon />
+                        <input
+                          type="file"
+                          accept=".xlsx"
+                          hidden
+                          onChange={handleDeactivate}
+                        />
+                      </label>
+                    </TooltipBtn>
+                  )}
+
                   <TooltipBtn
                     size="sm"
                     title={t("Add Student")}
@@ -860,7 +902,7 @@ const Students = () => {
           }
         />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent side={"center"}>
+          <SheetContent side={"center"} className={"w-[900px]"}>
             <SheetHeader>
               <SheetTitle>
                 {editingStudent ? t("Edit users") : t("Add student")}

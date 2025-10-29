@@ -514,5 +514,6 @@
   "Name and last name search": "Ism va familiya bo'yicha qidiruv",
   "Card Number bo'yicha qidirish": "Karta raqami bo'yicha qidirish",
   "Inventory Number bo'yicha qidirish": "Inventar raqami bo'yicha qidiruv",
-  "action": "Harakat"
+  "action": "Harakat",
+  "Error creating student": "Oʻquvchini yaratishda xatolik"
 }

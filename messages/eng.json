@@ -514,5 +514,6 @@
   "Name and last name search": "Name and last name search",
   "Card Number bo'yicha qidirish": "Search by Card Number",
   "Inventory Number bo'yicha qidirish": "Search by Inventory Number",
-  "action": "Action"
+  "action": "Action",
+  "Error creating student": "Error creating student"
 }
