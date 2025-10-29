@@ -96,7 +96,7 @@ const Students = () => {
     filter,
     pageNumber,
     size,
-    sortDirection: "asc",
+    sortDirection,
     ...(searchField === "fullName" && (firstQuery || secondQuery)
       ? { field: "fullName", query: fullNameQuery }
       : searchValue
