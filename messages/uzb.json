@@ -515,5 +515,6 @@
   "Card Number bo'yicha qidirish": "Karta raqami bo'yicha qidirish",
   "Inventory Number bo'yicha qidirish": "Inventar raqami bo'yicha qidiruv",
   "action": "Harakat",
-  "Error creating student": "Oʻquvchini yaratishda xatolik"
+  "Error creating student": "Oʻquvchini yaratishda xatolik",
+  "Please upload book cover": "Kitob rasmini yuklang"
 }

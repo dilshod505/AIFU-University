@@ -515,5 +515,6 @@
   "Card Number bo'yicha qidirish": "Поиск по номеру карты",
   "Inventory Number bo'yicha qidirish": "Поиск по инвентарному номеру",
   "action": "Действие",
-  "Error creating student": "Ошибка при создании студента"
+  "Error creating student": "Ошибка при создании студента",
+  "Please upload book cover": "Пожалуйста, загрузите обложку книги"
 }
