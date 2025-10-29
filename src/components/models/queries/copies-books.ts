@@ -158,7 +158,7 @@ export const useUpdateCopiesBooks = () => {
       inventoryNumber: string;
       shelfLocation: string;
       notes: string;
-      book: number;
+      baseBookId: number;
       epc: string;
     }) => {
       const res = await api.patch(`/admin/book-copies/${data.id}`, data);

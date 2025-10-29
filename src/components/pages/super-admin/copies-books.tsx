@@ -380,7 +380,7 @@ export const CopiesBooks = () => {
           shelfLocation: data.shelfLocation,
           notes: data.notes,
           epc: data.epc,
-          book: data.baseBookId, // update uchun
+          baseBookId: data.baseBookId, // update uchun
         },
         {
           onSuccess: () => {
