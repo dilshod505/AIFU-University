@@ -420,7 +420,7 @@ const BaseBooks = () => {
           isLoading={isLoading}
           pagination={false}
           header={
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center gap-4">
               <div className="flex items-center gap-3">
                 {/* Search Bar Container */}
                 <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
@@ -526,7 +526,7 @@ const BaseBooks = () => {
                 </div>
 
                 {/* Sort Buttons */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                   {sortDirection === "asc" ? (
                     <TooltipBtn
                       size="sm"
@@ -542,7 +542,6 @@ const BaseBooks = () => {
                       <ArrowDownWideNarrow />
                     </TooltipBtn>
                   )}
-
                   {/* Excel menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
