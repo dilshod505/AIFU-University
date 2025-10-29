@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
@@ -109,6 +109,12 @@ export default function ActiveBookingsPage() {
   const [firstQuery, setFirstQuery] = useState("");
   const [secondQuery, setSecondQuery] = useState("");
 
+  // 🔹 Debounce uchun kechikkan qiymatlar
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [debouncedFirstQuery, setDebouncedFirstQuery] = useState(firstQuery);
+  const [debouncedSecondQuery, setDebouncedSecondQuery] = useState(secondQuery);
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState(searchValue);
+
   const { query, push } = useLocationParams();
 
   const [activeTab, setActiveTab] = useState<"list" | "new-booking">(
@@ -144,8 +150,6 @@ export default function ActiveBookingsPage() {
   const [searchField, setSearchField] = useState<
     "studentId" | "cardNumber" | "fullName" | "bookEpc" | "inventoryNumber"
   >("fullName");
-
-  const [searchValue, setSearchValue] = useState<string>("");
 
   // 🔹 Filter
   const [filter, setFilter] = useState<"all" | "APPROVED" | "OVERDUE">("all");
@@ -398,16 +402,59 @@ export default function ActiveBookingsPage() {
     ],
   );
 
-  const handleSearch = () => {
+  // 🕐 fullName (ikki input) uchun debounce
+  // 🕐 fullName (ikki input) uchun debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedFirstQuery(firstQuery);
+      setDebouncedSecondQuery(secondQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [firstQuery, secondQuery]);
+
+  // 🕐 boshqa search fieldlar uchun debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchValue]);
+
+  // 🔹 Qidiruv va paginationni sinxronlashtirish
+  useEffect(() => {
+    // Agar fullName tanlangan bo‘lsa, ikkala inputni birlashtiramiz
     if (searchField === "fullName") {
-      const joined = [firstQuery, secondQuery].filter(Boolean).join("~");
+      const joined = [debouncedFirstQuery, debouncedSecondQuery]
+        .filter(Boolean)
+        .join("~");
       setSearchValue(joined);
-    } else {
-      setSearchValue(searchValue.trim());
     }
 
+    // Har safar qidiruv fieldi yoki qiymati o‘zgarsa — 1-sahifaga qaytish
+    setPageNum(1);
+
+    // Har safar qidiruv o‘zgarsa — qayta yuklaymiz
     queryClient.invalidateQueries({ queryKey: ["bookings"] });
-  };
+
+    // URLni ham yangilab qo‘yamiz (optional)
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", "1");
+
+    if (searchValue) {
+      params.set("query", searchValue);
+      params.set("field", searchField);
+    } else {
+      params.delete("query");
+      params.delete("field");
+    }
+
+    router.push(`?${params.toString()}`);
+  }, [
+    debouncedFirstQuery,
+    debouncedSecondQuery,
+    debouncedSearchValue,
+    searchField,
+  ]);
 
   return (
     <div className="p-2">
@@ -539,7 +586,6 @@ export default function ActiveBookingsPage() {
                     <TooltipBtn
                       className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
                       title={t("Search")}
-                      onClick={handleSearch}
                     >
                       <Search size={18} />
                     </TooltipBtn>

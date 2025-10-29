@@ -156,7 +156,7 @@ export const CopiesBooks = () => {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [searchQuery, firstQuery, secondQuery, searchField, debouncedSearchQuery]);
+  }, [searchQuery, firstQuery, secondQuery, searchField]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -347,16 +347,11 @@ export const CopiesBooks = () => {
     }
   }, [bookDetail, form, editingBook, antdForm]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
-    setDebouncedSearchQuery("");
-    setPageNum(1);
-  };
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", pageNum.toString());
+    router.push(`?${params.toString()}`);
+  }, [pageNum]);
 
   // const searchFieldOptions = [
   //   { value: "inventoryNumber", label: t("Inventory Number") },
