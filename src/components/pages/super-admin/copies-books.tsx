@@ -71,6 +71,9 @@ export const CopiesBooks = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [firstQuery, setFirstQuery] = useState("");
+  const [secondQuery, setSecondQuery] = useState("");
+
   const [pageNum, setPageNum] = useState<number>(
     Number(searchParams.get("page")) || 1,
   );
@@ -114,14 +117,24 @@ export const CopiesBooks = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-      if (searchQuery !== debouncedSearchQuery) {
-        setPageNum(1);
+      if (searchField === "fullInfo" || searchField === "fullName") {
+        if (firstQuery || secondQuery) {
+          setDebouncedSearchQuery(
+            `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
+          );
+        } else {
+          setDebouncedSearchQuery("");
+        }
+      } else {
+        setDebouncedSearchQuery(searchQuery);
       }
+
+      // Qidiruv o‘zgarganda sahifani 1 ga qaytarish
+      setPageNum(1);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, debouncedSearchQuery]);
+  }, [searchQuery, firstQuery, secondQuery, searchField]);
 
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
 
@@ -134,29 +147,26 @@ export const CopiesBooks = () => {
     filter,
   });
 
-  const [firstQuery, setFirstQuery] = useState("");
-  const [secondQuery, setSecondQuery] = useState("");
-
   // --- buildSearchParams ga yuborish uchun
-  useEffect(() => {
-    if (searchField === "fullInfo" || searchField === "fullName") {
-      if (firstQuery || secondQuery) {
-        setDebouncedSearchQuery(
-          `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
-        );
-      } else {
-        setDebouncedSearchQuery("");
-      }
-    } else {
-      const timer = setTimeout(() => {
-        setDebouncedSearchQuery(searchQuery);
-        if (searchQuery !== debouncedSearchQuery) {
-          setPageNum(1);
-        }
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [searchQuery, firstQuery, secondQuery, searchField]);
+  // useEffect(() => {
+  //   if (searchField === "fullInfo" || searchField === "fullName") {
+  //     if (firstQuery || secondQuery) {
+  //       setDebouncedSearchQuery(
+  //         `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
+  //       );
+  //     } else {
+  //       setDebouncedSearchQuery("");
+  //     }
+  //   } else {
+  //     const timer = setTimeout(() => {
+  //       setDebouncedSearchQuery(searchQuery);
+  //       if (searchQuery !== debouncedSearchQuery) {
+  //         setPageNum(1);
+  //       }
+  //     }, 500);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [searchQuery, firstQuery, secondQuery, searchField]);
 
   const columns = useMemo<IColumn[]>(
     () => [
@@ -174,7 +184,7 @@ export const CopiesBooks = () => {
         dataIndex: "author",
       },
       {
-        title: t("Base Book"),
+        title: t("Title"),
         key: "title",
         dataIndex: "title",
       },
