@@ -110,7 +110,6 @@ const Students = () => {
     params.set("page", "1");
     router.push(`?${params.toString()}`);
   }, [searchValue, firstQuery, secondQuery, filter, searchField, router]);
-
   const createStudent = useCreateStudents();
   const detail = useGetById();
   const updating = useUpdateStudents();
