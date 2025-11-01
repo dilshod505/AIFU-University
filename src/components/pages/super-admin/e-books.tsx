@@ -155,6 +155,14 @@ const EBaseBooks = () => {
       queryClient.invalidateQueries({ queryKey: ["pdf-books"] });
       toast.success(t("E-book created successfully"));
     },
+    onError: (error: any) => {
+      const msg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Serverda xatolik yuz berdi!";
+      toast.error(msg);
+    },
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -245,7 +253,6 @@ const EBaseBooks = () => {
       let pdfUrl = values.pdfUrl;
       let size = values.size;
 
-      // 🖼 Rasmni yuklash
       if (values.imageUrl?.file) {
         const formData = new FormData();
         formData.append("file", values.imageUrl.file);
@@ -327,16 +334,6 @@ const EBaseBooks = () => {
       return Promise.resolve();
     }
     return Promise.reject(new Error(t("Please upload book cover")));
-  };
-
-  const validatePdfUpload = (_: any, value: any) => {
-    if (actionType === "edit" && editingBook?.pdfUrl) {
-      return Promise.resolve();
-    }
-    if (uploadedPdf || value) {
-      return Promise.resolve();
-    }
-    return Promise.reject(new Error(t("Please upload PDF file")));
   };
 
   const columns = useMemo<IColumn[]>(

@@ -118,6 +118,8 @@ const Students = () => {
   const expertToExcel = useExcelExport();
   const exportToExcelShablon = useExcelExportShablon();
 
+  const isSubmitting = createStudent.isPending || updating.isPending;
+
   const downloadFile = async (url: string, filename: string) => {
     try {
       const fullUrl = makeFullUrl(url)!;
@@ -152,7 +154,13 @@ const Students = () => {
     if (file) {
       importStudents.mutate(file, {
         onSuccess: (res) => {
-          toast.success(res.message || "Import completed");
+          toast.success(res.message || "Import completed", {
+            style: {
+              maxWidth: "600px",
+              width: "100%",
+            },
+          });
+
           setImportResult({
             successCount: res.data?.successCount || res.successCount,
             errorCount: res.data?.errorCount || res.errorCount,
@@ -163,12 +171,16 @@ const Students = () => {
           });
         },
         onError: () => {
-          toast.error("Xatolik: import amalga oshmadi");
+          toast.error("Xatolik: import amalga oshmadi", {
+            style: {
+              maxWidth: "600px",
+              width: "100%",
+            },
+          });
         },
       });
     }
   };
-
   const deactivateGraduates = useDeactivateGraduates();
   const [deactivateResult, setDeactivateResult] = useState<{
     successCount?: number;
@@ -184,7 +196,12 @@ const Students = () => {
     if (file) {
       deactivateGraduates.mutate(file, {
         onSuccess: (res) => {
-          toast.success(res.message || "Deaktivatsiya jarayoni boshlandi");
+          toast.success(res.message || "Deaktivatsiya jarayoni boshlandi", {
+            style: {
+              maxWidth: "600px",
+              width: "100%",
+            },
+          });
 
           setDeactivateResult({
             successCount: res.data?.successCount || res.successCount,
@@ -502,12 +519,22 @@ const Students = () => {
         { id: editingStudent.id, ...payload },
         {
           onSuccess: () => {
-            toast.success(t("Student updated successfully"));
+            toast.success(t("Student updated successfully"), {
+              style: {
+                maxWidth: "600px",
+                width: "100%",
+              },
+            });
             setOpen(false);
           },
           onError: (err) => {
             console.error("❌ Update error:", err);
-            toast.error(t("Error updating student"));
+            toast.error(t("Error updating student"), {
+              style: {
+                maxWidth: "600px",
+                width: "100%",
+              },
+            });
           },
         },
       );
@@ -516,13 +543,25 @@ const Students = () => {
         { payload },
         {
           onSuccess: () => {
-            toast.success(t("Student created successfully"));
+            (toast.success(t("Student created successfully")),
+              {
+                style: {
+                  maxWidth: "600px",
+                  width: "100%",
+                },
+              });
             setOpen(false);
             form.reset();
           },
           onError: (err) => {
             console.error("❌ Create error:", err);
-            toast.error(t("Error creating student"));
+            (toast.error(t("Error creating student")),
+              {
+                style: {
+                  maxWidth: "600px",
+                  width: "100%",
+                },
+              });
           },
         },
       );
@@ -691,7 +730,7 @@ const Students = () => {
                     <DropdownMenuTrigger asChild>
                       <TooltipBtn title={t("Select type excel download")}>
                         <RiFileExcel2Line />
-                        <Plus /> {t("Add Student")}
+                        {t("Add Student")}
                       </TooltipBtn>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
@@ -922,6 +961,7 @@ const Students = () => {
                     )
                   : fields
               }
+              loading={isSubmitting}
             />
           </SheetContent>
         </Sheet>
