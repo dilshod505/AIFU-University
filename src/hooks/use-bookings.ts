@@ -148,11 +148,11 @@ export const useHistoryByStudent = ({
 export function useHistory({
   searchField,
   searchQuery,
-  pageNumber = 1,
-  pageSize = 10,
+  pageNumber,
+  pageSize,
   sortDirection = "asc",
 }: {
-  searchField?: "userID" | "cardNumber" | "inventoryNumber";
+  searchField?: "fullName" | "cardNumber" | "inventoryNumber";
   searchQuery?: string;
   pageNumber?: number;
   pageSize?: number;
@@ -172,24 +172,11 @@ export function useHistory({
         pageNumber,
         pageSize,
         sortDirection,
+        searchQuery,
+        searchField,
       };
 
-      // ✅ faqat qidiruv bo‘lsa qo‘shamiz
-      if (searchField && searchQuery?.toString().trim()) {
-        // agar userID bo‘lsa raqam bo‘lishini tekshiramiz
-        if (searchField === "userID") {
-          const parsed = Number(searchQuery);
-          if (!isNaN(parsed)) {
-            params.field = searchField;
-            params.query = parsed;
-          }
-        } else {
-          params.field = searchField;
-          params.query = searchQuery;
-        }
-      }
-
-      const response = await api.get("/admin/history", { params });
+      const response = await api.get(`/admin/history`, { params });
       return response.data;
     },
     select: (data) => ({

@@ -71,8 +71,8 @@ export const CopiesBooks = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [firstQuery, setFirstQuery] = useState("");
-  const [secondQuery, setSecondQuery] = useState("");
+  const [firstQuery, setFirstQuery] = useState<string>("");
+  const [secondQuery, setSecondQuery] = useState<string>("");
 
   const [pageNum, setPageNum] = useState<number>(
     Number(searchParams.get("page")) || 1,
@@ -117,60 +117,47 @@ export const CopiesBooks = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchField === "fullInfo" || searchField === "fullName") {
-        let query = "";
+      let fullQuery = "";
 
-        if (secondQuery.trim()) {
-          query = `~${secondQuery.trim()}`;
-        }
-        if (firstQuery.trim()) {
-          query = `${firstQuery.trim()}`;
-        }
-        if (firstQuery.trim() && secondQuery.trim()) {
-          query = `${firstQuery.trim()}~${secondQuery.trim()}`;
-        }
+      if (searchField === "fullInfo") {
+        const author = firstQuery.trim();
+        const title = secondQuery.trim();
 
-        setDebouncedSearchQuery(query);
+        if (author || title) {
+          // Muallif + Title uchun to'g'ri format: "author~title"
+          fullQuery = `${author}${author && title ? "~" : ""}${title}`;
+        } else {
+          fullQuery = "";
+        }
       } else {
-        setDebouncedSearchQuery(searchQuery);
+        fullQuery = searchQuery.trim();
       }
 
-      // Qidiruv o‘zgarganda sahifani 1 ga qaytarish
+      setDebouncedSearchQuery(fullQuery);
       setPageNum(1);
     }, 500);
 
     return () => clearTimeout(timer);
   }, [searchQuery, firstQuery, secondQuery, searchField]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (searchField === "fullInfo" || searchField === "fullName") {
-  //       if (firstQuery || secondQuery) {
-  //         setDebouncedSearchQuery(
-  //           `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
-  //         );
-  //       } else {
-  //         setDebouncedSearchQuery("");
-  //       }
-  //     } else {
-  //       setDebouncedSearchQuery(searchQuery);
-  //     }
-  //     setPageNum(1);
-  //   }, 500);
-  //
-  //   return () => clearTimeout(timer);
-  // }, [searchQuery, firstQuery, secondQuery, searchField]);
-
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
 
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
-    query: debouncedSearchQuery,
-    searchField, // Added searchField parameter
+    query: searchQuery,
+    searchField,
     sortDirection,
     filter,
   });
+
+  useEffect(() => {
+    const bookId = searchParams.get("bookId");
+    if (bookId) {
+      setSearchField("book");
+      setSearchQuery(bookId);
+    }
+  }, [searchParams]);
 
   // --- buildSearchParams ga yuborish uchun
   // useEffect(() => {
@@ -594,11 +581,7 @@ export const CopiesBooks = () => {
                     <>
                       <input
                         type="text"
-                        placeholder={
-                          searchField === "fullInfo"
-                            ? t("Author")
-                            : t("First Name")
-                        }
+                        placeholder={t("Author")}
                         value={firstQuery}
                         onChange={(e) => setFirstQuery(e.target.value)}
                         className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
@@ -606,11 +589,7 @@ export const CopiesBooks = () => {
                       <div className="w-px h-5 bg-gray-300"></div>
                       <input
                         type="text"
-                        placeholder={
-                          searchField === "fullInfo"
-                            ? t("Title")
-                            : t("Last Name")
-                        }
+                        placeholder={t("Title")}
                         value={secondQuery}
                         onChange={(e) => setSecondQuery(e.target.value)}
                         className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"

@@ -53,6 +53,7 @@ import {
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  Copy,
   Eye,
   Filter,
   PenSquareIcon,
@@ -68,6 +69,7 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
 import { AutoResizeInput } from "@/components/ui/auto-resizeInput";
+import Link from "next/link";
 
 const { Option } = AntdSelect;
 
@@ -299,6 +301,11 @@ const BaseBooks = () => {
         width: 200,
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
+            <Link href={`/super-admin/copies-books?bookId=${record.id}`}>
+              <TooltipBtn variant={"ampersand"} title={t("Copy")} size={"sm"}>
+                <Copy />
+              </TooltipBtn>
+            </Link>
             <TooltipBtn
               variant={"ampersand"}
               title={t("Detail")}

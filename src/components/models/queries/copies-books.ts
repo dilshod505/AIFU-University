@@ -17,7 +17,7 @@ const buildSearchParams = (query: string, searchField: string) => {
         .filter((part) => part.length > 0);
       if (parts.length >= 2) {
         // Both author and title: author~title
-        return `&field=fullInfo&query=${parts[0]}~${parts.slice(1).join(" ")}`;
+        return `&field=fullInfo&query=${parts[0]}~${parts.slice(1).join("")}`;
       } else {
         // Single term: just author
         return `&field=fullInfo&query=${parts[0]}`;
@@ -63,14 +63,14 @@ export const useCopiesBooks = ({
   pageSize,
   pageNumber,
   query,
-  searchField = "inventoryNumber", // Added searchField parameter
+  searchField = "inventoryNumber", // Default qiymat
   filter = "all",
   sortDirection = "desc",
 }: {
   pageSize: number;
   pageNumber: number;
   query?: string;
-  searchField?: "book" | "inventoryNumber" | "fullInfo" | "epc" | "fullName"; // Added searchField type
+  searchField?: "book" | "inventoryNumber" | "fullInfo" | "epc" | "fullName";
   filter?: "all" | "active" | "inactive";
   sortDirection?: "asc" | "desc";
 }) =>
@@ -80,13 +80,12 @@ export const useCopiesBooks = ({
       pageNumber,
       pageSize,
       query,
-      searchField, // Added searchField to query key
+      searchField,
       filter,
       sortDirection,
     ],
     queryFn: async () => {
       const searchParams = query ? buildSearchParams(query, searchField) : "";
-
       const res = await api.get(
         `/admin/book-copies?pageSize=${pageSize}&pageNumber=${pageNumber}&filter=${filter}&sortDirection=${sortDirection}${searchParams}`,
       );

@@ -44,6 +44,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -52,9 +58,13 @@ export default function HistoryPage() {
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedDetail, setSelectedDetail] = useState<any>(null);
 
+  const [firstQuery, setFirstQuery] = useState(""); // ism
+  const [secondQuery, setSecondQuery] = useState(""); // familiya
+
   const [pageNum, setPageNum] = useState<number>(
     Number(searchPagination.get("page")) || 1,
   );
+  const [pageSize, setPageSize] = useState<number>(10);
 
   const handlePageChange = (newPage: number) => {
     setPageNum(newPage);
@@ -71,10 +81,10 @@ export default function HistoryPage() {
   // const [pageNum, setPageNum] = useState<number>(1);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
   const [searchField, setSearchField] = useState<
-    "userID" | "cardNumber" | "inventoryNumber"
-  >("cardNumber");
+    "fullName" | "cardNumber" | "inventoryNumber"
+  >("fullName");
 
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -89,9 +99,35 @@ export default function HistoryPage() {
     searchField,
     searchQuery: debouncedSearchQuery,
     pageNumber: pageNum,
-    pageSize: 10,
+    pageSize,
     sortDirection,
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      let fullQuery = "";
+
+      if (searchField === "fullName") {
+        const name = firstQuery.trim();
+        const surname = secondQuery.trim();
+
+        if (name || surname) {
+          // "Ism Familiya" formatida qidiruv (backendga "ism~familiya")
+          fullQuery = `${name}${name && surname ? "~" : ""}${surname}`;
+        } else {
+          fullQuery = "";
+        }
+      } else {
+        fullQuery = searchQuery.trim();
+      }
+
+      setDebouncedSearchQuery(fullQuery);
+      setIsSearching(fullQuery.length > 0);
+      setPageNum(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, firstQuery, secondQuery, searchField]);
 
   const detail = useMutation({
     mutationFn: async (id: number | string) => {
@@ -130,21 +166,85 @@ export default function HistoryPage() {
         title: t("Name"),
         key: "name",
         dataIndex: "name",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("Surname"),
         key: "surname",
         dataIndex: "surname",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("Author"),
         key: "author",
         dataIndex: "author",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("book title"),
         key: "bookTitle",
         dataIndex: "bookTitle",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("Inventory number"),
@@ -253,14 +353,13 @@ export default function HistoryPage() {
                         </TooltipBtn>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
-                        {/*<DropdownMenuItem*/}
-                        {/*  onClick={() => setSearchField("userID")}*/}
-                        {/*  className={*/}
-                        {/*    searchField === "userID" ? "bg-blue-50" : ""*/}
-                        {/*  }*/}
-                        {/*>*/}
-                        {/*  {t("User ID bo'yicha qidirish")}*/}
-                        {/*</DropdownMenuItem>*/}
+                        <DropdownMenuItem
+                          className={
+                            searchField === "fullName" ? "bg-blue-50" : ""
+                          }
+                        >
+                          {t("name and lastName search")}
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => setSearchField("cardNumber")}
                           className={
@@ -284,19 +383,37 @@ export default function HistoryPage() {
 
                     {/* Search Inputs */}
                     <div className="flex-1 flex items-center gap-3 px-2">
-                      <input
-                        type="text"
-                        placeholder={
-                          searchField === "userID"
-                            ? t("Foydalanuvchi ID kiriting")
-                            : searchField === "cardNumber"
+                      {searchField === "fullName" ? (
+                        <>
+                          <input
+                            type="text"
+                            placeholder={t("Ism")}
+                            value={firstQuery}
+                            onChange={(e) => setFirstQuery(e.target.value)}
+                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                          />
+                          <div className="w-px h-5 bg-gray-300"></div>
+                          <input
+                            type="text"
+                            placeholder={t("Familiya")}
+                            value={secondQuery}
+                            onChange={(e) => setSecondQuery(e.target.value)}
+                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                          />
+                        </>
+                      ) : (
+                        <input
+                          type="text"
+                          placeholder={
+                            searchField === "cardNumber"
                               ? t("Karta raqami")
                               : t("Inventar raqami")
-                        }
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
-                      />
+                          }
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                        />
+                      )}
                     </div>
 
                     {/* Search Button */}

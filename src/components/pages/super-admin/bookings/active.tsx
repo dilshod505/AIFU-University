@@ -825,6 +825,15 @@ export default function ActiveBookingsPage() {
                 )}
               </p>
 
+              <p className="flex justify-between items-center">
+                <strong>{t("Phone number")}:</strong>{" "}
+                {isLoading ? (
+                  <Skeleton className="w-1/2 h-5" />
+                ) : (
+                  (detail?.data?.data?.phoneNumber ?? "-")
+                )}
+              </p>
+
               {/* Fakultet */}
               <p className="flex justify-between items-start gap-2">
                 <strong className="whitespace-nowrap">{t("Faculty")}:</strong>
