@@ -118,13 +118,19 @@ export const CopiesBooks = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchField === "fullInfo" || searchField === "fullName") {
-        if (firstQuery || secondQuery) {
-          setDebouncedSearchQuery(
-            `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
-          );
-        } else {
-          setDebouncedSearchQuery("");
+        let query = "";
+
+        if (secondQuery.trim()) {
+          query = `~${secondQuery.trim()}`;
         }
+        if (firstQuery.trim()) {
+          query = `${firstQuery.trim()}`;
+        }
+        if (firstQuery.trim() && secondQuery.trim()) {
+          query = `${firstQuery.trim()}~${secondQuery.trim()}`;
+        }
+
+        setDebouncedSearchQuery(query);
       } else {
         setDebouncedSearchQuery(searchQuery);
       }
@@ -135,6 +141,25 @@ export const CopiesBooks = () => {
 
     return () => clearTimeout(timer);
   }, [searchQuery, firstQuery, secondQuery, searchField]);
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (searchField === "fullInfo" || searchField === "fullName") {
+  //       if (firstQuery || secondQuery) {
+  //         setDebouncedSearchQuery(
+  //           `${firstQuery}${secondQuery ? `~${secondQuery}` : ""}`,
+  //         );
+  //       } else {
+  //         setDebouncedSearchQuery("");
+  //       }
+  //     } else {
+  //       setDebouncedSearchQuery(searchQuery);
+  //     }
+  //     setPageNum(1);
+  //   }, 500);
+  //
+  //   return () => clearTimeout(timer);
+  // }, [searchQuery, firstQuery, secondQuery, searchField]);
 
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
 
