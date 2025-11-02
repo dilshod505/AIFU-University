@@ -20,7 +20,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useLayoutStore from "@/store/layout-store";
 import {
   Button as AntButton,
@@ -46,7 +45,7 @@ import {
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -69,6 +68,7 @@ const { TextArea } = AntInput;
 
 export const CopiesBooks = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [firstQuery, setFirstQuery] = useState<string>("");
@@ -124,16 +124,14 @@ export const CopiesBooks = () => {
         const title = secondQuery.trim();
 
         if (author || title) {
-          // Muallif + Title uchun to'g'ri format: "author~title"
-          fullQuery = `${author}${author && title ? "~" : ""}${title}`;
-        } else {
-          fullQuery = "";
+          fullQuery = `${author}${author && title ? "~" : ""}~${title}`;
         }
       } else {
         fullQuery = searchQuery.trim();
       }
 
       setDebouncedSearchQuery(fullQuery);
+      setSearchQuery(fullQuery); // 🔥 Asosiy fix shu
       setPageNum(1);
     }, 500);
 
@@ -145,7 +143,7 @@ export const CopiesBooks = () => {
   const { data: copiesBooks, isLoading } = useCopiesBooks({
     pageSize,
     pageNumber: pageNum,
-    query: searchQuery,
+    query: searchQuery || debouncedSearchQuery,
     searchField,
     sortDirection,
     filter,
@@ -158,6 +156,23 @@ export const CopiesBooks = () => {
       setSearchQuery(bookId);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    const bookId = searchParams.get("bookId");
+    if (bookId && searchQuery.trim() === "") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("bookId"); // URL’dan olib tashlash
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+
+    // Agar kimdir inputga "bookId" so‘zini yozsa, tozalab yuborish (oldini olish)
+    if (searchQuery.toLowerCase() === "bookid") {
+      setSearchQuery("");
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("bookId");
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [searchQuery, searchParams, pathname, router]);
 
   // --- buildSearchParams ga yuborish uchun
   // useEffect(() => {

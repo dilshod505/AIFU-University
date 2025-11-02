@@ -6,57 +6,39 @@ const buildSearchParams = (query: string, searchField: string) => {
 
   const trimmedQuery = query.trim();
 
-  // Detect if query contains both author and title (separated by space, comma, or ~)
-  const hasMultipleParts = /[\s,~]/.test(trimmedQuery);
-
+  // fullInfo uchun — muallif va sarlavha
   if (searchField === "fullInfo") {
-    if (hasMultipleParts) {
-      // Split by space, comma, or ~ and join with ~
-      const parts = trimmedQuery
-        .split(/[\s,~]+/)
-        .filter((part) => part.length > 0);
-      if (parts.length >= 2) {
-        // Both author and title: author~title
-        return `&field=fullInfo&query=${parts[0]}~${parts.slice(1).join("")}`;
-      } else {
-        // Single term: just author
-        return `&field=fullInfo&query=${parts[0]}`;
-      }
-    } else {
-      // Single word - could be author or title
-      // If it starts with ~, treat as title only
-      if (trimmedQuery.startsWith("~")) {
-        return `&field=fullInfo&query=${trimmedQuery}`;
-      } else {
-        // Default to author search
-        return `&field=fullInfo&query=${trimmedQuery}`;
-      }
+    // Oxirida ~ bo‘lsa — bu muallif qidiruvi
+    if (trimmedQuery.endsWith("~")) {
+      return `&field=fullInfo&query=${trimmedQuery}`;
     }
-  } else if (searchField === "fullName") {
-    if (hasMultipleParts) {
-      // Split by space, comma, or ~ and join with ~
-      const parts = trimmedQuery
-        .split(/[\s,~]+/)
-        .filter((part) => part.length > 0);
-      if (parts.length >= 2) {
-        // Both first and last name: first~last
-        return `&field=fullName&query=${parts[0]}~${parts.slice(1).join(" ")}`;
-      } else {
-        // Single term: just first name
-        return `&field=fullName&query=${parts[0]}`;
-      }
-    } else {
-      // Single word
-      if (trimmedQuery.startsWith("~")) {
-        return `&field=fullName&query=${trimmedQuery}`;
-      } else {
-        return `&field=fullName&query=${trimmedQuery}`;
-      }
+
+    // Boshida ~ bo‘lsa — bu sarlavha qidiruvi
+    if (trimmedQuery.startsWith("~")) {
+      return `&field=fullInfo&query=${trimmedQuery}`;
     }
-  } else {
-    // For other fields like inventoryNumber, epc, book - simple exact match
-    return `&field=${searchField}&query=${trimmedQuery}`;
+
+    // Default holatda (muallif inputidan kelsa)
+    return `&field=fullInfo&query=${trimmedQuery}~`;
   }
+
+  // fullName uchun — ism va familiya
+  if (searchField === "fullName") {
+    if (trimmedQuery.endsWith("~")) {
+      // ism
+      return `&field=fullName&query=${trimmedQuery}`;
+    }
+
+    if (trimmedQuery.startsWith("~")) {
+      // familiya
+      return `&field=fullName&query=${trimmedQuery}`;
+    }
+
+    return `&field=fullName&query=${trimmedQuery}~`;
+  }
+
+  // Oddiy maydonlar uchun (book, inventoryNumber, epc va hokazo)
+  return `&field=${searchField}&query=${trimmedQuery}`;
 };
 
 export const useCopiesBooks = ({
