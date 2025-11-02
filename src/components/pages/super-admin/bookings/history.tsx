@@ -60,6 +60,7 @@ export default function HistoryPage() {
 
   const [firstQuery, setFirstQuery] = useState(""); // ism
   const [secondQuery, setSecondQuery] = useState(""); // familiya
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   const [pageNum, setPageNum] = useState<number>(
     Number(searchPagination.get("page")) || 1,
@@ -97,7 +98,7 @@ export default function HistoryPage() {
   }, [searchQuery]);
   const { data: history, isLoading } = useHistory({
     searchField,
-    searchQuery: debouncedSearchQuery,
+    searchQuery: debouncedQuery,
     pageNumber: pageNum,
     pageSize,
     sortDirection,
@@ -105,29 +106,17 @@ export default function HistoryPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      let fullQuery = "";
-
+      let query = "";
       if (searchField === "fullName") {
-        const name = firstQuery.trim();
-        const surname = secondQuery.trim();
-
-        if (name || surname) {
-          // "Ism Familiya" formatida qidiruv (backendga "ism~familiya")
-          fullQuery = `${name}${name && surname ? "~" : ""}${surname}`;
-        } else {
-          fullQuery = "";
-        }
+        query = `${firstQuery}${firstQuery && secondQuery ? "~" : ""}${secondQuery}`;
       } else {
-        fullQuery = searchQuery.trim();
+        query = searchQuery.trim();
       }
-
-      setDebouncedSearchQuery(fullQuery);
-      setIsSearching(fullQuery.length > 0);
+      setDebouncedQuery(query);
       setPageNum(1);
     }, 500);
-
     return () => clearTimeout(timer);
-  }, [searchQuery, firstQuery, secondQuery, searchField]);
+  }, [firstQuery, secondQuery, searchQuery, searchField]);
 
   const detail = useMutation({
     mutationFn: async (id: number | string) => {
@@ -293,223 +282,186 @@ export default function HistoryPage() {
 
   return (
     <div className="p-2">
-      {isLoading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">{t("loading")}</p>
-        </div>
-      ) : history?.totalElements === 0 ? (
-        <div className="text-center py-12">
-          <Archive className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-lg font-medium text-muted-foreground mb-2">
-            {isSearching
-              ? t("Qidiruv natijasi topilmadi")
-              : t("Arxivda yozuvlar mavjud emas")}
-            <p
-              className={"text-green-600 mt-3"}
-              onClick={() => window.location.reload()}
-            >
-              <TooltipBtn title={t("Refresh")}>
-                {t("Sahifani yangilash")}
-                <RefreshCw />
-              </TooltipBtn>
-            </p>
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {!isSearching &&
-              t("Kitoblar qaytarilgandan so'ng bu yerda ko'rinadi")}
-          </p>
-        </div>
-      ) : (
-        <div>
-          <MyTable
-            columns={columns}
-            dataSource={history?.list || []}
-            pagination={false}
-            title={
-              <div>
-                <h1 className="text-3xl font-bold">
-                  {t("arxivlangan ijaralar")}
-                </h1>
-                <p className="text-muted-foreground mt-1">
-                  {t("arxivlangan ijaralar royxati")} (
-                  {history?.totalElements || 0})
-                </p>
-              </div>
-            }
-            header={
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  {/* Search Bar Container */}
-                  <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
-                    {/* Filter Dropdown */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <TooltipBtn
-                          className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
-                          title={t("Filter")}
-                        >
-                          <Settings2 size={18} />
-                        </TooltipBtn>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        <DropdownMenuItem
-                          className={
-                            searchField === "fullName" ? "bg-blue-50" : ""
-                          }
-                        >
-                          {t("name and lastName search")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setSearchField("cardNumber")}
-                          className={
-                            searchField === "cardNumber" ? "bg-blue-50" : ""
-                          }
-                        >
-                          {t("Card Number bo'yicha qidirish")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setSearchField("inventoryNumber")}
-                          className={
-                            searchField === "inventoryNumber"
-                              ? "bg-blue-50"
-                              : ""
-                          }
-                        >
-                          {t("Inventory Number bo'yicha qidirish")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+      <div>
+        <MyTable
+          columns={columns}
+          dataSource={history?.list || []}
+          pagination={false}
+          title={
+            <div>
+              <h1 className="text-3xl font-bold">
+                {t("arxivlangan ijaralar")}
+              </h1>
+            </div>
+          }
+          header={
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                {/* Search Bar Container */}
+                <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
+                  {/* Filter Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <TooltipBtn
+                        className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                        title={t("Filter")}
+                      >
+                        <Settings2 size={18} />
+                      </TooltipBtn>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem
+                        onClick={() => setSearchField("fullName")}
+                        className={
+                          searchField === "fullName" ? "bg-blue-50" : ""
+                        }
+                      >
+                        {t("name and lastName search")}
+                      </DropdownMenuItem>
 
-                    {/* Search Inputs */}
-                    <div className="flex-1 flex items-center gap-3 px-2">
-                      {searchField === "fullName" ? (
-                        <>
-                          <input
-                            type="text"
-                            placeholder={t("Ism")}
-                            value={firstQuery}
-                            onChange={(e) => setFirstQuery(e.target.value)}
-                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
-                          />
-                          <div className="w-px h-5 bg-gray-300"></div>
-                          <input
-                            type="text"
-                            placeholder={t("Familiya")}
-                            value={secondQuery}
-                            onChange={(e) => setSecondQuery(e.target.value)}
-                            className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
-                          />
-                        </>
-                      ) : (
+                      <DropdownMenuItem
+                        onClick={() => setSearchField("cardNumber")}
+                        className={
+                          searchField === "cardNumber" ? "bg-blue-50" : ""
+                        }
+                      >
+                        {t("Card Number bo'yicha qidirish")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setSearchField("inventoryNumber")}
+                        className={
+                          searchField === "inventoryNumber" ? "bg-blue-50" : ""
+                        }
+                      >
+                        {t("Inventory Number bo'yicha qidirish")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Search Inputs */}
+                  <div className="flex-1 flex items-center gap-3 px-2">
+                    {searchField === "fullName" ? (
+                      <>
                         <input
                           type="text"
-                          placeholder={
-                            searchField === "cardNumber"
-                              ? t("Karta raqami")
-                              : t("Inventar raqami")
-                          }
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder={t("Ism")}
+                          value={firstQuery}
+                          onChange={(e) => setFirstQuery(e.target.value)}
                           className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
                         />
-                      )}
-                    </div>
-
-                    {/* Search Button */}
-                    <TooltipBtn
-                      className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
-                      title={t("Search")}
-                    >
-                      <Search size={18} />
-                    </TooltipBtn>
-                  </div>
-
-                  {/* Sort & Export */}
-                  <div className="flex gap-2 items-center">
-                    {sortDirection === "asc" ? (
-                      <TooltipBtn
-                        size="sm"
-                        onClick={() => setSortDirection("desc")}
-                      >
-                        <ArrowUpWideNarrow />
-                      </TooltipBtn>
+                        <div className="w-px h-5 bg-gray-300"></div>
+                        <input
+                          type="text"
+                          placeholder={t("Familiya")}
+                          value={secondQuery}
+                          onChange={(e) => setSecondQuery(e.target.value)}
+                          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                        />
+                      </>
                     ) : (
-                      <TooltipBtn
-                        size="sm"
-                        onClick={() => setSortDirection("asc")}
-                      >
-                        <ArrowDownWideNarrow />
-                      </TooltipBtn>
+                      <input
+                        type="text"
+                        placeholder={
+                          searchField === "cardNumber"
+                            ? t("Karta raqami")
+                            : t("Inventar raqami")
+                        }
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-92 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm dark:text-white"
+                      />
                     )}
-
-                    <TooltipBtn
-                      title={t("Excelga yuklab olish")}
-                      onClick={() => exportExcel.mutate()}
-                      disabled={exportExcel.isPending}
-                    >
-                      <FileDown className="w-4 h-4" />
-                      {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
-                    </TooltipBtn>
                   </div>
+
+                  {/* Search Button */}
+                  <TooltipBtn
+                    className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
+                    title={t("Search")}
+                  >
+                    <Search size={18} />
+                  </TooltipBtn>
+                </div>
+
+                {/* Sort & Export */}
+                <div className="flex gap-2 items-center">
+                  {sortDirection === "asc" ? (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("desc")}
+                    >
+                      <ArrowUpWideNarrow />
+                    </TooltipBtn>
+                  ) : (
+                    <TooltipBtn
+                      size="sm"
+                      onClick={() => setSortDirection("asc")}
+                    >
+                      <ArrowDownWideNarrow />
+                    </TooltipBtn>
+                  )}
+
+                  <TooltipBtn
+                    title={t("Excelga yuklab olish")}
+                    onClick={() => exportExcel.mutate()}
+                    disabled={exportExcel.isPending}
+                  >
+                    <FileDown className="w-4 h-4" />
+                    {exportExcel.isPending ? t("Yuklanmoqda...") : ""}
+                  </TooltipBtn>
                 </div>
               </div>
-            }
-            footer={
-              <div
-                className={
-                  "flex flex-wrap justify-center items-center lg:justify-between"
+            </div>
+          }
+          footer={
+            <div
+              className={
+                "flex flex-wrap justify-center items-center lg:justify-between"
+              }
+            >
+              <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
+                <p className="text-sm whitespace-break-spaces">
+                  {t("Total Pages")}:{" "}
+                  <span className="text-green-600">{history?.totalPages}</span>
+                </p>
+                <p className="text-sm whitespace-break-spaces">
+                  {t("Current Page")}:{" "}
+                  <span className="text-green-600">{history?.currentPage}</span>
+                </p>
+                <p className="text-sm whitespace-break-spaces">
+                  {t("Total Elements")}:{" "}
+                  <span className="text-green-600">
+                    {history?.totalElements}
+                  </span>
+                </p>
+              </div>
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => handlePageChange(e.selected + 1)}
+                forcePage={pageNum - 1}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={1}
+                pageCount={history?.totalPages || 0}
+                previousLabel={
+                  <Button className={"bg-white text-black"}>
+                    <ChevronLeft />
+                    {t("Return")}
+                  </Button>
                 }
-              >
-                <div className="font-bold text-[20px] space-y-1 flex items-center gap-5">
-                  <p className="text-sm whitespace-break-spaces">
-                    {t("Total Pages")}:{" "}
-                    <span className="text-green-600">
-                      {history?.totalPages}
-                    </span>
-                  </p>
-                  <p className="text-sm whitespace-break-spaces">
-                    {t("Current Page")}:{" "}
-                    <span className="text-green-600">
-                      {history?.currentPage}
-                    </span>
-                  </p>
-                  <p className="text-sm whitespace-break-spaces">
-                    {t("Total Elements")}:{" "}
-                    <span className="text-green-600">
-                      {history?.totalElements}
-                    </span>
-                  </p>
-                </div>
-                <ReactPaginate
-                  breakLabel="..."
-                  onPageChange={(e) => handlePageChange(e.selected + 1)}
-                  forcePage={pageNum - 1}
-                  pageRangeDisplayed={3}
-                  marginPagesDisplayed={1}
-                  pageCount={history?.totalPages || 0}
-                  previousLabel={
-                    <Button className={"bg-white text-black"}>
-                      <ChevronLeft />
-                      {t("Return")}
-                    </Button>
-                  }
-                  nextLabel={
-                    <Button className={"bg-white text-black"}>
-                      {t("Next")} <ChevronRight />
-                    </Button>
-                  }
-                  className={"flex justify-center gap-2 items-center my-5"}
-                  renderOnZeroPageCount={null}
-                  pageClassName="list-none"
-                  pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
-                  activeLinkClassName="bg-green-600 text-white rounded-full"
-                />
-              </div>
-            }
-          />
-        </div>
-      )}
+                nextLabel={
+                  <Button className={"bg-white text-black"}>
+                    {t("Next")} <ChevronRight />
+                  </Button>
+                }
+                className={"flex justify-center gap-2 items-center my-5"}
+                renderOnZeroPageCount={null}
+                pageClassName="list-none"
+                pageLinkClassName="px-3 py-1 rounded-full border cursor-pointer block"
+                activeLinkClassName="bg-green-600 text-white rounded-full"
+              />
+            </div>
+          }
+        />
+      </div>
       <Dialog open={openDetail} onOpenChange={setOpenDetail}>
         <DialogContent className="max-w-lg rounded-xl">
           <DialogHeader>

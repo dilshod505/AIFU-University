@@ -168,13 +168,17 @@ export function useHistory({
       sortDirection,
     ],
     queryFn: async () => {
-      const params: any = {
+      const params: Record<string, any> = {
         pageNumber,
         pageSize,
         sortDirection,
-        searchQuery,
-        searchField,
       };
+
+      // 🔹 Faqat qidiruv bo‘lsa, search param qo‘shamiz
+      if (searchQuery && searchQuery.trim() !== "") {
+        params.field = searchField;
+        params.query = searchQuery;
+      }
 
       const response = await api.get(`/admin/history`, { params });
       return response.data;
