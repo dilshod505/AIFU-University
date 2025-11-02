@@ -390,8 +390,8 @@ const Students = () => {
                 onConfirm={() => {
                   deleteStudent.mutate(record.id, {
                     onSuccess: () =>
-                      toast.success(t("Category deleted successfully")),
-                    onError: () => toast.error(t("Error deleting category")),
+                      toast.success(t("Student deleted successfully")),
+                    onError: () => toast.error(t("Error deleting student")),
                   });
                 }}
               />

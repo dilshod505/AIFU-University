@@ -85,28 +85,40 @@ export const useExcelExportShablon = () => {
 };
 
 export const useUpdateStudents = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const res = await api.patch(`/admin/students/${data.id}`, data);
       return res.data;
     },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(data);
+    },
   });
 };
 
 export const useDeleteStudents = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string | any) => {
       const res = await api.delete(`/admin/students/${id}`);
       return res.data;
     },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(data);
+    },
   });
 };
 
 export const useCreateStudents = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ payload }: { payload: Record<string, any> }) => {
       const res = await api.post("/admin/students", payload);
       return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(data);
     },
   });
 };

@@ -516,5 +516,8 @@
   "Inventory Number bo'yicha qidirish": "Поиск по инвентарному номеру",
   "action": "Действие",
   "Error creating student": "Ошибка при создании студента",
-  "Please upload book cover": "Пожалуйста, загрузите обложку книги"
+  "Please upload book cover": "Пожалуйста, загрузите обложку книги",
+  "Student updated successfully": "Студент успешно обновлен",
+  "Student deleted successfully": "Студент успешно удален",
+  "Error deleting student": "Ошибка при удалении студента"
 }

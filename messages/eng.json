@@ -516,5 +516,8 @@
   "Inventory Number bo'yicha qidirish": "Search by Inventory Number",
   "action": "Action",
   "Error creating student": "Error creating student",
-  "Please upload book cover": "Please upload book cover"
+  "Please upload book cover": "Please upload book cover",
+  "Student updated successfully": "Student updated successfully",
+  "Student deleted successfully": "Student deleted successfully",
+  "Error deleting student": "Error deleting student"
 }
