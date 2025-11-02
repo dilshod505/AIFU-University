@@ -180,12 +180,12 @@ const BaseBooks = () => {
             {/* Search Bar Container */}
             <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
               {/* Filter Icon (inactive state) */}
-              <TooltipBtn
-                className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
-                title={t("Boshqa filter mavjud emas")}
-              >
-                <Settings2 size={18} />
-              </TooltipBtn>
+              {/*<TooltipBtn*/}
+              {/*  className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"*/}
+              {/*  title={t("Boshqa filter mavjud emas")}*/}
+              {/*>*/}
+              {/*  <Settings2 size={18} />*/}
+              {/*</TooltipBtn>*/}
               {/* Search Input */}
               <div className="flex-1 flex items-center">
                 <Input

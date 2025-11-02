@@ -171,12 +171,12 @@ const EBookCategories = () => {
             {/* Search Bar Container */}
             <div className="flex-1 rounded-full shadow-lg p-1 flex items-center gap-2">
               {/* Filter Icon (inactive state) */}
-              <TooltipBtn
-                className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"
-                title={t("Boshqa filter mavjud emas")}
-              >
-                <Settings2 size={18} />
-              </TooltipBtn>
+              {/*<TooltipBtn*/}
+              {/*  className="flex-shrink-0 mr-1 p-2.5 rounded-full transition-colors"*/}
+              {/*  title={t("Boshqa filter mavjud emas")}*/}
+              {/*>*/}
+              {/*  <Settings2 size={18} />*/}
+              {/*</TooltipBtn>*/}
 
               {/* Search Input */}
               <div className="flex-1 flex items-center">
@@ -190,7 +190,6 @@ const EBookCategories = () => {
               <TooltipBtn
                 title={t("Search")}
                 className="flex-shrink-0 mr-1 p-2.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
-
               >
                 <Search size={18} />
               </TooltipBtn>
