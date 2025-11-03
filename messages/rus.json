@@ -519,5 +519,6 @@
   "Please upload book cover": "Пожалуйста, загрузите обложку книги",
   "Student updated successfully": "Студент успешно обновлен",
   "Student deleted successfully": "Студент успешно удален",
-  "Error deleting student": "Ошибка при удалении студента"
+  "Error deleting student": "Ошибка при удалении студента",
+  "See copy book": "Посмотреть копию книги"
 }

@@ -519,5 +519,6 @@
   "Please upload book cover": "Kitob rasmini yuklang",
   "Student updated successfully": "O'quvchi muvaffaqiyatli yangilandi",
   "Student deleted successfully": "O'quvchi muvaffaqiyatli o'chirildi",
-  "Error deleting student": "O'quvchini o'chirishda xatolik"
+  "Error deleting student": "O'quvchini o'chirishda xatolik",
+  "See copy book": "Kitob nusxasini ko'rish"
 }

@@ -221,27 +221,6 @@ const BaseBooks = () => {
         render: (_: any, __: any, index: number) => index + 1,
       },
       {
-        key: "title",
-        dataIndex: "title",
-        title: t("Title"),
-        render: (text: string) => (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="block max-w-[180px] truncate cursor-pointer">
-                  {text || <span className="text-red-500">--</span>}
-                </span>
-              </TooltipTrigger>
-              {text && (
-                <TooltipContent className="max-w-sm whitespace-pre-wrap">
-                  {text}
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-        ),
-      },
-      {
         key: "author",
         dataIndex: "author",
         title: t("Author"),
@@ -262,7 +241,27 @@ const BaseBooks = () => {
           </TooltipProvider>
         ),
       },
-
+      {
+        key: "title",
+        dataIndex: "title",
+        title: t("Title"),
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[180px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
+      },
       {
         key: "isbn",
         dataIndex: "isbn",
@@ -302,7 +301,11 @@ const BaseBooks = () => {
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
             <Link href={`/super-admin/copies-books?bookId=${record.id}`}>
-              <TooltipBtn variant={"ampersand"} title={t("Copy")} size={"sm"}>
+              <TooltipBtn
+                variant={"outline"}
+                title={t("See copy book")}
+                size={"sm"}
+              >
                 <Copy />
               </TooltipBtn>
             </Link>
@@ -498,17 +501,17 @@ const BaseBooks = () => {
                       <>
                         <input
                           type="text"
-                          placeholder={t("Title")}
-                          value={fullInfoTitle}
-                          onChange={(e) => setFullInfoTitle(e.target.value)}
+                          placeholder={t("Author")}
+                          value={fullInfoAuthor}
+                          onChange={(e) => setFullInfoAuthor(e.target.value)}
                           className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
                         />
                         <div className="w-px h-5 bg-gray-300"></div>
                         <input
                           type="text"
-                          placeholder={t("Author")}
-                          value={fullInfoAuthor}
-                          onChange={(e) => setFullInfoAuthor(e.target.value)}
+                          placeholder={t("Title")}
+                          value={fullInfoTitle}
+                          onChange={(e) => setFullInfoTitle(e.target.value)}
                           className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm"
                         />
                       </>
