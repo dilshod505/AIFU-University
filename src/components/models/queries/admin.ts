@@ -49,7 +49,7 @@ export const useCreateAdministrator = () => {
 
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
-      const res = await api.post("/super-admin/admins", data);
+      const res = await api.post("/super-admin/admins/initiate", data);
       return res.data;
     },
     onSuccess: () => {
@@ -63,7 +63,7 @@ export const useActivateAccount = () => {
 
   return useMutation({
     mutationFn: async (data: Record<string, any>) => {
-      const res = await api.post(`/super-admin/admins/activate`, data);
+      const res = await api.post(`/super-admin/admins/confirm`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -78,7 +78,7 @@ export const useResendActivationCode = () => {
 
   return useMutation({
     mutationFn: async (data: { email: string }) => {
-      const res = await api.post(`/super-admin/admins/activate`, data);
+      const res = await api.post(`/super-admin/admins/confirm`, data);
       return res.data;
     },
     onSuccess: () => {

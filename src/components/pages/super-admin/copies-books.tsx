@@ -209,6 +209,22 @@ export const CopiesBooks = () => {
         title: t("Author"),
         key: "author",
         dataIndex: "author",
+        render: (text: string) => (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="block max-w-[160px] truncate cursor-pointer">
+                  {text || <span className="text-red-500">--</span>}
+                </span>
+              </TooltipTrigger>
+              {text && (
+                <TooltipContent className="max-w-sm whitespace-pre-wrap">
+                  {text}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        ),
       },
       {
         title: t("Title"),
