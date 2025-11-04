@@ -23,7 +23,6 @@ import {
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
-  Check,
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -57,7 +56,6 @@ const Administrators = () => {
   };
 
   const t = useTranslations();
-  const [activateOpen, setActivateOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [canResend, setCanResend] = useState<boolean>(false);
@@ -69,9 +67,7 @@ const Administrators = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [pendingAdminData, setPendingAdminData] = useState<any>(null);
-  const [activationStep, setActivationStep] = useState<"email" | "code">(
-    "email",
-  );
+  const [activationStep, setActivationStep] = useState<"form" | "code">("form");
   const { data: admins, isLoading } = useAdministrators({
     pageNumber,
     sortDirection,
@@ -154,20 +150,6 @@ const Administrators = () => {
         width: 150,
         render: (_: any, record: Record<string, any>) => (
           <div className="flex items-center gap-3">
-            <TooltipBtn
-              title={t("Account activity")}
-              onClick={() => {
-                setSelectedEmail(record.email);
-                activateForm.reset({ email: record.email, code: "" });
-                setActivateOpen(true);
-                setActivationStep("code");
-                setTimeLeft(180);
-                setCanResend(false);
-              }}
-            >
-              <Check />
-            </TooltipBtn>
-
             <DeleteActionDialog
               onConfirm={() => {
                 deleteAdmin.mutate(record.id, {
@@ -211,7 +193,7 @@ const Administrators = () => {
         {
           onSuccess: () => {
             toast.success(t("Activation code sent to email"));
-            setTimeLeft(180);
+            setTimeLeft(300); // 5 minutes = 300 seconds
             setCanResend(false);
           },
           onError: () => {
@@ -223,31 +205,33 @@ const Administrators = () => {
   };
 
   const onSubmit = (data: any) => {
-    setPendingAdminData(data);
-    setSelectedEmail(data.email);
-    activateForm.reset({ email: data.email, code: "" });
-    setActivateOpen(true);
-    setActivationStep("email");
-    setTimeLeft(180);
-    setCanResend(false);
+    createAdmin.mutate(data, {
+      onSuccess: (res) => {
+        toast.success(t("Activation code sent automatically to email"));
+        setSelectedEmail(data.email);
+        activateForm.reset({ email: data.email, code: "" });
+        setPendingAdminData(data);
+        setActivationStep("code");
+        setTimeLeft(300); // 5 minutes = 300 seconds
+        setCanResend(false);
+      },
+      onError: () => {
+        toast.error(t("Failed to initiate admin creation"));
+      },
+    });
   };
 
-  const handleSendCode = () => {
-    if (selectedEmail) {
-      resendCode.mutate(
-        { email: selectedEmail },
-        {
-          onSuccess: () => {
-            toast.success(t("Activation code sent to email"));
-            setActivationStep("code");
-            setTimeLeft(180);
-            setCanResend(false);
-          },
-          onError: () => {
-            toast.error(t("Failed to send code"));
-          },
-        },
-      );
+  const handleSheetOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      // Reset when closing
+      setActivationStep("form");
+      form.reset();
+      activateForm.reset();
+      setPendingAdminData(null);
+      setSelectedEmail(null);
+      setTimeLeft(0);
+      setCanResend(false);
     }
   };
 
@@ -327,154 +311,166 @@ const Administrators = () => {
           </div>
         }
       />
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet open={open} onOpenChange={handleSheetOpenChange}>
         <SheetContent side={"center"}>
           <SheetHeader>
-            <SheetTitle>{t("Add admin")}</SheetTitle>
-          </SheetHeader>
-          <div className="p-3">
-            <AutoForm
-              submitText={t("Add admin")}
-              onSubmit={onSubmit}
-              form={form}
-              fields={fields}
-              showResetButton={false}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
-      <Sheet open={activateOpen} onOpenChange={setActivateOpen}>
-        <SheetContent side={"center"}>
-          <SheetHeader>
-            <SheetTitle>{t("Activate Administrator")}</SheetTitle>
+            <SheetTitle>
+              {activationStep === "form"
+                ? t("Add admin")
+                : t("Activate Administrator")}
+            </SheetTitle>
           </SheetHeader>
 
           <div className="p-3">
-            <div className="flex gap-2 mb-6">
-              <div
-                className={`flex-1 h-1 rounded-full transition-colors ${
-                  activationStep === "email" ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              />
-              <div
-                className={`flex-1 h-1 rounded-full transition-colors ${
-                  activationStep === "code" ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              />
-            </div>
-
-            {/* Step 1: Email Input */}
-            {activationStep === "email" && (
-              <div className="space-y-4">
-                <div>
-                  <Label className="mb-3 block">{t("Email")}</Label>
-                  <Input
-                    {...activateForm.register("email", { required: true })}
-                    type="email"
-                    disabled={!!selectedEmail}
-                    placeholder={t("Enter email")}
-                  />
-                </div>
-                <Button
-                  onClick={handleSendCode}
-                  className="w-full"
-                  disabled={resendCode.isPending}
-                >
-                  {resendCode.isPending ? t("Sending...") : t("Send Code")}
-                </Button>
+            {/* Progress indicator shown only during code verification */}
+            {activationStep === "code" && (
+              <div className="flex gap-2 mb-6">
+                <div className="flex-1 h-1 rounded-full bg-gray-300" />
+                <div className="flex-1 h-1 rounded-full bg-blue-600" />
               </div>
             )}
 
-            {/* Step 2: Code Verification */}
-            {activationStep === "code" && (
-              <form
-                className="space-y-4"
-                onSubmit={activateForm.handleSubmit((data) => {
-                  activate.mutate(data, {
-                    onSuccess: () => {
-                      if (pendingAdminData) {
-                        createAdmin.mutate(
-                          {
-                            name: pendingAdminData.name,
-                            surname: pendingAdminData.surname,
-                            email: pendingAdminData.email,
-                            password: pendingAdminData.password,
-                          },
-                          {
-                            onSuccess: () => {
-                              toast.success(
-                                t("Administrator created successfully"),
-                              );
-                              setActivateOpen(false);
-                              setOpen(false);
-                              form.reset();
-                              setPendingAdminData(null);
-                              setTimeLeft(0);
-                              setCanResend(false);
-                              setActivationStep("email");
-                            },
-                            onError: () => {
-                              toast.error(t("Error creating admin"));
-                            },
-                          },
-                        );
-                      } else {
-                        toast.success(t("Account successfully activated"));
-                        setActivateOpen(false);
-                        setTimeLeft(0);
-                        setCanResend(false);
-                        setActivationStep("email");
-                      }
-                    },
-                    onError: (err: any) => {
-                      toast.error(
-                        err?.response?.data?.message || t("Activation failed"),
-                      );
-                    },
-                  });
-                })}
-              >
-                <div>
-                  <Label className="mb-3 block">{t("Confirmation Code")}</Label>
-                  <Input
-                    {...activateForm.register("code", { required: true })}
-                    type="text"
-                    placeholder={t("Enter code")}
-                  />
-                </div>
+            {/* Step 1: Form with disabled inputs during code verification */}
+            {activationStep === "form" && (
+              <AutoForm
+                submitText={t("Add admin")}
+                onSubmit={onSubmit}
+                form={form}
+                fields={fields}
+                showResetButton={false}
+              />
+            )}
 
-                <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <Label className="mb-0">{t("Time remaining")}</Label>
-                    <span className="text-lg font-semibold text-blue-600">
-                      {formatTime(timeLeft)}
-                    </span>
-                  </div>
-                  {canResend && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full bg-transparent"
-                      onClick={handleResendCode}
-                      disabled={resendCode.isPending}
-                    >
-                      {resendCode.isPending
-                        ? t("Sending...")
-                        : t("Resend Code")}
-                    </Button>
+            {/* Step 2: Code verification - form inputs disabled, code input shown below */}
+            {activationStep === "code" && (
+              <div className="space-y-4">
+                {/* Disabled form fields for display */}
+                <div className="space-y-3 opacity-50 pointer-events-none">
+                  {pendingAdminData && (
+                    <>
+                      <div>
+                        <Label className="text-sm font-medium">
+                          {t("Name")}
+                        </Label>
+                        <Input
+                          type="text"
+                          value={pendingAdminData.name}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">
+                          {t("Surname")}
+                        </Label>
+                        <Input
+                          type="text"
+                          value={pendingAdminData.surname}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">
+                          {t("Email")}
+                        </Label>
+                        <Input
+                          type="email"
+                          value={pendingAdminData.email}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">
+                          {t("Password")}
+                        </Label>
+                        <Input
+                          type="password"
+                          value={pendingAdminData.password}
+                          disabled
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
-
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={activate.isPending}
+                <form
+                  className="space-y-4 pt-6 border-t"
+                  onSubmit={activateForm.handleSubmit((data) => {
+                    activate.mutate(data, {
+                      onSuccess: () => {
+                        toast.success(t("Account successfully activated"));
+                        handleSheetOpenChange(false);
+                      },
+                      onError: (err: any) => {
+                        toast.error(
+                          err?.response?.data?.message ||
+                            t("Activation failed"),
+                        );
+                      },
+                    });
+                  })}
                 >
-                  {activate.isPending
-                    ? t("Verifying...")
-                    : t("Verify and Create Admin")}
-                </Button>
-              </form>
+                  <div>
+                    <Label className="mb-3 block">
+                      {t("Confirmation Code")}
+                    </Label>
+                    <Input
+                      {...activateForm.register("code", { required: true })}
+                      type="text"
+                      placeholder={t("Enter 6-digit code")}
+                      autoComplete="off"
+                    />
+                  </div>
+
+                  <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <Label className="mb-0">{t("Time remaining")}</Label>
+                      <span className="text-lg font-semibold text-blue-600">
+                        {formatTime(timeLeft)}
+                      </span>
+                    </div>
+                    {canResend && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full bg-transparent"
+                        onClick={() => {
+                          if (selectedEmail) {
+                            resendCode.mutate(
+                              { email: selectedEmail },
+                              {
+                                onSuccess: () => {
+                                  toast.success(
+                                    t("Activation code sent to email"),
+                                  );
+                                  setTimeLeft(300); // 5 minut qayta hisoblash
+                                  setCanResend(false);
+                                },
+                                onError: () => {
+                                  toast.error(t("Failed to resend code"));
+                                },
+                              },
+                            );
+                          }
+                        }}
+                        disabled={resendCode.isPending}
+                      >
+                        {resendCode.isPending
+                          ? t("Sending...")
+                          : t("Resend Code")}
+                      </Button>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={activate.isPending} // vaqt tugamagan bo‘lsa disabled
+                  >
+                    {activate.isPending
+                      ? t("Verifying...")
+                      : t("Faollashtirish")}
+                  </Button>
+                </form>
+              </div>
             )}
           </div>
         </SheetContent>

@@ -521,5 +521,10 @@
   "Student deleted successfully": "Student deleted successfully",
   "Error deleting student": "Error deleting student",
   "See copy book": "See copybook",
-  "Author and title search": "Author and title search"
+  "Author and title search": "Author and title search",
+  "Activation code sent automatically to email": "Activation code sent automatically to email.",
+  "Time remaining": "Time remaining",
+  "Verifying...": "Verifying...",
+  "Sending...": "Sending...",
+  "Resend Code": "Resend Code"
 }

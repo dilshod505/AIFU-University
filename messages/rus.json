@@ -521,5 +521,10 @@
   "Student deleted successfully": "Студент успешно удален",
   "Error deleting student": "Ошибка при удалении студента",
   "See copy book": "Посмотреть копию книги",
-  "Author and title search": "Поиск по автору и названию"
+  "Author and title search": "Поиск по автору и названию",
+  "Activation code sent automatically to email": "Код активации автоматически отправлен на электронную почту.",
+  "Time remaining": "Оставшееся время",
+  "Verifying...": "Проверка...",
+  "Sending...": "Отправка...",
+  "Resend Code": "Повторно отправить код"
 }
