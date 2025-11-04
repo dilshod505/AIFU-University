@@ -350,10 +350,10 @@ const Profile = () => {
               {t("Today Recent Activity")}
             </h3>
 
-            <div className="overflow-y-auto max-h-96 rounded-lg border border-gray-100 dark:border-gray-800">
+            <div className="overflow-y-auto max-h-96 rounded dark:border-gray-800">
               <table className="w-full text-left border-collapse">
                 <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800 z-10">
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                  <tr className="border-b-2 border-gray-200 dark:border-gray-700">
                     <th className="py-3 px-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                       {t("DateTime")}
                     </th>
@@ -372,7 +372,7 @@ const Profile = () => {
                       (item: any, i: number) => (
                         <tr key={i}>
                           {/* Time */}
-                          <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                          <td className="border-b-2 py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
                             {new Date(item.time).toLocaleString("ru-RU", {
                               day: "2-digit",
                               month: "2-digit",
@@ -383,12 +383,12 @@ const Profile = () => {
                           </td>
 
                           {/* Action Type */}
-                          <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
+                          <td className="border-b-2 py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
                             {item.actionType.replaceAll("_", " ")}
                           </td>
 
                           {/* Description (with tooltip) */}
-                          <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
+                          <td className="border-b-2 py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
                             <TooltipProvider delayDuration={200}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -459,7 +459,7 @@ const Profile = () => {
               {t("Recent Activity")}
             </h3>
 
-            <div className="overflow-y-auto max-h-96 rounded-lg">
+            <div className="overflow-y-auto max-h-96 rounded">
               <table className="w-full text-left border-collapse">
                 <thead className="sticky top-0 z-10">
                   <tr className="border-b border-gray-200 bg-gray-100 dark:bg-gray-700">
@@ -480,7 +480,7 @@ const Profile = () => {
                     activity.data.activities.map((item: any, i: number) => (
                       <tr key={i}>
                         {/* Time */}
-                        <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                        <td className="border-b-2 py-3 px-4 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {new Date(item.time).toLocaleString("ru-RU", {
                             day: "2-digit",
                             month: "2-digit",
@@ -491,7 +491,7 @@ const Profile = () => {
                         </td>
 
                         {/* Action type */}
-                        <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
+                        <td className="border-b-2 py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
                           {item.actionType === "CREATE_BASE_BOOK_CATEGORY" &&
                             t("Created book category")}
                           {item.actionType === "DELETE_BASE_BOOK_CATEGORY" &&
@@ -518,7 +518,7 @@ const Profile = () => {
                         </td>
 
                         {/* Description with Tooltip */}
-                        <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
+                        <td className="border-b-2 py-3 px-4 text-sm text-gray-600 dark:text-gray-300 max-w-[280px] truncate">
                           <TooltipProvider delayDuration={200}>
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -582,7 +582,6 @@ const Profile = () => {
                     <th className="px-4 py-2 text-center">{t("Issued")}</th>
                     <th className="px-4 py-2 text-center">{t("Extended")}</th>
                     <th className="px-4 py-2 text-center">{t("Returned")}</th>
-                    <th className="px-4 py-2 text-center">{t("Total")}</th>
                   </tr>
                 </thead>
                 <tbody>

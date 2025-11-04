@@ -520,5 +520,6 @@
   "Student updated successfully": "Студент успешно обновлен",
   "Student deleted successfully": "Студент успешно удален",
   "Error deleting student": "Ошибка при удалении студента",
-  "See copy book": "Посмотреть копию книги"
+  "See copy book": "Посмотреть копию книги",
+  "Author and title search": "Поиск по автору и названию"
 }

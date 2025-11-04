@@ -647,7 +647,7 @@ const Dashboard = () => {
                           (activity: any, i: number) => (
                             <div
                               key={i}
-                              className="grid grid-cols-4 gap-4 text-sm"
+                              className="border-b-2 grid grid-cols-4 gap-4 text-sm"
                             >
                               <div className="text-[16px]">
                                 {activity.librarianFullName ||
@@ -730,14 +730,12 @@ const Dashboard = () => {
                         (booking: any, i: number) => (
                           <div
                             key={i}
-                            className="grid grid-cols-6 gap-4 text-sm"
+                            className="border-b-2 grid grid-cols-6 gap-4 text-sm cursor-pointer hover:bg-rose-200 dark:hover:bg-rose-800/60 transition-colors duration-150 rounded-md px-2 py-1"
+                            onClick={() =>
+                              detailStudent.mutate(booking.studentId)
+                            }
                           >
-                            <div
-                              className="text-[16px] truncate max-w-[150px] cursor-pointer"
-                              onClick={() =>
-                                detailStudent.mutate(booking.studentId)
-                              }
-                            >
+                            <div className="text-[16px] truncate max-w-[150px]">
                               {booking.name || "Unknown Student"}
                             </div>
                             <div className="truncate max-w-[150px]">
@@ -748,7 +746,7 @@ const Dashboard = () => {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="text-[16px] max-w-[200px] truncate cursor-pointer text-muted-foreground hover:text-foreground">
+                                  <div className="text-[16px] max-w-[200px] truncate text-muted-foreground hover:text-foreground">
                                     {booking.title || "Unknown Book"}
                                   </div>
                                 </TooltipTrigger>
@@ -764,7 +762,7 @@ const Dashboard = () => {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="truncate max-w-[200px] cursor-pointer text-muted-foreground hover:text-foreground">
+                                  <div className="truncate max-w-[200px] text-muted-foreground hover:text-foreground">
                                     {booking.author || "—"}
                                   </div>
                                 </TooltipTrigger>
@@ -782,23 +780,6 @@ const Dashboard = () => {
                             <div className="text-red-500 text-[16px]">
                               {booking.dueDate || booking.due_date || "No Date"}
                             </div>
-                            {/*<div>*/}
-                            {/*  <TooltipBtn*/}
-                            {/*    variant={"ampersand"}*/}
-                            {/*    size={"sm"}*/}
-                            {/*    title={t("Detail")}*/}
-                            {/*    onClick={(record: any) => {*/}
-                            {/*      detail.mutate(record.id, {*/}
-                            {/*        onSuccess: (res) => {*/}
-                            {/*          setViewingDetail(res.data);*/}
-                            {/*          setDetailOpen(true);*/}
-                            {/*        },*/}
-                            {/*      });*/}
-                            {/*    }}*/}
-                            {/*  >*/}
-                            {/*    <Eye />*/}
-                            {/*  </TooltipBtn>*/}
-                            {/*</div>*/}
                           </div>
                         ),
                       )}

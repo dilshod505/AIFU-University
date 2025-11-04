@@ -24,7 +24,7 @@ const Header = () => {
     queryKey: ["books", searchQuery],
     queryFn: async () => {
       const res = await api.get<Record<string, any>[]>(
-        `/client/search?query=${searchQuery}`
+        `/client/search?query=${searchQuery}`,
       );
       return res.data || [];
     },
@@ -74,7 +74,7 @@ const Header = () => {
               <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 type="text"
-                placeholder={`${t("Kitoblarni qidirish")}...`}
+                placeholder={`${t("Author and title search")}...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
