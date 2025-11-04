@@ -21,6 +21,12 @@ import { toast } from "sonner";
 import { useBookingByStudentId } from "@/components/models/queries/booking";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useSearchParams, useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function BorrowBookForm() {
   const t = useTranslations();
@@ -568,8 +574,25 @@ export function BorrowBookForm() {
                         <h1 className={"capitalize"}>{bookData?.author}</h1>
                       </div>
                       <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Title")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.title}</h1>
+                        <p className="text-end">{t("Title")}:</p>
+
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="block max-w-[200px] truncate cursor-pointer capitalize text-end">
+                                {bookData?.title || (
+                                  <span className="text-red-500">--</span>
+                                )}
+                              </span>
+                            </TooltipTrigger>
+
+                            {bookData?.title && (
+                              <TooltipContent className="max-w-sm whitespace-pre-wrap break-words">
+                                {bookData.title}
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                       <div className="flex justify-between">
                         <p className={"text-end"}>{t("Inventory Number")}:</p>
