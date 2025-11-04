@@ -575,7 +575,6 @@ export function BorrowBookForm() {
                       </div>
                       <div className="flex justify-between">
                         <p className="text-end">{t("Title")}:</p>
-
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -587,7 +586,7 @@ export function BorrowBookForm() {
                             </TooltipTrigger>
 
                             {bookData?.title && (
-                              <TooltipContent className="max-w-sm whitespace-pre-wrap break-words">
+                              <TooltipContent className="max-w-sm whitespace-pre-wrap break-words text-[16px]">
                                 {bookData.title}
                               </TooltipContent>
                             )}
