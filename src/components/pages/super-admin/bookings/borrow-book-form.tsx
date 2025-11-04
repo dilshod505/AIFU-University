@@ -158,7 +158,8 @@ export function BorrowBookForm() {
 
   useEffect(() => {
     const fetchSeriaNumber = async () => {
-      if (debouncedSeriaCard && debouncedSeriaCard.toString()) {
+      // Faqat uzunligi 9 yoki 10 belgidan oshganda so‘rov ketadi (masalan AD8769098)
+      if (debouncedSeriaCard && debouncedSeriaCard.length >= 9) {
         try {
           const res = await api.get(
             `/admin/students/passport/${debouncedSeriaCard}`,
@@ -174,6 +175,7 @@ export function BorrowBookForm() {
           toast.error("Bu passport bo'yicha talaba topilmadi");
         }
       } else {
+        // Agar hali to‘liq yozilmagan bo‘lsa — ma’lumotni tozalaymiz, lekin so‘rov yubormaymiz
         setSeriaData(null);
       }
     };
