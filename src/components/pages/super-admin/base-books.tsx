@@ -300,7 +300,7 @@ const BaseBooks = () => {
         width: 200,
         render: (_: any, record: any) => (
           <div className={"flex gap-2"}>
-            <Link href={`/super-admin/copies-books?bookId=${record.id}`}>
+            <Link href={`/${role}/copies-books?bookId=${record.id}`}>
               <TooltipBtn
                 variant={"outline"}
                 title={t("See copy book")}
