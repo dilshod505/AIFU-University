@@ -1,5 +1,5 @@
 import React from "react";
-import Notifications from "@/components/pages/super-admin/notifications";
+// import Notifications from "@/components/pages/super-admin/notifications";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -18,11 +18,7 @@ export const generateMetadata = async ({
 };
 
 const Page = () => {
-  return (
-    <div>
-      <Notifications />
-    </div>
-  );
+  return <div>{/*<Notifications />*/}</div>;
 };
 
 export default Page;
