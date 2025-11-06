@@ -738,7 +738,7 @@ const BaseBooks = () => {
               label={t("Series")}
               name="series"
             >
-              <Input placeholder={t("Series")} />
+              <Input placeholder={t("Series")} required />
             </Form.Item>
             <Form.Item
               label={t("Category")}
