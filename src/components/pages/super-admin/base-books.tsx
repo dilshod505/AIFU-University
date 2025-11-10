@@ -823,11 +823,7 @@ const BaseBooks = () => {
             <Form.Item label={t("UDC")} name="udc">
               <Input placeholder={t("UDC Number")} required />
             </Form.Item>
-            <Form.Item
-              label={t("Title details")}
-              name="titleDetails"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label={t("Title details")} name="titleDetails">
               <TextArea rows={4} placeholder={t("Title details")} />
             </Form.Item>
           </div>

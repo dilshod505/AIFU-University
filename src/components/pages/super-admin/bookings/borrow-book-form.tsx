@@ -28,6 +28,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+interface BookItem {
+  id: string;
+  bookCopyId: string;
+  title: string;
+  author: string;
+  inventoryNumber: string;
+  epc: string;
+  days: number;
+}
+
 export function BorrowBookForm() {
   const t = useTranslations();
   const form = useForm();
@@ -51,15 +61,17 @@ export function BorrowBookForm() {
   );
   const [bookData, setBookData] = useState<Record<string, any> | null>(null);
 
-  const debouncedStudentCard = useDebounce(studentCard, 600);
-  const debouncedSeriaCard = useDebounce(seriaCard, 600);
-  const debouncedBookCard = useDebounce(bookCard, 600);
-
+  const [selectedBooks, setSelectedBooks] = useState<BookItem[]>([]);
   const [ijaraMuddati, setIjaraMuddati] = useState<number>(
     searchParams.get("ijaraMuddati")
       ? Number(searchParams.get("ijaraMuddati"))
       : 7,
   );
+
+  const debouncedStudentCard = useDebounce(studentCard, 600);
+  const debouncedSeriaCard = useDebounce(seriaCard, 600);
+  const debouncedBookCard = useDebounce(bookCard, 600);
+
   const [bookCopyType, setBookCopyType] = useState<"epc" | "inventoryNumber">(
     (searchParams.get("bookCopyType") as "epc" | "inventoryNumber") || "epc",
   );
@@ -68,6 +80,8 @@ export function BorrowBookForm() {
     (searchParams.get("studentType") as "cardNumber" | "seriaNumber") ||
       "cardNumber",
   );
+
+  const isStudentSelected = Boolean(studentData || seriaData);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -119,18 +133,15 @@ export function BorrowBookForm() {
 
   const reservateBook = useMutation({
     mutationFn: async ({
-      cardNumber,
-      id,
-      days,
+      studentId,
+      bookingDataDTO,
     }: {
-      cardNumber: string;
-      id: string;
-      days: number;
+      studentId: number;
+      bookingDataDTO: Array<{ bookCopyId: string; days: number }>;
     }) => {
       const res = await api.post("/admin/booking/borrow", {
-        cardNumber: cardNumber.toString(),
-        id,
-        days,
+        studentId,
+        bookingDataDTO,
       });
       return res.data;
     },
@@ -164,7 +175,7 @@ export function BorrowBookForm() {
 
   useEffect(() => {
     const fetchSeriaNumber = async () => {
-      // Faqat uzunligi 9 yoki 10 belgidan oshganda so‘rov ketadi (masalan AD8769098)
+      // Faqat uzunligi 9 yoki 10 belgidan oshganda so'rov ketadi (masalan AD8769098)
       if (debouncedSeriaCard && debouncedSeriaCard.length >= 9) {
         try {
           const res = await api.get(
@@ -181,7 +192,7 @@ export function BorrowBookForm() {
           toast.error("Bu passport bo'yicha talaba topilmadi");
         }
       } else {
-        // Agar hali to‘liq yozilmagan bo‘lsa — ma’lumotni tozalaymiz, lekin so‘rov yubormaymiz
+        // Agar hali to'liq yozilmagan bo'lsa — ma'lumotni tozalaymiz, lekin so'rov yubormaymiz
         setSeriaData(null);
       }
     };
@@ -211,6 +222,43 @@ export function BorrowBookForm() {
     fetchBook();
   }, [debouncedBookCard, bookCopyType]);
 
+  const handleAddBook = () => {
+    if (!bookData) {
+      toast.error(t("Kitob tanlang"));
+      return;
+    }
+
+    const newBook: BookItem = {
+      id: `${Date.now()}-${Math.random()}`,
+      bookCopyId: bookData.bookCopyId,
+      title: bookData.title,
+      author: bookData.author,
+      inventoryNumber: bookData.inventoryNumber,
+      epc: bookData.epc || "-",
+      days: ijaraMuddati,
+    };
+
+    setSelectedBooks([...selectedBooks, newBook]);
+    setBookCard(null);
+    setBookData(null);
+    toast.success(t("Kitob qo'shildi"));
+  };
+
+  const handleRemoveBook = (id: string) => {
+    setSelectedBooks(selectedBooks.filter((book) => book.id !== id));
+    toast.success(t("Kitob olib tashlandi"));
+  };
+
+  const handleClearAll = () => {
+    setSelectedBooks([]);
+    setStudentCard(null);
+    setSeriaCard(null);
+    setBookCard(null);
+    setStudentData(null);
+    setSeriaData(null);
+    setBookData(null);
+  };
+
   return (
     <div className="flex flex-col xl:flex-row w-full gap-3 h-full">
       <div className="flex flex-col w-full xl:w-1/2 gap-3 h-full">
@@ -221,16 +269,19 @@ export function BorrowBookForm() {
                 <Tabs
                   defaultValue={studentType}
                   onValueChange={(e: string) => setStudentType(e as any)}
+                  aria-disabled={isStudentSelected}
                 >
                   <TabsList>
                     <TabsTrigger
                       value="cardNumber"
+                      disabled={isStudentSelected}
                       className="data-[state=active]:text-white data-[state=active]:bg-green-600"
                     >
                       {t("Card number")}
                     </TabsTrigger>
                     <TabsTrigger
                       value="seriaNumber"
+                      disabled={isStudentSelected}
                       className="data-[state=active]:text-white data-[state=active]:bg-green-600"
                     >
                       {t("Seria number")}
@@ -244,6 +295,7 @@ export function BorrowBookForm() {
                         setStudentCard(e.target.value)
                       }
                       placeholder={t("enter student card number")}
+                      disabled={isStudentSelected}
                     />
                   </TabsContent>
                   <TabsContent value="seriaNumber">
@@ -254,6 +306,7 @@ export function BorrowBookForm() {
                         setSeriaCard(e.target.value)
                       }
                       placeholder={t("enter student seria number")}
+                      disabled={isStudentSelected}
                     />
                   </TabsContent>
                 </Tabs>
@@ -547,6 +600,7 @@ export function BorrowBookForm() {
                         setBookCard(e.target.value as string)
                       }
                       placeholder={t("ijaraga berilayotgan kitobni kiriting")}
+                      disabled={!isStudentSelected}
                     />
                   </TabsContent>
                   <TabsContent value="inventoryNumber">
@@ -558,6 +612,7 @@ export function BorrowBookForm() {
                       placeholder={t(
                         "ijaraga berilayotgan kitobning inventar raqamini kiriting",
                       )}
+                      disabled={!isStudentSelected}
                     />
                   </TabsContent>
                 </Tabs>
@@ -617,6 +672,15 @@ export function BorrowBookForm() {
                         <p className={"text-end"}>{t("Epc")}:</p>
                         <h1 className={"capitalize"}>{bookData?.epc || "-"}</h1>
                       </div>
+                      <div className="flex justify-end">
+                        <Button
+                          className="cursor-pointer mt-2"
+                          onClick={handleAddBook}
+                          size="sm"
+                        >
+                          {t("Kitob qo'shish")}
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 )}
@@ -625,123 +689,167 @@ export function BorrowBookForm() {
           </Card>
         </div>
       </div>
-      {bookData && (studentData || seriaData) && (
-        <Card className={"w-full xl:w-1/2"}>
-          <CardContent>
-            <div className="space-y-8">
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("student")}:</p>
-                <Input
-                  defaultValue={`${(studentData || seriaData)?.name} ${(studentData || seriaData)?.surname} (${(studentData || seriaData)?.cardNumber})`}
-                  disabled
-                />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("faculty")}:</p>
-                <Input
-                  defaultValue={(studentData || seriaData)?.faculty}
-                  disabled
-                />
-              </div>
+      <Card className={"w-full xl:w-1/2"}>
+        <CardContent>
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">
+              {t("Tanlangan kitoblar")} ({selectedBooks.length})
+            </h2>
 
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("Author")}:</p>
-                <Input defaultValue={bookData.author || "-"} disabled />
+            {selectedBooks.length > 0 ? (
+              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                {selectedBooks.map((book, idx) => (
+                  <Card key={book.id} className="p-3">
+                    <CardContent className="p-1 space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 space-y-1">
+                          <p className="text-sm text-muted-foreground">
+                            {idx + 1}. {book.title}
+                          </p>
+                          <div className="flex justify-between text-sm">
+                            <span>{t("Muallif")}:</span>
+                            <span className="font-medium">{book.author}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>{t("Inventory Number")}:</span>
+                            <span className="font-medium">
+                              {book.inventoryNumber}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>{t("Ijara muddati")}:</span>
+                            <span className="font-medium">{book.days} kun</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveBook(book.id)}
+                        >
+                          {t("O'chirish")}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("Title")}:</p>
-                <Input defaultValue={bookData.title || "-"} disabled />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("Inventory Number")}:</p>
-                <Input defaultValue={bookData.inventoryNumber} disabled />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("shelfLocation")}:</p>
-                <Input defaultValue={bookData.shelfLocation} disabled />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>{t("Epc")}:</p>
-                <Input defaultValue={bookData.epc || "-"} disabled />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>
-                  {t("ijara necha kun davom etadi")}:
-                </p>
-                <Input
-                  defaultValue={ijaraMuddati}
-                  type="number"
-                  min={1}
-                  onKeyDown={(e) => {
-                    // Faqat boshida kiritilayotgan 0 ni taqiqlash
-                    const target = e.target as HTMLInputElement;
-                    if (e.key === "-" || e.key === "+") {
-                      e.preventDefault();
-                    }
+            ) : (
+              <p className="text-center text-muted-foreground py-8">
+                {t("Kitob qo'shilmagan")}
+              </p>
+            )}
 
-                    // Agar input bo'sh bo'lsa va foydalanuvchi "0" bossa — blokla
-                    if (e.key === "0" && target.value === "") {
-                      e.preventDefault();
-                    }
-                  }}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    const value = Number(e.target.value);
-                    if (value >= 1) {
-                      setIjaraMuddati(value);
-                    }
-                  }}
-                />
-              </div>
-              <div className="flex justify-between items-center gap-3">
-                <p className={"p-0 m-0 w-full"}>
-                  {t("ijaraga berish muddati")}:
-                </p>
-                <Input value={expirationDate} disabled />
-              </div>
-              <div className="flex justify-end items-center gap-3">
-                <Button
-                  className={"cursor-pointer"}
-                  variant={"secondary"}
-                  onClick={() =>
-                    (window.location.href = "/super-admin/bookings/active")
-                  }
-                >
-                  {t("Cancel")}
-                </Button>
-                <Button
-                  className={"cursor-pointer"}
-                  variant={"default"}
-                  onClick={async () => {
-                    try {
-                      const activeStudentData = studentData || seriaData;
-                      reservateBook.mutate(
-                        {
-                          cardNumber: activeStudentData?.cardNumber,
-                          id: bookData?.bookCopyId,
+            {isStudentSelected && (
+              <div className="space-y-4 border-t pt-4 mt-6">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">{t("Talaba")}</p>
+                  <Input
+                    defaultValue={`${(studentData || seriaData)?.name} ${(studentData || seriaData)?.surname}`}
+                    disabled
+                  />
+                  <Input
+                    defaultValue={(studentData || seriaData)?.faculty}
+                    disabled
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    {t("ijara necha kun davom etadi")}
+                  </p>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={ijaraMuddati === 0 ? "" : ijaraMuddati}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                      const rawValue = e.target.value;
+
+                      if (rawValue === "") {
+                        setIjaraMuddati(0); // vaqtinchalik 0 saqlaymiz
+                        return;
+                      }
+
+                      const value = Number(rawValue);
+                      if (value >= 1) {
+                        setIjaraMuddati(value);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "-" || e.key === "+") {
+                        e.preventDefault();
+                      }
+                      if (
+                        e.key === "0" &&
+                        (e.target as HTMLInputElement).value === ""
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    {t("ijaraga berish muddati")}
+                  </p>
+                  <Input value={expirationDate} disabled />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    className={"cursor-pointer flex-1"}
+                    variant={"secondary"}
+                    onClick={handleClearAll}
+                    disabled={selectedBooks.length === 0}
+                  >
+                    {t("Bekor qilish")}
+                  </Button>
+                  <Button
+                    className={"cursor-pointer flex-1"}
+                    variant={"default"}
+                    onClick={async () => {
+                      try {
+                        if (selectedBooks.length === 0) {
+                          toast.error(t("Kamida bitta kitob tanlang"));
+                          return;
+                        }
+
+                        const activeStudentData = studentData || seriaData;
+                        const bookingDataDTO = selectedBooks.map((book) => ({
+                          bookCopyId: book.bookCopyId,
                           days: ijaraMuddati,
-                        },
-                        {
-                          onSuccess: () => {
-                            window.location.href =
-                              "/super-admin/bookings/active";
+                        }));
+
+                        reservateBook.mutate(
+                          {
+                            studentId: activeStudentData?.id,
+                            bookingDataDTO,
                           },
-                          onError: () => {
-                            t("Error");
+                          {
+                            onSuccess: () => {
+                              window.location.href =
+                                "/super-admin/bookings/active";
+                            },
+                            onError: () => {
+                              toast.error(t("Xatolik yuz berdi"));
+                            },
                           },
-                        },
-                      );
-                    } catch (e) {
-                      console.log(e);
-                    }
-                  }}
-                >
-                  {t("Ijaraga berish")}
-                </Button>
+                        );
+                      } catch (e) {
+                        console.log(e);
+                        toast.error(t("Xatolik yuz berdi"));
+                      }
+                    }}
+                    disabled={selectedBooks.length === 0}
+                  >
+                    {t("Ijaraga berish")}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
