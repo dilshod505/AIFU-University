@@ -25,6 +25,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bell } from "lucide-react";
+import { useNotificationSocket } from "@/hooks/webSocket";
 
 const NotificationHeader = () => {
   const t = useTranslations();
@@ -106,6 +107,10 @@ const NotificationHeader = () => {
       });
     }
   };
+
+  useNotificationSocket(() => {
+    queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  });
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

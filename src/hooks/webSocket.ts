@@ -1,31 +1,50 @@
-import { useEffect } from "react";
+// src/hooks/useNotificationSocket.ts
+import { useEffect, useRef } from "react";
 
-const useNotificationSocket = (onNewNotification: (data: any) => void) => {
+export const useNotificationSocket = (
+  onNewNotification: (data: any) => void,
+) => {
+  const socketRef = useRef<WebSocket | null>(null);
+
   useEffect(() => {
-    const ws = new WebSocket("wss://api/ws/notifications");
+    const wsUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/^http/, "ws") +
+      "/ws-notification";
 
-    ws.onopen = () => {
+    console.log("🔗 Connecting to WebSocket:", wsUrl);
+
+    const socket = new WebSocket(wsUrl);
+    socketRef.current = socket;
+
+    socket.onopen = () => {
       console.log("✅ WebSocket connected");
     };
 
-    ws.onmessage = (event) => {
+    socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         console.log("🔔 New notification:", data);
         onNewNotification(data);
       } catch (e) {
-        console.error("Invalid WS message", e);
+        console.error("❌ Invalid WebSocket message:", e);
       }
     };
 
-    ws.onerror = (err) => {
-      console.error("❌ WebSocket error:", err);
+    socket.onerror = (error) => {
+      console.error("⚠️ WebSocket error:", error);
     };
 
-    ws.onclose = () => {
-      console.log("🔌 WebSocket disconnected");
+    socket.onclose = (e) => {
+      console.warn("🔌 WebSocket closed:", e.reason);
+      // avtomatik qayta ulanadi
+      setTimeout(() => {
+        console.log("♻️ Reconnecting WebSocket...");
+        useNotificationSocket(onNewNotification);
+      }, 5000);
     };
 
-    return () => ws.close();
+    return () => {
+      socket.close();
+    };
   }, [onNewNotification]);
 };
