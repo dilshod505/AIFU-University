@@ -731,14 +731,14 @@ const BaseBooks = () => {
               name="author"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Author")} required />
+              <Input placeholder={t("Author")} />
             </Form.Item>
             <Form.Item
               rules={[{ required: true }]}
               label={t("Series")}
               name="series"
             >
-              <Input placeholder={t("Series")} required />
+              <Input placeholder={t("Series")} />
             </Form.Item>
             <Form.Item
               label={t("Category")}
@@ -786,10 +786,10 @@ const BaseBooks = () => {
               name="publisher"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Publication enter name")} required />
+              <Input placeholder={t("Publication enter name")} />
             </Form.Item>
             <Form.Item label={t("Publication City")} name="publicationCity">
-              <Input placeholder={t("Publication city")} required />
+              <Input placeholder={t("Publication city")} />
             </Form.Item>
           </div>
 
@@ -799,7 +799,7 @@ const BaseBooks = () => {
           </h1>
           <div className="grid md:grid-cols-2 gap-3">
             <Form.Item label={t("Isbn")} name="isbn">
-              <Input placeholder={t("Isbn")} required />
+              <Input placeholder={t("Isbn")} />
             </Form.Item>
             <Form.Item
               label={t("Page Count")}
@@ -807,7 +807,6 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
-                required={true}
                 style={{ width: "100%" }}
                 min={1}
                 placeholder={t("Page Count")}
@@ -818,10 +817,10 @@ const BaseBooks = () => {
               name="language"
               rules={[{ required: true }]}
             >
-              <Input placeholder={t("Language enter")} required />
+              <Input placeholder={t("Language enter")} />
             </Form.Item>
             <Form.Item label={t("UDC")} name="udc">
-              <Input placeholder={t("UDC Number")} required />
+              <Input placeholder={t("UDC Number")} />
             </Form.Item>
             <Form.Item label={t("Title details")} name="titleDetails">
               <TextArea rows={4} placeholder={t("Title details")} />
