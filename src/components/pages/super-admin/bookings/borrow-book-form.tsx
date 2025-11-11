@@ -28,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { X } from "lucide-react";
+import TooltipBtn from "@/components/tooltip-btn";
 
 interface BookingItem {
   bookCopyId: string;
@@ -725,13 +726,9 @@ export function BorrowBookForm() {
               </div>
 
               {/* faqat qo'shish tugmasi */}
-              <Button
-                className={"w-full cursor-pointer"}
-                variant={"outline"}
-                onClick={addBookToList}
-              >
+              <TooltipBtn onClick={addBookToList} className={"w-full"}>
                 {t("Kitobni ro'yxatga qo'shish")}
-              </Button>
+              </TooltipBtn>
             </div>
           </CardContent>
         </Card>
