@@ -737,7 +737,7 @@ export function BorrowBookForm() {
         </Card>
       )}
       {bookedItems.length > 0 && (
-        <Card className="w-full mt-5">
+        <Card className="w-[800px]">
           <CardContent>
             <div className="space-y-4">
               <h3 className="font-semibold">
@@ -746,7 +746,7 @@ export function BorrowBookForm() {
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {bookedItems.map((item) => (
-                  <Card key={item.bookCopyId} className="p-2 bg-slate-50">
+                  <Card key={item.bookCopyId} className="p-2">
                     <CardContent className="p-2 flex justify-between items-center gap-2">
                       <div className="flex-1">
                         <p className="text-sm font-medium truncate">
