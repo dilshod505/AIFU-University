@@ -193,10 +193,12 @@ export function BorrowBookForm() {
   }, [debouncedSeriaCard]);
 
   const studentBookings = useBookingByStudentId(seeingStudent);
+  const [isBookLoading, setIsBookLoading] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
       if (debouncedBookCard && debouncedBookCard.toString()) {
+        setIsBookLoading(true);
         try {
           const res = await api.get(
             `/admin/book-copies/get?query=${debouncedBookCard}&field=${bookCopyType}`,
@@ -205,6 +207,8 @@ export function BorrowBookForm() {
         } catch {
           setBookData(null);
           toast.error("Kitob topilmadi");
+        } finally {
+          setIsBookLoading(false);
         }
       } else {
         setBookData(null);
@@ -594,63 +598,76 @@ export function BorrowBookForm() {
                   </TabsContent>
                 </Tabs>
 
-                {bookData && (
-                  <Card className={"p-3"}>
-                    <CardContent className={"p-1 space-y-2"}>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Category")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.category}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Author")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.author}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className="text-end">{t("Title")}:</p>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="block max-w-[200px] truncate cursor-pointer capitalize text-end">
-                                {bookData?.title || (
-                                  <span className="text-red-500">--</span>
-                                )}
-                              </span>
-                            </TooltipTrigger>
-
-                            {bookData?.title && (
-                              <TooltipContent className="max-w-sm whitespace-pre-wrap break-words text-[16px]">
-                                {bookData.title}
-                              </TooltipContent>
-                            )}
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Inventory Number")}:</p>
-                        <h1 className={"capitalize"}>
-                          {bookData?.inventoryNumber}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Udc")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.udc}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("shelfLocation")}:</p>
-                        <h1 className={"capitalize"}>
-                          {bookData?.shelfLocation}
-                        </h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("notes")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.notes}</h1>
-                      </div>
-                      <div className="flex justify-between">
-                        <p className={"text-end"}>{t("Epc")}:</p>
-                        <h1 className={"capitalize"}>{bookData?.epc || "-"}</h1>
+                {isBookLoading ? (
+                  <Card className="p-3">
+                    <CardContent className="p-2 flex justify-center items-center">
+                      <div className="flex flex-col items-center gap-2 text-gray-500">
+                        <div className="animate-spin h-6 w-6 border-2 border-green-600 border-t-transparent rounded-full"></div>
+                        <p>{t("Yuklanmoqda...")}</p>
                       </div>
                     </CardContent>
                   </Card>
+                ) : (
+                  bookData && (
+                    <Card className={"p-3"}>
+                      <CardContent className={"p-1 space-y-2"}>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Category")}:</p>
+                          <h1 className={"capitalize"}>{bookData?.category}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Author")}:</p>
+                          <h1 className={"capitalize"}>{bookData?.author}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="text-end">{t("Title")}:</p>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="block max-w-[200px] truncate cursor-pointer capitalize text-end">
+                                  {bookData?.title || (
+                                    <span className="text-red-500">--</span>
+                                  )}
+                                </span>
+                              </TooltipTrigger>
+
+                              {bookData?.title && (
+                                <TooltipContent className="max-w-sm whitespace-pre-wrap break-words text-[16px]">
+                                  {bookData.title}
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Inventory Number")}:</p>
+                          <h1 className={"capitalize"}>
+                            {bookData?.inventoryNumber}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Udc")}:</p>
+                          <h1 className={"capitalize"}>{bookData?.udc}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("shelfLocation")}:</p>
+                          <h1 className={"capitalize"}>
+                            {bookData?.shelfLocation}
+                          </h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("notes")}:</p>
+                          <h1 className={"capitalize"}>{bookData?.notes}</h1>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className={"text-end"}>{t("Epc")}:</p>
+                          <h1 className={"capitalize"}>
+                            {bookData?.epc || "-"}
+                          </h1>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
                 )}
               </div>
             </CardContent>
