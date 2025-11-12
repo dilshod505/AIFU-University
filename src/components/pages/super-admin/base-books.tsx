@@ -45,7 +45,6 @@ import {
   Input,
   InputNumber,
   Modal,
-  Select,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {
@@ -55,7 +54,6 @@ import {
   ChevronRight,
   Copy,
   Eye,
-  Filter,
   PenSquareIcon,
   Plus,
   Search,
@@ -68,7 +66,6 @@ import { useForm } from "react-hook-form";
 import { RiFileExcel2Line } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { toast } from "sonner";
-import { AutoResizeInput } from "@/components/ui/auto-resizeInput";
 import Link from "next/link";
 
 const { Option } = AntdSelect;
@@ -370,11 +367,18 @@ const BaseBooks = () => {
   const onSubmit = async (formData: any) => {
     setSubmitting(true);
     const payload = {
-      ...formData,
+      categoryId: Number(formData.categoryId),
+      author: formData.author,
+      title: formData.title,
+      series: formData.series,
       titleDetails: formData.titleDetails || "",
-      category: Number(formData.categoryId),
       publicationYear: Number(formData.publicationYear),
+      publisher: formData.publisher,
+      publicationCity: formData.publicationCity || "",
+      isbn: formData.isbn,
       pageCount: Number(formData.pageCount),
+      language: formData.language,
+      udc: formData.udc,
     };
 
     if (editingBook) {
@@ -726,18 +730,10 @@ const BaseBooks = () => {
             >
               <Input placeholder={t("Title")} required />
             </Form.Item>
-            <Form.Item
-              label={t("Author")}
-              name="author"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label={t("Author")} name="author">
               <Input placeholder={t("Author")} />
             </Form.Item>
-            <Form.Item
-              rules={[{ required: true }]}
-              label={t("Series")}
-              name="series"
-            >
+            <Form.Item label={t("Series")} name="series">
               <Input placeholder={t("Series")} />
             </Form.Item>
             <Form.Item
@@ -770,22 +766,13 @@ const BaseBooks = () => {
             {t("Publication Details")}
           </h1>
           <div className="grid md:grid-cols-3 gap-3">
-            <Form.Item
-              label={t("Publication year")}
-              name="publicationYear"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label={t("Publication year")} name="publicationYear">
               <InputNumber
-                required={true}
                 style={{ width: "100%" }}
                 placeholder={t("Publication year enter")}
               />
             </Form.Item>
-            <Form.Item
-              label={t("Publisher")}
-              name="publisher"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label={t("Publisher")} name="publisher">
               <Input placeholder={t("Publication enter name")} />
             </Form.Item>
             <Form.Item label={t("Publication City")} name="publicationCity">
@@ -807,16 +794,13 @@ const BaseBooks = () => {
               rules={[{ required: true }]}
             >
               <InputNumber
+                required={true}
                 style={{ width: "100%" }}
                 min={1}
                 placeholder={t("Page Count")}
               />
             </Form.Item>
-            <Form.Item
-              label={t("Language")}
-              name="language"
-              rules={[{ required: true }]}
-            >
+            <Form.Item label={t("Language")} name="language">
               <Input placeholder={t("Language enter")} />
             </Form.Item>
             <Form.Item label={t("UDC")} name="udc">

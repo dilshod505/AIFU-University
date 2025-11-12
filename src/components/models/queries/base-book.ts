@@ -41,19 +41,33 @@ export const useCreateBaseBook = () => {
   return useMutation({
     mutationFn: async (data: {
       categoryId: number;
-      author: string;
+      author?: string;
       title: string;
-      series: string;
-      titleDetails: string;
-      publicationYear: number;
-      publisher: string;
-      publicationCity: string;
-      isbn: string;
+      series?: string;
+      titleDetails?: string;
+      publicationYear?: number;
+      publisher?: string;
+      publicationCity?: string;
+      isbn?: string;
       pageCount: number;
-      language: string;
-      udc: string;
+      language?: string;
+      udc?: string;
     }) => {
-      const res = await api.post("/admin/base-books", data);
+      const payload = {
+        categoryId: data.categoryId,
+        author: data.author || "",
+        title: data.title || "",
+        series: data.series || "",
+        titleDetails: data.titleDetails || "",
+        publicationYear: data.publicationYear || 0,
+        publisher: data.publisher || "",
+        publicationCity: data.publicationCity || "",
+        isbn: data.isbn || "",
+        pageCount: data.pageCount || 0,
+        language: data.language || "",
+        udc: data.udc || "",
+      };
+      const res = await api.post("/admin/base-books", payload);
       return res.data;
     },
     onSuccess: () => {
@@ -72,24 +86,31 @@ export const useUpdateBaseBook = () => {
     }: {
       id: string | number;
       categoryId: number;
-      author: string;
+      author?: string;
       title: string;
       series?: string;
       titleDetails?: string;
-      publicationYear: number | string;
-      publisher: string;
+      publicationYear?: number | string;
+      publisher?: string;
       publicationCity?: string;
       isbn?: string;
       pageCount: number | string;
-      language: string;
+      language?: string;
       udc?: string;
     }) => {
-      // Transform API format
       const payload = {
-        ...rest,
+        author: rest.author || "",
+        title: rest.title || "",
+        series: rest.series || "",
+        titleDetails: rest.titleDetails || "",
+        publicationYear: Number(rest.publicationYear) || 0,
+        publisher: rest.publisher || "",
+        publicationCity: rest.publicationCity || "",
+        isbn: rest.isbn || "",
+        pageCount: Number(rest.pageCount) || 0,
+        language: rest.language || "",
+        udc: rest.udc || "",
         category: Number(categoryId),
-        publicationYear: Number(rest.publicationYear),
-        pageCount: Number(rest.pageCount),
       };
 
       const res = await api.patch(`/admin/base-books/${id}`, payload);
