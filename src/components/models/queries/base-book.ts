@@ -110,7 +110,7 @@ export const useUpdateBaseBook = () => {
         pageCount: Number(rest.pageCount) || 0,
         language: rest.language || "",
         udc: rest.udc || "",
-        category: Number(categoryId),
+        categoryId: Number(categoryId),
       };
 
       const res = await api.patch(`/admin/base-books/${id}`, payload);
