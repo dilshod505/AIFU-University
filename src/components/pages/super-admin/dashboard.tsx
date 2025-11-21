@@ -145,12 +145,11 @@ const Dashboard = () => {
   };
 
   const perDaySeries = [
-    { name: "Taken", data: taken },
-    { name: "Returned", data: returned },
-    { name: "Returned Late", data: returnedLate },
+    { name: t("Taken"), data: taken },
+    { name: t("Returned"), data: returned },
+    { name: t("Returned Late"), data: returnedLate },
   ];
 
-  // -------------------- Yearly (oylik) --------------------
   const yearlyData = bookingPerMonth.data?.data || [];
   const monthNames = useMemo(
     () => [
