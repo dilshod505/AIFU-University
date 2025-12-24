@@ -129,15 +129,6 @@ const Dashboard = () => {
   // 🔍 query chaqiruvi
   const adminsActivity = useAdminbActivity(period);
 
-  // -------------------- Monthly (kunlik) --------------------
-  const perDayData = bookingPerDay.data?.data || [];
-  const dayCategories = perDayData.map((item: any) =>
-    new Date(item.date).getDate(),
-  );
-  const takenPerDay = perDayData.map((item: any) => item.taken);
-  const returnedPerDay = perDayData.map((item: any) => item.returned);
-  const returnedLatePerDay = perDayData.map((item: any) => item.returnedLate);
-
   const perDayOptions: ApexOptions = {
     chart: { id: "perDay", toolbar: { show: false } },
     xaxis: { categories, title: { text: "Kunlar" } },
